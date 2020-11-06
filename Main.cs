@@ -1,23 +1,26 @@
-﻿using System;
+﻿//#define DEBUG_WINDOW
+// enable this to get a window with zoomed in grapohics
+
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
+
+
 namespace NextGraphics
-{
+{	       
 	public partial class Main : Form
 	{
+
+
+
 		//-------------------------------------------------------------------------------------------------------------------
 		//
 		// enumerations
@@ -64,8 +67,6 @@ namespace NextGraphics
 		public	outputData		outType			=	outputData.Sprites;
 		public	int			outSize			=	16;		
 		private	short			thisIndex		=	0;
-		private	Colour			thisColour		=	new Colour();
-		private	Colour			thatColour		=	new Colour();
 		private	const int		MAX_BLOCKS		=	256;
 		private	const int		MAX_CHAR_SIZE		=	512;
 		private	const int		MAX_IMAGES		=	64;
@@ -74,9 +75,9 @@ namespace NextGraphics
 		private	List<Bitmap>		sourceImages		=	new	List<Bitmap>();
 		private	Bitmap	 		blocksPanel;
 		private	Bitmap	 		charsPanel;
-		private	BitmapData[]		blockData		=	new	BitmapData[MAX_BLOCKS];	
+		private	bitsBitmap[]		blockData		=	new	bitsBitmap[MAX_BLOCKS];	
 		private	spriteInfo[]		blockInfo		=	new	spriteInfo[MAX_BLOCKS];
-		private	BitmapData[]		charData		=	new	BitmapData[MAX_CHAR_SIZE];	
+		private	bitsBitmap[]		charData		=	new	bitsBitmap[MAX_CHAR_SIZE];	
 		private int			gridXSize		=	32;
 		private int			gridYSize		=	32;
 		private	int			outXBlock		=	0;
@@ -98,7 +99,9 @@ namespace NextGraphics
 		private	IgnorePanel		ignorePanel		=	new IgnorePanel();
 		private	centerPanel		centerPanel		=	new centerPanel();
 		private	long			AveragingIndex		=	0;
-
+#if DEBUG_WINDOW
+		public	DEBUGFORM		DEBUG_WINDOW;
+#endif
 		//-------------------------------------------------------------------------------------------------------------------
 		//
 		// Init
@@ -112,7 +115,14 @@ namespace NextGraphics
 			clearPanels(blocksPanel);
 			blocksDisplay.Image			=	blocksPanel;
 			blocksDisplay.Height			=	blocksPanel.Height;
-			blocksDisplay.Width			=	blocksPanel.Width;				
+			blocksDisplay.Width			=	blocksPanel.Width;
+#if DEBUG_WINDOW
+			DEBUG_WINDOW				=	new	DEBUGFORM();
+			DEBUG_WINDOW.Show();
+#endif				
+	
+
+
 			charsPanel				=	new	Bitmap(256,128,PixelFormat.Format24bppRgb);
 			clearPanels(charsPanel);
 			charactersDisplay.Image			=	charsPanel;			
@@ -800,6 +810,9 @@ rejectName:				;
 		private void CopyBlocksImage()
 		{		
 			clearPanels(blocksPanel);
+#if DEBUG_WINDOW
+			clearPanels(DEBUG_WINDOW.DEBUG_IMAGE);
+#endif
 			clearPanels(charsPanel);
 			blocksDisplay.Invalidate(true);
 			blocksDisplay.Update();	
@@ -826,7 +839,7 @@ rejectName:				;
 				// make the first block transparent
 				if(blockData[0]==null)
 				{ 
-					blockData[0]	=	new	BitmapData(gridXSize,gridYSize);
+					blockData[0]	=	new	bitsBitmap(gridXSize,gridYSize);
 					for(int y=0;y<gridYSize;y++)
 					{ 
 						for(int x=0;x<gridXSize;x++)
@@ -834,12 +847,13 @@ rejectName:				;
 							blockData[0].SetPixel(x,y, (short)thePalette.transIndex);
 						}
 					}
+					
 					blockToDisplay(ref blocksPanel,new Rectangle(0,0,gridXSize,gridYSize),ref blockData[0]);
 				}
 				// and a blank character
 				if(charData[0]==null)
 				{
-					charData[0]	=	new	BitmapData(outSize,outSize);
+					charData[0]	=	new	bitsBitmap(outSize,outSize);
 					for(int y=0;y<8;y++)
 					{ 
 						for(int x=0;x<8;x++)
@@ -847,6 +861,9 @@ rejectName:				;
 							charData[0].SetPixel(x,y, (short)thePalette.transIndex);
 						}
 					}
+#if DEBUG_WINDOW
+					DEBUGToDisplay(new Rectangle(0,0,outSize,outSize),ref charData[0]);
+#endif
 					blockToDisplay(ref charsPanel,new Rectangle(0,0,outSize,outSize),ref charData[0]);
 				}
 
@@ -888,7 +905,7 @@ rejectName:				;
 							}							
 							if(blockData[outBlock]==null)
 							{ 
-								blockData[outBlock]	=	new	BitmapData(gridXSize,gridYSize);
+								blockData[outBlock]	=	new	bitsBitmap(gridXSize,gridYSize);
 							}
 							CopyRegionIntoBlock(sourceImages[s],src,ref blockData[outBlock]);
 			
@@ -968,7 +985,7 @@ notBlank:
 									// copy character over as its not in any of the characters									
 									if(charData[outChar]==null)
 									{ 
-										charData[outChar]	=	new	BitmapData(outSize,outSize);
+										charData[outChar]	=	new	bitsBitmap(outSize,outSize);
 									}
 									for(int y=0;y<outSize;y++)
 									{ 
@@ -982,6 +999,9 @@ notBlank:
 									charDest.Width	=	outSize;
 									charDest.Height	=	outSize;
 									blockToDisplay(ref charsPanel,charDest,ref charData[outChar]);	
+#if DEBUG_WINDOW 									
+									DEBUGToDisplay(charDest,ref charData[outChar]);	
+#endif
 									outXChar++;
 									outChar++;
 									if(outChar>=MaxLimit)
@@ -1009,6 +1029,7 @@ notBlank:
 dontDrawCharacter:							;
 								}
 							}
+
 							blockToDisplay(ref blocksPanel,dest,ref blockData[outBlock]);	
 							if(outType == outputData.Blocks)
 							{ 
@@ -1029,9 +1050,14 @@ dontDraw:					;
 						}					
 					this.Invalidate(true);
 					this.Update();		
+#if DEBUG_WINDOW						
+					DEBUG_WINDOW.Invalidate(true);
+					DEBUG_WINDOW.Update();		
+#endif
 					}
 				}
 			}		
+					
 			blocksDisplay.Invalidate(true);
 			blocksDisplay.Update();			
 			this.toolStripProgressBar1.Minimum	=	0;
@@ -1064,8 +1090,8 @@ dontDraw:					;
 					{		
 						for(int	x=0;x<outSize;x++)
 						{
-							SetFromPalette(blockData[outBlock].GetPixel(x+(xCuts*outSize),y+(yCuts*outSize)));
-							thisIndex	=	thePalette.closestColor(thisColour.R,thisColour.G, thisColour.B,(short) AveragingIndex);
+							
+							thisIndex	=	thePalette.closestColor(SetFromPalette(blockData[outBlock].GetPixel(x+(xCuts*outSize),y+(yCuts*outSize))),(short) AveragingIndex);
 							blockData[outBlock].SetPixel(x+(xCuts*outSize),y+(yCuts*outSize),thisIndex);
 						} 
 					}
@@ -1213,71 +1239,69 @@ blockIsOriginal:	return	blockType.Original;
 
 		//-------------------------------------------------------------------------------------------------------------------
 		//
-		// Copy an area from one bitmap to a bits bitmap (BitmapData)
+		// Copy an area from one bitmap to a bits bitmap (bitsBitmap)
 		//
 		//-------------------------------------------------------------------------------------------------------------------
 
-		private void CopyRegionIntoBlock(Bitmap srcBitmap, Rectangle srcRegion,ref BitmapData outBlock)
+		private void CopyRegionIntoBlock(Bitmap srcBitmap, Rectangle srcRegion,ref bitsBitmap outBlock)
 		{
 			for(int	y=0;y<srcRegion.Height;y++)
 			{		
 				for(int	x=0;x<srcRegion.Width;x++)
 				{
-					Color	pixelColour	=	srcBitmap.GetPixel(srcRegion.X+x,srcRegion.Y+y);							
-					thatColour.R		=	pixelColour.R;
-					thatColour.G		=	pixelColour.G;
-					thatColour.B		=	pixelColour.B;
-					thisIndex		=	thePalette.closestColor(thatColour.R,thatColour.G, thatColour.B,-1);					
-					outBlock.SetPixel(x,y,thisIndex);
-
+					outBlock.SetPixel(x,y,thePalette.closestColor(srcBitmap.GetPixel(srcRegion.X+x,srcRegion.Y+y),-1));
 				}
 			}								
 		}
 
 		//-------------------------------------------------------------------------------------------------------------------
 		//
-		// Copy the bits bitmap (BitmapData) to a viewable bitmap
+		// Copy the bits bitmap (bitsBitmap) to a viewable bitmap
 		//
 		//-------------------------------------------------------------------------------------------------------------------
 
-		private		void	blockToDisplay(ref Bitmap destBitmap, Rectangle destRegion,ref BitmapData inBlock)
+		private		void	blockToDisplay(ref Bitmap destBitmap, Rectangle destRegion,ref bitsBitmap inBlock)
 		{
 			for(int	y=0;y<destRegion.Height;y++)
 			{		
 				for(int	x=0;x<destRegion.Width;x++)
 				{
-					SetFromPalette(inBlock.GetPixel(x,y));
-					destBitmap.SetPixel(destRegion.X+x,destRegion.Y+y,Color.FromArgb(thisColour.getARGB()));				
+					
+					destBitmap.SetPixel(destRegion.X+x,destRegion.Y+y,SetFromPalette(inBlock.GetPixel(x,y)));				
 				}
 			}
 		}
-
+#if DEBUG_WINDOW 
+		private		void	DEBUGToDisplay(Rectangle destRegion,ref bitsBitmap inBlock)
+		{
+			for(int	y=0;y<destRegion.Height;y++)
+			{		
+				for(int	x=0;x<destRegion.Width;x++)
+				{
+					
+					DEBUG_WINDOW.DEBUG_IMAGE.SetPixel(destRegion.X+x,destRegion.Y+y,SetFromPalette(inBlock.GetPixel(x,y)));				
+				}
+			}
+		}
+#endif
 		//-------------------------------------------------------------------------------------------------------------------
 		//
 		// Set the colour from a palette in memory
 		//
 		//-------------------------------------------------------------------------------------------------------------------
 		
-		private	void	SetFromPalette(int theIndex)
+		private	Color	SetFromPalette(int theIndex)
 		{
 			switch(thePalette.paletteSetting)
 			{ 
 				case	Palette.PaletteMapping.mapped256:
-					thisColour.R		=	thePalette.SpecNext256[theIndex,0];
-					thisColour.G		=	thePalette.SpecNext256[theIndex,1];							
-					thisColour.B		=	thePalette.SpecNext256[theIndex,2];
-				return;
+					return Color.FromArgb(255,thePalette.SpecNext256[theIndex,0],thePalette.SpecNext256[theIndex,1],thePalette.SpecNext256[theIndex,2]);
 				case	Palette.PaletteMapping.mapped512:
-					thisColour.R		=	thePalette.SpecNext512[theIndex,0];
-					thisColour.G		=	thePalette.SpecNext512[theIndex,1];							
-					thisColour.B		=	thePalette.SpecNext512[theIndex,2];
-				return;
+					return Color.FromArgb(255,thePalette.SpecNext512[theIndex,0],thePalette.SpecNext512[theIndex,1],thePalette.SpecNext512[theIndex,2]);
 				case	Palette.PaletteMapping.mappedCustom:
-					thisColour.R		=	thePalette.loadedPalette[theIndex,0];
-					thisColour.G		=	thePalette.loadedPalette[theIndex,1];							
-					thisColour.B		=	thePalette.loadedPalette[theIndex,2];
-				return;
+					return	Color.FromArgb(255,thePalette.loadedPalette[theIndex,0],thePalette.loadedPalette[theIndex,1],thePalette.loadedPalette[theIndex,2]);
 			}
+			return	Color.FromArgb(255,255,255,255);
 		}
 		
 		//-------------------------------------------------------------------------------------------------------------------
@@ -1344,7 +1368,9 @@ blockIsOriginal:	return	blockType.Original;
 				g.DrawLine(pen, x * gridXSize, 0, x * gridXSize, blocksDisplay.Image.Height);
 			}	
 		}
+
 		
+
 		//-------------------------------------------------------------------------------------------------------------------
 		//
 		// paint the grid on the sprites/characters display
@@ -1985,9 +2011,8 @@ blockIsOriginal:	return	blockType.Original;
 							for(int	y=0;y<gridYSize;y++)
 							{		
 								for(int	x=0;x<gridXSize;x++)
-								{
-									SetFromPalette(blockData[b].GetPixel(x,y));
-									outBlocks.SetPixel(x,yPos+y,Color.FromArgb(thisColour.getARGB()));
+								{									
+									outBlocks.SetPixel(x,yPos+y,SetFromPalette(blockData[b].GetPixel(x,y)));
 								}
 							}	
 							yPos+=gridYSize;			
@@ -2003,8 +2028,7 @@ blockIsOriginal:	return	blockType.Original;
 							{		
 								for(int	x=0;x<8;x++)
 								{
-									SetFromPalette(charData[b].GetPixel(x,y));
-									outChars.SetPixel(x,yPos+y,Color.FromArgb(thisColour.getARGB()));
+									outChars.SetPixel(x,yPos+y,SetFromPalette(charData[b].GetPixel(x,y)));
 								}
 							}	
 							yPos+=8;			
