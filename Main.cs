@@ -1425,7 +1425,7 @@ dontDraw:					;
 							{
 								pixelColor	=	SetFromPalette(charData[sortIndexs[blockInfo[currentBlock].infos[chr].originalId]].GetPixel(y,7-x));
 							}
-							destBitmap.SetPixel(destRegion.X+(blockInfo[currentBlock].infos[chr].xPos*8)+x,destRegion.Y+(blockInfo[currentBlock].infos[chr].yPos*8)+y,pixelColor);
+							destBitmap.SetPixel(destRegion.X+(blockInfo[currentBlock].infos[chr].xPos* outSize) +x,destRegion.Y+(blockInfo[currentBlock].infos[chr].yPos* outSize) +y,pixelColor);
 						}
 						finally
                         {
