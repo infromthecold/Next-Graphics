@@ -16,17 +16,18 @@
     <PublishUrl>F:\Builds\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Foreground</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
+    <MapFileExtensions>false</MapFileExtensions>
     <MinimumRequiredVersion>2.0.0.0</MinimumRequiredVersion>
-    <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>2.0.0.%2a</ApplicationVersion>
+    <WebPage>publish.htm</WebPage>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>2.0.2.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -66,7 +67,8 @@
     <ManifestCertificateThumbprint>94034DAA7786BBE48E5D57070F8520A8CCCFF515</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>NextGraphics_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <DelaySign>false</DelaySign>
@@ -79,6 +81,26 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -100,6 +122,22 @@
     <Compile Include="About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
+    <Compile Include="DEBUGFORM.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DEBUGFORM.Designer.cs">
+      <DependentUpon>DEBUGFORM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="parallaxTool.cs" />
+    <Compile Include="parallaxTool.Designer.cs">
+      <DependentUpon>parallaxTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="rebuild.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="rebuild.Designer.cs">
+      <DependentUpon>rebuild.cs</DependentUpon>
+    </Compile>
     <Compile Include="supportClasses.cs" />
     <Compile Include="fileTree.cs">
       <SubType>Form</SubType>
@@ -107,17 +145,11 @@
     <Compile Include="fileTree.Designer.cs">
       <DependentUpon>fileTree.cs</DependentUpon>
     </Compile>
-    <Compile Include="centerPanel.cs">
+    <Compile Include="settingsPanel.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="centerPanel.Designer.cs">
-      <DependentUpon>centerPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IgnorePanel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="IgnorePanel.Designer.cs">
-      <DependentUpon>IgnorePanel.cs</DependentUpon>
+    <Compile Include="settingsPanel.Designer.cs">
+      <DependentUpon>settingsPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="ImageSelect.cs">
       <SubType>Form</SubType>
@@ -160,14 +192,20 @@
     <EmbeddedResource Include="About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DEBUGFORM.resx">
+      <DependentUpon>DEBUGFORM.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="fileTree.resx">
       <DependentUpon>fileTree.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="centerPanel.resx">
-      <DependentUpon>centerPanel.cs</DependentUpon>
+    <EmbeddedResource Include="parallaxTool.resx">
+      <DependentUpon>parallaxTool.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="IgnorePanel.resx">
-      <DependentUpon>IgnorePanel.cs</DependentUpon>
+    <EmbeddedResource Include="rebuild.resx">
+      <DependentUpon>rebuild.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="settingsPanel.resx">
+      <DependentUpon>settingsPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImageSelect.resx">
       <DependentUpon>ImageSelect.cs</DependentUpon>

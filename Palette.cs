@@ -86,13 +86,15 @@ namespace NextGraphics
 		public	PaletteMapping		paletteSetting		=	PaletteMapping.mapped256;
 		public int			loadedColourCount	=	255;
 		public	bool			fourBitOutput		=	false;
-		private	ImageSelect		selectForm		=	new	ImageSelect();		
+		public	ImageSelect		selectForm		=	new	ImageSelect();		
 		//private	short			thisIndex		=	0;
 		private	bool			littleEndian		=	false;
 		private	Colour			thisColour		=	new Colour();
 		private	Colour			thatColour		=	new Colour();
 		private	Color			selectedColor		=	Color.FromArgb(64,64,64);
 		private	bool			colourPicking		=	false;
+		public	Button			colourClicked; 
+		//private Color			CopiedColour;
 
 		//-------------------------------------------------------------------------------------------------------------------
 		//
@@ -129,8 +131,8 @@ namespace NextGraphics
 				colours[c].Location			=	new Point(160+(across*20),10+(down*20));
 				colours[c].Size				=	new Size(22, 22);
 				colours[c].BackColor			=	Color.FromArgb(SpecNext256[c,0],SpecNext256[c,1],SpecNext256[c,2]);
-				colours[c].Click			+=	openColourMixerClick;
-				colours[c].MouseHover			+=	colourMouseOver;
+				colours[c].Click			+=	openContextMenu;
+				//colours[c].MouseHover		+=	colourMouseOver;
 				//colours[c].Enabled			=	false;
 				colours[c].Name				=	c.ToString();				
 				colours[c].FlatStyle			=	FlatStyle.Flat;
@@ -159,12 +161,33 @@ namespace NextGraphics
 		//-------------------------------------------------------------------------------------------------------------------
 
 		private void colourMouseOver(object sender, EventArgs e)
-		{
-			
+		{			
 			Button	thisButton	=	(Button) sender;
 			hexColour.Text		=	"#"+thisButton.BackColor.R.ToString("X2") + thisButton.BackColor.G.ToString("X2") + thisButton.BackColor.B.ToString("X2");
 		}
-		
+
+		//-------------------------------------------------------------------------------------------------------------------
+		// 
+		//  setForm after loading project
+		//
+		//-------------------------------------------------------------------------------------------------------------------
+
+		public	void	setLoadedProjectForms()
+		{
+			for(int c=0;c<loadedColourCount;c++)
+			{
+				colours[c].BackColor				=	Color.FromArgb(loadedPalette[c,0],loadedPalette[c,1],loadedPalette[c,2]);													
+			}
+			tColourIndex1.Text			=	transIndex.ToString();
+			for(int c=0;c<256;c++)
+			{
+				colours[c].Text	=	"";
+			}	
+			colours[transIndex].Text		=	"X";
+			textBox1.Text			=	loadedColourCount.ToString();
+		}
+
+	
 		//-------------------------------------------------------------------------------------------------------------------
 		// 
 		//  init the form
@@ -178,57 +201,76 @@ namespace NextGraphics
 			if(paletteSetting == PaletteMapping.mappedCustom)
 			{
 				for(int c=0;c<256;c++)
-				{				
+				{	
 					colours[c].BackColor	=	Color.FromArgb(loadedPalette[c,0],loadedPalette[c,1],loadedPalette[c,2]);
 					colours[c].FlatAppearance.BorderColor	=	SystemColors.ControlDark;
 				}
 				for(int c=0;c<loadedColourCount;c++)
-				{											
+				{	
+					colours[c].BackColor	=	Color.FromArgb(loadedPalette[c,0],loadedPalette[c,1],loadedPalette[c,2]);										
 					colours[c].FlatAppearance.BorderColor	=	selectedColor;
 				}
 			}
 
 
 		}
-
 		//-------------------------------------------------------------------------------------------------------------------
 		// 
 		// Click for the palette buttons
 		//
 		//-------------------------------------------------------------------------------------------------------------------
 
-		private void openColourMixerClick(object sender, EventArgs e)
+		private void openContextMenu(object sender, EventArgs e)
 		{
-			Button	thisButton	=	(Button) sender;
-			int	colourIndex	=	0;
-			if(colourPicking==false)
-			{ 			
-				if(paletteSetting == PaletteMapping.mappedCustom)
-				{ 
-					if(colorDialog1.ShowDialog() == DialogResult.OK)  
-					{  
-						colourIndex			=	int.Parse(thisButton.Name);
-						thisButton.BackColor = colorDialog1.Color;  
-						loadedPalette[colourIndex,0]	=	thisButton.BackColor.R;
-						loadedPalette[colourIndex,1]	=	thisButton.BackColor.G;
-						loadedPalette[colourIndex,2]	=	thisButton.BackColor.B;						
-						setTColour(ref colours[transIndex]);
-					} 
-				}
-			}
-			else
+			colourClicked		=	(Button)sender;
+			if(colourPicking ==	true)
 			{
-				if(int.Parse(thisButton.Name)>loadedColourCount)
+				if(int.Parse(colourClicked.Name)>loadedColourCount)
 				{
 					MessageBox.Show("Transparent Colour out of range of used colours", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);						
 					colourPicking			=	false;
 				}
 				else
 				{ 
-					setTColour(ref thisButton);
+					setTColour(ref colourClicked);
 					colourPicking			=	false;
 				}
 			}
+			else
+			{ 
+				if(paletteSetting == PaletteMapping.mappedCustom)
+				{ 				
+					Point lowerLeft		=	new Point(0, colourClicked.Height);
+					lowerLeft		=	colourClicked.PointToScreen(lowerLeft);           
+					copyMenu.Show(lowerLeft);
+				}
+			}
+		}
+
+		//-------------------------------------------------------------------------------------------------------------------
+		// 
+		// open the menu
+		//
+		//-------------------------------------------------------------------------------------------------------------------
+
+		private	void	openMixer(object sender, EventArgs e)
+		{ 
+			int	colourIndex	=	0;
+	
+			if(paletteSetting == PaletteMapping.mappedCustom)
+			{ 
+				colorDialog1.Color		= 	colourClicked.BackColor;
+				if(colorDialog1.ShowDialog() == DialogResult.OK)  
+				{  
+					colourIndex			=	int.Parse(colourClicked.Name);
+					colourClicked.BackColor		=	colorDialog1.Color;  
+					loadedPalette[colourIndex,0]	=	colourClicked.BackColor.R;
+					loadedPalette[colourIndex,1]	=	colourClicked.BackColor.G;
+					loadedPalette[colourIndex,2]	=	colourClicked.BackColor.B;						
+					setTColour(ref colours[transIndex]);
+				} 
+			}
+			
 		}
 		
 		//-------------------------------------------------------------------------------------------------------------------
@@ -263,7 +305,7 @@ namespace NextGraphics
 
 			//byte[]	bytesBuffer				=	new	byte[2];
 			OpenFileDialog loadPaletteDialog		=	new OpenFileDialog();
-			loadPaletteDialog.InitialDirectory		=	Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+			//loadPaletteDialog.InitialDirectory		=	Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 			loadPaletteDialog.Multiselect			=	true;
 			loadPaletteDialog.RestoreDirectory		=	true ;
 			loadPaletteDialog.Filter			=	"Palette Files (*.act)|*.act|Mac Palette Files (*.8bct)|*.8bct|All Files (*.*)|*.*";
@@ -462,7 +504,7 @@ namespace NextGraphics
 		//
 		//-------------------------------------------------------------------------------------------------------------------
 					
-		public	short	closestColor(int r,int g,int b, short reMap)//, bool bitsFour) 
+		public	short	closestColor(Color thisColour, short reMap)//, bool bitsFour) 
 		{
 			short colorReturn		=	-1;
 			int biggestDifference	=	1000;
@@ -473,20 +515,20 @@ namespace NextGraphics
 					case	PaletteMapping.mapped256:
 						for (short i = 0; i < 256; i++) 
 						{
-							if (Math.Sqrt(Math.Pow(r - SpecNext256[i,0],2) + Math.Pow(g - SpecNext256[i,1],2) + Math.Pow(b - SpecNext256[i,2],2)) < biggestDifference)
+							if (Math.Sqrt(Math.Pow(thisColour.R - SpecNext256[i,0],2) + Math.Pow(thisColour.G - SpecNext256[i,1],2) + Math.Pow(thisColour.B - SpecNext256[i,2],2)) < biggestDifference)
 							{
 								colorReturn = i;
-								biggestDifference = (int) Math.Sqrt(Math.Pow(r - SpecNext256[i,0],2) + Math.Pow(g - SpecNext256[i,1],2) + Math.Pow(b - SpecNext256[i,2],2));
+								biggestDifference = (int) Math.Sqrt(Math.Pow(thisColour.R - SpecNext256[i,0],2) + Math.Pow(thisColour.G - SpecNext256[i,1],2) + Math.Pow(thisColour.B - SpecNext256[i,2],2));
 							}
 						}
 					break;
 					case	PaletteMapping.mapped512:
 						for (short i = 0; i < 512; i++) 
 						{
-							if (Math.Sqrt(Math.Pow(r - SpecNext512[i,0],2) + Math.Pow(g - SpecNext512[i,1],2) + Math.Pow(b - SpecNext512[i,2],2)) < biggestDifference)
+							if (Math.Sqrt(Math.Pow(thisColour.R - SpecNext512[i,0],2) + Math.Pow(thisColour.G - SpecNext512[i,1],2) + Math.Pow(thisColour.B - SpecNext512[i,2],2)) < biggestDifference)
 							{
 								colorReturn = i;
-								biggestDifference = (int) Math.Sqrt(Math.Pow(r - SpecNext512[i,0],2) + Math.Pow(g - SpecNext512[i,1],2) + Math.Pow(b - SpecNext512[i,2],2));
+								biggestDifference = (int) Math.Sqrt(Math.Pow(thisColour.R - SpecNext512[i,0],2) + Math.Pow(thisColour.G - SpecNext512[i,1],2) + Math.Pow(thisColour.B - SpecNext512[i,2],2));
 							}
 						}
 					break;	
@@ -494,10 +536,10 @@ namespace NextGraphics
 					
 						for (short i = 0; i < loadedColourCount; i++) 
 						{
-							if (Math.Sqrt(Math.Pow(r - loadedPalette[i,0],2) + Math.Pow(g - loadedPalette[i,1],2) + Math.Pow(b - loadedPalette[i,2],2)) < biggestDifference)
+							if (Math.Sqrt(Math.Pow(thisColour.R - loadedPalette[i,0],2) + Math.Pow(thisColour.G - loadedPalette[i,1],2) + Math.Pow(thisColour.B - loadedPalette[i,2],2)) < biggestDifference)
 							{
 								colorReturn = i;
-								biggestDifference = (int) Math.Sqrt(Math.Pow(r - loadedPalette[i,0],2) + Math.Pow(g - loadedPalette[i,1],2) + Math.Pow(b - loadedPalette[i,2],2));
+								biggestDifference = (int) Math.Sqrt(Math.Pow(thisColour.R - loadedPalette[i,0],2) + Math.Pow(thisColour.G - loadedPalette[i,1],2) + Math.Pow(thisColour.B - loadedPalette[i,2],2));
 							}
 						}
 						break;	
@@ -507,10 +549,10 @@ namespace NextGraphics
 			{ 
 				for (short i = reMap; i < reMap+16; i++) 
 				{
-					if (Math.Sqrt(Math.Pow(r - loadedPalette[i,0],2) + Math.Pow(g - loadedPalette[i,1],2) + Math.Pow(b - loadedPalette[i,2],2)) < biggestDifference)
+					if (Math.Sqrt(Math.Pow(thisColour.R - loadedPalette[i,0],2) + Math.Pow(thisColour.G - loadedPalette[i,1],2) + Math.Pow(thisColour.B- loadedPalette[i,2],2)) < biggestDifference)
 					{
 						colorReturn = i;
-						biggestDifference = (int) Math.Sqrt(Math.Pow(r - loadedPalette[i,0],2) + Math.Pow(g - loadedPalette[i,1],2) + Math.Pow(b - loadedPalette[i,2],2));
+						biggestDifference = (int) Math.Sqrt(Math.Pow(thisColour.R - loadedPalette[i,0],2) + Math.Pow(thisColour.G - loadedPalette[i,1],2) + Math.Pow(thisColour.B - loadedPalette[i,2],2));
 					}
 				}
 			}
@@ -557,46 +599,133 @@ namespace NextGraphics
 
 		//-------------------------------------------------------------------------------------------------------------------
 		//
+		// take the 24 bit colours and make them 8 bit Spectrum next style
+		//
+		//-------------------------------------------------------------------------------------------------------------------
+
+		private byte EightbitPalette(decimal red, decimal green, decimal blue)
+		{
+			byte r = (byte)Math.Round(red / (255 / 7));
+			byte g = (byte)Math.Round(green / (255 / 7));
+			byte b = (byte)Math.Round(blue / (255 / 3));
+			return (byte)((r << 5) | (g << 2) | b);
+
+			//return	(red & 0x0E0) | ((green & 0x0E0)>>3) | (((blue & 0x0E0)>>6) | ((blue & 0x020)>>5));
+		}
+
+		//-------------------------------------------------------------------------------------------------------------------
+		//
+		// turn a byte into a binary string
+		//
+		//-------------------------------------------------------------------------------------------------------------------		
+		private string toBinary(byte num)
+		{
+			string outString = "";
+			int bits = 0x080;
+			for (int bit = 0; bit < 8; bit++)
+			{
+				if ((num & bits) == bits)
+				{
+					outString += "1";
+				}
+				else
+				{
+					outString += "0";
+				}
+				bits = bits >> 1;
+			}
+			return outString;
+		}
+
+		//-------------------------------------------------------------------------------------------------------------------
+		//
 		// Save palette click
 		//
 		//-------------------------------------------------------------------------------------------------------------------
-			
+
 		private void savePaletteClick(object sender, EventArgs e)
 		{
+			int	lineNumber	=	1000;
+			int lineStep	 =	10;
 			SaveFileDialog savePaletteDialog		=	new SaveFileDialog();
-			savePaletteDialog.InitialDirectory		=	Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+			//savePaletteDialog.InitialDirectory		=	Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 			savePaletteDialog.RestoreDirectory		=	true ;
-			savePaletteDialog.Filter			=	"Palette Files (*.act)|*.act|Mac Palette Files (*.8bct)|*.8bct|All Files (*.*)|*.*";
+			savePaletteDialog.Filter			= "Palette Files (*.act)|*.act|Mac Palette Files (*.8bct)|*.8bct|Spectrum Next (*.asm)|*.asm|Spectrum Next (*.bas)|*.asm|All Files (*.*)|*.*";
 			savePaletteDialog.FilterIndex			=	1;
 			if (savePaletteDialog.ShowDialog(this) == DialogResult.OK)
-			{
-				using (FileStream fsSource = new FileStream(savePaletteDialog.FileName, FileMode.Create, FileAccess.Write))
-				{						
-					for(int i = 0; i < 256; i++)
+			{										
+				if(savePaletteDialog.FilterIndex==3 || savePaletteDialog.FilterIndex == 4)
+				{
+					using (StreamWriter outputFile = new StreamWriter(savePaletteDialog.FileName))
 					{
-						fsSource.WriteByte(loadedPalette[i,0]);
-						fsSource.WriteByte(loadedPalette[i,1]);
-						fsSource.WriteByte(loadedPalette[i,2]);
-					}	
-					if (littleEndian == true)
-					{
-						fsSource.WriteByte((byte)(loadedColourCount&255));
-						fsSource.WriteByte((byte)(loadedColourCount>>8));
+						if (savePaletteDialog.FilterIndex == 4)
+						{
+							outputFile.WriteLine(lineNumber.ToString() + "\tREM");
+							lineNumber += lineStep;
+							outputFile.WriteLine(lineNumber.ToString() + "\tREM\tExported Palette starts here");
+							lineNumber += lineStep;
+							outputFile.WriteLine(lineNumber.ToString() + "\tREM");
+							lineNumber += lineStep;
+							outputFile.Write(lineNumber.ToString() + "\tDATA\t");
+							lineNumber += lineStep;
+						}
+						else
+						{
+							outputFile.WriteLine("ExportedPalette:");
+						}
+						for (int j = 0; j < loadedColourCount; j++)
+						{
+							if (savePaletteDialog.FilterIndex == 4)
+							{
+								outputFile.Write(EightbitPalette(loadedPalette[j, 0], loadedPalette[j, 1], loadedPalette[j, 2]).ToString());
+								if (j < loadedColourCount - 1)
+								{
+									outputFile.Write(",");
+								}
+								else
+								{
+									outputFile.Write("\r\n");
+								}
+							}
+							else
+							{
+								outputFile.WriteLine("\t\t\tdb\t%" + toBinary(EightbitPalette(loadedPalette[j, 0], loadedPalette[j, 1], loadedPalette[j, 2])) +
+												"\t//\t" + loadedPalette[j, 0].ToString() + "," + loadedPalette[j, 1].ToString() + "," + loadedPalette[j, 2].ToString());
+								//outputFile.WriteLine("\t\t\tdb\t%" + toBinary(EightbitPalette(loadedPalette[j, 0], loadedPalette[j, 1], loadedPalette[j, 2])));
+							}
+						}
 					}
-					else
+				}
+				else
+				{
+					using (FileStream fsSource = new FileStream(savePaletteDialog.FileName, FileMode.Create, FileAccess.Write))
 					{
-						fsSource.WriteByte((byte)(loadedColourCount>>8));
-						fsSource.WriteByte((byte)(loadedColourCount&255));
-					}
-					if (littleEndian == true)
-					{
-						fsSource.WriteByte((byte)(transIndex&255));
-						fsSource.WriteByte((byte)(transIndex>>8));
-					}
-					else
-					{
-						fsSource.WriteByte((byte)(transIndex>>8));
-						fsSource.WriteByte((byte)(transIndex&255));
+						for (int i = 0; i < 256; i++)
+						{
+							fsSource.WriteByte(loadedPalette[i,0]);
+							fsSource.WriteByte(loadedPalette[i,1]);
+							fsSource.WriteByte(loadedPalette[i,2]);
+						}	
+						if (littleEndian == true)
+						{
+							fsSource.WriteByte((byte)(loadedColourCount&255));
+							fsSource.WriteByte((byte)(loadedColourCount>>8));
+						}
+						else
+						{
+							fsSource.WriteByte((byte)(loadedColourCount>>8));
+							fsSource.WriteByte((byte)(loadedColourCount&255));
+						}
+						if (littleEndian == true)
+						{
+							fsSource.WriteByte((byte)(transIndex&255));
+							fsSource.WriteByte((byte)(transIndex>>8));
+						}
+						else
+						{
+							fsSource.WriteByte((byte)(transIndex>>8));
+							fsSource.WriteByte((byte)(transIndex&255));
+						}
 					}
 				}
 			}
@@ -638,7 +767,7 @@ namespace NextGraphics
 		
 		private void checkNumColoursClosing(object sender, FormClosingEventArgs e)
 		{
-			if(textBox1.Text=="255")
+			if(textBox1.Text=="255" && paletteSetting == PaletteMapping.mappedCustom)
 			{ 
 				var result = MessageBox.Show("Have you forgotten to set the number of colours to use?", "Error", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 				if (result == DialogResult.Cancel)
@@ -646,6 +775,91 @@ namespace NextGraphics
 					  e.Cancel = true;
 				}
 			}
+		}
+
+		private void clearColour(object sender, EventArgs e)
+		{
+			int	colourIndex			=	int.Parse(colourClicked.Name);
+			colourClicked.BackColor				=	SystemColors.Control;  
+			loadedPalette[colourIndex,0]		=	colourClicked.BackColor.R;
+			loadedPalette[colourIndex,1]		=	colourClicked.BackColor.G;
+			loadedPalette[colourIndex,2]		=	colourClicked.BackColor.B;						
+			setTColour(ref colours[transIndex]);
+		}
+
+		private void pasteColour(object sender, EventArgs e)
+		{				
+			int	colourIndex						=	int.Parse(colourClicked.Name);
+			colourClicked.BackColor				=	selectForm.CopiedColour;  
+			loadedPalette[colourIndex,0]		=	colourClicked.BackColor.R;
+			loadedPalette[colourIndex,1]		=	colourClicked.BackColor.G;
+			loadedPalette[colourIndex,2]		=	colourClicked.BackColor.B;						
+			setTColour(ref colours[transIndex]);
+		}
+
+		private void copyColour(object sender, EventArgs e)
+		{
+			selectForm.CopiedColour			=	colourClicked.BackColor;
+		}
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+			for (int c = loadedColourCount; c < 256; c++)
+			{
+				colours[c].FlatAppearance.BorderColor	= SystemColors.ControlDark;
+				colours[c].BackColor					= SystemColors.Control;
+				loadedPalette[c, 0]						= colours[c].BackColor.R;
+				loadedPalette[c, 1]						= colours[c].BackColor.G;
+				loadedPalette[c, 2]						= colours[c].BackColor.B;
+			}
+		}
+
+        private void setButtonColours(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void hexColour_TextChanged(object sender, EventArgs e)
+        {
+			setFromHex();
+		}
+
+        private void hexColour_TextChanged(object sender, KeyEventArgs e)
+        {
+			setFromHex();
+		}
+
+		private	void	setFromHex()
+		{ 
+			if (colourClicked != null)
+			{
+				if(hexColour.Text.Substring(0, 1)=="#")
+				{ 
+					if ( hexColour.Text.Length == 7)
+					{ 
+						colourClicked.BackColor = Color.FromArgb(Convert.ToInt32(hexColour.Text.Substring(1, 2), 16), Convert.ToInt32(hexColour.Text.Substring(3, 2), 16),Convert.ToInt32(hexColour.Text.Substring(5, 2), 16));
+					}
+				}
+				else
+                {
+					if (hexColour.Text.Length == 6)
+					{
+						colourClicked.BackColor = Color.FromArgb(Convert.ToInt32(hexColour.Text.Substring(0, 2), 16), Convert.ToInt32(hexColour.Text.Substring(2, 2), 16), Convert.ToInt32(hexColour.Text.Substring(4, 2), 16));
+					}
+				}
+			}
+		}
+
+        private void selectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void hexValueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+			
+			hexColour.Text		=	"#" + colourClicked.BackColor.R.ToString("X2") + colourClicked.BackColor.G.ToString("X2") + colourClicked.BackColor.B.ToString("X2");
+
 		}
 	}
 }

@@ -23,7 +23,7 @@ namespace NextGraphics
 		private	Colour		thatColour		=	new Colour();
 		private	Colour		thisColour		=	new Colour();
 //		private	Color		thisColor		=	new Color();	
-		private	Panel[]		colours			=	new	Panel[256];
+		private	Button[]	colours			=	new Button[256];
 		public int		loadedColourCount	=	255;
 		public	byte[,]		loadedPalette		=	new	byte[256,3];
 		public	List<string> 	fullNames		=	new	List<string>();
@@ -31,9 +31,12 @@ namespace NextGraphics
 		public	int		count			=	0;
 		public	int		too			=	0;
 		public	bool		paletteFiles		=	false;
+		public	Main		parentForm;
+		private Button		colourClicked; 
+		public Color		CopiedColour;
+
 		public ImageSelect()
 		{
-			
 			littleEndian		=	BitConverter.IsLittleEndian;
 			InitializeComponent();
 			createPalette();
@@ -44,13 +47,17 @@ namespace NextGraphics
 			int	down	=	0;
 			for(int c=0;c<256;c++)
 			{
-				colours[c]				=	new Panel();
+				colours[c]				=	new Button();
 				this.Controls.Add(colours[c]);
 				colours[c].Text				=	"";
 				colours[c].Location			=	new Point(10+(across*20),15+(down*20));
 				colours[c].Size				=	new Size(22, 22);
-				colours[c].Name				=	c.ToString();	
-				colours[c].BorderStyle			=	BorderStyle.FixedSingle;
+				//colours[c].Enabled			=	false;
+				colours[c].Click			+=	openContextMenu;
+				colours[c].Name				=	c.ToString();				
+				colours[c].FlatStyle			=	FlatStyle.Flat;
+				colours[c].FlatAppearance.BorderColor	=	SystemColors.ControlDark;
+				colours[c].FlatAppearance.BorderSize	=	1;
 				loadedPalette[c,0]			=	SystemColors.Control.R;
 				loadedPalette[c,1]			=	SystemColors.Control.G;
 				loadedPalette[c,2]			=	SystemColors.Control.B;
@@ -64,7 +71,6 @@ namespace NextGraphics
 			}
 
 		}
-
 		private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
 				
@@ -146,10 +152,20 @@ namespace NextGraphics
 				}
 				else
 				{	
-					
-
-
-					Bitmap		srcBitmap	=	new	Bitmap(fullNames[listBox1.SelectedIndex]);				
+					Bitmap		srcBitmap;	
+					// use the image in the image window rather than the loaded file
+					if(parentForm.sourceImages[listBox1.SelectedIndex]!=null)
+					{ 
+						srcBitmap = (Bitmap) parentForm.sourceImages[listBox1.SelectedIndex].Clone();
+					}
+					else
+					{ 									
+						using (var fs = new System.IO.FileStream(fullNames[listBox1.SelectedIndex], System.IO.FileMode.Open))
+						{
+							var bmp = new Bitmap(fs);
+							srcBitmap = (Bitmap) bmp.Clone();
+						}
+					}				
 					int	PaletteIndex		=	0;
 					for(int	y=0;y<srcBitmap.Height;y++)
 					{		
@@ -223,5 +239,74 @@ NotSupported:
 			TextBox	thisText	=	(TextBox)sender;
 			from			=	int.Parse(thisText.Text);
 		}
-	}
+		//-------------------------------------------------------------------------------------------------------------------
+		// 
+		// open the menu
+		//
+		//-------------------------------------------------------------------------------------------------------------------
+
+		private	void	openMixer(object sender, EventArgs e)
+		{ 
+			int	colourIndex	=	0;
+			colorDialog1.Color		= 	colourClicked.BackColor;
+			if(colorDialog1.ShowDialog() == DialogResult.OK)  
+			{  
+				colourIndex			=	int.Parse(colourClicked.Name);
+				colourClicked.BackColor		=	colorDialog1.Color;  
+				loadedPalette[colourIndex,0]	=	colourClicked.BackColor.R;
+				loadedPalette[colourIndex,1]	=	colourClicked.BackColor.G;
+				loadedPalette[colourIndex,2]	=	colourClicked.BackColor.B;						
+			} 
+		}
+
+		private void clearColour(object sender, EventArgs e)
+		{
+			int	colourIndex			=	int.Parse(colourClicked.Name);
+			colourClicked.BackColor			=	SystemColors.Control;  
+			loadedPalette[colourIndex,0]		=	colourClicked.BackColor.R;
+			loadedPalette[colourIndex,1]		=	colourClicked.BackColor.G;
+			loadedPalette[colourIndex,2]		=	colourClicked.BackColor.B;	
+		}
+
+		private void pasteColour(object sender, EventArgs e)
+		{				
+			int	colourIndex			=	int.Parse(colourClicked.Name);
+			colourClicked.BackColor			=	CopiedColour;  
+			loadedPalette[colourIndex,0]		=	CopiedColour.R;
+			loadedPalette[colourIndex,1]		=	CopiedColour.G;
+			loadedPalette[colourIndex,2]		=	CopiedColour.B;		
+		}
+
+		private void copyColour(object sender, EventArgs e)
+		{
+			CopiedColour				=	colourClicked.BackColor;
+		}
+		//-------------------------------------------------------------------------------------------------------------------
+		// 
+		// Click for the palette buttons
+		//
+		//-------------------------------------------------------------------------------------------------------------------
+
+	
+		private void openContextMenu(object sender, EventArgs e)
+		{
+			colourClicked		=	(Button)sender;
+			Point lowerLeft		=	new Point(0, colourClicked.Height);
+			lowerLeft		=	colourClicked.PointToScreen(lowerLeft);           
+			copyMenu.Show(lowerLeft);
+		}
+
+        private void outOk_Click(object sender, EventArgs e)
+        {
+			too = int.Parse(importToo.Text);
+			count = int.Parse(importCount.Text);
+			from = int.Parse(importFrom.Text);
+
+		}
+
+        private void outCancel_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
 }

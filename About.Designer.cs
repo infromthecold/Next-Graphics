@@ -63,6 +63,7 @@
 			this.label2.Size = new System.Drawing.Size(69, 13);
 			this.label2.TabIndex = 8;
 			this.label2.Text = "Version 2.0.0";
+			this.label2.Click += new System.EventHandler(this.label2_Click);
 			// 
 			// About
 			// 

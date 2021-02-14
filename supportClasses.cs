@@ -21,7 +21,7 @@ namespace NextGraphics
 	//
 	//-------------------------------------------------------------------------------------------------------------------
 
-	public class BitmapData : IDisposable
+	public class bitsBitmap : IDisposable
 	{
 		
 		//-------------------------------------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ namespace NextGraphics
 		//
 		//-------------------------------------------------------------------------------------------------------------------
 
-		public BitmapData(int width, int height)
+		public bitsBitmap(int width, int height)
 		{
 			Width		=	width;
 			Height		=	height;
@@ -52,7 +52,7 @@ namespace NextGraphics
 			BitsHandle	=	GCHandle.Alloc(Bits, GCHandleType.Pinned);
 			Bitmap		=	new Bitmap(width, height, width, PixelFormat.Format8bppIndexed, BitsHandle.AddrOfPinnedObject());
 		}
-		~BitmapData()
+		~bitsBitmap()
 		{
 			Dispose();
 		}
@@ -111,6 +111,7 @@ namespace NextGraphics
 		public	short	xPos;
 		public	short	yPos;
 		public	short	paletteOffset;
+		public	bool	hasTranspearent;
 		public	block()
 		{
 			xPos			=	0;
@@ -121,7 +122,8 @@ namespace NextGraphics
 			rotated			=	false;
 			originalId		=	0;
 			secondHalf		=	false;
-			paletteOffset		=	0;
+			paletteOffset	=	0;
+			hasTranspearent	=	false;
 		}
 		~block()
 		{
@@ -142,11 +144,13 @@ namespace NextGraphics
 		public	int Width { get; private set; }
 		public	int Height { get; private set; }	
 		public	int Size { get; private set; }	
+		public	bool Used { get; private set; }	
 		public	spriteInfo(int width, int height)
 		{					
 			Width				=	width;
 			Height				=	height;
 			Size				=	width*height;
+			Used				=	true;
 			infos				=	new block[Size];
 			for(int b=0;b<Size;b++)
 			{
@@ -166,16 +170,17 @@ namespace NextGraphics
 			}
 			Disposed = true;
 		}
-		public void SetData(int x, int y,bool repeated,bool flippedX,bool flippedY,bool rotated,bool transparent, short originalId, short paletteOffset)
+		public void SetData(int x, int y,bool repeated,bool flippedX,bool flippedY,bool rotated,bool transparent, short originalId, short paletteOffset, bool hasTran)
 		{
-			int index		=	x + (y * Width);
+			int index			=	x + (y * Width);
 			infos[index].repeated		=	repeated;
 			infos[index].flippedX		=	flippedX;
 			infos[index].flippedY		=	flippedY;
 			infos[index].rotated		=	rotated;
 			infos[index].transparent	=	transparent;			
 			infos[index].paletteOffset	=	paletteOffset;
-			if((originalId&1)==0)
+			infos[index].hasTranspearent=	hasTran;
+			if ((originalId&1)==0)
 			{
 				infos[index].secondHalf =       false;
 			}
@@ -232,7 +237,7 @@ namespace NextGraphics
 			int index = x + (y * (Width));
 			return infos[index].secondHalf;
 		}
-
+	
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------

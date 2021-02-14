@@ -13,27 +13,27 @@ namespace NextGraphics
 	public partial class DEBUGFORM : Form
 	{
 		public	Bitmap	DEBUG_IMAGE;
-		public	int	Scale		=	2;
+		public	int	windowSale		=	2;
 		public DEBUGFORM()
 		{
 			InitializeComponent();
 			DEBUG_IMAGE				=	new	Bitmap(16*256,16*128, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 			DEBUG_PICTURE.Image			=	DEBUG_IMAGE;			
-			DEBUG_PICTURE.Height			=	DEBUG_IMAGE.Height*Scale;
-			DEBUG_PICTURE.Width			=	DEBUG_IMAGE.Width*Scale;
+			DEBUG_PICTURE.Height			=	DEBUG_IMAGE.Height*windowSale;
+			DEBUG_PICTURE.Width			=	DEBUG_IMAGE.Width*windowSale;
 		}
 		public	void	SetScale(int scale)
 		{		
-			Scale					=	scale;
-			DEBUG_PICTURE.Height			=	DEBUG_IMAGE.Height*Scale;
-			DEBUG_PICTURE.Width			=	DEBUG_IMAGE.Width*Scale;
+			windowSale				=	scale;
+			DEBUG_PICTURE.Height			=	DEBUG_IMAGE.Height*windowSale;
+			DEBUG_PICTURE.Width			=	DEBUG_IMAGE.Width*windowSale;
 		}
 		private void DEBUGDisplay_Paint(object sender, PaintEventArgs e)
 		{
 			Graphics g	=	e.Graphics; 
 			Pen pen = new Pen(Color.Black);
 			float[] dashValues = { 1, 1};
-			int	divLines	=	8*Scale;			
+			int	divLines	=	8*windowSale;			
 			pen.DashPattern = dashValues;
 			// horizontal lines
 			for (int y = 0; y < (DEBUG_PICTURE.Image.Height / divLines)+1; ++y)
