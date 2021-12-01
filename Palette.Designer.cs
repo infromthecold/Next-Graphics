@@ -46,7 +46,7 @@
             this.button4 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.numColours = new System.Windows.Forms.TextBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.tColourIndex1 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -57,10 +57,12 @@
             this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openMixerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.button5 = new System.Windows.Forms.Button();
             this.selectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openMixerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hexValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rowUp = new System.Windows.Forms.Button();
+            this.rowDown = new System.Windows.Forms.Button();
+            this.startIndex = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.copyMenu.SuspendLayout();
             this.SuspendLayout();
@@ -68,7 +70,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 277);
+            this.label1.Location = new System.Drawing.Point(19, 286);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(97, 13);
             this.label1.TabIndex = 0;
@@ -93,13 +95,14 @@
             this.outOk.TabIndex = 5;
             this.outOk.Text = "OK";
             this.outOk.UseVisualStyleBackColor = true;
+            this.outOk.Click += new System.EventHandler(this.outOk_Click);
             // 
             // button1
             // 
             this.button1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.button1.Location = new System.Drawing.Point(45, 198);
+            this.button1.Location = new System.Drawing.Point(12, 201);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(59, 23);
             this.button1.TabIndex = 7;
             this.button1.Text = "Load";
             this.button1.UseVisualStyleBackColor = true;
@@ -117,7 +120,7 @@
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(133, 112);
+            this.groupBox1.Size = new System.Drawing.Size(133, 105);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Colour Mapping";
@@ -193,7 +196,7 @@
             // button2
             // 
             this.button2.Cursor = System.Windows.Forms.Cursors.Default;
-            this.button2.Location = new System.Drawing.Point(45, 152);
+            this.button2.Location = new System.Drawing.Point(45, 145);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 9;
@@ -204,9 +207,9 @@
             // button3
             // 
             this.button3.Cursor = System.Windows.Forms.Cursors.Default;
-            this.button3.Location = new System.Drawing.Point(73, 293);
+            this.button3.Location = new System.Drawing.Point(77, 302);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(72, 23);
+            this.button3.Size = new System.Drawing.Size(57, 23);
             this.button3.TabIndex = 9;
             this.button3.Text = "Pick";
             this.button3.UseVisualStyleBackColor = true;
@@ -225,9 +228,9 @@
             // button4
             // 
             this.button4.Cursor = System.Windows.Forms.Cursors.Default;
-            this.button4.Location = new System.Drawing.Point(44, 245);
+            this.button4.Location = new System.Drawing.Point(77, 201);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.Size = new System.Drawing.Size(59, 23);
             this.button4.TabIndex = 10;
             this.button4.Text = "Save";
             this.button4.UseVisualStyleBackColor = true;
@@ -236,37 +239,37 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(9, 227);
+            this.label8.Location = new System.Drawing.Point(9, 229);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(86, 13);
+            this.label8.Size = new System.Drawing.Size(64, 13);
             this.label8.TabIndex = 11;
-            this.label8.Text = "Save this palette";
+            this.label8.Text = "Palette Shift";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(19, 330);
+            this.label3.Location = new System.Drawing.Point(19, 334);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(125, 13);
+            this.label3.Size = new System.Drawing.Size(74, 13);
             this.label3.TabIndex = 12;
-            this.label3.Text = "Number of colours to use";
+            this.label3.Text = "Colours to use";
             // 
-            // textBox1
+            // numColours
             // 
-            this.textBox1.Location = new System.Drawing.Point(20, 355);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(41, 20);
-            this.textBox1.TabIndex = 13;
-            this.textBox1.Text = "255";
-            this.textBox1.TextChanged += new System.EventHandler(this.setButtonColours);
-            this.textBox1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.setButtonColours);
+            this.numColours.Location = new System.Drawing.Point(93, 354);
+            this.numColours.Name = "numColours";
+            this.numColours.Size = new System.Drawing.Size(41, 20);
+            this.numColours.TabIndex = 13;
+            this.numColours.Text = "255";
+            this.numColours.TextChanged += new System.EventHandler(this.setButtonColours);
+            this.numColours.KeyUp += new System.Windows.Forms.KeyEventHandler(this.setButtonColours);
             // 
             // tColourIndex1
             // 
             this.tColourIndex1.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.tColourIndex1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tColourIndex1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F);
-            this.tColourIndex1.Location = new System.Drawing.Point(20, 295);
+            this.tColourIndex1.Location = new System.Drawing.Point(20, 304);
             this.tColourIndex1.Name = "tColourIndex1";
             this.tColourIndex1.Size = new System.Drawing.Size(41, 20);
             this.tColourIndex1.TabIndex = 15;
@@ -295,7 +298,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Cursor = System.Windows.Forms.Cursors.Default;
-            this.label6.Location = new System.Drawing.Point(10, 132);
+            this.label6.Location = new System.Drawing.Point(10, 123);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(128, 13);
             this.label6.TabIndex = 18;
@@ -307,9 +310,9 @@
             this.label10.Cursor = System.Windows.Forms.Cursors.Default;
             this.label10.Location = new System.Drawing.Point(10, 180);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(110, 13);
+            this.label10.Size = new System.Drawing.Size(61, 13);
             this.label10.TabIndex = 19;
-            this.label10.Text = "Load from palette files";
+            this.label10.Text = "Palette files";
             // 
             // copyMenu
             // 
@@ -317,11 +320,11 @@
             this.cutToolStripMenuItem,
             this.copyToolStripMenuItem,
             this.pasteToolStripMenuItem,
-            this.openMixerToolStripMenuItem,
             this.selectToolStripMenuItem,
+            this.openMixerToolStripMenuItem,
             this.hexValueToolStripMenuItem});
             this.copyMenu.Name = "copyMenu";
-            this.copyMenu.Size = new System.Drawing.Size(181, 158);
+            this.copyMenu.Size = new System.Drawing.Size(137, 136);
             // 
             // cutToolStripMenuItem
             // 
@@ -344,6 +347,13 @@
             this.pasteToolStripMenuItem.Text = "Paste";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteColour);
             // 
+            // selectToolStripMenuItem
+            // 
+            this.selectToolStripMenuItem.Name = "selectToolStripMenuItem";
+            this.selectToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.selectToolStripMenuItem.Text = "Select";
+            this.selectToolStripMenuItem.Click += new System.EventHandler(this.selectToolStripMenuItem_Click);
+            // 
             // openMixerToolStripMenuItem
             // 
             this.openMixerToolStripMenuItem.Name = "openMixerToolStripMenuItem";
@@ -351,30 +361,41 @@
             this.openMixerToolStripMenuItem.Text = "Open Mixer";
             this.openMixerToolStripMenuItem.Click += new System.EventHandler(this.openMixer);
             // 
-            // button5
-            // 
-            this.button5.Cursor = System.Windows.Forms.Cursors.Default;
-            this.button5.Location = new System.Drawing.Point(73, 354);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(72, 23);
-            this.button5.TabIndex = 20;
-            this.button5.Text = "Clear Free";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // selectToolStripMenuItem
-            // 
-            this.selectToolStripMenuItem.Name = "selectToolStripMenuItem";
-            this.selectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.selectToolStripMenuItem.Text = "Select";
-            this.selectToolStripMenuItem.Click += new System.EventHandler(this.selectToolStripMenuItem_Click);
-            // 
             // hexValueToolStripMenuItem
             // 
             this.hexValueToolStripMenuItem.Name = "hexValueToolStripMenuItem";
-            this.hexValueToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.hexValueToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.hexValueToolStripMenuItem.Text = "Hex Value";
             this.hexValueToolStripMenuItem.Click += new System.EventHandler(this.hexValueToolStripMenuItem_Click);
+            // 
+            // rowUp
+            // 
+            this.rowUp.Location = new System.Drawing.Point(14, 251);
+            this.rowUp.Name = "rowUp";
+            this.rowUp.Size = new System.Drawing.Size(57, 23);
+            this.rowUp.TabIndex = 21;
+            this.rowUp.Text = "Up";
+            this.rowUp.UseVisualStyleBackColor = true;
+            this.rowUp.Click += new System.EventHandler(this.moveRowUp);
+            // 
+            // rowDown
+            // 
+            this.rowDown.Location = new System.Drawing.Point(77, 251);
+            this.rowDown.Name = "rowDown";
+            this.rowDown.Size = new System.Drawing.Size(57, 23);
+            this.rowDown.TabIndex = 22;
+            this.rowDown.Text = "Down";
+            this.rowDown.UseVisualStyleBackColor = true;
+            this.rowDown.Click += new System.EventHandler(this.moveRowDown);
+            // 
+            // startIndex
+            // 
+            this.startIndex.Location = new System.Drawing.Point(20, 354);
+            this.startIndex.Name = "startIndex";
+            this.startIndex.Size = new System.Drawing.Size(41, 20);
+            this.startIndex.TabIndex = 23;
+            this.startIndex.Text = "255";
+            this.startIndex.KeyDown += new System.Windows.Forms.KeyEventHandler(this.setStart);
             // 
             // Palette
             // 
@@ -382,8 +403,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.outCancel;
-            this.ClientSize = new System.Drawing.Size(507, 393);
-            this.Controls.Add(this.button5);
+            this.ClientSize = new System.Drawing.Size(508, 393);
+            this.Controls.Add(this.startIndex);
+            this.Controls.Add(this.rowDown);
+            this.Controls.Add(this.rowUp);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.button1);
@@ -391,7 +414,7 @@
             this.Controls.Add(this.hexColour);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.tColourIndex1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.numColours);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.button4);
@@ -433,7 +456,7 @@
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.TextBox textBox1;
+		private System.Windows.Forms.TextBox numColours;
 		private System.Windows.Forms.ColorDialog colorDialog1;
 		private System.Windows.Forms.Label tColourIndex1;
 		private System.Windows.Forms.Label label9;
@@ -445,8 +468,10 @@
 		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem openMixerToolStripMenuItem;
-        private System.Windows.Forms.Button button5;
         private System.Windows.Forms.ToolStripMenuItem selectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem hexValueToolStripMenuItem;
+        private System.Windows.Forms.Button rowUp;
+        private System.Windows.Forms.Button rowDown;
+        private System.Windows.Forms.TextBox startIndex;
     }
 }

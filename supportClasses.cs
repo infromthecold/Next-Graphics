@@ -35,6 +35,7 @@ namespace NextGraphics
 		public bool Disposed { get; private set; }
 		public int Height { get; private set; }
 		public int Width { get; private set; }
+		public bool Trans { get; set; }
 		protected GCHandle BitsHandle { get; private set; }
 
 		//-------------------------------------------------------------------------------------------------------------------
@@ -78,6 +79,10 @@ namespace NextGraphics
 		public Int16 GetPixel(int x, int y)
 		{
 			int index = x + (y * Width);
+			if(y>Height || x> Width || index>=Bits.Length)
+			{
+				return	0;
+			}			
 			return Bits[index];
 		}
 
@@ -139,14 +144,42 @@ namespace NextGraphics
 
 	public	class spriteInfo  : IDisposable
 	{
-		public	bool Disposed { get; private set; }
+		public	bool	Disposed { get; private set; }
 		public	block[] infos  { get; private set; }
-		public	int Width { get; private set; }
-		public	int Height { get; private set; }	
+		public	int	Width { get; private set; }
+		public	int	Height { get; private set; }	
+		public	int	Top { get; private set; }	
+		public	int	Left { get; private set; }	
+		public	int	Right { get; private set; }	
+		public	int	Bottom { get; private set; }	
+		
+		public	short	offsetX;
+		public	short	offsetY;
+
 		public	int Size { get; private set; }	
 		public	bool Used { get; private set; }	
+
+		public	void	SetTop(int TopLine)
+		{
+			Top	=	TopLine;
+		}
+		public	void	SetLeft(int LeftLine)
+		{
+			Left	=	LeftLine;
+		}
+		public	void	SetRight(int RightLine)
+		{
+			Right	=	RightLine;
+		}
+		public	void	SetBottom(int BottomLine)
+		{
+			Bottom	=	BottomLine;
+		}
 		public	spriteInfo(int width, int height)
 		{					
+			
+			offsetX				=	0;
+			offsetY				=	0;
 			Width				=	width;
 			Height				=	height;
 			Size				=	width*height;
@@ -231,6 +264,32 @@ namespace NextGraphics
 		{
 			int index = x + (y * (Width));
 			return infos[index].yPos;
+		}
+		public Int16 GetOffsetX()
+		{
+			return offsetX;
+		}
+		public Int16 GetOffsetY()
+		{
+			return offsetY;
+		}
+		public void setOffsetY(short newOffsetY)
+		{
+			offsetY  =	newOffsetY;
+		}
+		public void setOffsetX(short newOffsetX)
+		{			
+			offsetX  =	newOffsetX;
+		}
+		public void clearOffsets()
+		{			
+			offsetX  =	0;
+			offsetY  =	0;
+		}
+		public bool GetTransparent(int x, int y)
+		{
+			int index = x + (y * (Width));
+			return infos[index].transparent;
 		}
 		public bool GetWhichHalf(int x, int y)
 		{

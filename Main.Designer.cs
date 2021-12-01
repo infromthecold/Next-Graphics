@@ -44,6 +44,9 @@
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rebuildFromTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.processMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.createParallaxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.batchProcessProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.wAVToRAWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.cascadeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tileVerticalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -89,9 +92,10 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.button1 = new System.Windows.Forms.Button();
 			this.bottomPanel = new System.Windows.Forms.Panel();
+			this.panel1 = new System.Windows.Forms.Panel();
 			this.SpritesLable = new System.Windows.Forms.Label();
 			this.BlocksLable = new System.Windows.Forms.Label();
-			this.createParallaxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
 			this.menuStrip.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			this.FilesView.SuspendLayout();
@@ -102,6 +106,7 @@
 			this.statusStrip.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.bottomPanel.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip
@@ -208,7 +213,9 @@
 			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.rebuildFromTilesToolStripMenuItem,
             this.processMapToolStripMenuItem,
-            this.createParallaxToolStripMenuItem});
+            this.createParallaxToolStripMenuItem,
+            this.batchProcessProjectsToolStripMenuItem,
+            this.wAVToRAWToolStripMenuItem});
 			this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
 			this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
 			this.toolsToolStripMenuItem.Text = "Tools";
@@ -226,6 +233,27 @@
 			this.processMapToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
 			this.processMapToolStripMenuItem.Text = "Process Map Int to byte";
 			this.processMapToolStripMenuItem.Click += new System.EventHandler(this.processMapToolStripMenuItem_Click);
+			// 
+			// createParallaxToolStripMenuItem
+			// 
+			this.createParallaxToolStripMenuItem.Name = "createParallaxToolStripMenuItem";
+			this.createParallaxToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+			this.createParallaxToolStripMenuItem.Text = "Create Parallax";
+			this.createParallaxToolStripMenuItem.Click += new System.EventHandler(this.createParallax);
+			// 
+			// batchProcessProjectsToolStripMenuItem
+			// 
+			this.batchProcessProjectsToolStripMenuItem.Name = "batchProcessProjectsToolStripMenuItem";
+			this.batchProcessProjectsToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+			this.batchProcessProjectsToolStripMenuItem.Text = "Batch Process Projects";
+			this.batchProcessProjectsToolStripMenuItem.Click += new System.EventHandler(this.batchProcessProjectsToolStripMenuItem_Click);
+			// 
+			// wAVToRAWToolStripMenuItem
+			// 
+			this.wAVToRAWToolStripMenuItem.Name = "wAVToRAWToolStripMenuItem";
+			this.wAVToRAWToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+			this.wAVToRAWToolStripMenuItem.Text = "WAV to RAW";
+			this.wAVToRAWToolStripMenuItem.Click += new System.EventHandler(this.wAVToRAWToolStripMenuItem_Click);
 			// 
 			// windowsMenu
 			// 
@@ -317,7 +345,8 @@
             this.toolStripButton3,
             this.setOutputButton,
             this.toolStripSeparator2,
-            this.toolStripButton2});
+            this.toolStripButton2,
+            this.toolStripButton7});
 			this.toolStrip.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip.Name = "toolStrip";
 			this.toolStrip.Size = new System.Drawing.Size(1040, 55);
@@ -565,14 +594,13 @@
 			this.listBox1.ScrollAlwaysVisible = true;
 			this.listBox1.Size = new System.Drawing.Size(151, 498);
 			this.listBox1.TabIndex = 0;
-			this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
 			this.listBox1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listBox1MouseDoubleClick);
 			// 
 			// charactersDisplay
 			// 
-			this.charactersDisplay.Location = new System.Drawing.Point(11, 22);
+			this.charactersDisplay.Location = new System.Drawing.Point(3, 3);
 			this.charactersDisplay.Name = "charactersDisplay";
-			this.charactersDisplay.Size = new System.Drawing.Size(151, 131);
+			this.charactersDisplay.Size = new System.Drawing.Size(128, 128);
 			this.charactersDisplay.TabIndex = 1;
 			this.charactersDisplay.TabStop = false;
 			this.charactersDisplay.Click += new System.EventHandler(this.charactersDisplay_Click);
@@ -674,7 +702,7 @@
 			this.groupBox1.Controls.Add(this.label4);
 			this.groupBox1.Controls.Add(this.textBox2);
 			this.groupBox1.Controls.Add(this.textBox1);
-			this.groupBox1.Location = new System.Drawing.Point(330, 24);
+			this.groupBox1.Location = new System.Drawing.Point(378, 24);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(387, 48);
 			this.groupBox1.TabIndex = 16;
@@ -696,14 +724,24 @@
 			this.bottomPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.bottomPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.bottomPanel.Controls.Add(this.charactersDisplay);
+			this.bottomPanel.Controls.Add(this.panel1);
 			this.bottomPanel.Controls.Add(this.label2);
 			this.bottomPanel.Controls.Add(this.label1);
 			this.bottomPanel.Controls.Add(this.tilesPanel);
-			this.bottomPanel.Location = new System.Drawing.Point(696, 79);
+			this.bottomPanel.Location = new System.Drawing.Point(694, 79);
 			this.bottomPanel.Name = "bottomPanel";
-			this.bottomPanel.Size = new System.Drawing.Size(169, 552);
+			this.bottomPanel.Size = new System.Drawing.Size(171, 552);
 			this.bottomPanel.TabIndex = 6;
+			// 
+			// panel1
+			// 
+			this.panel1.AutoScroll = true;
+			this.panel1.AutoScrollMargin = new System.Drawing.Size(0, 8);
+			this.panel1.Controls.Add(this.charactersDisplay);
+			this.panel1.Location = new System.Drawing.Point(8, 22);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(154, 131);
+			this.panel1.TabIndex = 21;
 			// 
 			// SpritesLable
 			// 
@@ -725,12 +763,16 @@
 			this.BlocksLable.TabIndex = 19;
 			this.BlocksLable.Text = "Blocks/Objects";
 			// 
-			// createParallaxToolStripMenuItem
+			// toolStripButton7
 			// 
-			this.createParallaxToolStripMenuItem.Name = "createParallaxToolStripMenuItem";
-			this.createParallaxToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-			this.createParallaxToolStripMenuItem.Text = "Create Parallax";
-			this.createParallaxToolStripMenuItem.Click += new System.EventHandler(this.createParallax);
+			this.toolStripButton7.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton7.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton7.Image")));
+			this.toolStripButton7.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+			this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton7.Name = "toolStripButton7";
+			this.toolStripButton7.Size = new System.Drawing.Size(36, 52);
+			this.toolStripButton7.Text = "toolStripButton7";
+			this.toolStripButton7.Click += new System.EventHandler(this.toolStripButton7_Click);
 			// 
 			// Main
 			// 
@@ -750,6 +792,7 @@
 			this.MainMenuStrip = this.menuStrip;
 			this.Name = "Main";
 			this.Text = "Next Graphics";
+			this.Load += new System.EventHandler(this.Main_Load);
 			this.menuStrip.ResumeLayout(false);
 			this.menuStrip.PerformLayout();
 			this.toolStrip.ResumeLayout(false);
@@ -766,6 +809,7 @@
 			this.groupBox1.PerformLayout();
 			this.bottomPanel.ResumeLayout(false);
 			this.bottomPanel.PerformLayout();
+			this.panel1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -835,6 +879,10 @@
 		private System.Windows.Forms.Label SpritesLable;
 		private System.Windows.Forms.Label BlocksLable;
 		private System.Windows.Forms.ToolStripMenuItem createParallaxToolStripMenuItem;
+        private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.ToolStripMenuItem batchProcessProjectsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem wAVToRAWToolStripMenuItem;
+		private System.Windows.Forms.ToolStripButton toolStripButton7;
 	}
 }
 

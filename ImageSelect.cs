@@ -25,6 +25,7 @@ namespace NextGraphics
 //		private	Color		thisColor		=	new Color();	
 		private	Button[]	colours			=	new Button[256];
 		public int		loadedColourCount	=	255;
+		public int		loadedColourStart	=	0;
 		public	byte[,]		loadedPalette		=	new	byte[256,3];
 		public	List<string> 	fullNames		=	new	List<string>();
 		public	int		from			=	0;
@@ -145,6 +146,7 @@ namespace NextGraphics
 						}
 					}					
 					loadedColourCount	=	255;
+					loadedColourStart	=	0;
 					importCount.Text	=	loadedColourCount.ToString();
 					importFrom.Text		=	"0";
 					importToo.Text		=	"0";

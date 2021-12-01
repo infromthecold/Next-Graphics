@@ -41,6 +41,7 @@
 			this.comments = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.reduce = new System.Windows.Forms.CheckBox();
 			this.binaryBlocks = new System.Windows.Forms.CheckBox();
 			this.FourBit = new System.Windows.Forms.CheckBox();
 			this.binaryOut = new System.Windows.Forms.CheckBox();
@@ -63,6 +64,7 @@
 			this.transTile = new System.Windows.Forms.CheckBox();
 			this.transBlock = new System.Windows.Forms.CheckBox();
 			this.label2 = new System.Windows.Forms.Label();
+			this.textFlips = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -195,6 +197,8 @@
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.textFlips);
+			this.groupBox2.Controls.Add(this.reduce);
 			this.groupBox2.Controls.Add(this.binaryBlocks);
 			this.groupBox2.Controls.Add(this.FourBit);
 			this.groupBox2.Controls.Add(this.binaryOut);
@@ -203,15 +207,25 @@
 			this.groupBox2.Controls.Add(this.comments);
 			this.groupBox2.Location = new System.Drawing.Point(156, 12);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(209, 143);
+			this.groupBox2.Size = new System.Drawing.Size(221, 143);
 			this.groupBox2.TabIndex = 7;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Output Settings";
 			// 
+			// reduce
+			// 
+			this.reduce.AutoSize = true;
+			this.reduce.Location = new System.Drawing.Point(114, 50);
+			this.reduce.Name = "reduce";
+			this.reduce.Size = new System.Drawing.Size(70, 17);
+			this.reduce.TabIndex = 22;
+			this.reduce.Text = "Reduced";
+			this.reduce.UseVisualStyleBackColor = true;
+			// 
 			// binaryBlocks
 			// 
 			this.binaryBlocks.AutoSize = true;
-			this.binaryBlocks.Location = new System.Drawing.Point(76, 73);
+			this.binaryBlocks.Location = new System.Drawing.Point(114, 73);
 			this.binaryBlocks.Name = "binaryBlocks";
 			this.binaryBlocks.Size = new System.Drawing.Size(103, 17);
 			this.binaryBlocks.TabIndex = 21;
@@ -253,9 +267,9 @@
 			this.tilesOut.AutoSize = true;
 			this.tilesOut.Location = new System.Drawing.Point(9, 48);
 			this.tilesOut.Name = "tilesOut";
-			this.tilesOut.Size = new System.Drawing.Size(94, 17);
+			this.tilesOut.Size = new System.Drawing.Size(117, 17);
 			this.tilesOut.TabIndex = 22;
-			this.tilesOut.Text = "Tiles as Image";
+			this.tilesOut.Text = "Tiles/Sprites Image";
 			this.tilesOut.UseVisualStyleBackColor = true;
 			// 
 			// blocksOut
@@ -411,7 +425,7 @@
 			this.groupBox4.Controls.Add(this.blocksFormat);
 			this.groupBox4.Location = new System.Drawing.Point(156, 161);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(209, 145);
+			this.groupBox4.Size = new System.Drawing.Size(221, 145);
 			this.groupBox4.TabIndex = 27;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Mapping Blocks";
@@ -419,7 +433,7 @@
 			// transTile
 			// 
 			this.transTile.AutoSize = true;
-			this.transTile.Location = new System.Drawing.Point(109, 48);
+			this.transTile.Location = new System.Drawing.Point(123, 48);
 			this.transTile.Name = "transTile";
 			this.transTile.Size = new System.Drawing.Size(98, 17);
 			this.transTile.TabIndex = 29;
@@ -429,7 +443,7 @@
 			// transBlock
 			// 
 			this.transBlock.AutoSize = true;
-			this.transBlock.Location = new System.Drawing.Point(109, 25);
+			this.transBlock.Location = new System.Drawing.Point(123, 25);
 			this.transBlock.Name = "transBlock";
 			this.transBlock.Size = new System.Drawing.Size(98, 17);
 			this.transBlock.TabIndex = 28;
@@ -445,11 +459,21 @@
 			this.label2.TabIndex = 27;
 			this.label2.Text = "File format";
 			// 
+			// textFlips
+			// 
+			this.textFlips.AutoSize = true;
+			this.textFlips.Location = new System.Drawing.Point(114, 28);
+			this.textFlips.Name = "textFlips";
+			this.textFlips.Size = new System.Drawing.Size(96, 17);
+			this.textFlips.TabIndex = 30;
+			this.textFlips.Text = "Text Flips Rots";
+			this.textFlips.UseVisualStyleBackColor = true;
+			// 
 			// settingsPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(377, 342);
+			this.ClientSize = new System.Drawing.Size(385, 342);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.button1);
@@ -506,5 +530,7 @@
 		public System.Windows.Forms.CheckBox binaryBlocks;
 		public System.Windows.Forms.TextBox Accuracy;
 		private System.Windows.Forms.Label label3;
+		public System.Windows.Forms.CheckBox reduce;
+		public System.Windows.Forms.CheckBox textFlips;
 	}
 }

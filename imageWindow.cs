@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,8 @@ namespace NextGraphics
 		public	double	windowScaleX;			
 		public	double	windowScaleY;		
 		public	double	windowLeftOffset;	
-		public	double	windowTopOffset;	
+		public	double	windowTopOffset;
+		private	float	yscaleAdjust		=	1.0f;
 		//-------------------------------------------------------------------------------------------------------------------
 		//
 		// new window 
@@ -50,35 +52,50 @@ namespace NextGraphics
 		{
 			using (var fs = new System.IO.FileStream(fullPath, System.IO.FileMode.Open))
 			{
-				var bmp	= new Bitmap(fs);
-				inputImage	= new Bitmap(bmp.Width,bmp.Height);
-				inputImage	= (Bitmap) bmp.Clone();				
+				var bmp		=	new Bitmap(fs);
+				inputImage	=	new Bitmap(bmp.Width,bmp.Height,PixelFormat.Format24bppRgb);
+				for(int y=0;y<bmp.Height;y++)
+				{ 
+					for(int x=0;x<bmp.Width;x++)
+					{
+						inputImage.SetPixel(x,y,bmp.GetPixel(x,y));
+					}
+				}
+				//inputImage	= new Bitmap(bmp.Width,bmp.Height);
+				//inputImage	= (Bitmap) bmp.Clone();				
 			}	
 		
 			this.Width		=	inputImage.Width+50;
 			this.Height		=	inputImage.Height+75;
-			this.Invalidate(true);
-			this.Update();
 			this.srcPicture.Image	=	inputImage;
-
-			this.srcPicture.Width	=	inputImage.Width;
-			this.srcPicture.Height	=	inputImage.Height;	
+			yscaleAdjust		=	0.03f;
+			this.srcPicture.Width	=	Math.Max(inputImage.Width-32,inputImage.Width);
+			this.srcPicture.Height	=	Math.Max(inputImage.Height-32,inputImage.Height);
 			blockXSize		=	gridXSize;
 			blockYSize		=	gridYSize;
 			this.Invalidate(true);
 			this.Update();
 		}
 
-		public	void	copyImage(Bitmap sourceImage,int gridXSize,int gridYSize)
+		public	void	copyImage(Bitmap sourceImage,int gridXSize,int gridYSize,bool blocksWindow)
 		{
-	
+			if(blocksWindow==true)
+			{ 
+				yscaleAdjust	=	0.3f;
+			}
+			else
+			{
+				yscaleAdjust	=	1.0f;
+			}
+
 			this.Width		=	sourceImage.Width+50;
 			this.Height		=	sourceImage.Height+75;
 			this.Invalidate(true);
 			this.Update();
 			this.srcPicture.Image	=	sourceImage;
-			this.srcPicture.Width	=	sourceImage.Width;
-			this.srcPicture.Height	=	sourceImage.Height;	
+
+			this.srcPicture.Width	=	sourceImage.Width-32;
+			this.srcPicture.Height	=	sourceImage.Height-32;
 			blockXSize		=	gridXSize;
 			blockYSize		=	gridYSize;
 			this.Invalidate(true);
@@ -117,10 +134,10 @@ namespace NextGraphics
 		{
 			Graphics g		=	e.Graphics; 	
 			g.InterpolationMode	=	InterpolationMode.NearestNeighbor;
-			float	xscale		=	Math.Max((float)scaleBar.Value/25.0f,1f);
-			float	yscale		=	Math.Max((float)vscrollBar.Value/25.0f,1f);
-			this.srcPicture.Width	=	(int)((float)panel1.Width*xscale);
-			this.srcPicture.Height	=	(int)((float)panel1.Height*yscale);
+			float	xscale		=	scaleBar.Value/50.0f;
+			float	yscale		=	scaleBar.Value*yscaleAdjust;
+			this.srcPicture.Width	=	(int)((float)panel1.Width*xscale)-32;
+			this.srcPicture.Height	=	(int)((float)panel1.Height*yscale)-32;
 
 			g.DrawImage(	this.srcPicture.Image,
 					new Rectangle(0, 0, this.srcPicture.Width, this.srcPicture.Height),
@@ -134,20 +151,28 @@ namespace NextGraphics
 			Pen pen		=	new Pen(Color.Black);
 			float[]		dashValues = { 4, 2};			
 			pen.DashPattern = dashValues;
-		//	windowLeftOffset	=	50;
-		//	windowTopOffset		=	70;
 			// horizontal lines
+			Point	fromLine	=	new	Point();
+			Point	tooLine		=	new	Point();
+			int	xScale		=	(int)(blockXSize *windowScaleX);
+			int	yScale		=	(int)(blockYSize *windowScaleY);
 			for (int y = 0; y < this.srcPicture.Image.Height / blockYSize; ++y)
 			{
-				//g.DrawLine(pen, windowLeftOffset, windowTopOffset+(y * blockYSize*windowScale), windowLeftOffset+(this.srcPicture.Image.Width*windowScale), windowTopOffset+(y * blockYSize*windowScale));
-				g.DrawLine(pen, 0, (float)Math.Floor(y * blockYSize * windowScaleY), (float)Math.Floor(this.srcPicture.Image.Width*windowScaleX), (float)Math.Floor(y * blockYSize*windowScaleY));
+				fromLine.X = 0;
+				fromLine.Y = y *  yScale;
+				tooLine.X = this.srcPicture.Image.Width*xScale;
+				tooLine.Y = y * yScale;
+
+				g.DrawLine(pen,fromLine.X,fromLine.Y ,tooLine.X ,tooLine.Y );
 			}			
 			// verticle lines
 			for (int x = 0; x < this.srcPicture.Image.Width/blockXSize; ++x)
 			{
-				g.DrawLine(pen, (float)Math.Floor(x * blockXSize*windowScaleX), 0, (float)Math.Floor(x * blockXSize*windowScaleX), (float)Math.Floor(this.srcPicture.Image.Height*windowScaleY));
-		
-			//	g.DrawLine(pen, windowLeftOffset+(x * blockXSize*windowScale), windowTopOffset, windowLeftOffset+(x * blockXSize*windowScale), windowTopOffset+(this.srcPicture.Image.Height*windowScale));
+				fromLine.X =	x * xScale;
+				fromLine.Y =	0;
+				tooLine.X =	x * xScale;
+				tooLine.Y =	this.srcPicture.Image.Height*yScale;					
+				g.DrawLine(pen,fromLine.X,fromLine.Y ,tooLine.X ,tooLine.Y );
 			}	
 		}
 		
