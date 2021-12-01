@@ -25,4 +25,10 @@ namespace NextGraphics.Models
 		PNG,
 		JPG
 	}
+
+	public enum CommentType
+	{
+		None,
+		Full
+	}
 }

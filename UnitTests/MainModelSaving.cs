@@ -162,6 +162,20 @@ namespace UnitTests
 		}
 
 		[TestMethod]
+		public void SettingsReducedSaved()
+		{
+			SettingsRunner.Setup(model => model.Reduced = false).Verify("false", "reduce");
+			SettingsRunner.Setup(model => model.Reduced = true).Verify("true", "reduce");
+		}
+
+		[TestMethod]
+		public void SettingsTextFlipsSaved()
+		{
+			SettingsRunner.Setup(model => model.TextFlips = false).Verify("false", "textFlips");
+			SettingsRunner.Setup(model => model.TextFlips = true).Verify("true", "textFlips");
+		}
+
+		[TestMethod]
 		public void SettingsBinaryOutputSaved()
 		{
 			SettingsRunner.Setup(model => model.BinaryOutput = false).Verify("false", "binary");
@@ -271,6 +285,13 @@ namespace UnitTests
 		{
 			PaletteRunner.Setup(palette => palette.TransparentIndex = 0).Verify("0", "Transparent");
 			PaletteRunner.Setup(palette => palette.TransparentIndex = 25).Verify("25", "Transparent");
+		}
+
+		[TestMethod]
+		public void PaletteStartIndexSaved()
+		{
+			PaletteRunner.Setup(palette => palette.StartIndex = 91).Verify("91", "Start");
+			PaletteRunner.Setup(palette => palette.StartIndex = 652).Verify("652", "Start");
 		}
 
 		[TestMethod]

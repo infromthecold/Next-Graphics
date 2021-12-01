@@ -26,6 +26,7 @@ namespace NextGraphics.Models
 		}
 
 		public int TransparentIndex { get; set; } = 0;
+		public int StartIndex { get; set; } = 0;
 		public int UsedCount { get; set; } = 255;
 
 		public List<Colour> Colours { get; set; } = FromDefaults(SpecNext256);

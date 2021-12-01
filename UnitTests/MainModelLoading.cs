@@ -171,6 +171,32 @@ namespace UnitTests
 		}
 
 		[TestMethod]
+		public void SettingsReducedLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual(false, model.Reduced);
+		}
+
+		[TestMethod]
+		public void SettingsTextFlipsLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual(true, model.TextFlips);
+		}
+
+		[TestMethod]
 		public void SettingsBinaryOutputLoaded()
 		{
 			// setup
@@ -306,6 +332,19 @@ namespace UnitTests
 		}
 
 		[TestMethod]
+		public void SettingsPaletteStartIndexLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual(1, model.Palette.StartIndex);
+		}
+
+		[TestMethod]
 		public void SettingsPaletteUsedCountLoaded()
 		{
 			// setup
@@ -356,9 +395,9 @@ namespace UnitTests
 	<File Path=""C:\tiles.bmp"" />
 	<File Path=""/a/file/with/slashes"" />
 	<File Path=""\the\file\with\backslashes"" />
-	<Settings {0}=""true"" center=""4"" xSize=""9"" ySize=""10"" fourBit=""true"" binary=""false"" binaryBlocks=""true"" Repeats=""false"" MirrorX=""false"" MirrorY=""true"" Rotations=""false"" Transparent=""false"" Sort=""true"" blocksImage=""false"" tilesImage=""true"" transBlock=""true"" transTile=""false"" across=""5"" accurate=""983"" format=""{1}"" />
+	<Settings {0}=""true"" center=""4"" xSize=""9"" ySize=""10"" fourBit=""true"" binary=""false"" binaryBlocks=""true"" Repeats=""false"" MirrorX=""false"" MirrorY=""true"" Rotations=""false"" Transparent=""false"" Sort=""true"" blocksImage=""false"" tilesImage=""true"" transBlock=""true"" transTile=""false"" across=""5"" accurate=""983"" format=""{1}"" textFlips=""false"" reduce=""true"" />
 	<Dialogs OutputIndex=""1"" ImageIndex=""1"" />
-	<Palette Mapping=""{2}"" Transparent=""0"" Used=""6"">
+	<Palette Mapping=""{2}"" Transparent=""0"" Used=""6"" Start=""1"">
 	  <Colour0 Red=""10"" Green=""11"" Blue=""12"" />
 	  <Colour1 Red=""255"" Green=""255"" Blue=""255"" />
 	  <Colour2 Red=""218"" Green=""218"" Blue=""218"" />

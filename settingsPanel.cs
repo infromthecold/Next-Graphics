@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NextGraphics.Models;
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,124 +12,151 @@ using System.Windows.Forms;
 
 namespace NextGraphics
 {
-	public enum centers
+	public partial class SettingsPanel : Form
 	{
-		TopLeft,
-		TopCenter,
-		TopRight,
-		MiddleLeft,
-		MiddleCenter,
-		MiddleRight,
-		BottomLeft,
-		BottomCenter,
-		BottomRight
-	}
-	public partial class settingsPanel : Form
-	{
-		
-		public	int		centerPosition	=	4;
-		public settingsPanel()
+		public MainModel Model { get; set; }
+
+		#region Initialization & Disposal
+
+		public SettingsPanel()
 		{
 			InitializeComponent();
 			MC.Checked		=	true;
-			centerPosition		=	4;
 		}
 
-		//-------------------------------------------------------------------------------------------------------------------
-		//
-		// ok
-		//
-		//-------------------------------------------------------------------------------------------------------------------
+		#endregion
 
-		private void okButonClick(object sender, EventArgs e)
+		#region Events
+
+		private void settingsPanel_Load(object sender, EventArgs e)
 		{
-
-			if(TL.Checked==true)
-			{
-				centerPosition	=	0;
-			}
-			else if(TC.Checked==true)
-			{
-				centerPosition	=	1;
-			}
-			else if(TR.Checked==true)
-			{
-				centerPosition	=	2;
-			}
-			else if(ML.Checked==true)
-			{
-				centerPosition	=	3;
-			}
-			else if(MC.Checked==true)
-			{
-				centerPosition	=	4;
-			}
-			else if(MR.Checked==true)
-			{
-				centerPosition	=	5;
-			}
-			else if(BL.Checked==true)
-			{
-				centerPosition	=	6;
-			}
-			else if(BC.Checked==true)
-			{
-				centerPosition	=	7;
-			}
-			else //if(BR.Checked==true)
-			{
-				centerPosition	=	8;
-			}
+			ApplyCenterPosition(Model.CenterPosition);
+			FourBit.Checked = Model.FourBit;
+			reduce.Checked = Model.Reduced;
+			textFlips.Checked = Model.TextFlips;
+			binaryOut.Checked = Model.BinaryOutput;
+			binaryBlocks.Enabled = binaryOut.Checked;
+			Repeats.Checked = Model.IgnoreCopies;
+			mirrorX.Checked = Model.IgnoreMirroredX;
+			mirrorY.Checked = Model.IgnoreMirroredY;
+			rotations.Checked = Model.IgnoreRotated;
+			Transparent.Checked = Model.IgnoreTransparentPixels;
+			sortTransparent.Checked = Model.TransparentFirst;
+			blocksOut.Checked = Model.BlocksAsImage;
+			tilesOut.Checked = Model.TilesAsImage;
+			transBlock.Checked = Model.TransparentBlocks;
+			transTile.Checked = Model.TransparentTiles;
+			tilesAcross.Text = Model.BlocksAccross.ToString();
+			blocksFormat.SelectedIndex = (int)Model.ImageFormat;
+			Accuracy.Text = Model.Accuracy.ToString();
 		}
 
-		//-------------------------------------------------------------------------------------------------------------------
-		//
-		// set from settings
-		//
-		//-------------------------------------------------------------------------------------------------------------------
-
-		public void setCenter(int center)
+		private void settingsPanel_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			switch(center)
-			{
-				case	0:
-					TL.Checked	=	true;
-				break;
-				case	1:
-					TC.Checked	=	true;
-				break;
-				case	2:
-					TR.Checked	=	true;
-				break;
-				case	3:
-					ML.Checked	=	true;
-				break;
-				case	4:
-					MC.Checked	=	true;
-				break;
-				case	5:
-					MR.Checked	=	true;
-				break;
-				case	6:
-					BL.Checked	=	true;
-				break;
-				case	7:
-					BC.Checked	=	true;
-				break;
-				case	8:
-					BR.Checked	=	true;
-				break;
-			}			
+			Model.CenterPosition = GetCenterPosition();
+			Model.FourBit = FourBit.Checked;
+			Model.Reduced = reduce.Checked;
+			Model.TextFlips = textFlips.Checked;
+			Model.BinaryOutput = binaryOut.Checked;
+			Model.IgnoreCopies = Repeats.Checked;
+			Model.IgnoreMirroredX = mirrorX.Checked;
+			Model.IgnoreMirroredY = mirrorY.Checked;
+			Model.IgnoreRotated = rotations.Checked;
+			Model.IgnoreTransparentPixels = Transparent.Checked;
+			Model.TransparentFirst = sortTransparent.Checked;
+			Model.BlocksAsImage = blocksOut.Checked;
+			Model.TilesAsImage = tilesOut.Checked;
+			Model.TransparentBlocks = transBlock.Checked;
+			Model.TransparentTiles = transTile.Checked;
+			Model.BlocksAccross = int.Parse(tilesAcross.Text);
+			Model.ImageFormat = (ImageFormat)blocksFormat.SelectedIndex;
+			Model.Accuracy = int.Parse(Accuracy.Text);
 		}
 
 		private void binaryOut_CheckedChanged(object sender, EventArgs e)
 		{
-			binaryBlocks.Enabled	=	 binaryOut.Checked;
+			// Binary blocks option is only enabled if binary out is checked
+			binaryBlocks.Enabled = binaryOut.Checked;
 		}
 
-		private void textBox1_TextChanged(object sender, EventArgs e)
+		#endregion
+
+		#region Helpers
+
+		private void ApplyCenterPosition(int center)
 		{
-
+			switch (center)
+			{
+				case 0:
+					TL.Checked = true;
+					break;
+				case 1:
+					TC.Checked = true;
+					break;
+				case 2:
+					TR.Checked = true;
+					break;
+				case 3:
+					ML.Checked = true;
+					break;
+				case 4:
+					MC.Checked = true;
+					break;
+				case 5:
+					MR.Checked = true;
+					break;
+				case 6:
+					BL.Checked = true;
+					break;
+				case 7:
+					BC.Checked = true;
+					break;
+				case 8:
+					BR.Checked = true;
+					break;
+			}
 		}
-    }
+
+		private int GetCenterPosition()
+		{
+			if (TL.Checked)
+			{
+				return 0;
+			}
+			else if (TC.Checked)
+			{
+				return 1;
+			}
+			else if (TR.Checked)
+			{
+				return 2;
+			}
+			else if (ML.Checked)
+			{
+				return 3;
+			}
+			else if (MC.Checked)
+			{
+				return 4;
+			}
+			else if (MR.Checked)
+			{
+				return 5;
+			}
+			else if (BL.Checked)
+			{
+				return 6;
+			}
+			else if (BC.Checked)
+			{
+				return 7;
+			}
+			else //if(BR.Checked)
+			{
+				return 8;
+			}
+		}
+
+		#endregion
+	}
 }

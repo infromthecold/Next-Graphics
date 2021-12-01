@@ -30,6 +30,8 @@ namespace NextGraphics.Models
 
 		public bool TransparentFirst { get; set; } = false;
 		public bool FourBit { get; set; } = false;
+		public bool Reduced { get; set; } = false;
+		public bool TextFlips { get; set; } = false;
 		public bool BinaryOutput { get; set; } = false;
 		public bool BinaryBlocksOutput { get; set; } = false;
 
@@ -40,6 +42,9 @@ namespace NextGraphics.Models
 
 		public int OutputFilesFilterIndex { get; set; } = 0;
 		public int AddImagesFilterIndex { get; set; } = 0;
+
+		// This is not saved!
+		public CommentType CommentType { get; set; } = CommentType.Full;
 
 		#region Serialization
 
@@ -87,6 +92,8 @@ namespace NextGraphics.Models
 				node.WithAttribute("across", value => BlocksAccross = int.Parse(value));
 				node.WithAttribute("accurate", value => Accuracy = int.Parse(value));
 				node.WithAttribute("format", value => ImageFormat = (ImageFormat)int.Parse(value));
+				node.WithAttribute("textFlips", value => TextFlips = bool.Parse(value));
+				node.WithAttribute("reduce", value => Reduced = bool.Parse(value));
 			});
 
 			// Palette
@@ -123,9 +130,9 @@ namespace NextGraphics.Models
 		}
 
 		/// <summary>
-		/// Saves the data into a <see cref="XmlDocument"/> and returns it. It's up to caller to actually save the XML into a file.
+		/// Saves the data into a <see cref="XmlDocument"/> and returns it. It's up to caller to actually save the XML into a file. Optionally a closure can be assigned that will be called with the main project node - in case additional data needs to be saved.
 		/// </summary>
-		public XmlDocument Save()
+		public XmlDocument Save(Action<XmlNode> projectNodeHandler = null)
 		{
 			var document = new XmlDocument();
 
@@ -173,6 +180,8 @@ namespace NextGraphics.Models
 			settingsNode.AddAttribute("across", BlocksAccross.ToString());
 			settingsNode.AddAttribute("accurate", Accuracy.ToString());
 			settingsNode.AddAttribute("format", ((int)ImageFormat).ToString());
+			settingsNode.AddAttribute("textFlips", TextFlips);
+			settingsNode.AddAttribute("reduce", Reduced);
 
 			// Palette
 			var paletteNode = projectNode.AddNode("Palette");
@@ -193,7 +202,22 @@ namespace NextGraphics.Models
 			dialogsNode.AddAttribute("OutputIndex", OutputFilesFilterIndex.ToString());
 			dialogsNode.AddAttribute("ImageIndex", AddImagesFilterIndex.ToString());
 
+			// After all data is saved, pass project node to closure so additional data can be appended.
+			if (projectNodeHandler != null)
+			{
+				projectNodeHandler(projectNode);
+			}
+
 			return document;
+		}
+
+		#endregion
+
+		#region Helpers
+
+		public void Clear()
+		{
+			Filenames.Clear();
 		}
 
 		#endregion

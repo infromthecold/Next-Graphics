@@ -1,6 +1,6 @@
 ﻿namespace NextGraphics
 {
-	partial class settingsPanel
+	partial class SettingsPanel
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -41,6 +41,7 @@
 			this.comments = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.textFlips = new System.Windows.Forms.CheckBox();
 			this.reduce = new System.Windows.Forms.CheckBox();
 			this.binaryBlocks = new System.Windows.Forms.CheckBox();
 			this.FourBit = new System.Windows.Forms.CheckBox();
@@ -64,7 +65,6 @@
 			this.transTile = new System.Windows.Forms.CheckBox();
 			this.transBlock = new System.Windows.Forms.CheckBox();
 			this.label2 = new System.Windows.Forms.Label();
-			this.textFlips = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -113,7 +113,6 @@
 			this.Accuracy.Size = new System.Drawing.Size(24, 20);
 			this.Accuracy.TabIndex = 30;
 			this.Accuracy.Text = "100";
-			this.Accuracy.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
 			// 
 			// Transparent
 			// 
@@ -211,6 +210,16 @@
 			this.groupBox2.TabIndex = 7;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Output Settings";
+			// 
+			// textFlips
+			// 
+			this.textFlips.AutoSize = true;
+			this.textFlips.Location = new System.Drawing.Point(114, 28);
+			this.textFlips.Name = "textFlips";
+			this.textFlips.Size = new System.Drawing.Size(96, 17);
+			this.textFlips.TabIndex = 30;
+			this.textFlips.Text = "Text Flips Rots";
+			this.textFlips.UseVisualStyleBackColor = true;
 			// 
 			// reduce
 			// 
@@ -459,16 +468,6 @@
 			this.label2.TabIndex = 27;
 			this.label2.Text = "File format";
 			// 
-			// textFlips
-			// 
-			this.textFlips.AutoSize = true;
-			this.textFlips.Location = new System.Drawing.Point(114, 28);
-			this.textFlips.Name = "textFlips";
-			this.textFlips.Size = new System.Drawing.Size(96, 17);
-			this.textFlips.TabIndex = 30;
-			this.textFlips.Text = "Text Flips Rots";
-			this.textFlips.UseVisualStyleBackColor = true;
-			// 
 			// settingsPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -482,6 +481,8 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "settingsPanel";
 			this.Text = "Options";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.settingsPanel_FormClosing);
+			this.Load += new System.EventHandler(this.settingsPanel_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
