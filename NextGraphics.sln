@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1267
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NextGraphics", "NextGraphics.csproj", "{8803257F-76F7-4723-954A-0D0D087C489C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{53801512-09E3-46B3-BE2E-85CA20BCBC72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{8803257F-76F7-4723-954A-0D0D087C489C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8803257F-76F7-4723-954A-0D0D087C489C}.Release|x86.ActiveCfg = Release|x86
 		{8803257F-76F7-4723-954A-0D0D087C489C}.Release|x86.Build.0 = Release|x86
+		{53801512-09E3-46B3-BE2E-85CA20BCBC72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53801512-09E3-46B3-BE2E-85CA20BCBC72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53801512-09E3-46B3-BE2E-85CA20BCBC72}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{53801512-09E3-46B3-BE2E-85CA20BCBC72}.Debug|x86.Build.0 = Debug|Any CPU
+		{53801512-09E3-46B3-BE2E-85CA20BCBC72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53801512-09E3-46B3-BE2E-85CA20BCBC72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53801512-09E3-46B3-BE2E-85CA20BCBC72}.Release|x86.ActiveCfg = Release|Any CPU
+		{53801512-09E3-46B3-BE2E-85CA20BCBC72}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -129,6 +129,9 @@
     <Compile Include="DEBUGFORM.Designer.cs">
       <DependentUpon>DEBUGFORM.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\MainModel.cs" />
+    <Compile Include="Models\Palette.cs" />
+    <Compile Include="Models\Types.cs" />
     <Compile Include="infoWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -258,6 +261,7 @@
     </EmbeddedResource>
     <None Include="my.pfx" />
     <None Include="NextGraphics_TemporaryKey.pfx" />
+    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
