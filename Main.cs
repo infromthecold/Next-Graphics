@@ -69,7 +69,6 @@ namespace NextGraphics
 		private	const int		MAX_CHAR_SIZE		=	256;
 		private	const int		MAX_IMAGES		=	64;
 		public	List<imageWindow>	imageWindows		=	new	List<imageWindow>();
-		public	List<Bitmap>		sourceImages		=	new	List<Bitmap>();
 #if PROPRIETARY
 		public	parallaxTool		parallaxWindow		=	new	parallaxTool();
 #endif
@@ -152,7 +151,6 @@ namespace NextGraphics
 			this.toolStripProgressBar1.Maximum	=	0;
 			this.listBox1.Items.Add(" "+Model.Name);
 			reverseByes				=	BitConverter.IsLittleEndian;
-			PaletteForm.imageSelectForm.parentForm	=	this;
 			Model.BlocksAccross				=	(int)Math.Floor((float)blocksDisplay.Width/Model.GridXSize);
 			blocksDisplay.Invalidate();
 			blocksDisplay.Refresh();
@@ -227,8 +225,7 @@ namespace NextGraphics
 			charactersDisplay.Invalidate(true);
 			charactersDisplay.Refresh();
 			setForm();
-			this.sourceImages.Clear();
-			this.imageWindows.Clear();
+			DisposeImageWindows();
 		}
 
 
@@ -347,7 +344,7 @@ namespace NextGraphics
 			Model.BlocksAccross = (int)Math.Floor((float)blocksDisplay.Width / Model.GridXSize);
 
 			setForm();
-			restoreFromList();
+			UpdateImageList();
 
 #if PROPRIETARY
 			XmlNode parallax = xmlDoc.SelectSingleNode("//Project/parallax");
@@ -364,48 +361,34 @@ namespace NextGraphics
 		// Restore the bitmap data from the file list
 		//
 		//-------------------------------------------------------------------------------------------------------------------
-		private	 void	restoreFromList()
-		{			
+		private void UpdateImageList()
+		{
+			// At this point SourceImage list is already setup in the model, so we need to check for bitmap validity, remove invalid images and establish image windows for each valid one.
 			this.listBox1.Items.Clear();
 			this.listBox1.Items.Add(" "+Model.Name);
-			sourceImages.Clear();
-			imageWindows.Clear();
-			bool			removed			=	false;
-			List<string> 		removeNames		=	new	List<string>();
-			removeNames.Clear();
-			Bitmap	srcBitmap;
-			foreach (string name in Model.Filenames)
+
+			DisposeImageWindows();
+
+			var removeNames = new List<string>();
+
+			foreach (var image in Model.Images)
 			{
-				try 
-				{ 
-					using (var fs = new System.IO.FileStream(name, System.IO.FileMode.Open))
-					{
-					    var bmp	= new Bitmap(fs);
-					    srcBitmap	= new Bitmap(bmp.Width,bmp.Height);
-					    srcBitmap	= (Bitmap) bmp.Clone();
-					}					
-					if(IsSupported(new Bitmap(srcBitmap))==true)
-					{
-						sourceImages.Add(new Bitmap(srcBitmap));
-						imageWindows.Add(new imageWindow { MdiParent = this});
-						this.listBox1.Items.Add("  " + Path.GetFileName(name));	
-					}
-					else
-					{
-						removeNames.Add(name);
-					}
+				if (!image.IsImageValid)
+				{
+					removeNames.Add(image.Filename);
+					continue;
 				}
-				catch// (System.ArgumentException ex)
-				{	// do not remove the name as it could already be in the system			
-					removeNames.Add(name);
-				}
+
+				listBox1.Items.Add(" "+Path.GetFileName(image.Filename));
+				imageWindows.Add(new imageWindow { MdiParent = this });
 			}
+
 			foreach (string name in removeNames)
 			{
-				removed		= true;
-				Model.Filenames.Remove(name);
+				Model.RemoveImage(name);
 			}
-			if(removed==true)
+
+			if(removeNames.Count > 0)
 			{				
 				MessageBox.Show("Some images have been rejected as the image format is not supported", "Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);	
 			}
@@ -419,84 +402,56 @@ namespace NextGraphics
 
 		private void AddImages(object sender, EventArgs e)
 		{
-			
 			addImagesDialog.Multiselect		=	true;
 			addImagesDialog.RestoreDirectory	=	false;
 			addImagesDialog.InitialDirectory	=	ParentDirectory + "\\Renders\\";
 
 			//addImagesDialog.DefaultExt		=	".bmp"; // Default file extension 
 			addImagesDialog.FilterIndex = Model.AddImagesFilterIndex;
-			Bitmap	srcBitmap;
 			if (addImagesDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				
-			//	setParentFolder(Path.GetFullPath(addImagesDialog.FileName));
 
-				Model.AddImagesFilterIndex	=		addImagesDialog.FilterIndex;
-				bool	rejected=false;
-				foreach (imageWindow window in imageWindows)
-				{
-					if(window.inputImage!=null)
-					{ 						
-						window.inputImage.Dispose();
-					}
-					if(window!=null)
-					{ 
-						window.Close();
-						window.Dispose();
-					}
-				}
-				foreach (Bitmap bitMap in sourceImages)
-				{
-					if(bitMap!=null)
-					{ 
-						bitMap.Dispose();
-					}
-				}
-				imageWindows.Clear();
-				sourceImages.Clear();
-				foreach (String file in addImagesDialog.FileNames) 
-				{
+				//	setParentFolder(Path.GetFullPath(addImagesDialog.FileName));
 
-					for(int i=0;i<Model.Filenames.Count;i++)
+				Model.AddImagesFilterIndex = addImagesDialog.FilterIndex;
+				bool rejected = false;
+
+				foreach (String file in addImagesDialog.FileNames)
+				{
+					bool found = false;
+					for (int i = 0; i < Model.Images.Count; i++)
 					{
-						if(file == Model.Filenames[i])
+						if (file == Model.Images[i].Filename)
 						{
-							rejected	=	true;
-							goto rejectName;
+							found = true;
+							rejected = true;
+							break;
 						}
 					}
-					using (var fs = new System.IO.FileStream(file, System.IO.FileMode.Open))
-					{
-					    var bmp	= new Bitmap(fs);
-					    srcBitmap	= new Bitmap(bmp.Width,bmp.Height);
-					    srcBitmap	= (Bitmap) bmp.Clone();
-					}					
-					if(IsSupported(new Bitmap(srcBitmap))==true)
-					{
-						Model.Filenames.Add(file);
-						sourceImages.Add(new Bitmap(srcBitmap));
-						imageWindows.Add(new imageWindow { MdiParent = this});
-						this.listBox1.Items.Add("  " + Path.GetFileName(file));	
-					}
 
-rejectName:				;
+					if (found) continue;
+
+					var image = new SourceImage(file);
+					if (!image.IsImageValid) continue;
+
+					Model.Images.Add(image);
+					imageWindows.Add(new imageWindow { MdiParent = this });
+					this.listBox1.Items.Add("  " + Path.GetFileName(file));
 				}
-				if(rejected==true)
+
+				if (rejected == true)
 				{
-					MessageBox.Show("Duplicate files are not allowed", "Duplicates Found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);				
+					MessageBox.Show("Duplicate files are not allowed", "Duplicates Found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				}
 			}
 		}
 
-
-		
 		//-------------------------------------------------------------------------------------------------------------------
 		//
 		// Save as, this should be 
 		//
 		//-------------------------------------------------------------------------------------------------------------------
-			
+
 		private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			projectPath		=	"";
@@ -623,13 +578,31 @@ rejectName:				;
 			}
 			CopyBlocksImage();
 		}
-		
+
+		private void DisposeImageWindows()
+		{
+			foreach (imageWindow window in imageWindows)
+			{
+				if (window.inputImage != null)
+				{
+					window.inputImage.Dispose();
+				}
+				if (window != null)
+				{
+					window.Close();
+					window.Dispose();
+				}
+			}
+
+			imageWindows.Clear();
+		}
+
 		//-------------------------------------------------------------------------------------------------------------------
 		//
 		// do the actual cut and remap work
 		//
 		//-------------------------------------------------------------------------------------------------------------------
-	
+
 		private void CopyBlocksImage()
 		{	
 			clearPanels(blocksPanel);
@@ -709,26 +682,28 @@ rejectName:				;
 				}
 			}
 			Model.BlocksAccross =	(int)Math.Floor((float)blocksDisplay.Width/Model.GridXSize);
-			for(int s=0;s<sourceImages.Count;s++)
-			{ 			
+			for(int s=0;s<Model.Images.Count;s++)
+			{
+				var image = Model.Images[s];
+
 				if(Model.OutputType == OutputType.Blocks)
 				{ 
-					if((sourceImages[s].Width%Model.GridXSize)>0)
+					if((image.Image.Width%Model.GridXSize)>0)
 					{
 						// not width 
-						MessageBox.Show("The image "+Path.GetFileName(Model.Filenames[s])+ " is not divisible by the width of your tiles, which will corrupt the output", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						MessageBox.Show("The image "+Path.GetFileName(image.Filename)+ " is not divisible by the width of your tiles, which will corrupt the output", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					}
-					if((sourceImages[s].Height%Model.GridYSize)>0)
+					if((image.Image.Height%Model.GridYSize)>0)
 					{
 						// not height 
-						MessageBox.Show("The image "+Path.GetFileName(Model.Filenames[s])+ " is not divisible by the height of your tiles, which will corrupt the output", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);					
+						MessageBox.Show("The image "+Path.GetFileName(image.Filename)+ " is not divisible by the height of your tiles, which will corrupt the output", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);					
 					}
 				}
-				if(sourceImages[s]!=null)
-				{					
-					for(int yBlocks=0;yBlocks<((sourceImages[s].Height+(Model.GridYSize-1))/Model.GridYSize);yBlocks++)
+				if(image.IsImageValid)
+				{
+					for(int yBlocks=0;yBlocks<((image.Image.Height+(Model.GridYSize-1))/Model.GridYSize);yBlocks++)
 					{	
-						for(int xBlocks=0;xBlocks<(sourceImages[s].Width/Model.GridXSize);xBlocks++)
+						for(int xBlocks=0;xBlocks<(image.Image.Width/Model.GridXSize);xBlocks++)
 						{							
 							src.X			=	xBlocks*Model.GridXSize;
 							src.Y			=	yBlocks*Model.GridYSize;
@@ -754,11 +729,11 @@ rejectName:				;
 							}
 							if(SettingsPanel.reduce.Checked==true &&  Model.OutputType==OutputType.Sprites)
 							{
-								CopyRegionIntoBlock(sourceImages[s],src,ref blockData[outBlock],ref blockInfo[outBlock],true);	
+								CopyRegionIntoBlock(image.Image, src,ref blockData[outBlock],ref blockInfo[outBlock],true);	
 							}
 							else
 							{ 
-								CopyRegionIntoBlock(sourceImages[s],src,ref blockData[outBlock],ref blockInfo[outBlock],false);
+								CopyRegionIntoBlock(image.Image, src,ref blockData[outBlock],ref blockInfo[outBlock],false);
 							}
 
 							if(SettingsPanel.FourBit.Checked==true || Model.OutputType==OutputType.Blocks)
@@ -2649,14 +2624,14 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 		{
 			// move down
 			int	thisIndex		=	this.listBox1.SelectedIndex;
-			if(thisIndex<=Model.Filenames.Count-1 && thisIndex>0)
+			if(thisIndex<=Model.Images.Count-1 && thisIndex>0)
 			{
 				
-				string	temp			=	Model.Filenames[thisIndex];
-				Model.Filenames[thisIndex]		=	Model.Filenames[thisIndex-1];
-				Model.Filenames[thisIndex-1]		=	temp;
-				restoreFromList();
+				var	temp			=	Model.Images[thisIndex];
+				Model.Images[thisIndex]		=	Model.Images[thisIndex-1];
+				Model.Images[thisIndex-1]		=	temp;
 				this.listBox1.SelectedIndex	=	thisIndex+1;
+				UpdateImageList();
 			}		
 		}
 
@@ -2674,11 +2649,11 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 			if(thisIndex>1 && thisIndex>0)
 			{
 				thisIndex--;
-				string	temp			=	Model.Filenames[thisIndex-1];
-				Model.Filenames[thisIndex-1]		=	Model.Filenames[thisIndex];
-				Model.Filenames[thisIndex]		=	temp;
-				restoreFromList();
+				var	temp			=	Model.Images[thisIndex-1];
+				Model.Images[thisIndex-1]		=	Model.Images[thisIndex];
+				Model.Images[thisIndex]		=	temp;
 				this.listBox1.SelectedIndex	=	thisIndex;
+				UpdateImageList();
 			}
 		}
 		
@@ -2697,11 +2672,10 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 				}
 				var	result = MessageBox.Show("Remove this image?", "Are you Sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (result == DialogResult.Yes)  
-				{  
-					
-					Model.Filenames.RemoveAt(this.listBox1.SelectedIndex-1);
-					restoreFromList();
-				}  							
+				{
+					Model.Images.RemoveAt(this.listBox1.SelectedIndex-1);
+					UpdateImageList();
+				}
 			}
 		}
 		//-------------------------------------------------------------------------------------------------------------------
@@ -2779,7 +2753,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 		{
 			this.listBox1.Items.Clear();
 			this.listBox1.Items.Add(" " + Model.Name);
-			Model.Filenames.ForEach(filename => this.listBox1.Items.Add(" " + filename));
+			Model.Images.ForEach(filename => this.listBox1.Items.Add(" " + filename));
 
 			textBox2.Text	=	Model.GridYSize.ToString();	
 			textBox1.Text	=	Model.GridXSize.ToString();
@@ -3021,54 +2995,23 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 
 		private void reloadImages_Click(object sender, EventArgs e)
 		{
-			Bitmap	srcBitmap;
-			foreach (imageWindow window in imageWindows)
+			DisposeImageWindows();
+
+			foreach (var image in Model.Images)
 			{
-				if(window.inputImage!=null)
-				{ 						
-					window.inputImage.Dispose();
-				}
-				if(window!=null)
-				{ 
-					window.Close();
-					window.Dispose();
-				}
-			}
-			foreach (Bitmap bitMap in sourceImages)
-			{
-				if(bitMap!=null)
-				{ 
-					bitMap.Dispose();
-				}
-			}
-			imageWindows.Clear();
-			sourceImages.Clear();
-			foreach (String file in Model.Filenames) 
-			{				
-				using (var fs = new System.IO.FileStream(file, System.IO.FileMode.Open))
-				{
-					var bmp	= new Bitmap(fs);
-					srcBitmap	= new Bitmap(bmp.Width,bmp.Height);
-					srcBitmap	= (Bitmap) bmp.Clone();
-				}					
-				if(IsSupported(new Bitmap(srcBitmap))==true)
-				{
-					sourceImages.Add(new Bitmap(srcBitmap));
-					imageWindows.Add(new imageWindow { MdiParent = this});
-				}
+				image.ReloadImage();
+				imageWindows.Add(new imageWindow { MdiParent = this });
 			}
 		}
+
 		// reduce the number of bytes in the map and remove unused blocks
 		private void processMapToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 #if PROPRIETARY
 			parallaxWindow.processMap(sender,e);
 #else
-
 			MessageBox.Show("FUNCTIONALITY REMOVED", "Proprietary ", MessageBoxButtons.OK, MessageBoxIcon.Information);
 #endif
-		
-			
 		}
 	
 		//-------------------------------------------------------------------------------------------------------------------
@@ -3102,7 +3045,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 							{
 								MdiParent = this
 							};
-							imageWindows[index-1].loadImage(Model.Filenames[index-1],Model.GridXSize,Model.GridYSize);
+							imageWindows[index-1].loadImage(Model.Images[index-1].Filename,Model.GridXSize,Model.GridYSize);
 							imageWindows[index-1].Show();
 							imageWindows[index-1].Height	=	this.Height-(toolStrip.Height+100);
 							imageWindows[index-1].Width	=	this.Width-(FilesView.Width+imageWindows[index-1].Left);

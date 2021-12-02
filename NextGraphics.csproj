@@ -131,6 +131,7 @@
     </Compile>
     <Compile Include="Models\MainModel.cs" />
     <Compile Include="Models\Palette.cs" />
+    <Compile Include="Models\SourceImage.cs" />
     <Compile Include="Models\Types.cs" />
     <Compile Include="infoWindow.cs">
       <SubType>Form</SubType>
@@ -169,11 +170,11 @@
     <Compile Include="SettingsPanel.Designer.cs">
       <DependentUpon>SettingsPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="ImageSelect.cs">
+    <Compile Include="ImageSelectForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ImageSelect.Designer.cs">
-      <DependentUpon>ImageSelect.cs</DependentUpon>
+    <Compile Include="ImageSelectForm.Designer.cs">
+      <DependentUpon>ImageSelectForm.cs</DependentUpon>
     </Compile>
     <Compile Include="newProject.cs">
       <SubType>Form</SubType>
@@ -231,8 +232,8 @@
     <EmbeddedResource Include="SettingsPanel.resx">
       <DependentUpon>SettingsPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ImageSelect.resx">
-      <DependentUpon>ImageSelect.cs</DependentUpon>
+    <EmbeddedResource Include="ImageSelectForm.resx">
+      <DependentUpon>ImageSelectForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="newProject.resx">
       <DependentUpon>newProject.cs</DependentUpon>

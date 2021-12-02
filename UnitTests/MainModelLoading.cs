@@ -39,10 +39,10 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(3, model.Filenames.Count);
-			Assert.AreEqual(@"C:\tiles.bmp", model.Filenames[0]);
-			Assert.AreEqual(@"/a/file/with/slashes", model.Filenames[1]);
-			Assert.AreEqual(@"\the\file\with\backslashes", model.Filenames[2]);
+			Assert.AreEqual(3, model.Images.Count);
+			Assert.AreEqual(@"C:\tiles.bmp", model.Images[0].Filename);
+			Assert.AreEqual(@"/a/file/with/slashes", model.Images[1].Filename);
+			Assert.AreEqual(@"\the\file\with\backslashes", model.Images[2].Filename);
 		}
 
 		#endregion

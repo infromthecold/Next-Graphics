@@ -10,10 +10,18 @@ namespace NextGraphics
 {
 	public partial class PaletteForm : Form
 	{
-		public MainModel Model { get; set; }
+		public MainModel Model {
+			get => _model;
+			set {
+				_model = value;
+				imageSelectForm.Model = value;
+			}
+		}
+		private MainModel _model;
+
 		private Palette Palette { get => Model.Palette; } // a shortcut instead of having to write Model.Palette
 
-		public ImageSelect imageSelectForm = new ImageSelect();
+		private ImageSelectForm imageSelectForm = new ImageSelectForm();
 
 		public Button[] colourButtons = null;
 		public Button colourClicked;
@@ -226,9 +234,9 @@ namespace NextGraphics
 		{
 			// select	
 			imageSelectForm.fullNames.Clear();
-			foreach (string name in Model.Filenames)
+			foreach (var image in Model.Images)
 			{
-				imageSelectForm.fullNames.Add(name);
+				imageSelectForm.fullNames.Add(image.Filename);
 			}
 			imageSelectForm.StartPosition = FormStartPosition.CenterParent;
 			imageSelectForm.fillList();

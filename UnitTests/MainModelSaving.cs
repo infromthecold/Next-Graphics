@@ -50,10 +50,10 @@ namespace UnitTests
 		{
 			// Setup
 			var model = new MainModel();	
-			model.Filenames.Add(@"File1");
-			model.Filenames.Add(@"\File\With\Backslashes");
-			model.Filenames.Add(@"/File/With/Slashes");
-			model.Filenames.Add(@"C:\Folder\Filename.xml");
+			model.AddImage(@"File1");
+			model.AddImage(@"\File\With\Backslashes");
+			model.AddImage(@"/File/With/Slashes");
+			model.AddImage(@"C:\Folder\Filename.xml");
 
 			// Execute
 			var document = model.Save();

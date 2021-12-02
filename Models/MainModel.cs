@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,8 @@ namespace NextGraphics.Models
 {
 	public class MainModel
 	{
+		public List<SourceImage> Images { get; private set; } = new List<SourceImage>();
 		public string Name { get; set; } = "";
-		public List<string> Filenames { get; private set; } = new List<string>();
 		public Palette Palette { get; } = new Palette();
 
 		public OutputType OutputType { get; set; } = OutputType.Sprites;
@@ -62,7 +63,11 @@ namespace NextGraphics.Models
 			// Files
 			document.WithNodes("//Project/File", nodes =>
 			{
-				Filenames = nodes.Cast<XmlNode>().Select(node => node.Attributes["Path"].Value).ToList();
+				Images = new List<SourceImage>();
+				nodes.Cast<XmlNode>()
+					.Select(node => node.Attributes["Path"].Value)
+					.ToList()
+					.ForEach(path => AddImage(path));
 			});
 
 			// Settings
@@ -148,10 +153,10 @@ namespace NextGraphics.Models
 			nameNode.AddAttribute("Projectname", Name);
 
 			// Filenames
-			foreach (string filename in Filenames)
+			foreach (var image in Images)
 			{
 				var fileNode = projectNode.AddNode("File");
-				fileNode.AddAttribute("Path", filename);
+				fileNode.AddAttribute("Path", image.Filename);
 			}
 
 			// Settings
@@ -213,11 +218,43 @@ namespace NextGraphics.Models
 
 		#endregion
 
-		#region Helpers
+		#region Data handling
+
+		/// <summary>
+		/// Simpler variant for adding an image to the <see cref="Images"/> list. Note that while this will attempt to load the bitmap as well, loading may fail in which case the <see cref="SourceImage.Image"/> will be null!
+		/// </summary>
+		public void AddImage(string filename)
+		{
+			Images.Add(new SourceImage(filename));
+		}
+
+		/// <summary>
+		/// Removes the image by its filename. Note: it's preferred to use this function than removing images directly from the list as this also takes care of disposing underlying bitmaps.
+		/// </summary>
+		public void RemoveImage(string filename) {
+			int index = Images.FindIndex(image => image.Filename == filename);
+			if (index < 0) return;
+			
+			var item = Images[index];
+			if (item.Image != null)
+			{
+				item.Image.Dispose();
+			}
+
+			Images.RemoveAt(index);
+		}
 
 		public void Clear()
 		{
-			Filenames.Clear();
+			Images.ForEach(image =>
+			{
+				if (image.Image != null)
+				{
+					image.Image.Dispose();
+				}
+			});
+
+			Images.Clear();
 			Palette.Clear();
 		}
 
