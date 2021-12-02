@@ -218,6 +218,7 @@ namespace NextGraphics.Models
 		public void Clear()
 		{
 			Filenames.Clear();
+			Palette.Clear();
 		}
 
 		#endregion

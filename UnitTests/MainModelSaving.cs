@@ -288,13 +288,6 @@ namespace UnitTests
 		}
 
 		[TestMethod]
-		public void PaletteStartIndexSaved()
-		{
-			PaletteRunner.Setup(palette => palette.StartIndex = 91).Verify("91", "Start");
-			PaletteRunner.Setup(palette => palette.StartIndex = 652).Verify("652", "Start");
-		}
-
-		[TestMethod]
 		public void PaletteUsedCountSaved()
 		{
 			PaletteRunner.Setup(palette => palette.UsedCount = 12).Verify("12", "Used");

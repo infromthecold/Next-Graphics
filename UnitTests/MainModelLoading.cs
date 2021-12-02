@@ -180,7 +180,7 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(false, model.Reduced);
+			Assert.AreEqual(true, model.Reduced);
 		}
 
 		[TestMethod]
@@ -332,19 +332,6 @@ namespace UnitTests
 		}
 
 		[TestMethod]
-		public void SettingsPaletteStartIndexLoaded()
-		{
-			// setup
-			var model = new MainModel();
-
-			// execute
-			model.Load(TestDocument());
-
-			// verify
-			Assert.AreEqual(1, model.Palette.StartIndex);
-		}
-
-		[TestMethod]
 		public void SettingsPaletteUsedCountLoaded()
 		{
 			// setup
@@ -395,7 +382,7 @@ namespace UnitTests
 	<File Path=""C:\tiles.bmp"" />
 	<File Path=""/a/file/with/slashes"" />
 	<File Path=""\the\file\with\backslashes"" />
-	<Settings {0}=""true"" center=""4"" xSize=""9"" ySize=""10"" fourBit=""true"" binary=""false"" binaryBlocks=""true"" Repeats=""false"" MirrorX=""false"" MirrorY=""true"" Rotations=""false"" Transparent=""false"" Sort=""true"" blocksImage=""false"" tilesImage=""true"" transBlock=""true"" transTile=""false"" across=""5"" accurate=""983"" format=""{1}"" textFlips=""false"" reduce=""true"" />
+	<Settings {0}=""true"" center=""4"" xSize=""9"" ySize=""10"" fourBit=""true"" binary=""false"" binaryBlocks=""true"" Repeats=""false"" MirrorX=""false"" MirrorY=""true"" Rotations=""false"" Transparent=""false"" Sort=""true"" blocksImage=""false"" tilesImage=""true"" transBlock=""true"" transTile=""false"" across=""5"" accurate=""983"" format=""{1}"" textFlips=""true"" reduce=""true"" />
 	<Dialogs OutputIndex=""1"" ImageIndex=""1"" />
 	<Palette Mapping=""{2}"" Transparent=""0"" Used=""6"" Start=""1"">
 	  <Colour0 Red=""10"" Green=""11"" Blue=""12"" />

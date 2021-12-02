@@ -60,7 +60,7 @@ namespace NextGraphics
 		//
 		//-------------------------------------------------------------------------------------------------------------------
 
-		public MainModel model = new MainModel();
+		public MainModel Model { get; set; } = new MainModel();
 
 		public	RadioButton		selectedRadio;
 		public	int			outSize			=	16;		
@@ -99,7 +99,7 @@ namespace NextGraphics
 		private	string			tilesPath		=	"";
 		private	bool			reverseByes		=	false;
 		private	bool			PaletteSet		=	false;	
-		public	PaletteForm			thePalette		=	new PaletteForm();
+		public	PaletteForm			PaletteForm		=	new PaletteForm();
 		private	SettingsPanel	SettingsPanel			=	new SettingsPanel();
 		private	long			AveragingIndex		=	0;		
 		public	imageWindow		blocksView		=	new	imageWindow();
@@ -150,11 +150,10 @@ namespace NextGraphics
 			charactersDisplay.Image			=	charsPanel;			
 			this.toolStripProgressBar1.Minimum	=	0;
 			this.toolStripProgressBar1.Maximum	=	0;
-			this.listBox1.Items.Add(" "+model.Name);
+			this.listBox1.Items.Add(" "+Model.Name);
 			reverseByes				=	BitConverter.IsLittleEndian;
-			thePalette.parentForm			=	this;
-			thePalette.selectForm.parentForm	=	this;
-			model.BlocksAccross				=	(int)Math.Floor((float)blocksDisplay.Width/model.GridXSize);
+			PaletteForm.imageSelectForm.parentForm	=	this;
+			Model.BlocksAccross				=	(int)Math.Floor((float)blocksDisplay.Width/Model.GridXSize);
 			blocksDisplay.Invalidate();
 			blocksDisplay.Refresh();
 			SettingsPanel.comments.SelectedIndex	=	1;
@@ -206,14 +205,14 @@ namespace NextGraphics
 
 			if (newProjectForm.DialogResult == DialogResult.OK)
 			{
-				model.Name	=	newProjectForm.textBox1.Text;	
+				Model.Name	=	newProjectForm.textBox1.Text;	
 				newProject();
 			}
 		}
 
 		private	void	newProject()
 		{
-			model.Clear();
+			Model.Clear();
 			setForm();
 			blocksPanel			=	new	Bitmap(128,512,PixelFormat.Format24bppRgb);
 			clearPanels(blocksPanel);
@@ -230,8 +229,6 @@ namespace NextGraphics
 			setForm();
 			this.sourceImages.Clear();
 			this.imageWindows.Clear();
-			this.model.Filenames.Clear();
-			thePalette.resetPalette();			
 		}
 
 
@@ -261,7 +258,7 @@ namespace NextGraphics
 			if(projectPath.Length==0)
 			{ 
 				
-				projectSaveDialog.FileName			=	model.Name + ".xml";
+				projectSaveDialog.FileName			=	Model.Name + ".xml";
 				projectSaveDialog.Filter			=	"Project Files (*.xml)|*.xml|All Files (*.*)|*.*";
 				projectSaveDialog.FilterIndex		=	1 ;
 				projectSaveDialog.RestoreDirectory	=	false;			
@@ -289,13 +286,13 @@ namespace NextGraphics
 		private	void	saveXMLFile(string prjPath)
 		{
 			// TODO: palette and settings values must be updated into model when closing those forms!
-			int	transIndex		=	thePalette.transIndex;
-			int	loadedColourCount	=	thePalette.loadedColourCount;
-			int	loadedColourStart	=	thePalette.loadedColourStart;
+			int	transIndex		=	Model.Palette.TransparentIndex;
+			int	loadedColourCount	=	Model.Palette.UsedCount;
+			int	loadedColourStart	=	Model.Palette.StartIndex;
 			using 	(XmlTextWriter writer = new XmlTextWriter(prjPath, Encoding.UTF8))
 			{
 				writer.Formatting				=	Formatting.Indented;
-				XmlDocument document = model.Save(projectNode =>
+				XmlDocument document = Model.Save(projectNode =>
 				{
 #if PROPRIETARY
 					projectNode.AppendChild(parallaxWindow.writeParallax(doc));
@@ -346,34 +343,8 @@ namespace NextGraphics
 			XmlDocument xmlDoc			=	new XmlDocument();
 			xmlDoc.Load(fileName);
 
-			model.Load(xmlDoc);
-			model.BlocksAccross = (int)Math.Floor((float)blocksDisplay.Width / model.GridXSize);
-
-			thePalette.SetPaletteMapping(Enum.GetName(typeof(PaletteType), model.Palette.Type));
-			thePalette.transIndex = model.Palette.TransparentIndex;
-			thePalette.loadedColourCount = model.Palette.UsedCount;
-			thePalette.loadedColourStart = model.Palette.StartIndex;
-			thePalette.fourBitOutput = model.FourBit;
-			thePalette.setStartIndexText();
-			thePalette.setColourCountText();
-			for (int c = 0; c < 256; c++)
-			{
-				XmlNode colourNode = xmlDoc.SelectSingleNode("//Project/Palette/Colour" + c.ToString());
-				if (colourNode.Attributes["Red"] != null)
-				{
-					thePalette.loadedPalette[c, 0] = byte.Parse(colourNode.Attributes["Red"].Value);
-				}
-				if (colourNode.Attributes["Green"] != null)
-				{
-					thePalette.loadedPalette[c, 1] = byte.Parse(colourNode.Attributes["Green"].Value);
-				}
-				if (colourNode.Attributes["Blue"] != null)
-				{
-					thePalette.loadedPalette[c, 2] = byte.Parse(colourNode.Attributes["Blue"].Value);
-				}
-			}
-			thePalette.setLoadedProjectForms();
-			thePalette.setForm();
+			Model.Load(xmlDoc);
+			Model.BlocksAccross = (int)Math.Floor((float)blocksDisplay.Width / Model.GridXSize);
 
 			setForm();
 			restoreFromList();
@@ -396,14 +367,14 @@ namespace NextGraphics
 		private	 void	restoreFromList()
 		{			
 			this.listBox1.Items.Clear();
-			this.listBox1.Items.Add(" "+model.Name);
+			this.listBox1.Items.Add(" "+Model.Name);
 			sourceImages.Clear();
 			imageWindows.Clear();
 			bool			removed			=	false;
 			List<string> 		removeNames		=	new	List<string>();
 			removeNames.Clear();
 			Bitmap	srcBitmap;
-			foreach (string name in model.Filenames)
+			foreach (string name in Model.Filenames)
 			{
 				try 
 				{ 
@@ -432,7 +403,7 @@ namespace NextGraphics
 			foreach (string name in removeNames)
 			{
 				removed		= true;
-				model.Filenames.Remove(name);
+				Model.Filenames.Remove(name);
 			}
 			if(removed==true)
 			{				
@@ -454,14 +425,14 @@ namespace NextGraphics
 			addImagesDialog.InitialDirectory	=	ParentDirectory + "\\Renders\\";
 
 			//addImagesDialog.DefaultExt		=	".bmp"; // Default file extension 
-			addImagesDialog.FilterIndex = model.AddImagesFilterIndex;
+			addImagesDialog.FilterIndex = Model.AddImagesFilterIndex;
 			Bitmap	srcBitmap;
 			if (addImagesDialog.ShowDialog(this) == DialogResult.OK)
 			{
 				
 			//	setParentFolder(Path.GetFullPath(addImagesDialog.FileName));
 
-				model.AddImagesFilterIndex	=		addImagesDialog.FilterIndex;
+				Model.AddImagesFilterIndex	=		addImagesDialog.FilterIndex;
 				bool	rejected=false;
 				foreach (imageWindow window in imageWindows)
 				{
@@ -487,9 +458,9 @@ namespace NextGraphics
 				foreach (String file in addImagesDialog.FileNames) 
 				{
 
-					for(int i=0;i<model.Filenames.Count;i++)
+					for(int i=0;i<Model.Filenames.Count;i++)
 					{
-						if(file == model.Filenames[i])
+						if(file == Model.Filenames[i])
 						{
 							rejected	=	true;
 							goto rejectName;
@@ -503,7 +474,7 @@ namespace NextGraphics
 					}					
 					if(IsSupported(new Bitmap(srcBitmap))==true)
 					{
-						model.Filenames.Add(file);
+						Model.Filenames.Add(file);
 						sourceImages.Add(new Bitmap(srcBitmap));
 						imageWindows.Add(new imageWindow { MdiParent = this});
 						this.listBox1.Items.Add("  " + Path.GetFileName(file));	
@@ -673,16 +644,16 @@ rejectName:				;
 			this.toolStripProgressBar1.Minimum	=	0;
 			this.toolStripProgressBar1.Maximum	=	10000;
 			blockType thisCharType			=	new	blockType();	
-			int	xChars				=	(model.GridXSize/outSize);
-			int	yChars				=	(model.GridYSize/outSize);
+			int	xChars				=	(Model.GridXSize/outSize);
+			int	yChars				=	(Model.GridYSize/outSize);
 			int	MaxLimit			=	MAX_CHAR_SIZE;
 			int	PaletteOffset			=	0;
 			bool	doingCharacters			=	true;
 			tempBitmap			=	new	bitsBitmap(outSize,outSize);
-			model.GridXSize	=	int.Parse(textBox2.Text);
-			model.GridYSize =	int.Parse(textBox1.Text);
+			Model.GridXSize	=	int.Parse(textBox2.Text);
+			Model.GridYSize =	int.Parse(textBox1.Text);
 
-			if(model.OutputType == OutputType.Sprites)
+			if(Model.OutputType == OutputType.Sprites)
 			{
 				MaxLimit	=	128;
 			}
@@ -693,7 +664,7 @@ rejectName:				;
 			
 			outXChar	=	0;
 			outYChar	=	0;
-			if(model.OutputType == OutputType.Blocks)
+			if(Model.OutputType == OutputType.Blocks)
 			{ 
 				// make the first block transparent
 				if(SettingsPanel.transBlock.Checked==true)
@@ -701,21 +672,21 @@ rejectName:				;
 
 					if(blockData[0]==null)
 					{ 
-						blockData[0]	=	new	bitsBitmap(model.GridXSize,model.GridYSize);
-						for(int y=0;y<model.GridYSize;y++)
+						blockData[0]	=	new	bitsBitmap(Model.GridXSize,Model.GridYSize);
+						for(int y=0;y<Model.GridYSize;y++)
 						{ 
-							for(int x=0;x<model.GridXSize;x++)
+							for(int x=0;x<Model.GridXSize;x++)
 							{
-								blockData[0].SetPixel(x,y, (short)thePalette.transIndex);
+								blockData[0].SetPixel(x,y, (short)Model.Palette.TransparentIndex);
 							}
 						}					
-						blockToDisplay(ref blocksPanel,new Rectangle(0,0,model.GridXSize,model.GridYSize),ref blockData[0]);
+						blockToDisplay(ref blocksPanel,new Rectangle(0,0,Model.GridXSize,Model.GridYSize),ref blockData[0]);
 					}					
 					outXBlock	=	1;
 					outBlock	=	1;
 					if(blockInfo[0]==null)
 					{ 
-						blockInfo[0]		=	new	spriteInfo(model.GridXSize/outSize,model.GridYSize/outSize);
+						blockInfo[0]		=	new	spriteInfo(Model.GridXSize/outSize,Model.GridYSize/outSize);
 					}
 				}
 				if(SettingsPanel.transTile.Checked==true)
@@ -728,7 +699,7 @@ rejectName:				;
 						{ 
 							for(int x=0;x<8;x++)
 							{
-								tempData[0].SetPixel(x,y, (short)thePalette.transIndex);
+								tempData[0].SetPixel(x,y, (short)Model.Palette.TransparentIndex);
 							}
 						}					
 					}
@@ -737,32 +708,32 @@ rejectName:				;
 					outChar		=	1;
 				}
 			}
-			model.BlocksAccross =	(int)Math.Floor((float)blocksDisplay.Width/model.GridXSize);
+			Model.BlocksAccross =	(int)Math.Floor((float)blocksDisplay.Width/Model.GridXSize);
 			for(int s=0;s<sourceImages.Count;s++)
 			{ 			
-				if(model.OutputType == OutputType.Blocks)
+				if(Model.OutputType == OutputType.Blocks)
 				{ 
-					if((sourceImages[s].Width%model.GridXSize)>0)
+					if((sourceImages[s].Width%Model.GridXSize)>0)
 					{
 						// not width 
-						MessageBox.Show("The image "+Path.GetFileName(model.Filenames[s])+ " is not divisible by the width of your tiles, which will corrupt the output", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						MessageBox.Show("The image "+Path.GetFileName(Model.Filenames[s])+ " is not divisible by the width of your tiles, which will corrupt the output", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					}
-					if((sourceImages[s].Height%model.GridYSize)>0)
+					if((sourceImages[s].Height%Model.GridYSize)>0)
 					{
 						// not height 
-						MessageBox.Show("The image "+Path.GetFileName(model.Filenames[s])+ " is not divisible by the height of your tiles, which will corrupt the output", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);					
+						MessageBox.Show("The image "+Path.GetFileName(Model.Filenames[s])+ " is not divisible by the height of your tiles, which will corrupt the output", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);					
 					}
 				}
 				if(sourceImages[s]!=null)
 				{					
-					for(int yBlocks=0;yBlocks<((sourceImages[s].Height+(model.GridYSize-1))/model.GridYSize);yBlocks++)
+					for(int yBlocks=0;yBlocks<((sourceImages[s].Height+(Model.GridYSize-1))/Model.GridYSize);yBlocks++)
 					{	
-						for(int xBlocks=0;xBlocks<(sourceImages[s].Width/model.GridXSize);xBlocks++)
+						for(int xBlocks=0;xBlocks<(sourceImages[s].Width/Model.GridXSize);xBlocks++)
 						{							
-							src.X			=	xBlocks*model.GridXSize;
-							src.Y			=	yBlocks*model.GridYSize;
-							src.Width		=	model.GridXSize;
-							src.Height		=	model.GridYSize;
+							src.X			=	xBlocks*Model.GridXSize;
+							src.Y			=	yBlocks*Model.GridYSize;
+							src.Width		=	Model.GridXSize;
+							src.Height		=	Model.GridYSize;
 
 							if(outBlock>=MAX_BLOCKS)
 							{ 
@@ -775,13 +746,13 @@ rejectName:				;
 							}							
 							if(blockData[outBlock]==null)
 							{ 
-								blockData[outBlock]	=	new	bitsBitmap(model.GridXSize,model.GridYSize);
+								blockData[outBlock]	=	new	bitsBitmap(Model.GridXSize,Model.GridYSize);
 							}
 							if(blockInfo[outBlock]==null)
 							{ 
-								blockInfo[outBlock]	=	new	spriteInfo(model.GridXSize/outSize,model.GridYSize/outSize);
+								blockInfo[outBlock]	=	new	spriteInfo(Model.GridXSize/outSize,Model.GridYSize/outSize);
 							}
-							if(SettingsPanel.reduce.Checked==true &&  model.OutputType==OutputType.Sprites)
+							if(SettingsPanel.reduce.Checked==true &&  Model.OutputType==OutputType.Sprites)
 							{
 								CopyRegionIntoBlock(sourceImages[s],src,ref blockData[outBlock],ref blockInfo[outBlock],true);	
 							}
@@ -790,15 +761,15 @@ rejectName:				;
 								CopyRegionIntoBlock(sourceImages[s],src,ref blockData[outBlock],ref blockInfo[outBlock],false);
 							}
 
-							if(SettingsPanel.FourBit.Checked==true || model.OutputType==OutputType.Blocks)
+							if(SettingsPanel.FourBit.Checked==true || Model.OutputType==OutputType.Blocks)
 							{ 
-								remap4Bit(model.GridXSize, model.GridYSize);
+								remap4Bit(Model.GridXSize, Model.GridYSize);
 							}
-							for(int y=0;y<model.GridYSize;y++)
+							for(int y=0;y<Model.GridYSize;y++)
 							{ 
-								for(int x=0;x<model.GridXSize;x++)
+								for(int x=0;x<Model.GridXSize;x++)
 								{
-									if(blockData[outBlock].GetPixel(x,y)  != (short)thePalette.transIndex)
+									if(blockData[outBlock].GetPixel(x,y)  != (short)Model.Palette.TransparentIndex)
 									{ 
 										goto	notBlank;
 									}
@@ -814,7 +785,7 @@ notBlank:
 								for(int xChar=0;xChar<xChars;xChar++)
 								{	
 									
-									if(SettingsPanel.FourBit.Checked==true || model.OutputType == OutputType.Blocks)
+									if(SettingsPanel.FourBit.Checked==true || Model.OutputType == OutputType.Blocks)
 									{
 										PaletteOffset	=		blockData[outBlock].GetPixel(xChar*outSize,yChar*outSize)&0x0f0;								
 									}			
@@ -880,7 +851,7 @@ notBlank:
 									{ 
 										for(int x=0;x<outSize;x++)
 										{
-											if(blockData[outBlock].GetPixel(x+(xChar*outSize),y+(yChar*outSize)) != thePalette.transIndex)
+											if(blockData[outBlock].GetPixel(x+(xChar*outSize),y+(yChar*outSize)) != Model.Palette.TransparentIndex)
 											{
 												firstTrans	=	false;
 												goto		notTransFirst;
@@ -909,7 +880,7 @@ notTransFirst:								blockInfo[outBlock].SetData(xChar,yChar,false,false,false,
 dontDrawCharacter:							;
 								}
 							}
-							if(model.OutputType == OutputType.Blocks)
+							if(Model.OutputType == OutputType.Blocks)
 							{ 
 								BlocksLable.Text	=	"Blocks (" + outBlock.ToString() +")";
 							}
@@ -918,7 +889,7 @@ dontDrawCharacter:							;
 								BlocksLable.Text	=	"Objects (" + outBlock.ToString() +")";
 							}
 							bool repeatedBlock = false;
-							if(model.OutputType == OutputType.Blocks)
+							if(Model.OutputType == OutputType.Blocks)
 							{
 								for(int rb=0;rb<outBlock;rb++)
 								{
@@ -957,7 +928,7 @@ dontDraw:					;
 
 			tranpearntChars	=	0;
 			SortedIndex	=	0;
-			if(SettingsPanel.sortTransparent.Checked==true && model.OutputType == OutputType.Blocks)
+			if(SettingsPanel.sortTransparent.Checked==true && Model.OutputType == OutputType.Blocks)
 			{
 				for(int passes=0;passes<2;passes++)
 				{ 
@@ -1040,15 +1011,15 @@ dontDraw:					;
 			outYBlock	=	0;
 			for(int b=0;b<outBlock;b++)
 			{
-				dest.X			=	outXBlock*model.GridXSize;
-				dest.Y			=	outYBlock*model.GridYSize;
-				dest.Width		=	model.GridXSize;
-				dest.Height		=	model.GridYSize;
+				dest.X			=	outXBlock*Model.GridXSize;
+				dest.Y			=	outYBlock*Model.GridYSize;
+				dest.Width		=	Model.GridXSize;
+				dest.Height		=	Model.GridYSize;
 
 
 				charsToBlocks(ref blocksPanel, dest, b);
 
-				if(model.OutputType == OutputType.Blocks)
+				if(Model.OutputType == OutputType.Blocks)
 				{
 					BlocksLable.Text	=	"Blocks (" + b.ToString() +")";
 				}
@@ -1059,14 +1030,14 @@ dontDraw:					;
 					BlocksLable.Text	=	"Objects (" + b.ToString() +")";
 				}
 				outXBlock++;
-				if(outXBlock>=model.BlocksAccross)
+				if(outXBlock>=Model.BlocksAccross)
 				{
 					outXBlock	=	0;
 					outYBlock++;
 				}
 
 			}
-			if(model.OutputType == OutputType.Blocks)
+			if(Model.OutputType == OutputType.Blocks)
 			{ 
 				SpritesLable.Text	=	"Characters (" + outChar.ToString() +"), Transparent (" + tranpearntChars.ToString() +")";
 			}
@@ -1098,7 +1069,7 @@ dontDraw:					;
 			{									
 				for(int x=0;x<blockData[s].Width;x++)
 				{
-					if(blockData[s].GetPixel(x,y) != (short)thePalette.transIndex)
+					if(blockData[s].GetPixel(x,y) != (short)Model.Palette.TransparentIndex)
 					{ 
 						blockInfo[s].SetTop(y);
 						goto	foundTop;
@@ -1109,7 +1080,7 @@ foundTop:		for(int y=0;y<blockData[s].Height;y++)
 			{									
 				for(int x=0;x<blockData[s].Width;x++)
 				{
-					if(blockData[s].GetPixel(x,(blockData[s].Height-1)-y) != (short)thePalette.transIndex)
+					if(blockData[s].GetPixel(x,(blockData[s].Height-1)-y) != (short)Model.Palette.TransparentIndex)
 					{ 
 						blockInfo[s].SetBottom((blockData[s].Height-1)-y);
 						goto	foundBottom;
@@ -1120,7 +1091,7 @@ foundBottom:		 for(int x=0;x<blockData[s].Width;x++)
 			{
 				for(int y=0;y<blockData[s].Height;y++)
 				{		
-					if(blockData[s].GetPixel(x,y) != (short)thePalette.transIndex)
+					if(blockData[s].GetPixel(x,y) != (short)Model.Palette.TransparentIndex)
 					{ 
 						blockInfo[s].SetLeft(x);
 						goto	foundLeft;
@@ -1131,7 +1102,7 @@ foundLeft: 		for(int x=0;x<blockData[s].Width;x++)
 			{		
 				for(int y=0;y<blockData[s].Height;y++)
 				{									
-					if(blockData[s].GetPixel((blockData[s].Width-1)-x,y) != (short)thePalette.transIndex)
+					if(blockData[s].GetPixel((blockData[s].Width-1)-x,y) != (short)Model.Palette.TransparentIndex)
 					{ 
 						blockInfo[s].SetRight((blockData[s].Width-1)-x);
 						goto	foundRight;
@@ -1151,7 +1122,7 @@ foundRight:	;
 		private		void	charsToBlocks(ref Bitmap destBitmap, Rectangle destRegion,int currentBlock)
 		{
 			Color	pixelColor	=	new	Color();
-			for(int chr=0;chr< (model.GridXSize/ outSize) * (model.GridYSize/ outSize); chr++)
+			for(int chr=0;chr< (Model.GridXSize/ outSize) * (Model.GridYSize/ outSize); chr++)
 			{ 
 				bool	flipX		=	blockInfo[currentBlock].infos[chr].flippedX;
 				bool	flipY		=	blockInfo[currentBlock].infos[chr].flippedY;
@@ -1257,7 +1228,7 @@ foundRight:	;
 			{									
 				for(int x=0;x<tempData[s].Width;x++)
 				{
-					if(tempData[s].GetPixel(x,y) == (short)thePalette.transIndex)
+					if(tempData[s].GetPixel(x,y) == (short)Model.Palette.TransparentIndex)
 					{
 						return	true;
 					}
@@ -1278,7 +1249,7 @@ foundRight:	;
 			{									
 				for(int x=0;x<blockData[s].Width;x++)
 				{
-					if(blockData[s].GetPixel(x,y) == (short)thePalette.transIndex)
+					if(blockData[s].GetPixel(x,y) == (short)Model.Palette.TransparentIndex)
 					{
 						return	true;
 					}
@@ -1313,7 +1284,7 @@ foundRight:	;
 						for(int	x=0;x<outSize;x++)
 						{
 							
-							thisIndex	=	thePalette.closestColor(SetFromPalette(blockData[outBlock].GetPixel(x+(xCuts*outSize),y+(yCuts*outSize))),(short) AveragingIndex,0); //thePalette.loadedColourStart);
+							thisIndex	=	Model.Palette.ClosestColor(SetFromPalette(blockData[outBlock].GetPixel(x+(xCuts*outSize),y+(yCuts*outSize))),(short) AveragingIndex,0); //thePalette.loadedColourStart);
 							blockData[outBlock].SetPixel(x+(xCuts*outSize),y+(yCuts*outSize),thisIndex);
 						} 
 					}
@@ -1334,13 +1305,13 @@ foundRight:	;
 			bool	hasTrans	=	false;
 			bitsBitmap	rotateData	=	new	bitsBitmap(outSize,outSize);
 			// does it have any trans pixels
-			if(SettingsPanel.sortTransparent.Checked==true || model.OutputType == OutputType.Sprites)
+			if(SettingsPanel.sortTransparent.Checked==true || Model.OutputType == OutputType.Sprites)
 			{
 				for(int y=0;y<outSize;y++)
 				{ 
 					for(int x=0;x<outSize;x++)
 					{
-						if(blockData[outBlock].GetPixel(x+xOffset,y+yOffset) == (short)thePalette.transIndex)
+						if(blockData[outBlock].GetPixel(x+xOffset,y+yOffset) == (short)Model.Palette.TransparentIndex)
 						{							
 							hasTrans	=	true;
 							goto		transFound;
@@ -1360,7 +1331,7 @@ transFound:		// do we ignore all repeats?
 				{ 
 					for(int x=0;x<outSize;x++)
 					{
-						if(blockData[outBlock].GetPixel(x+xOffset,y+yOffset) != (short)thePalette.transIndex)
+						if(blockData[outBlock].GetPixel(x+xOffset,y+yOffset) != (short)Model.Palette.TransparentIndex)
 						{
 							goto	RepeatedCheck;
 						}
@@ -1402,7 +1373,7 @@ notSolid:	;
 				return	blockType.Original;
 			}	
 			// if its close to original % and not containing transparent!
-			if(samePixels>=pixelClose && (hasTrans==false  || model.OutputType == OutputType.Sprites))
+			if(samePixels>=pixelClose && (hasTrans==false  || Model.OutputType == OutputType.Sprites))
 			{ 
 				return	blockType.Repeated;
 			}
@@ -1570,7 +1541,7 @@ notSolid:	;
 				{	
 					for(int	x=0;x<srcRegion.Width;x++)
 					{
-						outBlock.SetPixel(x,y,(short)thePalette.transIndex);
+						outBlock.SetPixel(x,y,(short)Model.Palette.TransparentIndex);
 					}
 				}
 				for(int	y=0;y<srcRegion.Height;y++)
@@ -1578,7 +1549,7 @@ notSolid:	;
 					for(int	x=0;x<srcRegion.Width;x++)
 					{
 							
-						if(thePalette.closestColor(srcBitmap.GetPixel(srcRegion.X+x,srcRegion.Y+y),-1,thePalette.loadedColourStart)!=(short)thePalette.transIndex)
+						if(Model.Palette.ClosestColor(srcBitmap.GetPixel(srcRegion.X+x,srcRegion.Y+y),-1,Model.Palette.StartIndex)!=(short)Model.Palette.TransparentIndex)
 						{
 							outInfo.setOffsetY((short)y);
 							goto	checkLeft;
@@ -1589,7 +1560,7 @@ checkLeft:			for(int	x=0;x<srcRegion.Width;x++)
 				{	
 					for(int	y=0;y<srcRegion.Height;y++)
 					{							
-						if(thePalette.closestColor(srcBitmap.GetPixel(srcRegion.X+x,srcRegion.Y+y),-1,thePalette.loadedColourStart)!=(short)thePalette.transIndex)
+						if(Model.Palette.ClosestColor(srcBitmap.GetPixel(srcRegion.X+x,srcRegion.Y+y),-1,Model.Palette.StartIndex)!=(short)Model.Palette.TransparentIndex)
 						{
 							outInfo.setOffsetX((short)x);
 							goto	xYDone;
@@ -1600,7 +1571,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 				{	
 					for(int	x=outInfo.GetOffsetX();x<srcRegion.Width;x++)
 					{
-						outBlock.SetPixel(x-outInfo.GetOffsetX(),y-outInfo.GetOffsetY(),thePalette.closestColor(srcBitmap.GetPixel(srcRegion.X+x,srcRegion.Y+y),-1,thePalette.loadedColourStart));
+						outBlock.SetPixel(x-outInfo.GetOffsetX(),y-outInfo.GetOffsetY(),Model.Palette.ClosestColor(srcBitmap.GetPixel(srcRegion.X+x,srcRegion.Y+y),-1,Model.Palette.StartIndex));
 					}
 				}
 
@@ -1612,7 +1583,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 				{	
 					for(int	x=0;x<srcRegion.Width;x++)
 					{
-						outBlock.SetPixel(x,y,thePalette.closestColor(srcBitmap.GetPixel(srcRegion.X+x,srcRegion.Y+y),-1,thePalette.loadedColourStart));
+						outBlock.SetPixel(x,y,Model.Palette.ClosestColor(srcBitmap.GetPixel(srcRegion.X+x,srcRegion.Y+y),-1,Model.Palette.StartIndex));
 					}
 				}
 			}								
@@ -1656,14 +1627,14 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 		
 		public 	Color	SetFromPalette(int theIndex)
 		{
-			switch(thePalette.paletteSetting)
+			switch(Model.Palette.Type)
 			{ 
-				case	PaletteForm.PaletteMapping.mapped256:
-					return Color.FromArgb(255,thePalette.SpecNext256[theIndex,0],thePalette.SpecNext256[theIndex,1],thePalette.SpecNext256[theIndex,2]);
-				case	PaletteForm.PaletteMapping.mapped512:
-					return Color.FromArgb(255,thePalette.SpecNext512[theIndex,0],thePalette.SpecNext512[theIndex,1],thePalette.SpecNext512[theIndex,2]);
-				case	PaletteForm.PaletteMapping.mappedCustom:
-					return	Color.FromArgb(255,thePalette.loadedPalette[theIndex,0],thePalette.loadedPalette[theIndex,1],thePalette.loadedPalette[theIndex,2]);
+				case	PaletteType.Next256:
+					return Color.FromArgb(255,Palette.SpecNext256[theIndex,0],Palette.SpecNext256[theIndex,1],Palette.SpecNext256[theIndex,2]);
+				case	PaletteType.Next512:
+					return Color.FromArgb(255,Palette.SpecNext512[theIndex,0],Palette.SpecNext512[theIndex,1],Palette.SpecNext512[theIndex,2]);
+				case	PaletteType.Custom:
+					return	Color.FromArgb(255,Model.Palette[theIndex,0],Model.Palette[theIndex,1],Model.Palette[theIndex,2]);
 			}
 			return	Color.FromArgb(255,255,255,255);
 		}
@@ -1722,14 +1693,14 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 
 			pen.DashPattern = dashValues;
 			// horizontal lines
-			for (int y = 0; y < (blocksDisplay.Image.Height / model.GridYSize)+1; ++y)
+			for (int y = 0; y < (blocksDisplay.Image.Height / Model.GridYSize)+1; ++y)
 			{
-				g.DrawLine(pen, 0, y * model.GridYSize, blocksDisplay.Image.Width, y * model.GridYSize);
+				g.DrawLine(pen, 0, y * Model.GridYSize, blocksDisplay.Image.Width, y * Model.GridYSize);
 			}			
 			// verticle lines
-			for (int x = 0; x < (blocksDisplay.Image.Width/model.GridXSize)+1; ++x)
+			for (int x = 0; x < (blocksDisplay.Image.Width/Model.GridXSize)+1; ++x)
 			{
-				g.DrawLine(pen, x * model.GridXSize, 0, x * model.GridXSize, blocksDisplay.Image.Height);
+				g.DrawLine(pen, x * Model.GridXSize, 0, x * Model.GridXSize, blocksDisplay.Image.Height);
 			}	
 		}
 
@@ -1747,7 +1718,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 			Pen pen = new Pen(Color.Black);
 			float[] dashValues = { 1, 1};
 			int	divLines	=	8;
-			if(model.OutputType == OutputType.Sprites)
+			if(Model.OutputType == OutputType.Sprites)
 			{
 				divLines	=	16;
 			}
@@ -1780,16 +1751,16 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 				return;
 			}
 
-			outputFilesDialog.FileName		=	model.Name.ToLower();
+			outputFilesDialog.FileName		=	Model.Name.ToLower();
 			outputFilesDialog.Filter		=	"Machine Code (*.asm)|*.asm|All Files (*.*)|*.*";
-			outputFilesDialog.FilterIndex		=	model.OutputFilesFilterIndex;
+			outputFilesDialog.FilterIndex		=	Model.OutputFilesFilterIndex;
 			outputFilesDialog.RestoreDirectory	=	false;				
 			outputFilesDialog.InitialDirectory 	=	ParentDirectory + "\\Output\\";	
 			
 			if(outputFilesDialog.ShowDialog() == DialogResult.OK)
 			{
 					
-				model.OutputFilesFilterIndex	=		outputFilesDialog.FilterIndex;
+				Model.OutputFilesFilterIndex	=		outputFilesDialog.FilterIndex;
 				ouputFiles(outputFilesDialog.FileName);
 			}
 		}
@@ -1806,24 +1777,24 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 			string		lableString		=	"Sprites";
 			string		tilesSave;
 			int		binSize			=	0;
-			int	numColours			=	thePalette.loadedColourCount;
-			int	startColour			=	thePalette.loadedColourStart;
-			switch (model.CenterPosition)
+			int	numColours			=	Model.Palette.UsedCount;
+			int	startColour			=	Model.Palette.StartIndex;
+			switch (Model.CenterPosition)
 			{
 				case	0:						
-					xOffset			=	-(model.GridXSize/2);
-					yOffset			=	-(model.GridYSize/2);
+					xOffset			=	-(Model.GridXSize/2);
+					yOffset			=	-(Model.GridYSize/2);
 				break;					
 				case	1:						
 					xOffset			=	0;
-					yOffset			=	-(model.GridYSize/2);
+					yOffset			=	-(Model.GridYSize/2);
 				break;									
 				case	2:						
-					xOffset			=	(model.GridXSize/2);
-					yOffset			=	-(model.GridYSize/2);
+					xOffset			=	(Model.GridXSize/2);
+					yOffset			=	-(Model.GridYSize/2);
 				break;
 				case	3:						
-					xOffset			=	-(model.GridXSize/2);
+					xOffset			=	-(Model.GridXSize/2);
 					yOffset			=	0;
 				break;					
 				case	4:						
@@ -1831,26 +1802,26 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					yOffset			=	0;
 				break;									
 				case	5:						
-					xOffset			=	(model.GridXSize/2);
+					xOffset			=	(Model.GridXSize/2);
 					yOffset			=	0;
 				break;
 				case	6:						
-					xOffset			=	-(model.GridXSize/2);
-					yOffset			=	(model.GridYSize/2);
+					xOffset			=	-(Model.GridXSize/2);
+					yOffset			=	(Model.GridYSize/2);
 				break;					
 				case	7:						
 					xOffset			=	0;
-					yOffset			=	(model.GridYSize/2);
+					yOffset			=	(Model.GridYSize/2);
 				break;									
 				case	8:						
-					xOffset			=	(model.GridXSize/2);
-					yOffset			=	(model.GridYSize/2);
+					xOffset			=	(Model.GridXSize/2);
+					yOffset			=	(Model.GridYSize/2);
 				break;
 			}
 			 	
 				// Define date to be displayed.
 			DateTime todaysDate		=	DateTime.Now;
-			string	lableNames		=	Regex.Replace(model.Name,@"\s+", "");
+			string	lableNames		=	Regex.Replace(Model.Name,@"\s+", "");
 			if(Path.HasExtension(outputFilesDialogFileName)==false)
 			{
 				outPath			=	outputFilesDialogFileName + ".asm";
@@ -1869,31 +1840,31 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 			using (StreamWriter outputFile	=	new StreamWriter(outPath))
 			{ 
 
-				outputFile.WriteLine("// " + model.Name + ".asm");
+				outputFile.WriteLine("// " + Model.Name + ".asm");
 				outputFile.WriteLine("// Created on " + todaysDate.ToString("F", CultureInfo.CreateSpecificCulture("en-US")) + " by the NextGraphics tool from");
 				outputFile.WriteLine("// patricia curtis at luckyredfish dot com\r\n");
 				outputFile.WriteLine((lableNames + "_Colours").ToUpper() +":\t\tequ\t" + numColours.ToString() + "\r\n");
 
-				if(thePalette.paletteSetting==PaletteForm.PaletteMapping.mappedCustom)
+				if(Model.Palette.Type == PaletteType.Custom)
 				{ 
 					outputFile.WriteLine(lableNames + "Palette:");
 					for(int j=0;j<numColours;j++)
 					{
 						if(SettingsPanel.comments.SelectedIndex==(int)comments.fullComments)
 						{ 
-							outputFile.WriteLine(	"\t\t\tdb\t%" + toBinary(EightbitPalette(thePalette.loadedPalette[startColour+j,0],thePalette.loadedPalette[startColour+j,1],thePalette.loadedPalette[startColour+j,2])) +
-										"\t//\t" + thePalette.loadedPalette[startColour+j,0].ToString() +","+ thePalette.loadedPalette[startColour+j,1].ToString() +","+ thePalette.loadedPalette[startColour+j,2].ToString());
+							outputFile.WriteLine(	"\t\t\tdb\t%" + toBinary(EightbitPalette(Model.Palette[startColour+j,0],Model.Palette[startColour+j,1],Model.Palette[startColour+j,2])) +
+										"\t//\t" + Model.Palette[startColour+j,0].ToString() +","+ Model.Palette[startColour+j,1].ToString() +","+ Model.Palette[startColour+j,2].ToString());
 						}
 						else
 						{
-							outputFile.WriteLine("\t\t\tdb\t%" + toBinary(EightbitPalette(thePalette.loadedPalette[startColour+j,0],thePalette.loadedPalette[startColour+j,1],thePalette.loadedPalette[startColour+j,2])));
+							outputFile.WriteLine("\t\t\tdb\t%" + toBinary(EightbitPalette(Model.Palette[startColour+j,0],Model.Palette[startColour+j,1],Model.Palette[startColour+j,2])));
 						}						
 					}
 				}
 				else
 				{
 
-					if(thePalette.paletteSetting==PaletteForm.PaletteMapping.mapped256)
+					if(Model.Palette.Type == PaletteType.Next256)
 					{
 						if(SettingsPanel.comments.SelectedIndex==(int)comments.fullComments)
 						{ 
@@ -1910,7 +1881,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 						}
 					}
 				}
-				if(model.OutputType == OutputType.Sprites)
+				if(Model.OutputType == OutputType.Sprites)
 				{
 					lableString	=	"Sprite";
 				}
@@ -1919,11 +1890,11 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					lableString	=	"Tile";
 				}
 				outputFile.Write("\r\n");
-				if(SettingsPanel.FourBit.Checked==true  && model.OutputType == OutputType.Sprites)
+				if(SettingsPanel.FourBit.Checked==true  && Model.OutputType == OutputType.Sprites)
 				{ 
 					outputFile.WriteLine((lableNames + "_" + lableString).ToUpper() + "_SIZE:\t\tequ\t128\r\n");
 				}
-				else if(model.OutputType == OutputType.Sprites)
+				else if(Model.OutputType == OutputType.Sprites)
 				{
 					outputFile.WriteLine((lableNames + "_" + lableString).ToUpper() + "_SIZE:\t\tequ\t256\r\n");
 				}
@@ -1942,7 +1913,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					{ 
 						for(int s=0;s<outChar;s++)
 						{
-							if(charData[s].Trans == true && model.OutputType == OutputType.Sprites && SettingsPanel.Transparent.Checked == false)
+							if(charData[s].Trans == true && Model.OutputType == OutputType.Sprites && SettingsPanel.Transparent.Checked == false)
 							{
 								continue;
 							}
@@ -1950,7 +1921,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 							{									
 								for(int x=0;x<charData[s].Width;x++)
 								{	
-									if(SettingsPanel.FourBit.Checked==true || model.OutputType == OutputType.Blocks)
+									if(SettingsPanel.FourBit.Checked==true || Model.OutputType == OutputType.Blocks)
 									{ 
 										colourByte		=	(byte)(charData[s].GetPixel(x,y)&0x0f);
 										if((x&1)==0)
@@ -1994,7 +1965,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 
 							for(int x=0;x<charData[s].Width;x++)
 							{	
-								if(SettingsPanel.FourBit.Checked==true || model.OutputType == OutputType.Blocks)
+								if(SettingsPanel.FourBit.Checked==true || Model.OutputType == OutputType.Blocks)
 								{ 
 									if((x&1)==0)
 									{ 
@@ -2030,7 +2001,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 						}
 					}
 				}
-				if(SettingsPanel.comments.SelectedIndex==(int)comments.fullComments && model.OutputType == OutputType.Sprites)
+				if(SettingsPanel.comments.SelectedIndex==(int)comments.fullComments && Model.OutputType == OutputType.Sprites)
 				{ 
 					outputFile.WriteLine("\r\n\t\t\t\t// number of sprites\r\n");
 					outputFile.WriteLine("\t\t\t\t\t// x offset from center of sprite");
@@ -2057,7 +2028,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 	
 				int		spriteCount		=	0;
 				int	idReduction	=	0;
-				if(charData[0].Trans == true && model.OutputType == OutputType.Sprites && SettingsPanel.Transparent.Checked == false)
+				if(charData[0].Trans == true && Model.OutputType == OutputType.Sprites && SettingsPanel.Transparent.Checked == false)
 				{
 					idReduction	=	1;
 				}
@@ -2069,7 +2040,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 						{			
 							// check to see if any square is transparent
 
-							if(model.OutputType == OutputType.Sprites)
+							if(Model.OutputType == OutputType.Sprites)
 							{ 
 								spriteCount	=	blockInfo[s].Width*blockInfo[s].Height;
 
@@ -2089,7 +2060,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 							{
 								for(int x=0;x<blockInfo[s].Width;x++)
 								{											
-									if(model.OutputType == OutputType.Sprites)
+									if(Model.OutputType == OutputType.Sprites)
 									{
 										if(blockInfo[s].GetTransparent(x,y)==true)
 										{
@@ -2171,7 +2142,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					outputFile.Write("// Collisions Left Width Top Height\n");
 					for(int s=0;s<outBlock;s++)
 					{				
-						if(model.OutputType == OutputType.Sprites)
+						if(Model.OutputType == OutputType.Sprites)
 						{ 
 							Rectangle			collision = new Rectangle(blockInfo[s].Left,blockInfo[s].Top,blockInfo[s].Right-blockInfo[s].Left,blockInfo[s].Bottom-blockInfo[s].Top);
 							outputFile.Write(lableNames + "Collision" + s.ToString() +":");
@@ -2185,7 +2156,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					outputFile.Write("\r\n");
 					for(int s=0;s<outBlock;s++)
 					{				
-						if(model.OutputType == OutputType.Sprites)
+						if(Model.OutputType == OutputType.Sprites)
 						{ 
 							spriteCount	=	blockInfo[s].Width*blockInfo[s].Height;
 
@@ -2220,7 +2191,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 							int	writtenWidth		=	blockInfo[s].Width;
 							for(int x=0;x<blockInfo[s].Width;x++)
 							{				
-								if(model.OutputType == OutputType.Sprites)
+								if(Model.OutputType == OutputType.Sprites)
 								{ 
 									if(blockInfo[s].GetTransparent(x,y)==true)
 									{
@@ -2315,11 +2286,11 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 							}									
 							if(y<(blockInfo[s].Height)-1)
 							{
-								if(blockInfo[s].GetTransparent(blockInfo[s].Width-1,y)==false || model.OutputType == OutputType.Blocks)
+								if(blockInfo[s].GetTransparent(blockInfo[s].Width-1,y)==false || Model.OutputType == OutputType.Blocks)
 								{
 									outputFile.Write(",\t");
 								}
-								if(spriteCount>10 && model.OutputType == OutputType.Sprites)
+								if(spriteCount>10 && Model.OutputType == OutputType.Sprites)
 								{
 									outputFile.Write("\r\n\t\t\t\t.db\t\t");
 								}
@@ -2332,7 +2303,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					}
 				}									
 				outputFile.Write("\r\n");
-				if(model.OutputType == OutputType.Sprites)
+				if(Model.OutputType == OutputType.Sprites)
 				{ 
 					outputFile.Write(lableNames + "Frames:\t\t.dw\t");
 					for(int s=0;s<outBlock;s++)
@@ -2352,7 +2323,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 				{
 					outputFile.Write(lableNames.ToUpper()+"_FILE_SIZE\tequ\t" + binSize.ToString());
 
-					outputFile.Write("\r\n"+ lableNames	+	"File:\t\t\tdw\t" + model.Name.ToUpper()+"_FILE_SIZE\r\n");
+					outputFile.Write("\r\n"+ lableNames	+	"File:\t\t\tdw\t" + Model.Name.ToUpper()+"_FILE_SIZE\r\n");
 					outputFile.Write("\t\t\tdb\tPATH,\"game/level1/" + lableNames.ToLower() + ".bin\",0\r\n");
 
 				}
@@ -2361,7 +2332,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 			int	yPos	=	0;
 			int	xPos	=	0;
 			// now output a blocks file BMP 
-			if(model.OutputType == OutputType.Blocks)
+			if(Model.OutputType == OutputType.Blocks)
 			{ 
 				int	outBlocksAcross		=	int.Parse(SettingsPanel.tilesAcross.Text);
 				int	outBlocksDown		=	(int)Math.Round((double)outBlock/outBlocksAcross)+1;
@@ -2370,7 +2341,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 				string	blocksOutFilename	=	Path.GetFileNameWithoutExtension(outputFilesDialogFileName);
 				if(SettingsPanel.blocksOut.Checked==true)
 				{ 
-					Bitmap	outBlocks	=	new	Bitmap(model.GridXSize*outBlocksAcross,model.GridYSize*outBlocksDown,PixelFormat.Format24bppRgb);
+					Bitmap	outBlocks	=	new	Bitmap(Model.GridXSize*outBlocksAcross,Model.GridYSize*outBlocksDown,PixelFormat.Format24bppRgb);
 					{
 						yPos			=	0;
 						xPos			=	0;
@@ -2381,18 +2352,18 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 						}
 						for(int b=startBlock;b<outBlock;b++)
 						{
-							for(int	y=0;y<model.GridYSize;y++)
+							for(int	y=0;y<Model.GridYSize;y++)
 							{		
-								for(int	x=0;x<model.GridXSize;x++)
+								for(int	x=0;x<Model.GridXSize;x++)
 								{									
-									outBlocks.SetPixel(x+(xPos*model.GridXSize),yPos+y,SetFromPalette(blockData[b].GetPixel(x,y)));
+									outBlocks.SetPixel(x+(xPos*Model.GridXSize),yPos+y,SetFromPalette(blockData[b].GetPixel(x,y)));
 								}
 							}	
 							xPos++;
 							if(xPos>=outBlocksAcross)
 							{ 
 								xPos	=	0;
-								yPos	+=	model.GridYSize;		
+								yPos	+=	Model.GridYSize;		
 							}			
 						}
 						switch(SettingsPanel.blocksFormat.SelectedIndex)
@@ -2464,8 +2435,8 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					using(BinaryWriter reverseFile	=	new BinaryWriter(File.Open(Path.ChangeExtension(outputFilesDialogFileName,"blk"), FileMode.OpenOrCreate)))
 					{ 
 							
-						byte	xChars			=	(byte)(model.GridXSize/outSize);
-						byte	yChars			=	(byte)(model.GridYSize/outSize);
+						byte	xChars			=	(byte)(Model.GridXSize/outSize);
+						byte	yChars			=	(byte)(Model.GridYSize/outSize);
 						int	outInt			=	0;														
 						reverseFile.Write(tilesSave);
 						reverseFile.Write(xChars);
@@ -2511,8 +2482,8 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					using(BinaryWriter mapFile	=	new BinaryWriter(File.Open(Path.ChangeExtension(outputFilesDialogFileName,"map"), FileMode.OpenOrCreate)))
 					{ 
 							
-						byte	xChars			=	(byte)(model.GridXSize/outSize);
-						byte	yChars			=	(byte)(model.GridYSize/outSize);
+						byte	xChars			=	(byte)(Model.GridXSize/outSize);
+						byte	yChars			=	(byte)(Model.GridYSize/outSize);
 						int	outInt			=	0;														
 						for(int b=0;b<outBlock;b++)
 						{								
@@ -2542,7 +2513,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					}
 				}
 			}
-			else if(model.OutputType == OutputType.Sprites)	// must be sprites out
+			else if(Model.OutputType == OutputType.Sprites)	// must be sprites out
 			{
 				if(SettingsPanel.tilesOut.Checked==true)
 				{ 					
@@ -2595,9 +2566,9 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					{		
 						int	fx			=	0;
 						int	fy			=	0;
-						byte	xChars			=	(byte)(model.GridXSize/outSize);
-						byte	yChars			=	(byte)(model.GridYSize/outSize);
-						Bitmap	outSprite		=	new	Bitmap(model.GridXSize,model.GridYSize,PixelFormat.Format24bppRgb);
+						byte	xChars			=	(byte)(Model.GridXSize/outSize);
+						byte	yChars			=	(byte)(Model.GridYSize/outSize);
+						Bitmap	outSprite		=	new	Bitmap(Model.GridXSize,Model.GridYSize,PixelFormat.Format24bppRgb);
 						{
 							for(int	y=0;y<yChars;y++)
 							{		
@@ -2611,7 +2582,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 											
 											if(blockInfo[s].GetTransparent(x,y)==true)
 											{
-												outSprite.SetPixel(xp+(x*16),yp+(y*16),SetFromPalette(thePalette.transIndex));
+												outSprite.SetPixel(xp+(x*16),yp+(y*16),SetFromPalette(Model.Palette.TransparentIndex));
 											}
 											else
 											{
@@ -2645,7 +2616,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					paletteFile.Write((byte) numColours);
 					for(int j=0;j<numColours;j++)
 					{
-						paletteFile.Write((byte) EightbitPalette(thePalette.loadedPalette[startColour+j,0],thePalette.loadedPalette[startColour+j,1],thePalette.loadedPalette[startColour+j,2]));
+						paletteFile.Write((byte) EightbitPalette(Model.Palette[startColour+j,0],Model.Palette[startColour+j,1],Model.Palette[startColour+j,2]));
 														
 					}
 				}
@@ -2659,11 +2630,11 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 		//
 		//-------------------------------------------------------------------------------------------------------------------	
 		private void openPaletteClick(object sender, EventArgs e)
-		{						
-				
-			thePalette.StartPosition	=	FormStartPosition.CenterParent;
-			thePalette.ShowDialog();
-			if (thePalette.DialogResult == DialogResult.OK)
+		{
+			PaletteForm.StartPosition	=	FormStartPosition.CenterParent;
+			PaletteForm.Model = Model;
+			PaletteForm.ShowDialog();
+			if (PaletteForm.DialogResult == DialogResult.OK)
 			{
 				PaletteSet	=	true;
 			}			
@@ -2678,12 +2649,12 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 		{
 			// move down
 			int	thisIndex		=	this.listBox1.SelectedIndex;
-			if(thisIndex<=model.Filenames.Count-1 && thisIndex>0)
+			if(thisIndex<=Model.Filenames.Count-1 && thisIndex>0)
 			{
 				
-				string	temp			=	model.Filenames[thisIndex];
-				model.Filenames[thisIndex]		=	model.Filenames[thisIndex-1];
-				model.Filenames[thisIndex-1]		=	temp;
+				string	temp			=	Model.Filenames[thisIndex];
+				Model.Filenames[thisIndex]		=	Model.Filenames[thisIndex-1];
+				Model.Filenames[thisIndex-1]		=	temp;
 				restoreFromList();
 				this.listBox1.SelectedIndex	=	thisIndex+1;
 			}		
@@ -2703,9 +2674,9 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 			if(thisIndex>1 && thisIndex>0)
 			{
 				thisIndex--;
-				string	temp			=	model.Filenames[thisIndex-1];
-				model.Filenames[thisIndex-1]		=	model.Filenames[thisIndex];
-				model.Filenames[thisIndex]		=	temp;
+				string	temp			=	Model.Filenames[thisIndex-1];
+				Model.Filenames[thisIndex-1]		=	Model.Filenames[thisIndex];
+				Model.Filenames[thisIndex]		=	temp;
 				restoreFromList();
 				this.listBox1.SelectedIndex	=	thisIndex;
 			}
@@ -2728,7 +2699,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 				if (result == DialogResult.Yes)  
 				{  
 					
-					model.Filenames.RemoveAt(this.listBox1.SelectedIndex-1);
+					Model.Filenames.RemoveAt(this.listBox1.SelectedIndex-1);
 					restoreFromList();
 				}  							
 			}
@@ -2771,7 +2742,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 				// to it.
 				selectedRadio = rb;
 			}
-			model.OutputType			=	OutputType.Blocks;
+			Model.OutputType			=	OutputType.Blocks;
 			outSize			=	8;
 			charactersDisplay.Invalidate();
 			charactersDisplay.Refresh();		
@@ -2792,7 +2763,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 				// to it.
 				selectedRadio = rb;
 			}			
-			model.OutputType			=	OutputType.Sprites;	
+			Model.OutputType			=	OutputType.Sprites;	
 			outSize			=	16;		
 			charactersDisplay.Invalidate();
 			charactersDisplay.Refresh();			
@@ -2807,12 +2778,12 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 		public	void	setForm()
 		{
 			this.listBox1.Items.Clear();
-			this.listBox1.Items.Add(" " + model.Name);
-			model.Filenames.ForEach(filename => this.listBox1.Items.Add(" " + filename));
+			this.listBox1.Items.Add(" " + Model.Name);
+			Model.Filenames.ForEach(filename => this.listBox1.Items.Add(" " + filename));
 
-			textBox2.Text	=	model.GridYSize.ToString();	
-			textBox1.Text	=	model.GridXSize.ToString();
-			if(model.OutputType == OutputType.Sprites)
+			textBox2.Text	=	Model.GridYSize.ToString();	
+			textBox1.Text	=	Model.GridXSize.ToString();
+			if(Model.OutputType == OutputType.Sprites)
 			{
 				spritesOut.Checked	=	true;
 				blocksOut.Checked	=	false;	
@@ -2842,44 +2813,44 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 			int size;
 			if(int.TryParse(textBox2.Text, out size))
 			{
-				model.GridYSize = size;
+				Model.GridYSize = size;
 
-				if (model.OutputType == OutputType.Sprites)
+				if (Model.OutputType == OutputType.Sprites)
 				{
-					if(model.GridYSize<16)
+					if(Model.GridYSize<16)
 					{
-						model.GridYSize	=	16;
+						Model.GridYSize	=	16;
 					}
-					else if (model.GridYSize>320)
+					else if (Model.GridYSize>320)
 					{ 
-						model.GridYSize	=	320;
+						Model.GridYSize	=	320;
 					}
 					else
 					{
-						model.GridYSize	=	(model.GridYSize + 15) & ~0xF;						
+						Model.GridYSize	=	(Model.GridYSize + 15) & ~0xF;						
 					}
 				}
 				else
 				{ 
-					if(model.GridYSize<8)
+					if(Model.GridYSize<8)
 					{
-						model.GridYSize	=	8;
+						Model.GridYSize	=	8;
 					}
-					else if (model.GridYSize>128)
+					else if (Model.GridYSize>128)
 					{ 
-						model.GridYSize	=	128;
+						Model.GridYSize	=	128;
 					}
 					else
 					{
-						model.GridYSize	=	(model.GridYSize + 7) & ~0x7;
+						Model.GridYSize	=	(Model.GridYSize + 7) & ~0x7;
 					}
 				}
-				textBox2.Text	=	model.GridYSize.ToString();
+				textBox2.Text	=	Model.GridYSize.ToString();
 			}
 			else
 			{				
-				model.GridYSize	=	32;
-				textBox2.Text	=	model.GridYSize.ToString();
+				Model.GridYSize	=	32;
+				textBox2.Text	=	Model.GridYSize.ToString();
 			}
 			blocksDisplay.Invalidate();
 			blocksDisplay.Refresh();			
@@ -2896,46 +2867,46 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 			int size;
 			if(int.TryParse(textBox1.Text, out size))
 			{
-				model.GridXSize = size;
+				Model.GridXSize = size;
 
-				if (model.OutputType == OutputType.Sprites)
+				if (Model.OutputType == OutputType.Sprites)
 				{
-					if(model.GridXSize<16)
+					if(Model.GridXSize<16)
 					{
-						model.GridXSize	=	16;
+						Model.GridXSize	=	16;
 					}
-					else if (model.GridXSize>320)
+					else if (Model.GridXSize>320)
 					{ 
-						model.GridXSize	=	320;
+						Model.GridXSize	=	320;
 					}
 					else
 					{
-						model.GridXSize	=	(model.GridXSize + 15) & ~0xF;						
+						Model.GridXSize	=	(Model.GridXSize + 15) & ~0xF;						
 					}
 				}
 				else
 				{ 
-					if(model.GridXSize<8)
+					if(Model.GridXSize<8)
 					{
-						model.GridXSize	=	8;
+						Model.GridXSize	=	8;
 					}
-					else if (model.GridXSize>128)
+					else if (Model.GridXSize>128)
 					{ 
-						model.GridXSize	=	128;
+						Model.GridXSize	=	128;
 					}
 					else
 					{
-						model.GridXSize	=	(model.GridYSize + 7) & ~0x7;
+						Model.GridXSize	=	(Model.GridYSize + 7) & ~0x7;
 					}
 				}							
-				textBox1.Text	=	model.GridXSize.ToString();
+				textBox1.Text	=	Model.GridXSize.ToString();
 			}
 			else
 			{				
-				model.GridXSize	=	32;
-				textBox1.Text	=	model.GridXSize.ToString();
+				Model.GridXSize	=	32;
+				textBox1.Text	=	Model.GridXSize.ToString();
 			}
-			model.BlocksAccross	=	(int)Math.Floor((float)blocksDisplay.Width/model.GridXSize);
+			Model.BlocksAccross	=	(int)Math.Floor((float)blocksDisplay.Width/Model.GridXSize);
 			blocksDisplay.Invalidate();
 			blocksDisplay.Refresh();
 		}
@@ -2949,7 +2920,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 		private void fourBitColourChanged(object sender, EventArgs e)
 		{
 			CheckBox		box	=	(CheckBox)sender;
-			thePalette.fourBitOutput	=	box.Checked;	
+			Model.FourBit = box.Checked;
 		}
 
 		//-------------------------------------------------------------------------------------------------------------------
@@ -2961,7 +2932,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 		private void openIgnorePanel(object sender, EventArgs e)
 		{
 			SettingsPanel.StartPosition	=	FormStartPosition.CenterParent;
-			SettingsPanel.Model = model;
+			SettingsPanel.Model = Model;
 			SettingsPanel.ShowDialog();
 		}
 
@@ -2996,7 +2967,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 				blocksView	=	new	imageWindow();
 			}
 			blocksView.MdiParent		=	this;
-			blocksView.inputImage		=	new	Bitmap(20*model.GridXSize,12*model.GridYSize);
+			blocksView.inputImage		=	new	Bitmap(20*Model.GridXSize,12*Model.GridYSize);
 			blocksView.srcPicture.Image	=	blocksView.inputImage;
 			int	blocksX			=	0;
 			int	blocksY			=	0;
@@ -3031,7 +3002,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 									readX		=	7-readX;
 								}
 								Color	readColour	=	SetFromPalette(charData[tileId].GetPixel(readX,readY));								
-								blocksView.inputImage.SetPixel((x*8)+pixelX+(blocksX*model.GridXSize),(y*8)+pixelY+(blocksY*model.GridYSize),readColour);									
+								blocksView.inputImage.SetPixel((x*8)+pixelX+(blocksX*Model.GridXSize),(y*8)+pixelY+(blocksY*Model.GridYSize),readColour);									
 							} 
 						}
 						
@@ -3072,7 +3043,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 			}
 			imageWindows.Clear();
 			sourceImages.Clear();
-			foreach (String file in model.Filenames) 
+			foreach (String file in Model.Filenames) 
 			{				
 				using (var fs = new System.IO.FileStream(file, System.IO.FileMode.Open))
 				{
@@ -3117,8 +3088,8 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					newProjectForm.ShowDialog();
 					if (newProjectForm.DialogResult == DialogResult.OK)
 					{
-						model.Name	=	newProjectForm.textBox1.Text;				
-						this.listBox1.Items[0] = " "+model.Name;
+						Model.Name	=	newProjectForm.textBox1.Text;				
+						this.listBox1.Items[0] = " "+Model.Name;
 					}
 				}
 				else
@@ -3131,7 +3102,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 							{
 								MdiParent = this
 							};
-							imageWindows[index-1].loadImage(model.Filenames[index-1],model.GridXSize,model.GridYSize);
+							imageWindows[index-1].loadImage(Model.Filenames[index-1],Model.GridXSize,Model.GridYSize);
 							imageWindows[index-1].Show();
 							imageWindows[index-1].Height	=	this.Height-(toolStrip.Height+100);
 							imageWindows[index-1].Width	=	this.Width-(FilesView.Width+imageWindows[index-1].Left);
@@ -3152,7 +3123,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					{
 						MdiParent = this
 					};
-					blocksWindow.copyImage(blocksPanel,model.GridXSize,model.GridYSize,true);
+					blocksWindow.copyImage(blocksPanel,Model.GridXSize,Model.GridYSize,true);
 				//	blocksWindow.loadImage(model.Filenames[index-1],model.GridXSize,model.GridYSize);
 					blocksWindow.Show();
 					blocksWindow.Height	=	this.Height-(toolStrip.Height+200);
@@ -3174,7 +3145,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					{
 						MdiParent = this
 					};
-					if(model.OutputType == OutputType.Sprites)
+					if(Model.OutputType == OutputType.Sprites)
 					{
 						charsWindow.copyImage(charsPanel,16,16,false);
 					}
@@ -3265,7 +3236,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					SettingsPanel.comments.SelectedIndex	=	(int)comments.noComments;
 					
 					CopyBlocksImage();
-					ouputFiles(ParentDirectory + "\\Output\\" + model.Name.ToLower() + ".asm");
+					ouputFiles(ParentDirectory + "\\Output\\" + Model.Name.ToLower() + ".asm");
 
 				}
 			}
@@ -3348,7 +3319,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 				{					
 					informationWindow.infoTextBox.SelectionColor = Color.Black; 	
 					informationWindow.infoTextBox.AppendText(b.ToString()+"\t");
-					for(int chr=0;chr< (model.GridXSize/ outSize) * (model.GridYSize/ outSize); chr++)
+					for(int chr=0;chr< (Model.GridXSize/ outSize) * (Model.GridYSize/ outSize); chr++)
 					{ 
 						informationWindow.infoTextBox.AppendText("\t");
 						if(blockInfo[b].infos[chr].hasTranspearent==true)
@@ -3375,7 +3346,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 				{					
 					informationWindow.infoTextBox.SelectionColor = Color.Black; 	
 					informationWindow.infoTextBox.AppendText(b.ToString()+"\t");
-					for(int chr=0;chr< (model.GridXSize/ outSize) * (model.GridYSize/ outSize); chr++)
+					for(int chr=0;chr< (Model.GridXSize/ outSize) * (Model.GridYSize/ outSize); chr++)
 					{
 						counts[sortIndexs[blockInfo[b].infos[chr].originalId]]++;
 					}
