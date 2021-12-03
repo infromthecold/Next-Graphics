@@ -24,16 +24,6 @@ namespace NextGraphics
 		//
 		//-------------------------------------------------------------------------------------------------------------------
 			
-		public	enum	outputData
-		{ 
-			Sprites,
-			Blocks,
-		}
-//		public	enum	writeType
-//		{ 
-//			Assember,
-//			//Basic
-//		}
 		public enum blockType
 		{	
 			Original,
@@ -228,22 +218,21 @@ namespace NextGraphics
 			DisposeImageWindows();
 		}
 
+#if DEBUG_WINDOW
 
 		//-------------------------------------------------------------------------------------------------------------------
 		//
 		// unused function for debugging 
 		//
 		//-------------------------------------------------------------------------------------------------------------------
-
 		private	void	debugText(string line)
 		{
-
 			using (StreamWriter writer = new StreamWriter("f://debug.txt",true))
 			{ 
 				writer.WriteLine(line);
 			}
-
 		}
+#endif
 
 		//-------------------------------------------------------------------------------------------------------------------
 		//
@@ -2678,28 +2667,6 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 				}
 			}
 		}
-		//-------------------------------------------------------------------------------------------------------------------
-		//
-		// check pixel format to see if its supported
-		//
-		//-------------------------------------------------------------------------------------------------------------------	
-
-		private		bool	IsSupported(Bitmap srcBitmap)
-		{
-			switch (srcBitmap.PixelFormat)
-			{
-				case PixelFormat.Format16bppRgb555:
-				case PixelFormat.Format16bppArgb1555:
-				case PixelFormat.Format16bppRgb565:						
-				case PixelFormat.Format24bppRgb:
-				case PixelFormat.Format32bppArgb:
-				//case PixelFormat.Format32bppPArgb:						
-				case PixelFormat.Format32bppRgb:
-				case PixelFormat.Format8bppIndexed:
-					return	true;
-			}
-			return	false;
-		}
 		
 		//-------------------------------------------------------------------------------------------------------------------
 		//
@@ -2749,7 +2716,7 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 		//
 		//-------------------------------------------------------------------------------------------------------------------	
 	
-		public	void	setForm()
+		private	void	setForm()
 		{
 			this.listBox1.Items.Clear();
 			this.listBox1.Items.Add(" " + Model.Name);
@@ -2883,18 +2850,6 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 			Model.BlocksAccross	=	(int)Math.Floor((float)blocksDisplay.Width/Model.GridXSize);
 			blocksDisplay.Invalidate();
 			blocksDisplay.Refresh();
-		}
-
-		//-------------------------------------------------------------------------------------------------------------------
-		//
-		// 4 bit colour check box changed
-		//
-		//-------------------------------------------------------------------------------------------------------------------	
-		
-		private void fourBitColourChanged(object sender, EventArgs e)
-		{
-			CheckBox		box	=	(CheckBox)sender;
-			Model.FourBit = box.Checked;
 		}
 
 		//-------------------------------------------------------------------------------------------------------------------
@@ -3185,21 +3140,11 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 			}
 		}
 
-		private void Main_Load(object sender, EventArgs e)
-		{
-
-		}
-
 		//-------------------------------------------------------------------------------------------------------------------
 		//
 		// change the highlighted optoin in the list box, hook
 		//
 		//-------------------------------------------------------------------------------------------------------------------
-		
-		private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-		{
-
-		}
 
 		private void wAVToRAWToolStripMenuItem_Click(object sender, EventArgs e)
 		{			
@@ -3235,11 +3180,6 @@ xYDone:				for(int	y=outInfo.GetOffsetY();y<srcRegion.Height;y++)
 					}
 				}
 			}
-		}
-
-		private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
-		{
-
 		}
 
 		private void toolStripButton7_Click(object sender, EventArgs e)
