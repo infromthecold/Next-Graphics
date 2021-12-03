@@ -89,7 +89,7 @@ namespace NextGraphics
 		private	bool			reverseByes		=	false;
 		private	bool			PaletteSet		=	false;	
 		public	PaletteForm			PaletteForm		=	new PaletteForm();
-		private	SettingsPanel	SettingsPanel			=	new SettingsPanel();
+		private	SettingsForm	SettingsPanel			=	new SettingsForm();
 		private	long			AveragingIndex		=	0;		
 		public	imageWindow		blocksView		=	new	imageWindow();
 		private	int			tranpearntChars		=	0;

@@ -164,11 +164,11 @@
     <Compile Include="fileTree.Designer.cs">
       <DependentUpon>fileTree.cs</DependentUpon>
     </Compile>
-    <Compile Include="SettingsPanel.cs">
+    <Compile Include="SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SettingsPanel.Designer.cs">
-      <DependentUpon>SettingsPanel.cs</DependentUpon>
+    <Compile Include="SettingsForm.Designer.cs">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ImageSelectForm.cs">
       <SubType>Form</SubType>
@@ -229,8 +229,8 @@
     <EmbeddedResource Include="rebuild.resx">
       <DependentUpon>rebuild.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SettingsPanel.resx">
-      <DependentUpon>SettingsPanel.cs</DependentUpon>
+    <EmbeddedResource Include="SettingsForm.resx">
+      <DependentUpon>SettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImageSelectForm.resx">
       <DependentUpon>ImageSelectForm.cs</DependentUpon>
