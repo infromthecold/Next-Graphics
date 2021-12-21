@@ -51,6 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\DataCreator.cs" />
+    <Compile Include="ExporterTesting.cs" />
     <Compile Include="MainModelLoading.cs" />
     <Compile Include="MainModelSaving.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -9,7 +9,7 @@ namespace NextGraphics.Models
 	public enum OutputType
 	{
 		Sprites,
-		Blocks,
+		Tiles,
 	}
 
 	public enum PaletteType
@@ -30,5 +30,19 @@ namespace NextGraphics.Models
 	{
 		None,
 		Full
+	}
+
+	public enum BlockType
+	{
+		Original,
+		Repeated,
+		FlippedX,
+		FlippedY,
+		FlippedXY,
+		Rotated,
+		FlippedXRotated,
+		FlippedYRotated,
+		FlippedXYRotated,
+		Transparent,
 	}
 }

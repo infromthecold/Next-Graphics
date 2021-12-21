@@ -129,9 +129,18 @@
     <Compile Include="DEBUGFORM.Designer.cs">
       <DependentUpon>DEBUGFORM.cs</DependentUpon>
     </Compile>
+    <Compile Include="Exporting\Common\ExportData.cs" />
+    <Compile Include="Exporting\Common\ExportParameters.cs" />
+    <Compile Include="Exporting\Common\RemapCallbacks.cs" />
+    <Compile Include="Exporting\Exporter.cs" />
+    <Compile Include="Exporting\Remapping\Remapper.cs" />
+    <Compile Include="Models\BlockInfo.cs" />
+    <Compile Include="Models\Colour.cs" />
+    <Compile Include="Models\IndexedBitmap.cs" />
     <Compile Include="Models\MainModel.cs" />
     <Compile Include="Models\Palette.cs" />
     <Compile Include="Models\SourceImage.cs" />
+    <Compile Include="Models\SpriteInfo.cs" />
     <Compile Include="Models\Types.cs" />
     <Compile Include="infoWindow.cs">
       <SubType>Form</SubType>
@@ -157,7 +166,6 @@
     <Compile Include="rebuild.Designer.cs">
       <DependentUpon>rebuild.cs</DependentUpon>
     </Compile>
-    <Compile Include="supportClasses.cs" />
     <Compile Include="fileTree.cs">
       <SubType>Form</SubType>
     </Compile>

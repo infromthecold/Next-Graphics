@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,8 +25,8 @@ namespace NextGraphics.Models
 		public bool IgnoreTransparentPixels { get; set; } = false;
 
 		public int CenterPosition { get; set; } = 4;
-		public int GridXSize { get; set; } = 32;
-		public int GridYSize { get; set; } = 32;
+		public int GridWidth { get; set; } = 32;
+		public int GridHeight { get; set; } = 32;
 		public int BlocksAccross { get; set; } = 1;
 		public int Accuracy { get; set; } = 100;
 
@@ -45,7 +46,18 @@ namespace NextGraphics.Models
 		public int AddImagesFilterIndex { get; set; } = 0;
 
 		// This is not saved!
+		public Bitmap BlocksBitmap { get; private set; } = null;
+		public Bitmap CharsBitmap { get; private set; } = null;
 		public CommentType CommentType { get; set; } = CommentType.Full;
+
+		#region Initialization & Disposal
+
+		public MainModel()
+		{
+			CreateBitmaps();
+		}
+
+		#endregion
 
 		#region Serialization
 
@@ -73,19 +85,19 @@ namespace NextGraphics.Models
 			// Settings
 			document.WithNode("//Project/Settings", (node) =>
 			{
-				OutputType = node.Attributes["sprites"] != null ? OutputType.Sprites : OutputType.Blocks;
+				OutputType = node.Attributes["sprites"] != null ? OutputType.Sprites : OutputType.Tiles;
 
 				node.WithAttribute("center", value => CenterPosition = int.Parse(value));
-				node.WithAttribute("xSize", value => GridXSize = int.Parse(value));
-				node.WithAttribute("ySize", value => GridYSize = int.Parse(value));
+				node.WithAttribute("xSize", value => GridWidth = int.Parse(value));
+				node.WithAttribute("ySize", value => GridHeight = int.Parse(value));
 				node.WithAttribute("binary", value => BinaryOutput = bool.Parse(value));
 				node.WithAttribute("binaryBlocks", value => BinaryBlocksOutput = bool.Parse(value));
 				node.WithAttribute("MirrorX", value => IgnoreMirroredX = bool.Parse(value));
 				node.WithAttribute("MirrorY", value => IgnoreMirroredY = bool.Parse(value));
 				node.WithAttribute("Rotations", value => IgnoreRotated = bool.Parse(value));
 				node.WithAttribute("Transparent", value => IgnoreTransparentPixels = bool.Parse(value));
-				node.WithAttribute("xSize", value => GridXSize = int.Parse(value));
-				node.WithAttribute("ySize", value => GridYSize = int.Parse(value));
+				node.WithAttribute("xSize", value => GridWidth = int.Parse(value));
+				node.WithAttribute("ySize", value => GridHeight = int.Parse(value));
 				node.WithAttribute("Sort", value => TransparentFirst = bool.Parse(value));
 				node.WithAttribute("fourBit", value => FourBit = bool.Parse(value));
 				node.WithAttribute("binary", value => BinaryOutput = bool.Parse(value));
@@ -164,11 +176,11 @@ namespace NextGraphics.Models
 			switch (OutputType)
 			{
 				case OutputType.Sprites: settingsNode.AddAttribute("sprites", "true"); break;
-				case OutputType.Blocks: settingsNode.AddAttribute("blocks", "true"); break;
+				case OutputType.Tiles: settingsNode.AddAttribute("blocks", "true"); break;
 			}
 			settingsNode.AddAttribute("center", CenterPosition.ToString());
-			settingsNode.AddAttribute("xSize", GridXSize.ToString());
-			settingsNode.AddAttribute("ySize", GridYSize.ToString());
+			settingsNode.AddAttribute("xSize", GridWidth.ToString());
+			settingsNode.AddAttribute("ySize", GridHeight.ToString());
 			settingsNode.AddAttribute("fourBit", FourBit);
 			settingsNode.AddAttribute("binary", BinaryOutput);
 			settingsNode.AddAttribute("binaryBlocks", BinaryBlocksOutput);
@@ -256,6 +268,18 @@ namespace NextGraphics.Models
 
 			Images.Clear();
 			Palette.Clear();
+
+			CreateBitmaps();
+		}
+
+		#endregion
+
+		#region Helpers
+
+		private void CreateBitmaps()
+		{
+			BlocksBitmap = new Bitmap(128, 512, PixelFormat.Format24bppRgb);
+			CharsBitmap = new Bitmap(128, 256 * 16, PixelFormat.Format24bppRgb);
 		}
 
 		#endregion

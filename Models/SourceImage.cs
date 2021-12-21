@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NextGraphics.Models
 {
-	public class SourceImage
+	public class SourceImage : IDisposable
 	{
 		/// <summary>
 		/// File name and full path.
@@ -41,9 +41,96 @@ namespace NextGraphics.Models
 			Filename = filename;
 		}
 
+		~SourceImage()
+		{
+			DisposeImage();
+		}
+
+		public void Dispose()
+		{
+			DisposeImage();
+		}
+
 		#endregion
 
 		#region Helpers
+
+		public void CopyRegionIntoBlock(
+			Palette palette,
+			Rectangle srcRegion,
+			bool reduce,
+			ref IndexedBitmap outBlock, 
+			ref SpriteInfo outInfo)
+		{
+			// clip because images may not be in blocks size 
+
+			if (srcRegion.Y + srcRegion.Height > Image.Height)
+			{
+				srcRegion.Height = Image.Height - srcRegion.Y;
+			}
+
+			if (srcRegion.X + srcRegion.Width > Image.Width)
+			{
+				srcRegion.Width = Image.Width - srcRegion.X;
+			}
+
+			if (reduce)
+			{
+				// so we make the output block all transparent
+				for (int y = 0; y < srcRegion.Height; y++)
+				{
+					for (int x = 0; x < srcRegion.Width; x++)
+					{
+						outBlock.SetPixel(x, y, (short)palette.TransparentIndex);
+					}
+				}
+				for (int y = 0; y < srcRegion.Height; y++)
+				{
+					for (int x = 0; x < srcRegion.Width; x++)
+					{
+
+						if (palette.ClosestColor(Image.GetPixel(srcRegion.X + x, srcRegion.Y + y), -1, palette.StartIndex) != (short)palette.TransparentIndex)
+						{
+							outInfo.OffsetY = (short)y;
+							goto checkLeft;
+						}
+					}
+				}
+
+			checkLeft:
+				for (int x = 0; x < srcRegion.Width; x++)
+				{
+					for (int y = 0; y < srcRegion.Height; y++)
+					{
+						if (palette.ClosestColor(Image.GetPixel(srcRegion.X + x, srcRegion.Y + y), -1, palette.StartIndex) != (short)palette.TransparentIndex)
+						{
+							outInfo.OffsetX = (short)x;
+							goto xYDone;
+						}
+					}
+				}
+
+			xYDone:
+				for (int y = outInfo.OffsetY; y < srcRegion.Height; y++)
+				{
+					for (int x = outInfo.OffsetX; x < srcRegion.Width; x++)
+					{
+						outBlock.SetPixel(x - outInfo.OffsetX, y - outInfo.OffsetY, palette.ClosestColor(Image.GetPixel(srcRegion.X + x, srcRegion.Y + y), -1, palette.StartIndex));
+					}
+				}
+			}
+			else
+			{
+				outInfo.ClearOffset();
+				for (int y = 0; y < srcRegion.Height; y++)
+				{
+					for (int x = 0; x < srcRegion.Width; x++)
+					{
+						outBlock.SetPixel(x, y, palette.ClosestColor(Image.GetPixel(srcRegion.X + x, srcRegion.Y + y), -1, palette.StartIndex));
+					}
+				}
+			}
+		}
 
 		public void ReloadImage()
 		{
@@ -52,7 +139,7 @@ namespace NextGraphics.Models
 			Image = LoadBitmapFromFile(_filename);
 		}
 
-		public void DisposeImage()
+		private void DisposeImage()
 		{
 			if (IsImageValid)
 			{
