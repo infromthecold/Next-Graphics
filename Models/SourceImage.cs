@@ -41,6 +41,13 @@ namespace NextGraphics.Models
 			Filename = filename;
 		}
 
+		public SourceImage(string filename, Bitmap bitmap)
+		{
+			// Note: we must assign to variable to avoid triggering file loading.
+			_filename = filename;
+			Image = bitmap;
+		}
+
 		~SourceImage()
 		{
 			DisposeImage();

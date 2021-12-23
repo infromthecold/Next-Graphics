@@ -31,18 +31,36 @@ namespace NextGraphics.Exporting.Common
 		public IndexedBitmap[] Chars = new IndexedBitmap[MAX_OBJECTS + 1];
 		internal IndexedBitmap[] TempData = new IndexedBitmap[MAX_OBJECTS + 1];
 
+		public Point ImageOffset { get; set; } = new Point();
+
+		/// <summary>
+		/// Number of bytes each object takes.
+		/// </summary>
+		public int ObjectSize { get; set; } = 0;
+
+		/// <summary>
+		/// Number of bytes each block takes.
+		/// </summary>
+		public int BlockSize { get; set; } = 0;
+
+		/// <summary>
+		/// Number of generated characters.
+		/// </summary>
+		public int CharactersCount { get; set; } = 0;
+
+		/// <summary>
+		/// Number of generated blocks.
+		/// </summary>
+		public int BlocksCount { get; set; } = 0;
+
 		#endregion
 
 		#region Data available during export
 
 		public ExportParameters Parameters { get; set; }
 
-		public string LabelName { get; set; } = "";
-		public string BlockLabelName { get; set; } = "";
+		public int BinarySize { get; set; } = 0;
 
-		public Point ImageOffset { get; set; } = new Point();
-
-		public int BlockSize { get; set; } = 0;
 		public int PixelFileSize { get; set; } = 0;
 
 		#endregion

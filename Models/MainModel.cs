@@ -233,11 +233,19 @@ namespace NextGraphics.Models
 		#region Data handling
 
 		/// <summary>
+		/// Simpler variant for adding an image to the <see cref="Images"/> list.
+		/// </summary>
+		public void AddImage(SourceImage image)
+		{
+			Images.Add(image);
+		}
+
+		/// <summary>
 		/// Simpler variant for adding an image to the <see cref="Images"/> list. Note that while this will attempt to load the bitmap as well, loading may fail in which case the <see cref="SourceImage.Image"/> will be null!
 		/// </summary>
 		public void AddImage(string filename)
 		{
-			Images.Add(new SourceImage(filename));
+			AddImage(new SourceImage(filename));
 		}
 
 		/// <summary>

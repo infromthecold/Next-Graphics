@@ -133,6 +133,14 @@
     <Compile Include="Exporting\Common\ExportParameters.cs" />
     <Compile Include="Exporting\Common\RemapCallbacks.cs" />
     <Compile Include="Exporting\Exporter.cs" />
+    <Compile Include="Exporting\Exporters\BaseExporter.cs" />
+    <Compile Include="Exporting\Exporters\BinaryPaletteExporter.cs" />
+    <Compile Include="Exporting\Exporters\BinaryTilesDataExporter.cs" />
+    <Compile Include="Exporting\Exporters\BinaryTilesExporter.cs" />
+    <Compile Include="Exporting\Exporters\BinaryTilesMapExporter.cs" />
+    <Compile Include="Exporting\Exporters\TilesAsImageExporter.cs" />
+    <Compile Include="Exporting\Exporters\BlocksAsImageExporter.cs" />
+    <Compile Include="Exporting\Exporters\Z80NAssemblerExporter.cs" />
     <Compile Include="Exporting\Remapping\Remapper.cs" />
     <Compile Include="Models\BlockInfo.cs" />
     <Compile Include="Models\Colour.cs" />

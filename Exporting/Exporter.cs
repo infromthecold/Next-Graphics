@@ -1,4 +1,5 @@
 ﻿using NextGraphics.Exporting.Common;
+using NextGraphics.Exporting.Exporters;
 using NextGraphics.Exporting.Remapping;
 using NextGraphics.Models;
 
@@ -37,9 +38,65 @@ namespace NextGraphics.Exporting
 		{
 			Data.Parameters = parameters;
 
-			Data.LabelName = Regex.Replace(Data.Model.Name, @"\s+", ""); // Strip all whitespace from model name
-			Data.BlockLabelName = DetermineBlockLabelName();
+			var exporters = new List<BaseExporter>();
+
+			switch (Data.Model.OutputType)
+			{
+				case OutputType.Tiles:
+					RegisterTilesExporters(exporters);
+					break;
+
+				case OutputType.Sprites:
+					RegisterSpriteExporters(exporters);
+					break;
+			}
+
+			// Run all exporters.
+			foreach (var exporter in exporters)
+			{
+				exporter.Export(Data);
+			}
 		}
+
+		private void RegisterTilesExporters(List<BaseExporter> exporters)
+		{
+			if (Data.Model.BinaryOutput && Data.Model.BinaryBlocksOutput)
+			{
+				// Note: Z80 exporter must be last because it needs data produced by binary exporters.
+				exporters.Add(new BinaryTilesDataExporter());
+				exporters.Add(new BinaryTilesMapExporter());
+				exporters.Add(new BinaryTilesExporter());
+				exporters.Add(new BinaryPaletteExporter());
+				exporters.Add(new Z80NAssemblerExporter());
+			}
+			else if (Data.Model.BinaryOutput)
+			{
+				// Note: Z80 exporter must be last because it needs data produced by binary exporters.
+				exporters.Add(new BinaryTilesDataExporter());
+				exporters.Add(new BinaryTilesMapExporter());
+				exporters.Add(new BinaryPaletteExporter());
+				exporters.Add(new Z80NAssemblerExporter());
+			}
+			else
+			{
+				exporters.Add(new Z80NAssemblerExporter());
+			}
+
+			if (Data.Model.BlocksAsImage)
+			{
+				exporters.Add(new BlocksAsImageExporter());
+			}
+
+			if (Data.Model.TilesAsImage)
+			{
+				exporters.Add(new TilesAsImageExporter());
+			}
+		}
+
+		private void RegisterSpriteExporters(List<BaseExporter> exporters)
+		{
+
+		} 
 
 		#endregion
 
@@ -54,19 +111,6 @@ namespace NextGraphics.Exporting
 		public void Remap(RemapCallbacks callbacks = null)
 		{
 			new Remapper(Data, callbacks).Remap();
-		}
-
-		#endregion
-
-		#region Helpers
-
-		private string DetermineBlockLabelName()
-		{
-			switch (Data.Model.OutputType)
-			{
-				case OutputType.Tiles: return "Tile";
-				default: return "Sprite";
-			}
 		}
 
 		#endregion

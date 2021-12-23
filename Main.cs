@@ -850,16 +850,30 @@ namespace NextGraphics
 		
 		private void ouputFiles(string	outputFilesDialogFileName)
 		{
-			var exporter = new Exporter(Model);
+			var parameters = new ExportParameters();
+
+			parameters.PaletteOffsetProvider = (palette) =>
+			{
+				if (offsetPanel.ShowDialog() == DialogResult.OK)
+				{
+					return (byte)offsetPanel.paletteOffset.Value;
+				}
+
+				return palette;
+			};
+
+#if PROPRIETARY
+			parameters.FourBitColourConverter = (colour) => (byte)this.parallaxWindow.getColour(colourByte);
+#endif
 
 			//writeType	outputFileType		=	writeType.Assember;	
-			int		imageXOffset			=	0;
+			int imageXOffset			=	0;
 			int		imageYOffset			=	0;
 			byte		colourByte		=	0;
 			byte		writeByte		=	0;
 			int		lineNumber		=	10000;
 			int		lineStep		=	5;
-			string		lableString		=	"Sprites";
+			string		BlockLabelName		=	"Sprites";
 			string		tilesSave;
 			int		binSize			=	0;
 			int	numColours			=	Model.Palette.UsedCount;
@@ -906,7 +920,7 @@ namespace NextGraphics
 			 	
 				// Define date to be displayed.
 			DateTime todaysDate		=	DateTime.Now;
-			string	lableNames		=	Regex.Replace(Model.Name,@"\s+", "");
+			string	LabelPrefix		=	Regex.Replace(Model.Name,@"\s+", "");
 			if(Path.HasExtension(outputFilesDialogFileName)==false)
 			{
 				outPath			=	outputFilesDialogFileName + ".asm";
@@ -928,11 +942,11 @@ namespace NextGraphics
 				outputFile.WriteLine("// " + Model.Name + ".asm");
 				outputFile.WriteLine("// Created on " + todaysDate.ToString("F", CultureInfo.CreateSpecificCulture("en-US")) + " by the NextGraphics tool from");
 				outputFile.WriteLine("// patricia curtis at luckyredfish dot com\r\n");
-				outputFile.WriteLine((lableNames + "_Colours").ToUpper() +":\t\tequ\t" + numColours.ToString() + "\r\n");
+				outputFile.WriteLine((LabelPrefix + "_Colours").ToUpper() +":\t\tequ\t" + numColours.ToString() + "\r\n");
 
 				if(Model.Palette.Type == PaletteType.Custom)
 				{ 
-					outputFile.WriteLine(lableNames + "Palette:");
+					outputFile.WriteLine(LabelPrefix + "Palette:");
 					for(int j=0;j<numColours;j++)
 					{
 						if(SettingsPanel.comments.SelectedIndex==(int)comments.fullComments)
@@ -968,27 +982,27 @@ namespace NextGraphics
 				}
 				if(Model.OutputType == OutputType.Sprites)
 				{
-					lableString	=	"Sprite";
+					BlockLabelName	=	"Sprite";
 				}
 				else
 				{
-					lableString	=	"Tile";
+					BlockLabelName	=	"Tile";
 				}
 				outputFile.Write("\r\n");
 				if(SettingsPanel.FourBit.Checked==true  && Model.OutputType == OutputType.Sprites)
 				{ 
-					outputFile.WriteLine((lableNames + "_" + lableString).ToUpper() + "_SIZE:\t\tequ\t128\r\n");
+					outputFile.WriteLine((LabelPrefix + "_" + BlockLabelName).ToUpper() + "_SIZE:\t\tequ\t128\r\n");
 				}
 				else if(Model.OutputType == OutputType.Sprites)
 				{
-					outputFile.WriteLine((lableNames + "_" + lableString).ToUpper() + "_SIZE:\t\tequ\t256\r\n");
+					outputFile.WriteLine((LabelPrefix + "_" + BlockLabelName).ToUpper() + "_SIZE:\t\tequ\t256\r\n");
 				}
 				else
 				{
-					outputFile.WriteLine((lableNames + "_" + lableString).ToUpper() + "_SIZE:\t\tequ\t32\r\n");
+					outputFile.WriteLine((LabelPrefix + "_" + BlockLabelName).ToUpper() + "_SIZE:\t\tequ\t32\r\n");
 				}
 
-				outputFile.WriteLine((lableNames + "_" + lableString).ToUpper() + "S:\t\tequ\t" + outChar.ToString() +"\r\n");
+				outputFile.WriteLine((LabelPrefix + "_" + BlockLabelName).ToUpper() + "S:\t\tequ\t" + outChar.ToString() +"\r\n");
 
 				// write the pixel data to the sprites
 				if(SettingsPanel.binaryOut.Checked==true)
@@ -1043,7 +1057,7 @@ namespace NextGraphics
 				{						
 					for(int s=0;s<outChar;s++)
 					{
-						outputFile.WriteLine(lableNames + lableString + s.ToString() +":");
+						outputFile.WriteLine(LabelPrefix + BlockLabelName + s.ToString() +":");
 						for(int y=0;y<Chars[s].Height;y++)
 						{
 							outputFile.Write("\t\t\t\t.db\t");
@@ -1107,8 +1121,8 @@ namespace NextGraphics
 					outputFile.WriteLine("\t\t\t\t//...... repeated wide x tall times\r\n");		
 						
 					outputFile.WriteLine("\t\t\t\t//Note: Blocks/Tiles/characters output block 0 and tile 0 is blank.\r\n");
-					outputFile.WriteLine(lableNames + lableString + "Width:\tequ\t" + Sprites[0].Width.ToString() );
-					outputFile.WriteLine(lableNames + lableString + "Height:\tequ\t" + Sprites[0].Height.ToString() );
+					outputFile.WriteLine(LabelPrefix + BlockLabelName + "Width:\tequ\t" + Sprites[0].Width.ToString() );
+					outputFile.WriteLine(LabelPrefix + BlockLabelName + "Height:\tequ\t" + Sprites[0].Height.ToString() );
 				}		
 	
 				int		spriteCount		=	0;
@@ -1230,7 +1244,7 @@ namespace NextGraphics
 						if(Model.OutputType == OutputType.Sprites)
 						{ 
 							Rectangle			collision = new Rectangle(Sprites[s].Left,Sprites[s].Top,Sprites[s].Right-Sprites[s].Left,Sprites[s].Bottom-Sprites[s].Top);
-							outputFile.Write(lableNames + "Collision" + s.ToString() +":");
+							outputFile.Write(LabelPrefix + "Collision" + s.ToString() +":");
 							outputFile.Write("\t\t.db\t");
 							outputFile.Write(collision.X.ToString() + ",");
 							outputFile.Write(collision.Width.ToString() + ",");
@@ -1256,7 +1270,7 @@ namespace NextGraphics
 								}
 							}
 
-							outputFile.Write(lableNames + "Frame" + s.ToString() +":");
+							outputFile.Write(LabelPrefix + "Frame" + s.ToString() +":");
 							outputFile.Write("\t\t.db\t");
 							//outputFile.Write(blockInfo[s].Width.ToString() + ",");
 							//outputFile.Write(blockInfo[s].Height.ToString() + ",\t");
@@ -1265,7 +1279,7 @@ namespace NextGraphics
 						else
 						{		
 
-							outputFile.Write(lableNames + "Block" + s.ToString() +":");							
+							outputFile.Write(LabelPrefix + "Block" + s.ToString() +":");							
 							outputFile.Write("\t\t.db\t");
 
 						}	
@@ -1309,11 +1323,11 @@ namespace NextGraphics
 									}				
 									if(SettingsPanel.textFlips.Checked==true)
 									{
-										outputFile.Write("\t"+lableNames.ToUpper()+"_OFFSET"+textFlips + ",\t");
+										outputFile.Write("\t"+LabelPrefix.ToUpper()+"_OFFSET"+textFlips + ",\t");
 									}
 									else
 									{ 
-										outputFile.Write("\t"+lableNames.ToUpper()+"_OFFSET+"+writeByte.ToString() + ",\t");
+										outputFile.Write("\t"+LabelPrefix.ToUpper()+"_OFFSET+"+writeByte.ToString() + ",\t");
 									}
 									writeByte	=	0;								
 									if(SettingsPanel.FourBit.Checked==true)
@@ -1390,10 +1404,10 @@ namespace NextGraphics
 				outputFile.Write("\r\n");
 				if(Model.OutputType == OutputType.Sprites)
 				{ 
-					outputFile.Write(lableNames + "Frames:\t\t.dw\t");
+					outputFile.Write(LabelPrefix + "Frames:\t\t.dw\t");
 					for(int s=0;s<outBlock;s++)
 					{
-						outputFile.Write(lableNames + "Frame" + s.ToString());
+						outputFile.Write(LabelPrefix + "Frame" + s.ToString());
 						if(s<(outBlock)-1)
 						{
 							outputFile.Write(",");
@@ -1406,10 +1420,10 @@ namespace NextGraphics
 				}
 				if (SettingsPanel.binaryOut.Checked == true)
 				{
-					outputFile.Write(lableNames.ToUpper()+"_FILE_SIZE\tequ\t" + binSize.ToString());
+					outputFile.Write(LabelPrefix.ToUpper()+"_FILE_SIZE\tequ\t" + binSize.ToString());
 
-					outputFile.Write("\r\n"+ lableNames	+	"File:\t\t\tdw\t" + Model.Name.ToUpper()+"_FILE_SIZE\r\n");
-					outputFile.Write("\t\t\tdb\tPATH,\"game/level1/" + lableNames.ToLower() + ".bin\",0\r\n");
+					outputFile.Write("\r\n"+ LabelPrefix	+	"File:\t\t\tdw\t" + Model.Name.ToUpper()+"_FILE_SIZE\r\n");
+					outputFile.Write("\t\t\tdb\tPATH,\"game/level1/" + LabelPrefix.ToLower() + ".bin\",0\r\n");
 
 				}
 			}

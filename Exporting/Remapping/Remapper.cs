@@ -54,10 +54,11 @@ namespace NextGraphics.Exporting.Remapping
 			Callbacks?.OnRemapDebug($"Starting remap{Environment.NewLine}");
 
 			Data.Clear();
+			Data.ObjectSize = Data.Model.OutputType == OutputType.Sprites ? 16 : 8;
 			Data.BlockSize = CalculateBlockSize();
 			Data.ImageOffset = CalculateImageOffset();
 
-			objectSize = Data.Model.OutputType == OutputType.Sprites ? 16 : 8;
+			objectSize = Data.ObjectSize;
 			maxObjectsCount = Data.Model.OutputType == OutputType.Sprites ? 128 : ExportData.MAX_OBJECTS - 1;
 			objectsPerGridX = (Data.Model.GridWidth / objectSize);
 			objectsPerGridY = (Data.Model.GridHeight / objectSize);
@@ -238,6 +239,9 @@ namespace NextGraphics.Exporting.Remapping
 					outYBlock++;
 				}
 			}
+
+			Data.CharactersCount = outChar;
+			Data.BlocksCount = outBlock;
 
 			Callbacks?.OnRemapDebug("Remap completed");
 

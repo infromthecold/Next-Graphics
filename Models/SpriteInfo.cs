@@ -21,11 +21,14 @@ namespace NextGraphics.Models
 		public int Right { get; set; }
 		public int Bottom { get; set; }
 
-		public int Size { get; private set; }
 		public bool Used { get; private set; }
 
 		public short OffsetX { get; set; }
 		public short OffsetY { get; set; }
+
+		public int Size { get => Width * Height; }
+		public Rectangle Frame { get => new Rectangle(Left, Top, Right - Left, Bottom - Top); }
+
 
 		#region Initialization & disposal
 
@@ -36,7 +39,6 @@ namespace NextGraphics.Models
 			OffsetY = 0;
 			Width = width;
 			Height = height;
-			Size = width * height;
 			Used = true;
 			infos = new BlockInfo[Size];
 			for (int b = 0; b < Size; b++)
