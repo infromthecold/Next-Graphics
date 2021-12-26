@@ -129,18 +129,23 @@
     <Compile Include="DEBUGFORM.Designer.cs">
       <DependentUpon>DEBUGFORM.cs</DependentUpon>
     </Compile>
+    <Compile Include="Exporting\Common\ExportCallbacks.cs" />
     <Compile Include="Exporting\Common\ExportData.cs" />
     <Compile Include="Exporting\Common\ExportParameters.cs" />
+    <Compile Include="Exporting\Common\ModelExtensions.cs" />
     <Compile Include="Exporting\Common\RemapCallbacks.cs" />
     <Compile Include="Exporting\Exporter.cs" />
-    <Compile Include="Exporting\Exporters\BaseExporter.cs" />
-    <Compile Include="Exporting\Exporters\BinaryPaletteExporter.cs" />
-    <Compile Include="Exporting\Exporters\BinaryTilesDataExporter.cs" />
-    <Compile Include="Exporting\Exporters\BinaryTilesExporter.cs" />
-    <Compile Include="Exporting\Exporters\BinaryTilesMapExporter.cs" />
-    <Compile Include="Exporting\Exporters\TilesAsImageExporter.cs" />
-    <Compile Include="Exporting\Exporters\BlocksAsImageExporter.cs" />
-    <Compile Include="Exporting\Exporters\Z80NAssemblerExporter.cs" />
+    <Compile Include="Exporting\Exporters\Base\BaseExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryPaletteExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesDataExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesMapExporter.cs" />
+    <Compile Include="Exporting\Exporters\Base\BaseTilesAsImageExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBlocksAsImageExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextAssemblerExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextSpritesBlocksAsImageExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextSpritesTilesAsImageExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextTilesAsImageExporter.cs" />
     <Compile Include="Exporting\Remapping\Remapper.cs" />
     <Compile Include="Models\BlockInfo.cs" />
     <Compile Include="Models\Colour.cs" />

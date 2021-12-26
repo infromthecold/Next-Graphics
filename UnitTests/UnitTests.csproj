@@ -65,6 +65,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Resources\Export-Sprites-Bin.bin" />
+    <None Include="Resources\Export-Sprites-Pal.pal" />
+    <None Include="Resources\Export-Sprites-Til.til" />
     <None Include="Resources\Export-Tiles-Bin.bin" />
     <None Include="Resources\Export-Tiles-Map.map" />
     <None Include="Resources\Export-Tiles-Pal.pal" />
@@ -121,6 +124,81 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Project-Tiles-Image1.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Project-Sprites-Image1.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Project-Sprites.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Asm.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Asm-NoComments.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Tiles.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block0.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block1.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block2.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block3.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block4.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block5.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block6.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block7.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block8.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block9.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block10.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block11.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block12.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Image-Block13.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Asm-Binary.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Asm-Binary-NoComments.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Asm-Binary-Images.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Asm-BinaryBlocks.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Asm-BinaryBlocks-NoComments.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Export-Sprites-Asm-BinaryBlocks-Images.asm" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

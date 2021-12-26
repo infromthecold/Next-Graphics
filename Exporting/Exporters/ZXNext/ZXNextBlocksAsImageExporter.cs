@@ -1,4 +1,7 @@
-﻿using System;
+﻿using NextGraphics.Exporting.Common;
+using NextGraphics.Exporting.Exporters.Base;
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -7,9 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NextGraphics.Exporting.Exporters
+namespace NextGraphics.Exporting.Exporters.ZXNext
 {
-	public class BlocksAsImageExporter : BaseExporter
+	public class ZXNextBlocksAsImageExporter : BaseExporter
 	{
 		#region Overrides
 
@@ -50,17 +53,9 @@ namespace NextGraphics.Exporting.Exporters
 				}
 			}
 
-			switch (Model.ImageFormat)
+			using (var stream = Parameters.BlocksImageStream())
 			{
-				case Models.ImageFormat.BMP:
-					image.Save(Parameters.BlocksImageStream(), System.Drawing.Imaging.ImageFormat.Bmp);
-					break;
-				case Models.ImageFormat.PNG:
-					image.Save(Parameters.BlocksImageStream(), System.Drawing.Imaging.ImageFormat.Png);
-					break;
-				case Models.ImageFormat.JPG:
-					image.Save(Parameters.BlocksImageStream(), System.Drawing.Imaging.ImageFormat.Jpeg);
-					break;
+				image.Save(stream, Model.ImageFormat.ToSystemImageFormat());
 			}
 		}
 

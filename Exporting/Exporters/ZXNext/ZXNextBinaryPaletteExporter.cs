@@ -1,13 +1,15 @@
-﻿using System;
+﻿using NextGraphics.Exporting.Exporters.Base;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NextGraphics.Exporting.Exporters
+namespace NextGraphics.Exporting.Exporters.ZXNext
 {
-	public class BinaryPaletteExporter : BaseExporter
+	public class ZXNextBinaryPaletteExporter : BaseExporter
 	{
 		#region Overrides
 

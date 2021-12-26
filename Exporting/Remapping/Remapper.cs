@@ -17,8 +17,8 @@ namespace NextGraphics.Exporting.Remapping
 	public class Remapper
 	{
 		private ExportData Data { get; }
-		private RemapCallbacks Callbacks { get; }
 		private MainModel Model { get => Data.Model; }
+		private RemapCallbacks Callbacks { get => Data.Parameters.RemapCallbacks; }
 
 		private int objectSize = 0;
 		private int maxObjectsCount = 0;
@@ -38,10 +38,9 @@ namespace NextGraphics.Exporting.Remapping
 
 		#region Initialization & disposal
 
-		public Remapper(ExportData data, RemapCallbacks callbacks)
+		public Remapper(ExportData data)
 		{
 			Data = data;
-			Callbacks = callbacks;
 		}
 
 		#endregion

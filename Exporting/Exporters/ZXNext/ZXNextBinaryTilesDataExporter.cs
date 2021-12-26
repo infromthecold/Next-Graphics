@@ -1,4 +1,5 @@
-﻿using NextGraphics.Models;
+﻿using NextGraphics.Exporting.Exporters.Base;
+using NextGraphics.Models;
 
 using System;
 using System.Collections.Generic;
@@ -7,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NextGraphics.Exporting.Exporters
+namespace NextGraphics.Exporting.Exporters.ZXNext
 {
-	public class BinaryTilesDataExporter : BaseExporter
+	public class ZXNextBinaryTilesDataExporter : BaseExporter
 	{
 		#region Overrides
 
@@ -35,9 +36,9 @@ namespace NextGraphics.Exporting.Exporters
 							{
 								var colourByte = (byte)(ExportData.Chars[s].GetPixel(x, y) & 0x0f);
 
-								if (Parameters.FourBitColourConverter != null)
+								if (Parameters.ExportCallbacks != null)
 								{
-									colourByte = Parameters.FourBitColourConverter(colourByte);
+									colourByte = Parameters.ExportCallbacks.OnExportFourBitColourConverter(colourByte);
 								}
 
 								if ((x & 1) == 0)

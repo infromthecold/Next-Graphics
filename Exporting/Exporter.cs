@@ -1,5 +1,7 @@
 ﻿using NextGraphics.Exporting.Common;
 using NextGraphics.Exporting.Exporters;
+using NextGraphics.Exporting.Exporters.Base;
+using NextGraphics.Exporting.Exporters.ZXNext;
 using NextGraphics.Exporting.Remapping;
 using NextGraphics.Models;
 
@@ -25,19 +27,17 @@ namespace NextGraphics.Exporting
 
 		#region Initialization & Disposal
 
-		public Exporter(MainModel model)
+		public Exporter(MainModel model, ExportParameters parameters)
 		{
-			this.Data = new ExportData(model);
+			this.Data = new ExportData(model, parameters);
 		}
 
 		#endregion
 
 		#region Exporting
 
-		public void Export(ExportParameters parameters)
+		public void Export()
 		{
-			Data.Parameters = parameters;
-
 			var exporters = new List<BaseExporter>();
 
 			switch (Data.Model.OutputType)
@@ -62,41 +62,66 @@ namespace NextGraphics.Exporting
 		{
 			if (Data.Model.BinaryOutput && Data.Model.BinaryBlocksOutput)
 			{
-				// Note: Z80 exporter must be last because it needs data produced by binary exporters.
-				exporters.Add(new BinaryTilesDataExporter());
-				exporters.Add(new BinaryTilesMapExporter());
-				exporters.Add(new BinaryTilesExporter());
-				exporters.Add(new BinaryPaletteExporter());
-				exporters.Add(new Z80NAssemblerExporter());
+				// Note: assembler exporter must be last because it needs data produced by binary exporters.
+				exporters.Add(new ZXNextBinaryTilesDataExporter());
+				exporters.Add(new ZXNextBinaryTilesMapExporter());
+				exporters.Add(new ZXNextBinaryTilesExporter());
+				exporters.Add(new ZXNextBinaryPaletteExporter());
+				exporters.Add(new ZXNextAssemblerExporter());
 			}
 			else if (Data.Model.BinaryOutput)
 			{
-				// Note: Z80 exporter must be last because it needs data produced by binary exporters.
-				exporters.Add(new BinaryTilesDataExporter());
-				exporters.Add(new BinaryTilesMapExporter());
-				exporters.Add(new BinaryPaletteExporter());
-				exporters.Add(new Z80NAssemblerExporter());
+				// Note: assembler exporter must be last because it needs data produced by binary exporters.
+				exporters.Add(new ZXNextBinaryTilesDataExporter());
+				exporters.Add(new ZXNextBinaryTilesMapExporter());
+				exporters.Add(new ZXNextBinaryPaletteExporter());
+				exporters.Add(new ZXNextAssemblerExporter());
 			}
 			else
 			{
-				exporters.Add(new Z80NAssemblerExporter());
+				exporters.Add(new ZXNextAssemblerExporter());
 			}
 
 			if (Data.Model.BlocksAsImage)
 			{
-				exporters.Add(new BlocksAsImageExporter());
+				exporters.Add(new ZXNextBlocksAsImageExporter());
 			}
 
 			if (Data.Model.TilesAsImage)
 			{
-				exporters.Add(new TilesAsImageExporter());
+				exporters.Add(new ZXNextTilesAsImageExporter());
 			}
 		}
 
 		private void RegisterSpriteExporters(List<BaseExporter> exporters)
 		{
+			if (Data.Model.BinaryOutput && Data.Model.BinaryBlocksOutput)
+			{
+				// Note: assembler exporter must be last because it needs data produced by binary exporters.
+				exporters.Add(new ZXNextBinaryTilesDataExporter());
+				exporters.Add(new ZXNextBinaryTilesExporter());
+				exporters.Add(new ZXNextBinaryPaletteExporter());
+				exporters.Add(new ZXNextAssemblerExporter());
+			}
+			else if (Data.Model.BinaryOutput)
+			{
+				// Note: assembler exporter must be last because it needs data produced by binary exporters.
+				exporters.Add(new ZXNextBinaryTilesDataExporter());
+				exporters.Add(new ZXNextBinaryPaletteExporter());
+				exporters.Add(new ZXNextAssemblerExporter());
+			}
+			else
+			{
+				exporters.Add(new ZXNextAssemblerExporter());
+			}
 
-		} 
+			// Note: sprites mode exports each block as its own image, but it's controller by tiles flag (not sure if this is a bug or feature, leaving it as such, it's really simple to change!
+			if (Data.Model.TilesAsImage)
+			{
+				exporters.Add(new ZXNextSpritesBlocksAsImageExporter());
+				exporters.Add(new ZXNextSpritesTilesAsImageExporter());
+			}
+		}
 
 		#endregion
 
@@ -108,9 +133,9 @@ namespace NextGraphics.Exporting
 		/// <remarks>
 		/// Note: for the moment being this need to be called manually before <see cref="Export"/>, but ideally it should be called automatically as part of export - an idea for the future improvement.
 		/// </remarks>
-		public void Remap(RemapCallbacks callbacks = null)
+		public void Remap()
 		{
-			new Remapper(Data, callbacks).Remap();
+			new Remapper(Data).Remap();
 		}
 
 		#endregion

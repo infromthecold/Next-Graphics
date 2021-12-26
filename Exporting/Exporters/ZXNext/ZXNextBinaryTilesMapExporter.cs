@@ -1,13 +1,15 @@
-﻿using System;
+﻿using NextGraphics.Exporting.Exporters.Base;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NextGraphics.Exporting.Exporters
+namespace NextGraphics.Exporting.Exporters.ZXNext
 {
-	public class BinaryTilesMapExporter : BaseExporter
+	public class ZXNextBinaryTilesMapExporter : BaseExporter
 	{
 		#region Overrides
 
@@ -15,9 +17,9 @@ namespace NextGraphics.Exporting.Exporters
 		{
 			byte paletOffset = 0;
 
-			if (Parameters.PaletteOffsetProvider != null)
+			if (Parameters.ExportCallbacks != null)
 			{
-				paletOffset = Parameters.PaletteOffsetProvider(paletOffset);
+				paletOffset = Parameters.ExportCallbacks.OnExportPaletteOffsetMapper(paletOffset);
 			}
 
 			using (var mapFile = new BinaryWriter(Parameters.MapStream()))

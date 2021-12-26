@@ -61,6 +61,430 @@ namespace UnitTests.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to // sprites.asm
+        ///// Created on {0} by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///SPRITES_COLOURS:		equ	5
+        ///
+        ///spritesPalette:
+        ///			db	%11100111	//	255,36,255
+        ///			db	%00000000	//	0,0,0
+        ///			db	%11111100	//	255,255,0
+        ///			db	%01111000	//	109,218,0
+        ///			db	%10010111	//	145,182,255
+        ///
+        ///SPRITES_SPRITE_SIZE:		equ	256
+        ///
+        ///SPRITES_SPRITES:		equ	5
+        ///
+        ///spritesSprite0:
+        ///				.db	$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01
+        ///				.db	$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00, [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Export_Sprites_Asm {
+            get {
+                return ResourceManager.GetString("Export_Sprites_Asm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // sprites.asm
+        ///// Created on {0} by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///SPRITES_COLOURS:		equ	5
+        ///
+        ///spritesPalette:
+        ///			db	%11100111	//	255,36,255
+        ///			db	%00000000	//	0,0,0
+        ///			db	%11111100	//	255,255,0
+        ///			db	%01111000	//	109,218,0
+        ///			db	%10010111	//	145,182,255
+        ///
+        ///SPRITES_SPRITE_SIZE:		equ	256
+        ///
+        ///SPRITES_SPRITES:		equ	5
+        ///
+        ///
+        ///				// number of sprites
+        ///
+        ///					// x offset from center of sprite
+        ///					// y offset from center of sprite
+        ///					// Palette offset with the X mi [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Export_Sprites_Asm_Binary {
+            get {
+                return ResourceManager.GetString("Export_Sprites_Asm_Binary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // sprites.asm
+        ///// Created on {0} by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///SPRITES_COLOURS:		equ	5
+        ///
+        ///spritesPalette:
+        ///			db	%11100111	//	255,36,255
+        ///			db	%00000000	//	0,0,0
+        ///			db	%11111100	//	255,255,0
+        ///			db	%01111000	//	109,218,0
+        ///			db	%10010111	//	145,182,255
+        ///
+        ///SPRITES_SPRITE_SIZE:		equ	256
+        ///
+        ///SPRITES_SPRITES:		equ	5
+        ///
+        ///
+        ///				// number of sprites
+        ///
+        ///					// x offset from center of sprite
+        ///					// y offset from center of sprite
+        ///					// Palette offset with the X mi [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Export_Sprites_Asm_Binary_Images {
+            get {
+                return ResourceManager.GetString("Export_Sprites_Asm_Binary_Images", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // sprites.asm
+        ///// Created on {0} by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///SPRITES_COLOURS:		equ	5
+        ///
+        ///spritesPalette:
+        ///			db	%11100111
+        ///			db	%00000000
+        ///			db	%11111100
+        ///			db	%01111000
+        ///			db	%10010111
+        ///
+        ///SPRITES_SPRITE_SIZE:		equ	256
+        ///
+        ///SPRITES_SPRITES:		equ	5
+        ///
+        ///// Collisions Left Width Top Height
+        ///spritesCollision0:		.db	0,15,0,15
+        ///spritesCollision1:		.db	3,10,1,13
+        ///spritesCollision2:		.db	2,11,1,13
+        ///spritesCollision3:		.db	2,11,1,13
+        ///spritesCollision4:		.db	1,13,2,10
+        ///spri [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Export_Sprites_Asm_Binary_NoComments {
+            get {
+                return ResourceManager.GetString("Export_Sprites_Asm_Binary_NoComments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // sprites.asm
+        ///// Created on Monday, December 27, 2021 4:53:41 PM by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///SPRITES_COLOURS:		equ	5
+        ///
+        ///spritesPalette:
+        ///			db	%11100111	//	255,36,255
+        ///			db	%00000000	//	0,0,0
+        ///			db	%11111100	//	255,255,0
+        ///			db	%01111000	//	109,218,0
+        ///			db	%10010111	//	145,182,255
+        ///
+        ///SPRITES_SPRITE_SIZE:		equ	256
+        ///
+        ///SPRITES_SPRITES:		equ	5
+        ///
+        ///
+        ///				// number of sprites
+        ///
+        ///					// x offset from center of sprite
+        ///					// y offset from center of sprite
+        ///			 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Export_Sprites_Asm_BinaryBlocks {
+            get {
+                return ResourceManager.GetString("Export_Sprites_Asm_BinaryBlocks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // sprites.asm
+        ///// Created on Monday, December 27, 2021 4:55:40 PM by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///SPRITES_COLOURS:		equ	5
+        ///
+        ///spritesPalette:
+        ///			db	%11100111	//	255,36,255
+        ///			db	%00000000	//	0,0,0
+        ///			db	%11111100	//	255,255,0
+        ///			db	%01111000	//	109,218,0
+        ///			db	%10010111	//	145,182,255
+        ///
+        ///SPRITES_SPRITE_SIZE:		equ	256
+        ///
+        ///SPRITES_SPRITES:		equ	5
+        ///
+        ///
+        ///				// number of sprites
+        ///
+        ///					// x offset from center of sprite
+        ///					// y offset from center of sprite
+        ///			 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Export_Sprites_Asm_BinaryBlocks_Images {
+            get {
+                return ResourceManager.GetString("Export_Sprites_Asm_BinaryBlocks_Images", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // sprites.asm
+        ///// Created on Monday, December 27, 2021 4:54:52 PM by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///SPRITES_COLOURS:		equ	5
+        ///
+        ///spritesPalette:
+        ///			db	%11100111	//	255,36,255
+        ///			db	%00000000	//	0,0,0
+        ///			db	%11111100	//	255,255,0
+        ///			db	%01111000	//	109,218,0
+        ///			db	%10010111	//	145,182,255
+        ///
+        ///SPRITES_SPRITE_SIZE:		equ	256
+        ///
+        ///SPRITES_SPRITES:		equ	5
+        ///
+        ///
+        ///				// number of sprites
+        ///
+        ///					// x offset from center of sprite
+        ///					// y offset from center of sprite
+        ///			 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Export_Sprites_Asm_BinaryBlocks_NoComments {
+            get {
+                return ResourceManager.GetString("Export_Sprites_Asm_BinaryBlocks_NoComments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // sprites.asm
+        ///// Created on {0} by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///SPRITES_COLOURS:		equ	5
+        ///
+        ///spritesPalette:
+        ///			db	%11100111
+        ///			db	%00000000
+        ///			db	%11111100
+        ///			db	%01111000
+        ///			db	%10010111
+        ///
+        ///SPRITES_SPRITE_SIZE:		equ	256
+        ///
+        ///SPRITES_SPRITES:		equ	5
+        ///
+        ///spritesSprite0:
+        ///				.db	$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01
+        ///				.db	$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00
+        ///				.db	$00,$01,$00,$01,$00,$01,$00,$01,$00,$01 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Export_Sprites_Asm_NoComments {
+            get {
+                return ResourceManager.GetString("Export_Sprites_Asm_NoComments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] Export_Sprites_Bin {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Bin", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block0 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block1 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block10 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block10", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block11 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block11", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block12 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block12", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block13 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block13", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block2 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block3 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block4 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block5 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block5", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block6 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block6", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block7 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block7", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block8 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block8", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Block9 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block9", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Sprites_Image_Tiles {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Image_Tiles", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] Export_Sprites_Pal {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Pal", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] Export_Sprites_Til {
+            get {
+                object obj = ResourceManager.GetObject("Export_Sprites_Til", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to // Test.asm
         ///// Created on {0} by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
@@ -376,6 +800,30 @@ namespace UnitTests.Properties {
             get {
                 object obj = ResourceManager.GetObject("Export_Tiles_Til", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;XML&gt;
+        ///	&lt;Project&gt;
+        ///		&lt;Name Projectname=&quot;sprites&quot; /&gt;
+        ///		&lt;Settings sprites=&quot;true&quot; center=&quot;4&quot; xSize=&quot;16&quot; ySize=&quot;16&quot; fourBit=&quot;false&quot; binary=&quot;false&quot; binaryBlocks=&quot;false&quot; Repeats=&quot;false&quot; MirrorX=&quot;false&quot; MirrorY=&quot;false&quot; Rotations=&quot;false&quot; Transparent=&quot;false&quot; Sort=&quot;false&quot; blocksImage=&quot;false&quot; tilesImage=&quot;false&quot; transBlock=&quot;false&quot; transTile=&quot;false&quot; across=&quot;8&quot; accurate=&quot;100&quot; format=&quot;0&quot; textFlips=&quot;false&quot; reduce=&quot;false&quot; /&gt;
+        ///		&lt;Palette Mapping=&quot;Custom&quot; Transparent=&quot;0&quot; Used=&quot;5&quot;&gt;
+        ///			&lt;Colour0 Red=&quot;255&quot; Green=&quot;36&quot; Blue=&quot;255&quot; [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Project_Sprites {
+            get {
+                return ResourceManager.GetString("Project_Sprites", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Project_Sprites_Image1 {
+            get {
+                object obj = ResourceManager.GetObject("Project_Sprites_Image1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

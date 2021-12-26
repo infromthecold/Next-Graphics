@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NextGraphics.Exporting.Exporters
+namespace NextGraphics.Exporting.Exporters.Base
 {
 	public abstract class BaseExporter
 	{

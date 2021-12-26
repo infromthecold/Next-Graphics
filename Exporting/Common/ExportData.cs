@@ -16,12 +16,15 @@ namespace NextGraphics.Exporting.Common
 		public static int MAX_IMAGES = 64;
 		public static int MAX_CHARS = 256;
 
-		public ExportData(MainModel model)
+		public ExportData(MainModel model, ExportParameters parameters)
 		{
 			Model = model;
+			Parameters = parameters;
 		}
 
 		public MainModel Model { get; }
+
+		public ExportParameters Parameters { get; set; }
 
 		#region Data prebuilt before export
 
@@ -56,8 +59,6 @@ namespace NextGraphics.Exporting.Common
 		#endregion
 
 		#region Data available during export
-
-		public ExportParameters Parameters { get; set; }
 
 		public int BinarySize { get; set; } = 0;
 

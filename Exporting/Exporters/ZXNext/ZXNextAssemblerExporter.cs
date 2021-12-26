@@ -1,4 +1,5 @@
 ﻿using NextGraphics.Exporting.Common;
+using NextGraphics.Exporting.Exporters.Base;
 using NextGraphics.Models;
 
 using System;
@@ -11,12 +12,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace NextGraphics.Exporting.Exporters
+namespace NextGraphics.Exporting.Exporters.ZXNext
 {
 	/// <summary>
 	/// Exports data as Z80 Next assembler format.
 	/// </summary>
-	public class Z80NAssemblerExporter : BaseExporter
+	public class ZXNextAssemblerExporter : BaseExporter
 	{
 		#region Overrides
 

@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace NextGraphics
 {
-	public partial class Main : Form, RemapCallbacks
+	public partial class Main : Form, RemapCallbacks, ExportCallbacks
 	{
 		//-------------------------------------------------------------------------------------------------------------------
 		//
@@ -112,8 +112,13 @@ namespace NextGraphics
 
 		public Main()
 		{
+
+			var exportParameters = new ExportParameters();
+			exportParameters.RemapCallbacks = this;
+			exportParameters.ExportCallbacks = this;
+
 			Model = new MainModel();
-			Exporter = new Exporter(Model);
+			Exporter = new Exporter(Model, exportParameters);
 
 			InitializeComponent();
 			
@@ -154,7 +159,7 @@ namespace NextGraphics
 #endif
 		}
 		
-		#region Exporter.RemapCallbacks
+		#region RemapCallbacks
 
 		public bool OnRemapShowCharacterDebugData() => false;
 
@@ -268,6 +273,27 @@ namespace NextGraphics
 		public void OnRemapDebug(string message)
 		{
 			//Console.Write(message);
+		}
+
+		#endregion
+
+		#region ExportCallbacks
+
+		public byte OnExportPaletteOffsetMapper(byte proposed)
+		{
+			offsetPanel.paletteOffset.Value = (int)proposed;
+
+			if (offsetPanel.ShowDialog() == DialogResult.OK)
+			{
+				return (byte)offsetPanel.paletteOffset.Value;
+			}
+
+			return proposed;
+		}
+
+		public byte OnExportFourBitColourConverter(byte proposed)
+		{
+			return proposed;
 		}
 
 		#endregion
@@ -651,7 +677,7 @@ namespace NextGraphics
 				}
 			}
 
-			RunLongOperation(() => Exporter.Remap(this));
+			RunLongOperation(() => Exporter.Remap());
 		}
 
 		private void DisposeImageWindows()
@@ -851,16 +877,8 @@ namespace NextGraphics
 		private void ouputFiles(string	outputFilesDialogFileName)
 		{
 			var parameters = new ExportParameters();
-
-			parameters.PaletteOffsetProvider = (palette) =>
-			{
-				if (offsetPanel.ShowDialog() == DialogResult.OK)
-				{
-					return (byte)offsetPanel.paletteOffset.Value;
-				}
-
-				return palette;
-			};
+			parameters.RemapCallbacks = this;
+			parameters.ExportCallbacks = this;
 
 #if PROPRIETARY
 			parameters.FourBitColourConverter = (colour) => (byte)this.parallaxWindow.getColour(colourByte);
@@ -2219,8 +2237,6 @@ namespace NextGraphics
 #else
 			MessageBox.Show("FUNCTIONALITY REMOVED", "Proprietary ", MessageBoxButtons.OK, MessageBoxIcon.Information);
 #endif
-
-
 		}
 
 		private void batchProcessProjectsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2232,16 +2248,19 @@ namespace NextGraphics
 			
 			if (batchProjectDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				foreach (String file in batchProjectDialog.FileNames) 
+				RunLongOperation(() =>
 				{
-					setParentFolder(Path.GetFullPath(file));
-					newProject();
-					loadProject(file);
+					foreach (String file in batchProjectDialog.FileNames)
+					{
+						setParentFolder(Path.GetFullPath(file));
+						newProject();
+						loadProject(file);
 
-					Model.CommentType = CommentType.None;
-					Exporter.Remap(this);
-					ouputFiles(ParentDirectory + "\\Output\\" + Model.Name.ToLower() + ".asm");
-				}
+						Exporter.Remap();
+
+						ouputFiles(ParentDirectory + "\\Output\\" + Model.Name.ToLower() + ".asm");
+					}
+				});
 			}
 		}
 
