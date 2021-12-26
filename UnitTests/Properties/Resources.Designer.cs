@@ -61,26 +61,6 @@ namespace UnitTests.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap ExportTiles_BlocksAsImage {
-            get {
-                object obj = ResourceManager.GetObject("ExportTiles_BlocksAsImage", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap ExportTiles_TilesImage {
-            get {
-                object obj = ResourceManager.GetObject("ExportTiles_TilesImage", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to // Test.asm
         ///// Created on {0} by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
@@ -106,9 +86,9 @@ namespace UnitTests.Properties {
         ///				.db	$12,$14,$22,$23
         ///				.db	$32,$2 [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string ExportTilesAsm {
+        public static string Export_Tiles_Asm {
             get {
-                return ResourceManager.GetString("ExportTilesAsm", resourceCulture);
+                return ResourceManager.GetString("Export_Tiles_Asm", resourceCulture);
             }
         }
         
@@ -137,19 +117,9 @@ namespace UnitTests.Properties {
         ///				// number of tiles (characters) wide
         ///					// Palette offse [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string ExportTilesBinaryAsm {
+        public static string Export_Tiles_Asm_Binary {
             get {
-                return ResourceManager.GetString("ExportTilesBinaryAsm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] ExportTilesBinaryBin {
-            get {
-                object obj = ResourceManager.GetObject("ExportTilesBinaryBin", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("Export_Tiles_Asm_Binary", resourceCulture);
             }
         }
         
@@ -178,111 +148,9 @@ namespace UnitTests.Properties {
         ///				// number of tiles (characters) wide
         ///					// Palette offse [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string ExportTilesBinaryBlocksAsm {
+        public static string Export_Tiles_Asm_Binary_Images {
             get {
-                return ResourceManager.GetString("ExportTilesBinaryBlocksAsm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to // Test.asm
-        ///// Created on Friday, December 24, 2021 9:06:41 PM by the NextGraphics tool from
-        ///// patricia curtis at luckyredfish dot com
-        ///
-        ///TEST_COLOURS:		equ	6
-        ///
-        ///TestPalette:
-        ///			db	%01001001	//	72,72,72
-        ///			db	%11111111	//	255,255,255
-        ///			db	%11011011	//	218,218,218
-        ///			db	%10110110	//	182,182,182
-        ///			db	%10010010	//	145,145,145
-        ///			db	%01101101	//	109,109,109
-        ///
-        ///TEST_TILE_SIZE:		equ	32
-        ///
-        ///TEST_TILES:		equ	4
-        ///
-        ///
-        ///				// block data
-        ///				// number of tiles (characters) tall
-        ///				// number of tiles (charac [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string ExportTilesBinaryBlocksImagesAsm {
-            get {
-                return ResourceManager.GetString("ExportTilesBinaryBlocksImagesAsm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
-        ///// patricia curtis at luckyredfish dot com
-        ///
-        ///TEST_COLOURS:		equ	6
-        ///
-        ///TestPalette:
-        ///			db	%01001001
-        ///			db	%11111111
-        ///			db	%11011011
-        ///			db	%10110110
-        ///			db	%10010010
-        ///			db	%01101101
-        ///
-        ///TEST_TILE_SIZE:		equ	32
-        ///
-        ///TEST_TILES:		equ	4
-        ///
-        ///
-        ///TEST_FILE_SIZE	equ	128
-        ///TestFile:			dw	TEST_FILE_SIZE
-        ///			db	PATH,&quot;game/level1/test.bin&quot;,0
-        ///.
-        /// </summary>
-        public static string ExportTilesBinaryBlocksNoCommentAsm {
-            get {
-                return ResourceManager.GetString("ExportTilesBinaryBlocksNoCommentAsm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
-        ///// patricia curtis at luckyredfish dot com
-        ///
-        ///TEST_COLOURS:		equ	6
-        ///
-        ///TestPalette:
-        ///			db	%01001001	//	72,72,72
-        ///			db	%11111111	//	255,255,255
-        ///			db	%11011011	//	218,218,218
-        ///			db	%10110110	//	182,182,182
-        ///			db	%10010010	//	145,145,145
-        ///			db	%01101101	//	109,109,109
-        ///
-        ///TEST_TILE_SIZE:		equ	32
-        ///
-        ///TEST_TILES:		equ	4
-        ///
-        ///
-        ///				// block data
-        ///				// number of tiles (characters) tall
-        ///				// number of tiles (characters) wide
-        ///					// Palette offse [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string ExportTilesBinaryImagesAsm {
-            get {
-                return ResourceManager.GetString("ExportTilesBinaryImagesAsm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] ExportTilesBinaryMap {
-            get {
-                object obj = ResourceManager.GetObject("ExportTilesBinaryMap", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("Export_Tiles_Asm_Binary_Images", resourceCulture);
             }
         }
         
@@ -316,29 +184,102 @@ namespace UnitTests.Properties {
         ///TestFile:			dw	TEST_FILE_SIZE
         ///			db	PATH,&quot;game/level1/test. [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string ExportTilesBinaryNoCommentAsm {
+        public static string Export_Tiles_Asm_Binary_NoComments {
             get {
-                return ResourceManager.GetString("ExportTilesBinaryNoCommentAsm", resourceCulture);
+                return ResourceManager.GetString("Export_Tiles_Asm_Binary_NoComments", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on {0} by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	6
+        ///
+        ///TestPalette:
+        ///			db	%01001001	//	72,72,72
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11011011	//	218,218,218
+        ///			db	%10110110	//	182,182,182
+        ///			db	%10010010	//	145,145,145
+        ///			db	%01101101	//	109,109,109
+        ///
+        ///TEST_TILE_SIZE:		equ	32
+        ///
+        ///TEST_TILES:		equ	4
+        ///
+        ///
+        ///				// block data
+        ///				// number of tiles (characters) tall
+        ///				// number of tiles (characters) wide
+        ///					// Palette offse [rest of string was truncated]&quot;;.
         /// </summary>
-        public static byte[] ExportTilesBinaryPal {
+        public static string Export_Tiles_Asm_BinaryBlocks {
             get {
-                object obj = ResourceManager.GetObject("ExportTilesBinaryPal", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("Export_Tiles_Asm_BinaryBlocks", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on {0} by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	6
+        ///
+        ///TestPalette:
+        ///			db	%01001001	//	72,72,72
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11011011	//	218,218,218
+        ///			db	%10110110	//	182,182,182
+        ///			db	%10010010	//	145,145,145
+        ///			db	%01101101	//	109,109,109
+        ///
+        ///TEST_TILE_SIZE:		equ	32
+        ///
+        ///TEST_TILES:		equ	4
+        ///
+        ///
+        ///				// block data
+        ///				// number of tiles (characters) tall
+        ///				// number of tiles (characters) wide
+        ///					// Palette offse [rest of string was truncated]&quot;;.
         /// </summary>
-        public static byte[] ExportTilesBinaryTil {
+        public static string Export_Tiles_Asm_BinaryBlocks_Images {
             get {
-                object obj = ResourceManager.GetObject("ExportTilesBinaryTil", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("Export_Tiles_Asm_BinaryBlocks_Images", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on {0} by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	6
+        ///
+        ///TestPalette:
+        ///			db	%01001001
+        ///			db	%11111111
+        ///			db	%11011011
+        ///			db	%10110110
+        ///			db	%10010010
+        ///			db	%01101101
+        ///
+        ///TEST_TILE_SIZE:		equ	32
+        ///
+        ///TEST_TILES:		equ	4
+        ///
+        ///
+        ///TEST_FILE_SIZE	equ	128
+        ///TestFile:			dw	TEST_FILE_SIZE
+        ///			db	PATH,&quot;game/level1/test.bin&quot;,0
+        ///.
+        /// </summary>
+        public static string Export_Tiles_Asm_BinaryBlocks_NoComments {
+            get {
+                return ResourceManager.GetString("Export_Tiles_Asm_BinaryBlocks_NoComments", resourceCulture);
             }
         }
         
@@ -372,18 +313,92 @@ namespace UnitTests.Properties {
         ///				.db	$00,$55,$55,$50
         ///T [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string ExportTilesNoCommentAsm {
+        public static string Export_Tiles_Asm_NoComments {
             get {
-                return ResourceManager.GetString("ExportTilesNoCommentAsm", resourceCulture);
+                return ResourceManager.GetString("Export_Tiles_Asm_NoComments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] Export_Tiles_Bin {
+            get {
+                object obj = ResourceManager.GetObject("Export_Tiles_Bin", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap Level1Bitmap {
+        public static System.Drawing.Bitmap Export_Tiles_Image_Blocks {
             get {
-                object obj = ResourceManager.GetObject("Level1Bitmap", resourceCulture);
+                object obj = ResourceManager.GetObject("Export_Tiles_Image_Blocks", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Export_Tiles_Image_Tiles {
+            get {
+                object obj = ResourceManager.GetObject("Export_Tiles_Image_Tiles", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] Export_Tiles_Map {
+            get {
+                object obj = ResourceManager.GetObject("Export_Tiles_Map", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] Export_Tiles_Pal {
+            get {
+                object obj = ResourceManager.GetObject("Export_Tiles_Pal", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] Export_Tiles_Til {
+            get {
+                object obj = ResourceManager.GetObject("Export_Tiles_Til", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;XML&gt;
+        ///  &lt;Project&gt;
+        ///    &lt;Name Projectname=&quot;Test&quot; /&gt;
+        ///    &lt;Settings blocks=&quot;true&quot; center=&quot;4&quot; xSize=&quot;8&quot; ySize=&quot;8&quot; fourBit=&quot;true&quot; binary=&quot;true&quot; binaryBlocks=&quot;false&quot; Repeats=&quot;false&quot; MirrorX=&quot;false&quot; MirrorY=&quot;false&quot; Rotations=&quot;false&quot; Transparent=&quot;false&quot; Sort=&quot;false&quot; blocksImage=&quot;false&quot; tilesImage=&quot;false&quot; transBlock=&quot;false&quot; transTile=&quot;false&quot; across=&quot;16&quot; accurate=&quot;100&quot; format=&quot;0&quot; textFlips=&quot;false&quot; reduce=&quot;false&quot; /&gt;
+        ///    &lt;Palette Mapping=&quot;Custom&quot; Transparent=&quot;0&quot; Used=&quot;6&quot;&gt;
+        ///      &lt;Colour0 Red=&quot;72&quot; Green=&quot;72&quot; Blue=&quot;72 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Project_Tiles {
+            get {
+                return ResourceManager.GetString("Project_Tiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Project_Tiles_Image1 {
+            get {
+                object obj = ResourceManager.GetObject("Project_Tiles_Image1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -397,23 +412,9 @@ namespace UnitTests.Properties {
         ///	&lt;File Path=&quot;\the\file\with\backslashes&quot; /&gt;
         ///	&lt;Settings {0}=&quot;true&quot; center=&quot;4&quot; xSize=&quot;9&quot; ySize=&quot;10&quot; fourBit=&quot;true&quot; binary=&quot;false&quot; binaryBlocks=&quot;true&quot; Repeats=&quot;false&quot; MirrorX=&quot;false&quot; MirrorY=&quot;true&quot; Rotations=&quot;false&quot; Transparent=&quot;false&quot; Sort=&quot;true&quot; blocksImage=&quot;false&quot; tilesImage=&quot;true&quot; transBlock=&quot;true&quot; transTile=&quot;false&quot; across=&quot;5&quot; accurate=&quot;983&quot; format=&quot;{1}&quot; textFlips=&quot;true&quot; reduce=&quot;true&quot;  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string ProjectTemplated {
+        public static string Project_Tiles_Templated {
             get {
-                return ResourceManager.GetString("ProjectTemplated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;XML&gt;
-        ///  &lt;Project&gt;
-        ///    &lt;Name Projectname=&quot;Test&quot; /&gt;
-        ///    &lt;Settings blocks=&quot;true&quot; center=&quot;4&quot; xSize=&quot;8&quot; ySize=&quot;8&quot; fourBit=&quot;true&quot; binary=&quot;true&quot; binaryBlocks=&quot;false&quot; Repeats=&quot;false&quot; MirrorX=&quot;false&quot; MirrorY=&quot;false&quot; Rotations=&quot;false&quot; Transparent=&quot;false&quot; Sort=&quot;false&quot; blocksImage=&quot;false&quot; tilesImage=&quot;false&quot; transBlock=&quot;false&quot; transTile=&quot;false&quot; across=&quot;16&quot; accurate=&quot;100&quot; format=&quot;0&quot; textFlips=&quot;false&quot; reduce=&quot;false&quot; /&gt;
-        ///    &lt;Palette Mapping=&quot;Custom&quot; Transparent=&quot;0&quot; Used=&quot;6&quot;&gt;
-        ///      &lt;Colour0 Red=&quot;72&quot; Green=&quot;72&quot; Blue=&quot;72 [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string ProjectTiles {
-            get {
-                return ResourceManager.GetString("ProjectTiles", resourceCulture);
+                return ResourceManager.GetString("Project_Tiles_Templated", resourceCulture);
             }
         }
     }

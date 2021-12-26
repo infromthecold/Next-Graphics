@@ -118,55 +118,55 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ExportTilesAsm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ProjectTilesAsm.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="Export_Tiles_Asm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="ExportTilesBinaryAsm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ProjectTilesBinaryAsm.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="Export_Tiles_Asm_Binary" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm-Binary.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="ExportTilesBinaryBin" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ProjectTilesBinaryBin.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Export_Tiles_Asm_BinaryBlocks" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm-BinaryBlocks.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="ExportTilesBinaryBlocksAsm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ProjectTilesBinaryBlocksAsm.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="Export_Tiles_Asm_BinaryBlocks_Images" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm-BinaryBlocks-Images.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="ExportTilesBinaryBlocksImagesAsm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ExportTilesBinaryBlocksImagesAsm.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="Export_Tiles_Asm_BinaryBlocks_NoComments" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm-BinaryBlocks-NoComments.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="ExportTilesBinaryBlocksNoCommentAsm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ProjectTilesBinaryBlocksNoCommentAsm.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="Export_Tiles_Asm_Binary_Images" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm-Binary-Images.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="ExportTilesBinaryImagesAsm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ExportTilesBinaryImagesAsm.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="Export_Tiles_Asm_Binary_NoComments" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm-Binary-NoComments.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="ExportTilesBinaryMap" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ProjectTilesBinaryMap.map;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Export_Tiles_Asm_NoComments" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm-NoComments.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="ExportTilesBinaryNoCommentAsm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ProjectTilesBinaryNoCommentAsm.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="Export_Tiles_Bin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Bin.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="ExportTilesBinaryPal" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ProjectTilesBinaryPal.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Export_Tiles_Image_Blocks" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Image-Blocks.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ExportTilesBinaryTil" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ExportTilesBinaryTil.til;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Export_Tiles_Image_Tiles" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Image-Tiles.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ExportTilesNoCommentAsm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ProjetTilesNoCommentAsm.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="Export_Tiles_Map" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Map.map;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="ExportTiles_BlocksAsImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ExportTiles-BlocksAsImage.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Export_Tiles_Pal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Pal.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="ExportTiles_TilesImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ExportTiles-TilesImage.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Export_Tiles_Til" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Til.til;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Level1Bitmap" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\level1bitmap.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Project_Tiles" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Project-Tiles.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="ProjectTemplated" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\projecttemplated.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="Project_Tiles_Image1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Project-Tiles-Image1.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ProjectTiles" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\projecttiles.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="Project_Tiles_Templated" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Project-Tiles-Templated.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
 </root>

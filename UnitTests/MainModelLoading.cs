@@ -377,7 +377,7 @@ namespace UnitTests
 
 		private XmlDocument TestDocument(string outputType = "blocks", string imageFormat = "0", string paletteMapping="Custom")
 		{
-			return DataCreator.ModelDummyDocument(outputType, imageFormat, paletteMapping);
+			return DataCreator.XmlDocumentTilesTemplated(outputType, imageFormat, paletteMapping);
 		}
 
 		#endregion

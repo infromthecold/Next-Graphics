@@ -24,24 +24,24 @@ namespace UnitTests.Data
 		public static MainModel LoadModel(XmlDocument document = null)
 		{
 			var result = new MainModel();
-			var source = document != null ? document : ModelDummyDocument();
+			var source = document != null ? document : XmlDocumentTilesTemplated();
 			result.Load(source);
 
 			return result;
 		}
 
-		public static XmlDocument ModelTilesDocument()
+		public static XmlDocument XmlDocumentTiles()
 		{
-			var template = Properties.Resources.ProjectTiles;
+			var template = Properties.Resources.Project_Tiles;
 
 			var result = new XmlDocument();
 			result.LoadXml(template);
 			return result;
 		}
 
-		public static XmlDocument ModelDummyDocument(string outputType = "blocks", string imageFormat = "0", string paletteMapping = "Custom")
+		public static XmlDocument XmlDocumentTilesTemplated(string outputType = "blocks", string imageFormat = "0", string paletteMapping = "Custom")
 		{
-			var template = Properties.Resources.ProjectTemplated;
+			var template = Properties.Resources.Project_Tiles_Templated;
 
 			var xml = String.Format(template, outputType, imageFormat, paletteMapping);
 
@@ -57,7 +57,7 @@ namespace UnitTests.Data
 		public static string AssemblerTiles(DateTime time, CommentType comments, bool withImages = false)
 		{
 			// Note: assembler file doesn't differ in this case if images are also exported.
-			var resource = comments == CommentType.Full ? Properties.Resources.ExportTilesAsm : Properties.Resources.ExportTilesNoCommentAsm;
+			var resource = comments == CommentType.Full ? Properties.Resources.Export_Tiles_Asm : Properties.Resources.Export_Tiles_Asm_NoComments;
 			return String.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
 		}
 
@@ -68,11 +68,11 @@ namespace UnitTests.Data
 			switch (comments)
 			{
 				case CommentType.Full:
-					resource = withImages ? Properties.Resources.ExportTilesBinaryImagesAsm : Properties.Resources.ExportTilesBinaryAsm;
+					resource = withImages ? Properties.Resources.Export_Tiles_Asm_Binary_Images : Properties.Resources.Export_Tiles_Asm_Binary;
 					break;
 
 				case CommentType.None:
-					resource = withImages ? Properties.Resources.ExportTilesBinaryImagesAsm : Properties.Resources.ExportTilesBinaryNoCommentAsm;
+					resource = withImages ? Properties.Resources.Export_Tiles_Asm_Binary_Images : Properties.Resources.Export_Tiles_Asm_Binary_NoComments;
 					break;
 			}
 			
@@ -86,11 +86,11 @@ namespace UnitTests.Data
 			switch (comments)
 			{
 				case CommentType.Full:
-					resource = withImages ? Properties.Resources.ExportTilesBinaryBlocksImagesAsm : Properties.Resources.ExportTilesBinaryBlocksAsm;
+					resource = withImages ? Properties.Resources.Export_Tiles_Asm_BinaryBlocks_Images : Properties.Resources.Export_Tiles_Asm_BinaryBlocks;
 					break;
 
 				case CommentType.None:
-					resource = withImages ? Properties.Resources.ExportTilesBinaryBlocksImagesAsm : Properties.Resources.ExportTilesBinaryBlocksNoCommentAsm;
+					resource = withImages ? Properties.Resources.Export_Tiles_Asm_BinaryBlocks_Images : Properties.Resources.Export_Tiles_Asm_BinaryBlocks_NoComments;
 					break;
 			}
 
@@ -101,40 +101,40 @@ namespace UnitTests.Data
 
 		#region Binary
 
-		public static byte[] BinaryTilesPal()
+		public static byte[] TilesPal()
 		{
-			return Properties.Resources.ExportTilesBinaryPal;
+			return Properties.Resources.Export_Tiles_Pal;
 		}
 
-		public static byte[] BinaryTilesBin()
+		public static byte[] TilesBin()
 		{
-			return Properties.Resources.ExportTilesBinaryBin;
+			return Properties.Resources.Export_Tiles_Bin;
 		}
 
-		public static byte[] BinaryTilesMap()
+		public static byte[] TilesMap()
 		{
-			return Properties.Resources.ExportTilesBinaryMap;
+			return Properties.Resources.Export_Tiles_Map;
 		}
 
-		public static byte[] BinaryTilesTil()
+		public static byte[] TilesTil()
 		{
-			return Properties.Resources.ExportTilesBinaryTil;
+			return Properties.Resources.Export_Tiles_Til;
 		}
 
-		public static byte[] TilesBlocksImage()
+		public static byte[] TilesImageBlocks()
 		{
 			using (var stream = new MemoryStream())
 			{
-				Properties.Resources.ExportTiles_BlocksAsImage.Save(stream, System.Drawing.Imaging.ImageFormat.Bmp);
+				Properties.Resources.Export_Tiles_Image_Blocks.Save(stream, System.Drawing.Imaging.ImageFormat.Bmp);
 				return stream.ToArray();
 			}
 		}
 
-		public static byte[] TilesTilesImage()
+		public static byte[] TilesImageTiles()
 		{
 			using (var stream = new MemoryStream())
 			{
-				Properties.Resources.ExportTiles_TilesImage.Save(stream, System.Drawing.Imaging.ImageFormat.Bmp);
+				Properties.Resources.Export_Tiles_Image_Tiles.Save(stream, System.Drawing.Imaging.ImageFormat.Bmp);
 				return stream.ToArray();
 			}
 		}
@@ -143,9 +143,9 @@ namespace UnitTests.Data
 
 		#region Images
 
-		public static Bitmap Level1Bitmap()
+		public static Bitmap TilesImageLevel1()
 		{
-			return new Bitmap(Properties.Resources.Level1Bitmap);
+			return new Bitmap(Properties.Resources.Project_Tiles_Image1);
 		}
 
 		#endregion

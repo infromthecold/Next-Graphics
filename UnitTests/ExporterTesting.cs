@@ -21,12 +21,14 @@ namespace UnitTests
 	[TestClass]
 	public class ExporterTesting
 	{
+		#region Tiles
+
 		#region Assembler
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_FullComments()
+		public void ShouldExport_TilesAssembler_FullComments()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -40,20 +42,20 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyIsEmptyStream(parameters.PaletteStream, "pal");
-				VerifyIsEmptyStream(parameters.BinaryStream, "bin");
-				VerifyIsEmptyStream(parameters.TilesStream, "til");
-				VerifyIsEmptyStream(parameters.MapStream, "map");
-				VerifyIsEmptyStream(parameters.BlocksImageStream, "blocks image");
-				VerifyIsEmptyStream(parameters.TilesImageStream, "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.Full));
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.MapStream, "map");
+				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.Full));
 			});
 		}
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_NoComments()
+		public void ShouldExport_TilesAssembler_NoComments()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -67,20 +69,20 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyIsEmptyStream(parameters.PaletteStream, "pal");
-				VerifyIsEmptyStream(parameters.BinaryStream, "bin");
-				VerifyIsEmptyStream(parameters.TilesStream, "til");
-				VerifyIsEmptyStream(parameters.MapStream, "map");
-				VerifyIsEmptyStream(parameters.BlocksImageStream, "blocks image");
-				VerifyIsEmptyStream(parameters.TilesImageStream, "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None));
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.MapStream, "map");
+				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None));
 			});
 		}
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_BlocksImage()
+		public void ShouldExport_TilesAssembler_BlocksImage()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -94,20 +96,20 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyIsEmptyStream(parameters.PaletteStream, "pal");
-				VerifyIsEmptyStream(parameters.BinaryStream, "bin");
-				VerifyIsEmptyStream(parameters.TilesStream, "til");
-				VerifyIsEmptyStream(parameters.MapStream, "map");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesBlocksImage(), "blocks image");
-				VerifyIsEmptyStream(parameters.TilesImageStream, "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, true));
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.MapStream, "map");
+				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, true));
 			});
 		}
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_TilesImage()
+		public void ShouldExport_TilesAssembler_TilesImage()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -121,20 +123,20 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyIsEmptyStream(parameters.PaletteStream, "pal");
-				VerifyIsEmptyStream(parameters.BinaryStream, "bin");
-				VerifyIsEmptyStream(parameters.TilesStream, "til");
-				VerifyIsEmptyStream(parameters.MapStream, "map");
-				VerifyIsEmptyStream(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesTilesImage(), "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, true));
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.MapStream, "map");
+				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageTiles(), "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, true));
 			});
 		}
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_BlocksTilesImage()
+		public void ShouldExport_TilesAssembler_BlocksTilesImage()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -148,13 +150,13 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyIsEmptyStream(parameters.PaletteStream, "pal");
-				VerifyIsEmptyStream(parameters.BinaryStream, "bin");
-				VerifyIsEmptyStream(parameters.TilesStream, "til");
-				VerifyIsEmptyStream(parameters.MapStream, "map");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesBlocksImage(), "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesTilesImage(), "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, true));
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.MapStream, "map");
+				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
+				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageTiles(), "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, true));
 			});
 		}
 
@@ -163,9 +165,9 @@ namespace UnitTests
 		#region Assembler+Binary
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_Binary_FullComments()
+		public void ShouldExport_TilesAssembler_Binary_FullComments()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -179,20 +181,20 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyIsEmptyStream(parameters.TilesStream, "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.BinaryTilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.BinaryTilesBin(), "bin");
-				VerifyBinary(parameters.MapStream, DataCreator.BinaryTilesMap(), "map");
-				VerifyIsEmptyStream(parameters.BlocksImageStream, "blocks image");
-				VerifyIsEmptyStream(parameters.TilesImageStream, "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.Full));
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
+				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.Full));
 			});
 		}
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_Binary_NoComments()
+		public void ShouldExport_TilesAssembler_Binary_NoComments()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -206,20 +208,20 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyIsEmptyStream(parameters.TilesStream, "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.BinaryTilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.BinaryTilesBin(), "bin");
-				VerifyBinary(parameters.MapStream, DataCreator.BinaryTilesMap(), "map");
-				VerifyIsEmptyStream(parameters.BlocksImageStream, "blocks image");
-				VerifyIsEmptyStream(parameters.TilesImageStream, "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.None));
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
+				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.None));
 			});
 		}
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_Binary_BlocksImage()
+		public void ShouldExport_TilesAssembler_Binary_BlocksImage()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -233,20 +235,20 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyIsEmptyStream(parameters.TilesStream, "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.BinaryTilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.BinaryTilesBin(), "bin");
-				VerifyBinary(parameters.MapStream, DataCreator.BinaryTilesMap(), "map");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesBlocksImage(), "blocks image");
-				VerifyIsEmptyStream(parameters.TilesImageStream, "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.None, true));
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
+				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
+				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.None, true));
 			});
 		}
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_Binary_TilesImage()
+		public void ShouldExport_TilesAssembler_Binary_TilesImage()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -260,20 +262,20 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyIsEmptyStream(parameters.TilesStream, "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.BinaryTilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.BinaryTilesBin(), "bin");
-				VerifyBinary(parameters.MapStream, DataCreator.BinaryTilesMap(), "map");
-				VerifyIsEmptyStream(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesTilesImage(), "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.None, true));
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
+				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageTiles(), "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.None, true));
 			});
 		}
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_Binary_BlocksTilesImage()
+		public void ShouldExport_TilesAssembler_Binary_BlocksTilesImage()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -287,13 +289,13 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyIsEmptyStream(parameters.TilesStream, "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.BinaryTilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.BinaryTilesBin(), "bin");
-				VerifyBinary(parameters.MapStream, DataCreator.BinaryTilesMap(), "map");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesBlocksImage(), "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesTilesImage(), "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.None, true));
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
+				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
+				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
+				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageTiles(), "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.None, true));
 			});
 		}
 		#endregion
@@ -301,9 +303,9 @@ namespace UnitTests
 		#region Assembler+Binary+Blocks
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_BinaryBlocks_FullComments()
+		public void ShouldExport_TilesAssembler_BinaryBlocks_FullComments()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -317,20 +319,20 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.BinaryTilesTil(), "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.BinaryTilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.BinaryTilesBin(), "bin");
-				VerifyBinary(parameters.MapStream, DataCreator.BinaryTilesMap(), "map");
-				VerifyIsEmptyStream(parameters.BlocksImageStream, "blocks image");
-				VerifyIsEmptyStream(parameters.TilesImageStream, "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.Full));
+				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
+				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.Full));
 			});
 		}
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_BinaryBlocks_NoComments()
+		public void ShouldExport_TilesAssembler_BinaryBlocks_NoComments()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -344,20 +346,20 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.BinaryTilesTil(), "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.BinaryTilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.BinaryTilesBin(), "bin");
-				VerifyBinary(parameters.MapStream, DataCreator.BinaryTilesMap(), "map");
-				VerifyIsEmptyStream(parameters.BlocksImageStream, "blocks image");
-				VerifyIsEmptyStream(parameters.TilesImageStream, "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.None));
+				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
+				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.None));
 			});
 		}
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_BinaryBlocks_BlocksImage()
+		public void ShouldExport_TilesAssembler_BinaryBlocks_BlocksImage()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -371,20 +373,20 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.BinaryTilesTil(), "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.BinaryTilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.BinaryTilesBin(), "bin");
-				VerifyBinary(parameters.MapStream, DataCreator.BinaryTilesMap(), "map");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesBlocksImage(), "blocks image");
-				VerifyIsEmptyStream(parameters.TilesImageStream, "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.None, true));
+				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
+				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
+				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.None, true));
 			});
 		}
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_BinaryBlocks_TilesImage()
+		public void ShouldExport_TilesAssembler_BinaryBlocks_TilesImage()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -398,20 +400,20 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.BinaryTilesTil(), "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.BinaryTilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.BinaryTilesBin(), "bin");
-				VerifyBinary(parameters.MapStream, DataCreator.BinaryTilesMap(), "map");
-				VerifyIsEmptyStream(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesTilesImage(), "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.None, true));
+				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
+				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageTiles(), "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.None, true));
 			});
 		}
 
 		[TestMethod]
-		public void ShouldExport_TilesSource_BinaryBlocks_BlocksTilesImage()
+		public void ShouldExport_TilesAssembler_BinaryBlocks_BlocksTilesImage()
 		{
-			Test(DataCreator.ModelTilesDocument(), (model, parameters, exporter) =>
+			Test(DataCreator.XmlDocumentTiles(), (model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Tiles;
@@ -425,15 +427,17 @@ namespace UnitTests
 				exporter.Export(parameters);
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.BinaryTilesTil(), "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.BinaryTilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.BinaryTilesBin(), "bin");
-				VerifyBinary(parameters.MapStream, DataCreator.BinaryTilesMap(), "map");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesBlocksImage(), "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesTilesImage(), "tiles image");
-				VerifySource(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.None, true));
+				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
+				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
+				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
+				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageTiles(), "tiles image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.None, true));
 			});
 		}
+
+		#endregion
 
 		#endregion
 
@@ -465,8 +469,8 @@ namespace UnitTests
 				};
 
 				// We load default data and rely on each test to set it up as needed. This sets up model with default parameters, but we can later change them as needed in each specific test.
-				var model = DataCreator.LoadModel(DataCreator.ModelTilesDocument());
-				model.AddImage(new SourceImage("level1", DataCreator.Level1Bitmap()));
+				var model = DataCreator.LoadModel(sourceDocument);
+				model.AddImage(new SourceImage("level1", DataCreator.TilesImageLevel1()));
 
 				// Prepare exporter with just created model and prepare remap data.
 				var exporter = new Exporter(model);
@@ -477,7 +481,7 @@ namespace UnitTests
 			}
 		}
 
-		private void VerifySource(ExportParameters parameters, string expected) 
+		private void VerifyAssembler(ExportParameters parameters, string expected) 
 		{
 			// Prepare new memory stream as original one was already closed after writing the output.
 			using (var actual = new MemoryStream(((MemoryStream)parameters.SourceStream()).ToArray()))
@@ -512,7 +516,7 @@ namespace UnitTests
 			}
 		}
 
-		private void VerifyIsEmptyStream(Func<Stream> stream, string explanation = "")
+		private void VerifyBinaryIsEmpty(Func<Stream> stream, string explanation = "")
 		{
 			if (stream == null) return;
 

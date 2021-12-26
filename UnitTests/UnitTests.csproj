@@ -65,11 +65,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\ExportTilesBinaryTil.til" />
-    <None Include="Resources\ProjectTilesBinaryBin.bin" />
-    <None Include="Resources\ProjectTilesBinaryBlocks.bin" />
-    <None Include="Resources\ProjectTilesBinaryMap.map" />
-    <None Include="Resources\ProjectTilesBinaryPal.pal" />
+    <None Include="Resources\Export-Tiles-Bin.bin" />
+    <None Include="Resources\Export-Tiles-Map.map" />
+    <None Include="Resources\Export-Tiles-Pal.pal" />
+    <None Include="Resources\Export-Tiles-Til.til" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NextGraphics.csproj">
@@ -85,43 +84,43 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Level1Bitmap.bmp" />
+    <None Include="Resources\Export-Tiles-Asm.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ProjectTemplated.xml" />
+    <None Include="Resources\Export-Tiles-Asm-NoComments.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ProjectTiles.xml" />
+    <None Include="Resources\Export-Tiles-Asm-Binary.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ProjectTilesAsm.asm" />
+    <None Include="Resources\Export-Tiles-Asm-Binary-NoComments.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ProjetTilesNoCommentAsm.asm" />
+    <None Include="Resources\Export-Tiles-Asm-Binary-Images.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ProjectTilesBinaryAsm.asm" />
+    <None Include="Resources\Export-Tiles-Asm-BinaryBlocks.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ProjectTilesBinaryNoCommentAsm.asm" />
+    <None Include="Resources\Export-Tiles-Asm-BinaryBlocks-NoComments.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ProjectTilesBinaryBlocksAsm.asm" />
+    <None Include="Resources\Export-Tiles-Asm-BinaryBlocks-Images.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ProjectTilesBinaryBlocksNoCommentAsm.asm" />
+    <None Include="Resources\Export-Tiles-Image-Blocks.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ExportTiles-BlocksAsImage.bmp" />
+    <None Include="Resources\Export-Tiles-Image-Tiles.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ExportTiles-TilesImage.bmp" />
+    <None Include="Resources\Project-Tiles-Templated.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ExportTilesBinaryImagesAsm.asm" />
+    <None Include="Resources\Project-Tiles.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ExportTilesBinaryBlocksImagesAsm.asm" />
+    <None Include="Resources\Project-Tiles-Image1.bmp" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
