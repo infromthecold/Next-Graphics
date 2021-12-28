@@ -38,6 +38,11 @@ namespace NextGraphics.Exporting
 
 		public void Export()
 		{
+			if (Data.Parameters.ExportCallbacks != null)
+			{
+				Data.Parameters.ExportCallbacks.OnExportStarted();
+			}
+
 			var exporters = new List<BaseExporter>();
 
 			switch (Data.Model.OutputType)
@@ -55,6 +60,11 @@ namespace NextGraphics.Exporting
 			foreach (var exporter in exporters)
 			{
 				exporter.Export(Data);
+			}
+
+			if (Data.Parameters.ExportCallbacks != null)
+			{
+				Data.Parameters.ExportCallbacks.OnExportCompleted();
 			}
 		}
 
@@ -90,6 +100,7 @@ namespace NextGraphics.Exporting
 			if (Data.Model.TilesAsImage)
 			{
 				exporters.Add(new ZXNextTilesAsImageExporter());
+				exporters.Add(new ZXNextTilesInfoExporter());
 			}
 		}
 

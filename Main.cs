@@ -279,6 +279,19 @@ namespace NextGraphics
 
 		#region ExportCallbacks
 
+		public void OnExportStarted()
+		{
+		}
+
+		public void OnExportCompleted()
+		{
+		}
+
+		public string OnExportTilesInfoFilename()
+		{
+			throw new NotImplementedException();
+		}
+
 		public byte OnExportPaletteOffsetMapper(byte proposed)
 		{
 			offsetPanel.paletteOffset.Value = (int)proposed;

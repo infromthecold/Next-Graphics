@@ -193,6 +193,26 @@ namespace UnitTests.Data
 			return Properties.Resources.Export_Tiles_Til;
 		}
 
+		public static byte[] TilesBlk()
+		{
+			return Properties.Resources.Export_Tiles_Blk;
+		}
+
+		public static string TilesBlkFilename()
+		{
+			var result = "";
+
+			// We read the value from blk resource itself so tests will always pass, even if the data changes.
+			var data = TilesBlk();
+			var stringLength = data[0];
+			for (int i = 1; i <= stringLength; i++)
+			{
+				result += (char)data[i];
+			}
+
+			return result;
+		}
+
 		public static byte[] TilesImageBlocks()
 		{
 			using (var stream = new MemoryStream())

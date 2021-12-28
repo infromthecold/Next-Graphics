@@ -52,14 +52,19 @@ namespace NextGraphics.Exporting.Common
 		public Func<Stream> BinaryStream { get; set; }
 
 		/// <summary>
+		/// Stream into which map data will be generated (only if configuration requires this). If property is null, this is not generated.
+		/// </summary>
+		public Func<Stream> MapStream { get; set; }
+
+		/// <summary>
 		/// Stream into which tiles data will be generated (only if configuration requires this). If property is null, this is not generated.
 		/// </summary>
 		public Func<Stream> TilesStream { get; set; }
 
 		/// <summary>
-		/// Stream into which map data will be generated (only if configuration requires this). If property is null, this is not generated.
+		/// Stream into which tiles info data will be generated (only if configuration requires this). If property is null, this is not generated.
 		/// </summary>
-		public Func<Stream> MapStream { get; set; }
+		public Func<Stream> TilesInfoStream { get; set; }
 
 		/// <summary>
 		/// Stream into which tiles image will be generated (only if configuration requires this). If property is null, this is not generated.

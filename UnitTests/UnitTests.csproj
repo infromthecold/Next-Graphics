@@ -69,6 +69,7 @@
     <None Include="Resources\Export-Sprites-Pal.pal" />
     <None Include="Resources\Export-Sprites-Til.til" />
     <None Include="Resources\Export-Tiles-Bin.bin" />
+    <None Include="Resources\Export-Tiles-Blk.blk" />
     <None Include="Resources\Export-Tiles-Map.map" />
     <None Include="Resources\Export-Tiles-Pal.pal" />
     <None Include="Resources\Export-Tiles-Til.til" />

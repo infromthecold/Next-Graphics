@@ -184,7 +184,7 @@ namespace UnitTests.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on Monday, December 27, 2021 4:53:41 PM by the NextGraphics tool from
+        ///// Created on {0} by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
         ///SPRITES_COLOURS:		equ	5
@@ -205,7 +205,7 @@ namespace UnitTests.Properties {
         ///
         ///					// x offset from center of sprite
         ///					// y offset from center of sprite
-        ///			 [rest of string was truncated]&quot;;.
+        ///					// Palette offset with the X mi [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Export_Sprites_Asm_BinaryBlocks {
             get {
@@ -215,7 +215,7 @@ namespace UnitTests.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on Monday, December 27, 2021 4:55:40 PM by the NextGraphics tool from
+        ///// Created on {0} by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
         ///SPRITES_COLOURS:		equ	5
@@ -236,7 +236,7 @@ namespace UnitTests.Properties {
         ///
         ///					// x offset from center of sprite
         ///					// y offset from center of sprite
-        ///			 [rest of string was truncated]&quot;;.
+        ///					// Palette offset with the X mi [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Export_Sprites_Asm_BinaryBlocks_Images {
             get {
@@ -246,28 +246,24 @@ namespace UnitTests.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on Monday, December 27, 2021 4:54:52 PM by the NextGraphics tool from
+        ///// Created on {0} by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
         ///SPRITES_COLOURS:		equ	5
         ///
         ///spritesPalette:
-        ///			db	%11100111	//	255,36,255
-        ///			db	%00000000	//	0,0,0
-        ///			db	%11111100	//	255,255,0
-        ///			db	%01111000	//	109,218,0
-        ///			db	%10010111	//	145,182,255
+        ///			db	%11100111
+        ///			db	%00000000
+        ///			db	%11111100
+        ///			db	%01111000
+        ///			db	%10010111
         ///
         ///SPRITES_SPRITE_SIZE:		equ	256
         ///
         ///SPRITES_SPRITES:		equ	5
         ///
         ///
-        ///				// number of sprites
-        ///
-        ///					// x offset from center of sprite
-        ///					// y offset from center of sprite
-        ///			 [rest of string was truncated]&quot;;.
+        ///spritesFrames:		.dw	spritesFrame0,spritesFrame1,spritesFrame2,spritesFrame3,spritesFrame4,spritesFrame5,spritesFrame6,spritesFrame7,spritesFrame8,spritesFrame9,spritesFrame10,spritesFrame11,spritesFrame12,spr [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Export_Sprites_Asm_BinaryBlocks_NoComments {
             get {
@@ -749,6 +745,16 @@ namespace UnitTests.Properties {
         public static byte[] Export_Tiles_Bin {
             get {
                 object obj = ResourceManager.GetObject("Export_Tiles_Bin", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] Export_Tiles_Blk {
+            get {
+                object obj = ResourceManager.GetObject("Export_Tiles_Blk", resourceCulture);
                 return ((byte[])(obj));
             }
         }
