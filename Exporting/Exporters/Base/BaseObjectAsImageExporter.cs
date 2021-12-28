@@ -20,7 +20,7 @@ namespace NextGraphics.Exporting.Exporters.Base
 			int tileWidth = OnTileWidth();
 			int tileHeight = OnTileHeight();
 
-			int across = Model.BlocksAccross;
+			int across = Model.BlocsAcross;
 			int down = OnTilesPerHeight((int)Math.Round((double)ExportData.CharactersCount / across));
 
 			Bitmap image = new Bitmap(tileWidth * across, tileHeight * down, PixelFormat.Format24bppRgb);

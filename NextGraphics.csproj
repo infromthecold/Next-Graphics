@@ -140,16 +140,18 @@
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesDataExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesMapExporter.cs" />
-    <Compile Include="Exporting\Exporters\Base\BaseTilesAsImageExporter.cs" />
+    <Compile Include="Exporting\Exporters\Base\BaseObjectAsImageExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBlocksAsImageExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextAssemblerExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextSpritesBlocksAsImageExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextSpritesTilesAsImageExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextTilesAsImageExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextTilesInfoExporter.cs" />
+    <Compile Include="Exporting\ExportPathProvider.cs" />
     <Compile Include="Exporting\Remapping\Remapper.cs" />
     <Compile Include="Models\BlockInfo.cs" />
     <Compile Include="Models\Colour.cs" />
+    <Compile Include="Models\Extensions.cs" />
     <Compile Include="Models\IndexedBitmap.cs" />
     <Compile Include="Models\MainModel.cs" />
     <Compile Include="Models\Palette.cs" />
@@ -198,11 +200,11 @@
     <Compile Include="ImageSelectForm.Designer.cs">
       <DependentUpon>ImageSelectForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="newProject.cs">
+    <Compile Include="NewProjectForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="newProject.Designer.cs">
-      <DependentUpon>newProject.cs</DependentUpon>
+    <Compile Include="NewProjectForm.Designer.cs">
+      <DependentUpon>NewProjectForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -257,8 +259,8 @@
     <EmbeddedResource Include="ImageSelectForm.resx">
       <DependentUpon>ImageSelectForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="newProject.resx">
-      <DependentUpon>newProject.cs</DependentUpon>
+    <EmbeddedResource Include="NewProjectForm.resx">
+      <DependentUpon>NewProjectForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>

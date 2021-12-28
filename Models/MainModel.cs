@@ -27,7 +27,7 @@ namespace NextGraphics.Models
 		public int CenterPosition { get; set; } = 4;
 		public int GridWidth { get; set; } = 32;
 		public int GridHeight { get; set; } = 32;
-		public int BlocksAccross { get; set; } = 1;
+		public int BlocsAcross { get; set; } = 1;
 		public int Accuracy { get; set; } = 100;
 
 		public bool TransparentFirst { get; set; } = false;
@@ -106,7 +106,7 @@ namespace NextGraphics.Models
 				node.WithAttribute("tilesImage", value => TilesAsImage = bool.Parse(value));
 				node.WithAttribute("transBlock", value => TransparentBlocks = bool.Parse(value));
 				node.WithAttribute("transTile", value => TransparentTiles = bool.Parse(value));
-				node.WithAttribute("across", value => BlocksAccross = int.Parse(value));
+				node.WithAttribute("across", value => BlocsAcross = int.Parse(value));
 				node.WithAttribute("accurate", value => Accuracy = int.Parse(value));
 				node.WithAttribute("format", value => ImageFormat = (ImageFormat)int.Parse(value));
 				node.WithAttribute("textFlips", value => TextFlips = bool.Parse(value));
@@ -194,7 +194,7 @@ namespace NextGraphics.Models
 			settingsNode.AddAttribute("tilesImage", TilesAsImage);
 			settingsNode.AddAttribute("transBlock", TransparentBlocks);
 			settingsNode.AddAttribute("transTile", TransparentTiles);
-			settingsNode.AddAttribute("across", BlocksAccross.ToString());
+			settingsNode.AddAttribute("across", BlocsAcross.ToString());
 			settingsNode.AddAttribute("accurate", Accuracy.ToString());
 			settingsNode.AddAttribute("format", ((int)ImageFormat).ToString());
 			settingsNode.AddAttribute("textFlips", TextFlips);
@@ -233,6 +233,21 @@ namespace NextGraphics.Models
 		#region Data handling
 
 		/// <summary>
+		/// Updates <see cref="BlocsAcross"/> using the given output window width in pixels.
+		/// </summary>
+		public void UpdateBlocksAcross(int windowWidth)
+		{
+			if (GridWidth == 0)
+			{
+				BlocsAcross = 0;
+			}
+			else
+			{
+				BlocsAcross = (int)Math.Floor((float)windowWidth / GridWidth);
+			}
+		}
+
+		/// <summary>
 		/// Simpler variant for adding an image to the <see cref="Images"/> list.
 		/// </summary>
 		public void AddImage(SourceImage image)
@@ -264,6 +279,9 @@ namespace NextGraphics.Models
 			Images.RemoveAt(index);
 		}
 
+		/// <summary>
+		/// Disposes all allocated resources and clears the data.
+		/// </summary>
 		public void Clear()
 		{
 			Images.ForEach(image =>

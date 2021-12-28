@@ -114,6 +114,25 @@ namespace NextGraphics.Models
 		}
 
 		/// <summary>
+		/// Copies a portion of this bitmap into the given frame of the destination bitmap.
+		/// </summary>
+		/// <param name="palette">Palette that defines colours for this bitmap.</param>
+		/// <param name="rectangle">Rectangle that defines: width and height for this (source) bitmap and destination (position and size) of the given destination bitmap.</param>
+		/// <param name="destination">Destination bitmap to copy to.</param>
+		public void CopyTo(Palette palette, Rectangle rectangle, Bitmap destination)
+		{
+			for (int y = 0; y < rectangle.Height; y++)
+			{
+				for (int x = 0; x < rectangle.Width; x++)
+				{
+					var colourIndex = GetPixel(x, y);
+					var color = palette[colourIndex].ToColor();
+					destination.SetPixel(rectangle.X + x, rectangle.Y + y, color);
+				}
+			}
+		}
+
+		/// <summary>
 		/// Remaps all colour indexes for 4-bit palette.
 		/// </summary>
 		public void RemapTo4Bit(Palette palette, int width, int height, int objectSize)

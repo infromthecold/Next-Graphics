@@ -29,9 +29,13 @@ namespace NextGraphics.Exporting.Common
 		#region Data prebuilt before export
 
 		public int[] SortIndexes = new int[MAX_CHARS + 1];
+
 		public IndexedBitmap[] Blocks = new IndexedBitmap[MAX_BLOCKS];
+		
 		public SpriteInfo[] Sprites = new SpriteInfo[MAX_BLOCKS];
+		
 		public IndexedBitmap[] Chars = new IndexedBitmap[MAX_OBJECTS + 1];
+		
 		internal IndexedBitmap[] TempData = new IndexedBitmap[MAX_OBJECTS + 1];
 
 		public Point ImageOffset { get; set; } = new Point();
@@ -55,6 +59,11 @@ namespace NextGraphics.Exporting.Common
 		/// Number of generated blocks.
 		/// </summary>
 		public int BlocksCount { get; set; } = 0;
+
+		/// <summary>
+		/// Indicates whether remapping was completed or not.
+		/// </summary>
+		public bool IsRemapped { get; set; } = false;
 
 		#endregion
 

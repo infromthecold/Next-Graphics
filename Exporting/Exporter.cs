@@ -149,6 +149,123 @@ namespace NextGraphics.Exporting
 			new Remapper(Data).Remap();
 		}
 
+		/// <summary>
+		/// Rebuilds an image from pre-existing tiles data.
+		/// </summary>
+		/// <remarks>
+		/// Note: we're not changing any image internally, we're simply recalculating pixels and reporting the color for each coordinate. It's caller responsibility to update its image by acting on callback data.
+		/// </remarks>
+		public void RebuildFromTiles(Action<int, int, Color> pixelCallback)
+		{
+			int blocksX = 0;
+			int blocksY = 0;
+
+			for (int s = 0; s < Data.BlocksCount; s++)      // do all the blocks
+			{
+				for (int y = 0; y < Data.Sprites[s].Height; y++)
+				{
+					for (int x = 0; x < Data.Sprites[s].Width; x++)
+					{
+						byte tileId = (byte)Data.SortIndexes[Data.Sprites[s].GetId(x, y)];
+						for (int pixelY = 0; pixelY < 8; pixelY++)
+						{
+							for (int pixelX = 0; pixelX < 8; pixelX++)
+							{
+								int readX = pixelX;
+								int readY = pixelY;
+
+								if (Data.Sprites[s].GetFlippedX(x, y) == true)
+								{
+									readX = 7 - pixelX;
+								}
+
+								if (Data.Sprites[s].GetFlippedY(x, y) == true)
+								{
+									readY = 7 - pixelY;
+								}
+
+								if (Data.Sprites[s].GetRotated(x, y) == true)
+								{
+									int temp = readX;
+									readX = readY;
+									readY = temp;
+									readX = 7 - readX;
+								}
+
+								Color readColour = Data.Model.Palette[Data.Chars[tileId].GetPixel(readX, readY)].ToColor();
+
+								pixelCallback(
+									(x * 8) + pixelX + (blocksX * Data.Model.GridWidth),
+									(y * 8) + pixelY + (blocksY * Data.Model.GridHeight),
+									readColour);
+							}
+						}
+
+					}
+				}
+
+				blocksX++;
+				if (blocksX >= 20)
+				{
+					blocksX = 0;
+					blocksY++;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Generates information string by calling out given appender closure for each piece of text passing it the colour and the text itself. It's responsibility of the caller to clear the display before calling this method.
+		/// </summary>
+		/// <remarks>
+		/// This function should be called after <see cref="Remap"/> since it uses data generated there.
+		/// </remarks>
+		public void GenerateInfoString(Action<Color, String> appender)
+		{
+			if (!Data.IsRemapped || Data.ObjectSize == 0) return;
+
+			var count = (Data.Model.GridWidth / Data.ObjectSize) * (Data.Model.GridHeight / Data.ObjectSize);
+
+			for (int b = 0; b < Data.BlocksCount; b++)
+			{
+				appender(Color.Black, $"{b}\t");
+
+				for (int chr = 0; chr < count; chr++)
+				{
+					appender(Color.Black, "\t");
+
+					var color = Data.Sprites[b].infos[chr].HasTransparent ? Color.Red : Color.Black;
+					appender(color, $"{Data.SortIndexes[Data.Sprites[b].infos[chr].OriginalID]},");
+				}
+
+				appender(Color.Black, Environment.NewLine);
+			}
+
+			appender(Color.Black, Environment.NewLine);
+			appender(Color.Black, "COUNTS");
+			appender(Color.Black, Environment.NewLine);
+
+			int[] counts = new int[ExportData.MAX_BLOCKS];
+			for (int c = 0; c < counts.Length; c++)
+			{
+				counts[c] = 0;
+			}
+
+			for (int b = 0; b < Data.BlocksCount; b++)
+			{
+				appender(Color.Black, $"{b}\t");
+
+				for (int chr = 0; chr < count; chr++)
+				{
+					counts[Data.SortIndexes[Data.Sprites[b].infos[chr].OriginalID]]++;
+				}
+			}
+
+			for (int c = 0; c < counts.Length; c++)
+			{
+				appender(Color.Black, $"{c}\t{counts[c]}{Environment.NewLine}");
+			}
+		}
+
 		#endregion
 	}
 }

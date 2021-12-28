@@ -49,6 +49,8 @@ namespace NextGraphics.Exporting.Remapping
 
 		public void Remap()
 		{
+			Data.IsRemapped = false;
+
 			Callbacks?.OnRemapStarted();
 			Callbacks?.OnRemapDebug($"Starting remap{Environment.NewLine}");
 
@@ -232,7 +234,7 @@ namespace NextGraphics.Exporting.Remapping
 				}
 
 				outXBlock++;
-				if (outXBlock >= Model.BlocksAccross)
+				if (outXBlock >= Model.BlocsAcross)
 				{
 					outXBlock = 0;
 					outYBlock++;
@@ -248,6 +250,8 @@ namespace NextGraphics.Exporting.Remapping
 			{
 				Callbacks?.OnRemapWarning("Too many characters in your tiles");
 			}
+
+			Data.IsRemapped = true;
 
 			Callbacks?.OnRemapDisplayCharactersCount(outChar, transparentCharactersCount);
 			Callbacks?.OnRemapCompleted(allImagesProcessed);
