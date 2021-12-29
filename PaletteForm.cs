@@ -27,6 +27,7 @@ namespace NextGraphics
 		public Button colourClicked;
 		private Color selectedColor = Color.FromArgb(64, 64, 64);
 
+		private bool isFormLoaded = false;
 		private bool isLittleEndian = false;
 		private bool isTransparentColourPickingActive = false;
 
@@ -48,6 +49,8 @@ namespace NextGraphics
 
 		private void PaletteForm_Load(object sender, EventArgs e)
 		{
+			isFormLoaded = false;
+
 			CreatePaletteButtons();
 
 			switch (Palette.Type)
@@ -87,6 +90,8 @@ namespace NextGraphics
 
 			colourCountTextBox.Text = Palette.UsedCount.ToString();
 			startIndexTextBox.Text = Palette.StartIndex.ToString();
+
+			isFormLoaded = true;
 		}
 
 		private void PaletteForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -176,7 +181,7 @@ namespace NextGraphics
 
 		private void next256TypeRadioButton_CheckedChanged(object sender, EventArgs e)
 		{
-			if (next256TypeRadioButton.Checked == true)
+			if (isFormLoaded && next256TypeRadioButton.Checked)
 			{
 				Palette.Type = PaletteType.Next256;
 				messageLabel.Visible = false;
@@ -191,7 +196,7 @@ namespace NextGraphics
 
 		private void next512TypeRadioButton_CheckedChanged(object sender, EventArgs e)
 		{
-			if (next512TypeRadioButton.Checked == true)
+			if (isFormLoaded && next512TypeRadioButton.Checked)
 			{
 				Palette.Type = PaletteType.Next512;
 				messageLabel.Visible = true;
@@ -208,7 +213,7 @@ namespace NextGraphics
 
 		private void customTypeRadioButton_CheckedChanged(object sender, EventArgs e)
 		{
-			if (customTypeRadioButton.Checked)
+			if (isFormLoaded && customTypeRadioButton.Checked)
 			{
 				Palette.Type = PaletteType.Custom;
 				messageLabel.Visible = false;
@@ -256,7 +261,6 @@ namespace NextGraphics
 					colourButtons[toIndex].BackColor = Palette[toIndex].ToColor();
 				}
 				customTypeRadioButton.Checked = true;
-				customTypeRadioButton_CheckedChanged(sender, e);
 			}
 		}
 

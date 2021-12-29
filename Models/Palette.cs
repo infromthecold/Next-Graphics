@@ -65,7 +65,7 @@ namespace NextGraphics.Models
 			}
 		}
 
-		public short ClosestColor(Color thisColour, short reMap, int startColour)
+		public short ClosestColor(Color color, short reMap, int startColour)
 		{
 			short result = -1;
 			int biggestDifference = 1000;
@@ -76,30 +76,30 @@ namespace NextGraphics.Models
 					case PaletteType.Next256:
 						for (short i = 0; i < 256; i++)
 						{
-							if (Math.Sqrt(Math.Pow(thisColour.R - SpecNext256[i, 0], 2) + Math.Pow(thisColour.G - SpecNext256[i, 1], 2) + Math.Pow(thisColour.B - SpecNext256[i, 2], 2)) < biggestDifference)
+							if (Math.Sqrt(Math.Pow(color.R - SpecNext256[i, 0], 2) + Math.Pow(color.G - SpecNext256[i, 1], 2) + Math.Pow(color.B - SpecNext256[i, 2], 2)) < biggestDifference)
 							{
 								result = i;
-								biggestDifference = (int)Math.Sqrt(Math.Pow(thisColour.R - SpecNext256[i, 0], 2) + Math.Pow(thisColour.G - SpecNext256[i, 1], 2) + Math.Pow(thisColour.B - SpecNext256[i, 2], 2));
+								biggestDifference = (int)Math.Sqrt(Math.Pow(color.R - SpecNext256[i, 0], 2) + Math.Pow(color.G - SpecNext256[i, 1], 2) + Math.Pow(color.B - SpecNext256[i, 2], 2));
 							}
 						}
 						break;
 					case PaletteType.Next512:
 						for (short i = 0; i < 512; i++)
 						{
-							if (Math.Sqrt(Math.Pow(thisColour.R - SpecNext512[i, 0], 2) + Math.Pow(thisColour.G - SpecNext512[i, 1], 2) + Math.Pow(thisColour.B - SpecNext512[i, 2], 2)) < biggestDifference)
+							if (Math.Sqrt(Math.Pow(color.R - SpecNext512[i, 0], 2) + Math.Pow(color.G - SpecNext512[i, 1], 2) + Math.Pow(color.B - SpecNext512[i, 2], 2)) < biggestDifference)
 							{
 								result = i;
-								biggestDifference = (int)Math.Sqrt(Math.Pow(thisColour.R - SpecNext512[i, 0], 2) + Math.Pow(thisColour.G - SpecNext512[i, 1], 2) + Math.Pow(thisColour.B - SpecNext512[i, 2], 2));
+								biggestDifference = (int)Math.Sqrt(Math.Pow(color.R - SpecNext512[i, 0], 2) + Math.Pow(color.G - SpecNext512[i, 1], 2) + Math.Pow(color.B - SpecNext512[i, 2], 2));
 							}
 						}
 						break;
 					case PaletteType.Custom:
 						for (short i = 0; i < UsedCount; i++)
 						{
-							if (Math.Sqrt(Math.Pow(thisColour.R - this[startColour + i, 0], 2) + Math.Pow(thisColour.G - this[startColour + i, 1], 2) + Math.Pow(thisColour.B - this[startColour + i, 2], 2)) < biggestDifference)
+							if (Math.Sqrt(Math.Pow(color.R - this[startColour + i, 0], 2) + Math.Pow(color.G - this[startColour + i, 1], 2) + Math.Pow(color.B - this[startColour + i, 2], 2)) < biggestDifference)
 							{
 								result = (short)(i + startColour);
-								biggestDifference = (int)Math.Sqrt(Math.Pow(thisColour.R - this[startColour + i, 0], 2) + Math.Pow(thisColour.G - this[startColour + i, 1], 2) + Math.Pow(thisColour.B - this[startColour + i, 2], 2));
+								biggestDifference = (int)Math.Sqrt(Math.Pow(color.R - this[startColour + i, 0], 2) + Math.Pow(color.G - this[startColour + i, 1], 2) + Math.Pow(color.B - this[startColour + i, 2], 2));
 							}
 						}
 						break;
@@ -109,10 +109,10 @@ namespace NextGraphics.Models
 			{
 				for (short i = reMap; i < reMap + 16; i++)
 				{
-					if (Math.Sqrt(Math.Pow(thisColour.R - this[startColour + i, 0], 2) + Math.Pow(thisColour.G - this[startColour + i, 1], 2) + Math.Pow(thisColour.B - this[startColour + i, 2], 2)) < biggestDifference)
+					if (Math.Sqrt(Math.Pow(color.R - this[startColour + i, 0], 2) + Math.Pow(color.G - this[startColour + i, 1], 2) + Math.Pow(color.B - this[startColour + i, 2], 2)) < biggestDifference)
 					{
 						result = (short)(i + startColour);
-						biggestDifference = (int)Math.Sqrt(Math.Pow(thisColour.R - this[startColour + i, 0], 2) + Math.Pow(thisColour.G - this[startColour + i, 1], 2) + Math.Pow(thisColour.B - this[startColour + i, 2], 2));
+						biggestDifference = (int)Math.Sqrt(Math.Pow(color.R - this[startColour + i, 0], 2) + Math.Pow(color.G - this[startColour + i, 1], 2) + Math.Pow(color.B - this[startColour + i, 2], 2));
 					}
 				}
 			}

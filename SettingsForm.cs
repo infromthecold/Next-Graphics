@@ -46,7 +46,7 @@ namespace NextGraphics
 			tilesOut.Checked = Model.TilesAsImage;
 			transBlock.Checked = Model.TransparentBlocks;
 			transTile.Checked = Model.TransparentTiles;
-			tilesAcross.Text = Model.BlocksAccross.ToString();
+			tilesAcross.Text = Model.BlocsAcross.ToString();
 			blocksFormat.SelectedIndex = (int)Model.ImageFormat;
 			Accuracy.Text = Model.Accuracy.ToString();
 		}
@@ -68,7 +68,7 @@ namespace NextGraphics
 			Model.TilesAsImage = tilesOut.Checked;
 			Model.TransparentBlocks = transBlock.Checked;
 			Model.TransparentTiles = transTile.Checked;
-			Model.BlocksAccross = int.Parse(tilesAcross.Text);
+			Model.BlocsAcross = int.Parse(tilesAcross.Text);
 			Model.ImageFormat = (ImageFormat)blocksFormat.SelectedIndex;
 			Model.Accuracy = int.Parse(Accuracy.Text);
 		}

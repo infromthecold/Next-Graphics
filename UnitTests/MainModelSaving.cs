@@ -87,8 +87,8 @@ namespace UnitTests
 			SettingsRunner.Setup(model => model.OutputType = OutputType.Sprites).Verify("true", "sprites");
 			SettingsRunner.Setup(model => model.OutputType = OutputType.Sprites).VerifyNotExists("blocks");
 
-			SettingsRunner.Setup(model => model.OutputType = OutputType.Blocks).Verify("true", "blocks");
-			SettingsRunner.Setup(model => model.OutputType = OutputType.Blocks).VerifyNotExists("sprites");
+			SettingsRunner.Setup(model => model.OutputType = OutputType.Tiles).Verify("true", "blocks");
+			SettingsRunner.Setup(model => model.OutputType = OutputType.Tiles).VerifyNotExists("sprites");
 		}
 
 		[TestMethod]
@@ -136,15 +136,15 @@ namespace UnitTests
 		[TestMethod]
 		public void SettingsGridXSaved()
 		{
-			SettingsRunner.Setup(model => model.GridXSize = 1).Verify("1", "xSize");
-			SettingsRunner.Setup(model => model.GridXSize = 123).Verify("123", "xSize");
+			SettingsRunner.Setup(model => model.GridWidth = 1).Verify("1", "xSize");
+			SettingsRunner.Setup(model => model.GridWidth = 123).Verify("123", "xSize");
 		}
 
 		[TestMethod]
 		public void SettingsGridYSaved()
 		{
-			SettingsRunner.Setup(model => model.GridYSize = 5).Verify("5", "ySize");
-			SettingsRunner.Setup(model => model.GridYSize = 64).Verify("64", "ySize");
+			SettingsRunner.Setup(model => model.GridHeight = 5).Verify("5", "ySize");
+			SettingsRunner.Setup(model => model.GridHeight = 64).Verify("64", "ySize");
 		}
 
 		[TestMethod]
@@ -220,8 +220,8 @@ namespace UnitTests
 		[TestMethod]
 		public void SettingsBlocksAccrossSaved()
 		{
-			SettingsRunner.Setup(model => model.BlocksAccross = 7).Verify("7", "across");
-			SettingsRunner.Setup(model => model.BlocksAccross = 83).Verify("83", "across");
+			SettingsRunner.Setup(model => model.BlocsAcross = 7).Verify("7", "across");
+			SettingsRunner.Setup(model => model.BlocsAcross = 83).Verify("83", "across");
 		}
 
 		[TestMethod]
