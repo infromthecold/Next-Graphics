@@ -300,6 +300,32 @@ namespace NextGraphics.Models
 
 		#endregion
 
+		#region Data enquiry
+
+		/// <summary>
+		/// Determines item width (based on <see cref="OutputType"/> and possibly other values).
+		/// </summary>
+		public int ItemWidth()
+		{
+			// Note: atm this code is suited for ZX Spectrum Next.
+			switch (OutputType)
+			{
+				case OutputType.Sprites: return 16;
+				default: return 8;
+			}
+		}
+
+		/// <summary>
+		/// Determines item width (based on <see cref="OutputType"/> and possibly other values).
+		/// </summary>
+		public int ItemHeight()
+		{
+			// Note: atm this code is suited for ZX Spectrum Next.
+			return ItemWidth();
+		}
+
+		#endregion
+
 		#region Helpers
 
 		private void CreateBitmaps()

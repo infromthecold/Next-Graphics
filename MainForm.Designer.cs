@@ -72,7 +72,7 @@
 			this.exportAsBlocksRadioButton = new System.Windows.Forms.RadioButton();
 			this.exportAsSpritesRadioButton = new System.Windows.Forms.RadioButton();
 			this.blockWidthTextBox = new System.Windows.Forms.TextBox();
-			this.FilesView = new System.Windows.Forms.Panel();
+			this.filesPanel = new System.Windows.Forms.Panel();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.moveUpImageToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.moveDownImageToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -92,20 +92,20 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.settingsButton = new System.Windows.Forms.Button();
-			this.bottomPanel = new System.Windows.Forms.Panel();
+			this.resultsPanel = new System.Windows.Forms.Panel();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.SpritesLable = new System.Windows.Forms.Label();
 			this.BlocksLable = new System.Windows.Forms.Label();
 			this.menuStrip.SuspendLayout();
 			this.toolStrip.SuspendLayout();
-			this.FilesView.SuspendLayout();
+			this.filesPanel.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.charsPictureBox)).BeginInit();
 			this.tilesPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.blocksPictureBox)).BeginInit();
 			this.statusStrip.SuspendLayout();
 			this.groupBox1.SuspendLayout();
-			this.bottomPanel.SuspendLayout();
+			this.resultsPanel.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -505,19 +505,19 @@
 			this.toolTip.SetToolTip(this.blockWidthTextBox, "Width of the Sprites/Blocks");
 			this.blockWidthTextBox.Leave += new System.EventHandler(this.blockWidthTextBox_Leave);
 			// 
-			// FilesView
+			// filesPanel
 			// 
-			this.FilesView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.filesPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.FilesView.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.FilesView.Controls.Add(this.toolStrip1);
-			this.FilesView.Controls.Add(this.projectListBox);
-			this.FilesView.Location = new System.Drawing.Point(865, 79);
-			this.FilesView.Margin = new System.Windows.Forms.Padding(0);
-			this.FilesView.Name = "FilesView";
-			this.FilesView.Padding = new System.Windows.Forms.Padding(10);
-			this.FilesView.Size = new System.Drawing.Size(175, 555);
-			this.FilesView.TabIndex = 4;
+			this.filesPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.filesPanel.Controls.Add(this.toolStrip1);
+			this.filesPanel.Controls.Add(this.projectListBox);
+			this.filesPanel.Location = new System.Drawing.Point(865, 79);
+			this.filesPanel.Margin = new System.Windows.Forms.Padding(0);
+			this.filesPanel.Name = "filesPanel";
+			this.filesPanel.Padding = new System.Windows.Forms.Padding(10);
+			this.filesPanel.Size = new System.Drawing.Size(175, 555);
+			this.filesPanel.TabIndex = 4;
 			// 
 			// toolStrip1
 			// 
@@ -730,19 +730,19 @@
 			this.settingsButton.UseVisualStyleBackColor = true;
 			this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
 			// 
-			// bottomPanel
+			// resultsPanel
 			// 
-			this.bottomPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.resultsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.bottomPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.bottomPanel.Controls.Add(this.panel1);
-			this.bottomPanel.Controls.Add(this.label2);
-			this.bottomPanel.Controls.Add(this.label1);
-			this.bottomPanel.Controls.Add(this.tilesPanel);
-			this.bottomPanel.Location = new System.Drawing.Point(694, 79);
-			this.bottomPanel.Name = "bottomPanel";
-			this.bottomPanel.Size = new System.Drawing.Size(171, 552);
-			this.bottomPanel.TabIndex = 6;
+			this.resultsPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.resultsPanel.Controls.Add(this.panel1);
+			this.resultsPanel.Controls.Add(this.label2);
+			this.resultsPanel.Controls.Add(this.label1);
+			this.resultsPanel.Controls.Add(this.tilesPanel);
+			this.resultsPanel.Location = new System.Drawing.Point(694, 79);
+			this.resultsPanel.Name = "resultsPanel";
+			this.resultsPanel.Size = new System.Drawing.Size(171, 552);
+			this.resultsPanel.TabIndex = 6;
 			// 
 			// panel1
 			// 
@@ -774,7 +774,7 @@
 			this.BlocksLable.TabIndex = 19;
 			this.BlocksLable.Text = "Blocks/Objects";
 			// 
-			// Main
+			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -782,21 +782,21 @@
 			this.Controls.Add(this.BlocksLable);
 			this.Controls.Add(this.SpritesLable);
 			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.bottomPanel);
+			this.Controls.Add(this.resultsPanel);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.toolStrip);
 			this.Controls.Add(this.menuStrip);
-			this.Controls.Add(this.FilesView);
+			this.Controls.Add(this.filesPanel);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.IsMdiContainer = true;
 			this.MainMenuStrip = this.menuStrip;
-			this.Name = "Main";
+			this.Name = "MainForm";
 			this.Text = "Next Graphics";
 			this.menuStrip.ResumeLayout(false);
 			this.menuStrip.PerformLayout();
 			this.toolStrip.ResumeLayout(false);
 			this.toolStrip.PerformLayout();
-			this.FilesView.ResumeLayout(false);
+			this.filesPanel.ResumeLayout(false);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.charsPictureBox)).EndInit();
@@ -806,8 +806,8 @@
 			this.statusStrip.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
-			this.bottomPanel.ResumeLayout(false);
-			this.bottomPanel.PerformLayout();
+			this.resultsPanel.ResumeLayout(false);
+			this.resultsPanel.PerformLayout();
 			this.panel1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -843,7 +843,7 @@
 		private System.Windows.Forms.ToolStripButton saveToolStripButton;
 		private System.Windows.Forms.ToolStripButton makeBlocksToolStripButton;
 		private System.Windows.Forms.ToolTip toolTip;
-		private System.Windows.Forms.Panel FilesView;
+		private System.Windows.Forms.Panel filesPanel;
 		private System.Windows.Forms.ListBox projectListBox;
 		private System.Windows.Forms.ToolStripButton addImagesToolStripButton;
 		private System.Windows.Forms.ToolStripMenuItem addImagesToolStripMenuItem;
@@ -874,7 +874,7 @@
 		private System.Windows.Forms.ToolStripMenuItem rebuildFromTilesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton reloadImagesToolStripButton;
 		private System.Windows.Forms.ToolStripMenuItem processMapToolStripMenuItem;
-		private System.Windows.Forms.Panel bottomPanel;
+		private System.Windows.Forms.Panel resultsPanel;
 		private System.Windows.Forms.Label SpritesLable;
 		private System.Windows.Forms.Label BlocksLable;
 		private System.Windows.Forms.ToolStripMenuItem createParallaxToolStripMenuItem;

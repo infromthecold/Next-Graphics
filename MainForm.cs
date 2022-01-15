@@ -32,16 +32,18 @@ namespace NextGraphics
 		private ExportPathProvider ExportPaths { get; set; }
 
 		private RadioButton selectedRadio;
-		private List<imageWindow> imageWindows = new List<imageWindow>();
+		private List<ImageForm> imageForms = new List<ImageForm>();
 #if PROPRIETARY
 		public	parallaxTool		parallaxWindow		=	new	parallaxTool();
 #endif
 		private InfoForm infoForm = new InfoForm();
-		private imageWindow blocksWindow = new imageWindow();
-		private imageWindow charsWindow = new imageWindow();
+
+		private ImageForm blocksForm = null;
+		private ImageForm charsForm = null;
+		private ImageForm rebuildTilesForm = null;
+
 		private PaletteForm paletteForm = new PaletteForm();
 		private SettingsForm SettingsPanel = new SettingsForm();
-		private imageWindow blocksView = new imageWindow();
 		private palOffset offsetPanel = new palOffset();
 		private rebuild rebuildDialog = new rebuild();
 
@@ -87,9 +89,9 @@ namespace NextGraphics
 
 			ClearBitmap(Model.CharsBitmap);
 			charsPictureBox.Image = Model.CharsBitmap;
-			this.toolStripProgressBar1.Minimum = 0;
-			this.toolStripProgressBar1.Maximum = 0;
-			this.projectListBox.Items.Add(" " + Model.Name);
+			toolStripProgressBar1.Minimum = 0;
+			toolStripProgressBar1.Maximum = 0;
+			projectListBox.Items.Add(" " + Model.Name);
 
 			blocksPictureBox.Invalidate();
 			blocksPictureBox.Refresh();
@@ -302,7 +304,7 @@ namespace NextGraphics
 
 		private void exitToolsStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		#endregion
@@ -311,24 +313,22 @@ namespace NextGraphics
 
 		private void rebuildFromTilesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (blocksView.Visible == false)
+			if (rebuildTilesForm == null || !rebuildTilesForm.Visible)
 			{
-				blocksView = new imageWindow();
+				rebuildTilesForm = new ImageForm
+				{
+					Text = "Rebuild From Tiles",
+					MdiParent = this
+				};
 			}
 
-			blocksView.MdiParent = this;
-			blocksView.inputImage = new Bitmap(20 * Model.GridWidth, 12 * Model.GridHeight);
-			blocksView.srcPicture.Image = blocksView.inputImage;
+			rebuildTilesForm.SetImage(new Bitmap(20 * Model.GridWidth, 12 * Model.GridHeight));
+			rebuildTilesForm.Show();
 
-			blocksView.Show();
+			Exporter.RebuildFromTiles(rebuildTilesForm.SetPixel);
 
-			Exporter.RebuildFromTiles((x, y, color) =>
-			{
-				blocksView.inputImage.SetPixel(x, y, color);
-			});
-
-			blocksView.Invalidate(true);
-			blocksView.Update();
+			rebuildTilesForm.Invalidate(true);
+			rebuildTilesForm.Update();
 		}
 
 		private void processMapToolStripMenuItem_Click(object sender, EventArgs e)
@@ -376,7 +376,7 @@ namespace NextGraphics
 			{
 				RunLongOperation(() =>
 				{
-					foreach (String file in batchProjectDialog.FileNames)
+					foreach (string file in batchProjectDialog.FileNames)
 					{
 						SetParentFolder(Path.GetFullPath(file));
 						CreateNewProject();
@@ -658,31 +658,19 @@ namespace NextGraphics
 
 		private void charsPictureBox_Click(object sender, EventArgs e)
 		{
-			if (charsWindow != null)
+			if (charsForm == null || !charsForm.Visible)
 			{
-				if (charsWindow.Visible == false)
+				charsForm = new ImageForm
 				{
-					charsWindow = new imageWindow
-					{
-						MdiParent = this
-					};
-					if (Model.OutputType == OutputType.Sprites)
-					{
-						charsWindow.copyImage(Model.CharsBitmap, 16, 16, false);
-					}
-					else
-					{
-						charsWindow.copyImage(Model.CharsBitmap, 8, 8, false);
-					}
-					//	blocksWindow.loadImage(model.Filenames[index-1],model.GridXSize,model.GridYSize);
-					charsWindow.Show();
-					charsWindow.Height = this.Height - (toolStrip.Height + 200);
-					charsWindow.Width = this.Width - (bottomPanel.Width + FilesView.Width + charsWindow.Left);
-					charsWindow.Top = 20;
-					charsWindow.Left = 20;
-					charsWindow.Refresh();
-				}
+					Text = "Characters",
+					MdiParent = this
+				};
 			}
+
+			// Note: atm sprite/tile size is hard code and suits ZX Spectrum Next, it would be better to move this elsewhere - `MainModel` for example...
+			charsForm.CopyImage(Model.CharsBitmap, Model.ItemWidth(), Model.ItemHeight(), 1f);
+
+			MoveResizeAsMdiChild(charsForm, show: true);
 		}
 
 		private void blocksPictureBox_Paint(object sender, PaintEventArgs e)
@@ -709,24 +697,18 @@ namespace NextGraphics
 
 		private void blocksPictureBox_Click(object sender, EventArgs e)
 		{
-			if (blocksWindow != null)
+			if (blocksForm == null || !blocksForm.Visible)
 			{
-				if (blocksWindow.Visible == false)
+				blocksForm = new ImageForm
 				{
-					blocksWindow = new imageWindow
-					{
-						MdiParent = this
-					};
-					blocksWindow.copyImage(Model.BlocksBitmap, Model.GridWidth, Model.GridHeight, true);
-					//	blocksWindow.loadImage(model.Filenames[index-1],model.GridXSize,model.GridYSize);
-					blocksWindow.Show();
-					blocksWindow.Height = this.Height - (toolStrip.Height + 200);
-					blocksWindow.Width = this.Width - (bottomPanel.Width + FilesView.Width + blocksWindow.Left);
-					blocksWindow.Top = 20;
-					blocksWindow.Left = 20;
-					blocksWindow.Refresh();
-				}
+					Text = "Blocks",
+					MdiParent = this
+				};
 			}
+
+			blocksForm.CopyImage(Model.BlocksBitmap, Model.GridWidth, Model.GridHeight, 0.15f);
+
+			MoveResizeAsMdiChild(blocksForm, show: true);
 		}
 
 		#endregion
@@ -736,14 +718,14 @@ namespace NextGraphics
 		private void moveDownImageToolStripButton_Click(object sender, EventArgs e)
 		{
 			// move down
-			int thisIndex = this.projectListBox.SelectedIndex;
+			int thisIndex = projectListBox.SelectedIndex;
 			if (thisIndex <= Model.Images.Count - 1 && thisIndex > 0)
 			{
 
 				var temp = Model.Images[thisIndex];
 				Model.Images[thisIndex] = Model.Images[thisIndex - 1];
 				Model.Images[thisIndex - 1] = temp;
-				this.projectListBox.SelectedIndex = thisIndex + 1;
+				projectListBox.SelectedIndex = thisIndex + 1;
 				UpdateProjectListBox();
 			}
 		}
@@ -752,21 +734,21 @@ namespace NextGraphics
 		{
 			//Move up
 
-			int thisIndex = this.projectListBox.SelectedIndex;
+			int thisIndex = projectListBox.SelectedIndex;
 			if (thisIndex > 1 && thisIndex > 0)
 			{
 				thisIndex--;
 				var temp = Model.Images[thisIndex - 1];
 				Model.Images[thisIndex - 1] = Model.Images[thisIndex];
 				Model.Images[thisIndex] = temp;
-				this.projectListBox.SelectedIndex = thisIndex;
+				projectListBox.SelectedIndex = thisIndex;
 				UpdateProjectListBox();
 			}
 		}
 		
 		private void removeImageToolStripButton_Click(object sender, EventArgs e)
 		{
-			if (this.projectListBox.SelectedIndex == 0) return;
+			if (projectListBox.SelectedIndex == 0) return;
 
 			foreach (Form childForm in MdiChildren)
 			{
@@ -776,7 +758,7 @@ namespace NextGraphics
 			var result = MessageBox.Show("Remove this image?", "Are you Sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 			if (result == DialogResult.Yes)
 			{
-				Model.Images.RemoveAt(this.projectListBox.SelectedIndex - 1);
+				Model.Images.RemoveAt(projectListBox.SelectedIndex - 1);
 				UpdateProjectListBox();
 			}
 		}
@@ -788,44 +770,41 @@ namespace NextGraphics
 			foreach (var image in Model.Images)
 			{
 				image.ReloadImage();
-				imageWindows.Add(new imageWindow { MdiParent = this });
+				imageForms.Add(new ImageForm { MdiParent = this });
 			}
 		}
 
 		private void projectListBox_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			int index = this.projectListBox.IndexFromPoint(e.Location);
-			if (index != System.Windows.Forms.ListBox.NoMatches)
+			int index = projectListBox.IndexFromPoint(e.Location);
+			if (index == ListBox.NoMatches) return;
+
+			if (index == 0)
 			{
-				if (index == 0)
+				NewProjectForm newProjectForm = new NewProjectForm();
+				newProjectForm.ShowDialog();
+				if (newProjectForm.DialogResult == DialogResult.OK)
 				{
-					NewProjectForm newProjectForm = new NewProjectForm();
-					newProjectForm.ShowDialog();
-					if (newProjectForm.DialogResult == DialogResult.OK)
-					{
-						Model.Name = newProjectForm.textBox1.Text;
-						this.projectListBox.Items[0] = " " + Model.Name;
-					}
+					Model.Name = newProjectForm.textBox1.Text;
+					projectListBox.Items[0] = " " + Model.Name;
 				}
-				else
+			}
+			else
+			{
+				var image = Model.Images[index - 1];
+
+				if (imageForms[index - 1] == null || !imageForms[index - 1].Visible)
 				{
-					if (imageWindows[index - 1] != null)
+					imageForms[index - 1] = new ImageForm
 					{
-						if (imageWindows[index - 1].Visible == false)
-						{
-							imageWindows[index - 1] = new imageWindow
-							{
-								MdiParent = this
-							};
-							imageWindows[index - 1].loadImage(Model.Images[index - 1].Filename, Model.GridWidth, Model.GridHeight);
-							imageWindows[index - 1].Show();
-							imageWindows[index - 1].Height = this.Height - (toolStrip.Height + 100);
-							imageWindows[index - 1].Width = this.Width - (FilesView.Width + imageWindows[index - 1].Left);
-							imageWindows[index - 1].Top = 0;
-							imageWindows[index - 1].Refresh();
-						}
-					}
+						Text = Path.GetFileName(image.Filename),
+						MdiParent = this
+					};
 				}
+
+				imageForms[index - 1].LoadImage(image.Filename, Model.GridWidth, Model.GridHeight);
+
+				MoveResizeAsMdiChild(imageForms[index - 1], show: true);
 			}
 		}
 
@@ -977,7 +956,7 @@ namespace NextGraphics
 			if (parallax != null)
 			{
 				parallaxWindow.readParallax(parallax);
-				this.parallaxWindow.loadProject();
+				parallaxWindow.loadProject();
 			}
 #endif
 		}
@@ -1025,8 +1004,8 @@ namespace NextGraphics
 				if (!image.IsImageValid) continue;
 
 				Model.Images.Add(image);
-				imageWindows.Add(new imageWindow { MdiParent = this });
-				this.projectListBox.Items.Add("  " + Path.GetFileName(file));
+				imageForms.Add(new ImageForm { MdiParent = this });
+				projectListBox.Items.Add("  " + Path.GetFileName(file));
 			}
 
 			if (rejected == true)
@@ -1041,7 +1020,7 @@ namespace NextGraphics
 		private void ExportData(string sourceFilename)
 		{
 #if PROPRIETARY
-			ExportParameters.FourBitColourConverter = (colour) => (byte)this.parallaxWindow.getColour(colourByte);
+			ExportParameters.FourBitColourConverter = (colour) => (byte)parallaxWindow.getColour(colourByte);
 #endif
 
 			RunLongOperation(() =>
@@ -1066,9 +1045,9 @@ namespace NextGraphics
 		/// </summary>
 		private void SetForm()
 		{
-			this.projectListBox.Items.Clear();
-			this.projectListBox.Items.Add(" " + Model.Name);
-			Model.Images.ForEach(filename => this.projectListBox.Items.Add(" " + filename));
+			projectListBox.Items.Clear();
+			projectListBox.Items.Add(" " + Model.Name);
+			Model.Images.ForEach(filename => projectListBox.Items.Add(" " + filename));
 
 			blockHeightTextBox.Text = Model.GridHeight.ToString();
 			blockWidthTextBox.Text = Model.GridWidth.ToString();
@@ -1088,7 +1067,7 @@ namespace NextGraphics
 				//charsPanel.Width	=	blocksAcross/outSize;
 			}
 
-			this.Refresh();
+			Refresh();
 		}
 
 		/// <summary>
@@ -1097,8 +1076,8 @@ namespace NextGraphics
 		private void UpdateProjectListBox()
 		{
 			// At this point SourceImage list is already setup in the model, so we need to check for bitmap validity, remove invalid images and establish image windows for each valid one.
-			this.projectListBox.Items.Clear();
-			this.projectListBox.Items.Add(" " + Model.Name);
+			projectListBox.Items.Clear();
+			projectListBox.Items.Add(" " + Model.Name);
 
 			DisposeImageWindows();
 
@@ -1113,7 +1092,7 @@ namespace NextGraphics
 				}
 
 				projectListBox.Items.Add(" " + Path.GetFileName(image.Filename));
-				imageWindows.Add(new imageWindow { MdiParent = this });
+				imageForms.Add(new ImageForm { MdiParent = this });
 			}
 
 			foreach (string name in removeNames)
@@ -1181,11 +1160,13 @@ namespace NextGraphics
 			{
 				Model.GridWidth = size;
 
+				var itemWidth = Model.ItemWidth();
+
 				if (Model.OutputType == OutputType.Sprites)
 				{
-					if (Model.GridWidth < 16)
+					if (Model.GridWidth < itemWidth)
 					{
-						Model.GridWidth = 16;
+						Model.GridWidth = itemWidth;
 					}
 					else if (Model.GridWidth > 320)
 					{
@@ -1198,9 +1179,9 @@ namespace NextGraphics
 				}
 				else
 				{
-					if (Model.GridWidth < 8)
+					if (Model.GridWidth < itemWidth)
 					{
-						Model.GridWidth = 8;
+						Model.GridWidth = itemWidth;
 					}
 					else if (Model.GridWidth > 128)
 					{
@@ -1236,11 +1217,13 @@ namespace NextGraphics
 			{
 				Model.GridHeight = size;
 
+				var itemWidth = Model.ItemWidth();
+
 				if (Model.OutputType == OutputType.Sprites)
 				{
-					if (Model.GridHeight < 16)
+					if (Model.GridHeight < itemWidth)
 					{
-						Model.GridHeight = 16;
+						Model.GridHeight = itemWidth;
 					}
 					else if (Model.GridHeight > 320)
 					{
@@ -1253,9 +1236,9 @@ namespace NextGraphics
 				}
 				else
 				{
-					if (Model.GridHeight < 8)
+					if (Model.GridHeight < itemWidth)
 					{
-						Model.GridHeight = 8;
+						Model.GridHeight = itemWidth;
 					}
 					else if (Model.GridHeight > 128)
 					{
@@ -1282,21 +1265,31 @@ namespace NextGraphics
 		/// </summary>
 		private void DisposeImageWindows()
 		{
-			foreach (imageWindow window in imageWindows)
+			foreach (ImageForm form in imageForms)
 			{
-				if (window.inputImage != null)
-				{
-					window.inputImage.Dispose();
-				}
-
-				if (window != null)
-				{
-					window.Close();
-					window.Dispose();
-				}
+				form.Dispose();
 			}
 
-			imageWindows.Clear();
+			imageForms.Clear();
+		}
+
+		/// <summary>
+		///  Moves and resizes given MDI child form, then refreshes it.
+		/// </summary>
+		private void MoveResizeAsMdiChild(Form form, int left = 20, int top = 20, bool show = false)
+		{
+			// We need to show form first, otherwise it won't refresh properly (well, `ImageForm` won't).
+			if (show)
+			{
+				form.Show();
+			}
+
+			form.Left = left;
+			form.Top = top;
+			form.Width = Width - left - (resultsPanel.Width + filesPanel.Width + 20);
+			form.Height = Height - top - (toolStrip.Height + 200);
+
+			form.Refresh();
 		}
 
 		#endregion

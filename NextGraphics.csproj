@@ -226,11 +226,11 @@
       <DependentUpon>Progress.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="imageWindow.cs">
+    <Compile Include="ImageForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="imageWindow.Designer.cs">
-      <DependentUpon>imageWindow.cs</DependentUpon>
+    <Compile Include="ImageForm.Designer.cs">
+      <DependentUpon>ImageForm.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="About.resx">
       <DependentUpon>About.cs</DependentUpon>
@@ -281,8 +281,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="imageWindow.resx">
-      <DependentUpon>imageWindow.cs</DependentUpon>
+    <EmbeddedResource Include="ImageForm.resx">
+      <DependentUpon>ImageForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="my.pfx" />
     <None Include="NextGraphics_TemporaryKey.pfx" />
