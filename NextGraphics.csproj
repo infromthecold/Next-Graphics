@@ -164,11 +164,11 @@
     <Compile Include="InfoForm.Designer.cs">
       <DependentUpon>InfoForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="paletteOffset.cs">
+    <Compile Include="PaletteOffsetForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="paletteOffset.Designer.cs">
-      <DependentUpon>paletteOffset.cs</DependentUpon>
+    <Compile Include="PaletteOffsetForm.Designer.cs">
+      <DependentUpon>PaletteOffsetForm.cs</DependentUpon>
     </Compile>
     <Compile Include="parallaxTool.cs">
       <SubType>Form</SubType>
@@ -244,8 +244,8 @@
     <EmbeddedResource Include="InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="paletteOffset.resx">
-      <DependentUpon>paletteOffset.cs</DependentUpon>
+    <EmbeddedResource Include="PaletteOffsetForm.resx">
+      <DependentUpon>PaletteOffsetForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="parallaxTool.resx">
       <DependentUpon>parallaxTool.cs</DependentUpon>

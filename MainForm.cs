@@ -44,7 +44,7 @@ namespace NextGraphics
 
 		private PaletteForm paletteForm = new PaletteForm();
 		private SettingsForm settingsForm = new SettingsForm();
-		private palOffset offsetPanel = new palOffset();
+		private PaletteOffsetForm offsetPanel = new PaletteOffsetForm();
 		private rebuild rebuildDialog = new rebuild();
 
 		private SaveFileDialog projectSaveDialog = new SaveFileDialog();
