@@ -36,7 +36,7 @@ namespace NextGraphics
 #if PROPRIETARY
 		public	parallaxTool		parallaxWindow		=	new	parallaxTool();
 #endif
-		private infoWindow informationWindow = new infoWindow();
+		private InfoForm infoForm = new InfoForm();
 		private imageWindow blocksWindow = new imageWindow();
 		private imageWindow charsWindow = new imageWindow();
 		private PaletteForm paletteForm = new PaletteForm();
@@ -549,30 +549,29 @@ namespace NextGraphics
 
 		private void infoToolStripButton_Click(object sender, EventArgs e)
 		{
-			if (informationWindow == null) return;
+			if (infoForm == null) return;
 
-			if (!informationWindow.Visible)
+			if (!infoForm.Visible)
 			{
-				informationWindow = new infoWindow
+				infoForm = new InfoForm
 				{
 					MdiParent = this
 				};
-				informationWindow.Show();
-				informationWindow.Top = 20;
-				informationWindow.Left = 20;
-				informationWindow.Refresh();
+				infoForm.Show();
+				infoForm.Top = 20;
+				infoForm.Left = 20;
+				infoForm.Refresh();
 			}
 
-			informationWindow.infoTextBox.Clear();
+			infoForm.Clear();
 
 			RunLongOperation(() =>
 			{
 				Exporter.GenerateInfoString((color, text) =>
 				{
-					informationWindow.infoTextBox.Invoke(new Action(() =>
+					Invoke(new Action(() =>
 					{
-						informationWindow.infoTextBox.SelectionColor = color;
-						informationWindow.infoTextBox.AppendText(text);
+						infoForm.Append(color, text);
 					}));
 				});
 			});

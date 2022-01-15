@@ -158,11 +158,11 @@
     <Compile Include="Models\SourceImage.cs" />
     <Compile Include="Models\SpriteInfo.cs" />
     <Compile Include="Models\Types.cs" />
-    <Compile Include="infoWindow.cs">
+    <Compile Include="InfoForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="infoWindow.Designer.cs">
-      <DependentUpon>infoWindow.cs</DependentUpon>
+    <Compile Include="InfoForm.Designer.cs">
+      <DependentUpon>InfoForm.cs</DependentUpon>
     </Compile>
     <Compile Include="paletteOffset.cs">
       <SubType>Form</SubType>
@@ -241,8 +241,8 @@
     <EmbeddedResource Include="fileTree.resx">
       <DependentUpon>fileTree.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="infoWindow.resx">
-      <DependentUpon>infoWindow.cs</DependentUpon>
+    <EmbeddedResource Include="InfoForm.resx">
+      <DependentUpon>InfoForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="paletteOffset.resx">
       <DependentUpon>paletteOffset.cs</DependentUpon>
