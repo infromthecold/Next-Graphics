@@ -43,7 +43,7 @@ namespace NextGraphics
 		private ImageForm rebuildTilesForm = null;
 
 		private PaletteForm paletteForm = new PaletteForm();
-		private SettingsForm SettingsPanel = new SettingsForm();
+		private SettingsForm settingsForm = new SettingsForm();
 		private palOffset offsetPanel = new palOffset();
 		private rebuild rebuildDialog = new rebuild();
 
@@ -96,7 +96,6 @@ namespace NextGraphics
 			blocksPictureBox.Invalidate();
 			blocksPictureBox.Refresh();
 
-			SettingsPanel.comments.SelectedIndex = 1;
 			Model.UpdateBlocksAcross(blocksPictureBox.Width);
 
 			SetForm();
@@ -583,9 +582,9 @@ namespace NextGraphics
 
 		private void settingsButton_Click(object sender, EventArgs e)
 		{
-			SettingsPanel.StartPosition = FormStartPosition.CenterParent;
-			SettingsPanel.Model = Model;
-			SettingsPanel.ShowDialog();
+			settingsForm.StartPosition = FormStartPosition.CenterParent;
+			settingsForm.Model = Model;
+			settingsForm.ShowDialog();
 		}
 
 		private void exportAsBlocksRadioButton_CheckedChanged(object sender, EventArgs e)
