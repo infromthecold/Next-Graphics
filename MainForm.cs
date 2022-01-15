@@ -56,6 +56,7 @@ namespace NextGraphics
 		private string parentDirectory = "f:/";
 		private string projectPath = "";
 		private bool isPaletteSet = false;
+		private bool isPaletteBatchOperation = false;
 
 		private readonly NumberFormatInfo fmt = new NumberFormatInfo();
 		private SolidBrush numberBrush = new SolidBrush(Color.White);
@@ -504,6 +505,11 @@ namespace NextGraphics
 			if (paletteForm.DialogResult == DialogResult.OK)
 			{
 				isPaletteSet = true;
+
+				if (isPaletteBatchOperation)
+				{
+					makeBlocksToolStripButton.PerformClick();
+				}
 			}
 		}
 
@@ -517,11 +523,13 @@ namespace NextGraphics
 				var result = MessageBox.Show("Do you want to set the palette mapping first?", "Palette mapping", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (result == DialogResult.Yes)
 				{
+					isPaletteBatchOperation = true;
 					paletteToolStripButton.PerformClick();
 					return;
 				}
 			}
 
+			isPaletteBatchOperation = false;
 			RunLongOperation(() => Exporter.Remap());
 		}
 
