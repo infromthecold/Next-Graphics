@@ -176,11 +176,11 @@
     <Compile Include="parallaxTool.Designer.cs">
       <DependentUpon>parallaxTool.cs</DependentUpon>
     </Compile>
-    <Compile Include="rebuild.cs">
+    <Compile Include="RebuildForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="rebuild.Designer.cs">
-      <DependentUpon>rebuild.cs</DependentUpon>
+    <Compile Include="RebuildForm.Designer.cs">
+      <DependentUpon>RebuildForm.cs</DependentUpon>
     </Compile>
     <Compile Include="fileTree.cs">
       <SubType>Form</SubType>
@@ -250,8 +250,8 @@
     <EmbeddedResource Include="parallaxTool.resx">
       <DependentUpon>parallaxTool.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="rebuild.resx">
-      <DependentUpon>rebuild.cs</DependentUpon>
+    <EmbeddedResource Include="RebuildForm.resx">
+      <DependentUpon>RebuildForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>

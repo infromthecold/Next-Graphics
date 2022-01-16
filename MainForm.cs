@@ -2,7 +2,6 @@
 //#define DEBUG_WINDOW
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -10,8 +9,6 @@ using System.IO;
 using System.Xml;
 using System.Drawing.Imaging;
 using System.Globalization;
-using System.Text.RegularExpressions;
-using System.Drawing.Drawing2D;
 using NextGraphics.Models;
 using NextGraphics.Exporting;
 using NextGraphics.Exporting.Common;
@@ -42,25 +39,23 @@ namespace NextGraphics
 		private ImageForm charsForm = null;
 		private ImageForm rebuildTilesForm = null;
 
-		private PaletteForm paletteForm = new PaletteForm();
-		private SettingsForm settingsForm = new SettingsForm();
-		private PaletteOffsetForm offsetPanel = new PaletteOffsetForm();
-		private RebuildForm rebuildDialog = new RebuildForm();
+		private readonly PaletteForm paletteForm = new PaletteForm();
+		private readonly SettingsForm settingsForm = new SettingsForm();
+		private readonly PaletteOffsetForm offsetPanel = new PaletteOffsetForm();
+		private readonly RebuildForm rebuildDialog = new RebuildForm();
 
-		private SaveFileDialog projectSaveDialog = new SaveFileDialog();
-		private OpenFileDialog openProjectDialog = new OpenFileDialog();
-		private OpenFileDialog batchProjectDialog = new OpenFileDialog();
-		private SaveFileDialog outputFilesDialog = new SaveFileDialog();
-		private OpenFileDialog addImagesDialog = new OpenFileDialog();
+		private readonly SaveFileDialog projectSaveDialog = new SaveFileDialog();
+		private readonly OpenFileDialog openProjectDialog = new OpenFileDialog();
+		private readonly OpenFileDialog batchProjectDialog = new OpenFileDialog();
+		private readonly SaveFileDialog outputFilesDialog = new SaveFileDialog();
+		private readonly OpenFileDialog addImagesDialog = new OpenFileDialog();
 
 		private string parentDirectory = "f:/";
 		private string projectPath = "";
 		private bool isPaletteSet = false;
 		private bool isPaletteBatchOperation = false;
 
-		private readonly NumberFormatInfo fmt = new NumberFormatInfo();
-		private SolidBrush numberBrush = new SolidBrush(Color.White);
-		private Font numberFont = new Font("Arial", 6, FontStyle.Bold);
+		private readonly NumberFormatInfo numberFormatInfo = new NumberFormatInfo();
 
 #if DEBUG_WINDOW
 		public	DEBUGFORM		DEBUG_WINDOW;
@@ -74,7 +69,11 @@ namespace NextGraphics
 			exportParameters.RemapCallbacks = this;
 			exportParameters.ExportCallbacks = this;
 
-			Model = new MainModel();
+			Model = new MainModel
+			{
+				Name = Properties.Resources.NewProjectTitle
+			};
+
 			Exporter = new Exporter(Model, exportParameters);
 
 			InitializeComponent();
@@ -83,8 +82,9 @@ namespace NextGraphics
 			blocksPictureBox.Image = Model.BlocksBitmap;
 			blocksPictureBox.Height = Model.BlocksBitmap.Height;
 			blocksPictureBox.Width = Model.BlocksBitmap.Width;
+
 #if DEBUG_WINDOW
-			DEBUG_WINDOW				=	new	DEBUGFORM();
+			DEBUG_WINDOW = new DEBUGFORM();
 			DEBUG_WINDOW.Show();
 #endif
 
@@ -92,7 +92,6 @@ namespace NextGraphics
 			charsPictureBox.Image = Model.CharsBitmap;
 			toolStripProgressBar1.Minimum = 0;
 			toolStripProgressBar1.Maximum = 0;
-			projectListBox.Items.Add(" " + Model.Name);
 
 			blocksPictureBox.Invalidate();
 			blocksPictureBox.Refresh();
@@ -106,15 +105,15 @@ namespace NextGraphics
 			foreach (var c in codecs)
 			{
 				string codecName = c.CodecName.Substring(8).Replace("Codec", "Files").Trim();
-				addImagesDialog.Filter = String.Format("{0}{1}{2} ({3})|{3}", addImagesDialog.Filter, sep, codecName, c.FilenameExtension);
+				addImagesDialog.Filter = string.Format("{0}{1}{2} ({3})|{3}", addImagesDialog.Filter, sep, codecName, c.FilenameExtension);
 				sep = "|";
 			}
-			addImagesDialog.Filter = String.Format("{0}{1}{2} ({3})|{3}", addImagesDialog.Filter, sep, "All Files", "*.*");
+			addImagesDialog.Filter = string.Format("{0}{1}{2} ({3})|{3}", addImagesDialog.Filter, sep, "All Files", "*.*");
 
 #if PROPRIETARY
-			parallaxWindow.thePalette		=	thePalette;
-			parallaxWindow.main				=	this;
-			fmt.NegativeSign				=	"-";
+			parallaxWindow.thePalette = thePalette;
+			parallaxWindow.main = this;
+			numberFormatInfo.NegativeSign = "-";
 #endif
 		}
 
@@ -788,12 +787,9 @@ namespace NextGraphics
 
 			if (index == 0)
 			{
-				NewProjectForm newProjectForm = new NewProjectForm();
-				newProjectForm.ShowDialog();
-				if (newProjectForm.DialogResult == DialogResult.OK)
+				if (ShowProjectNameDialog())
 				{
-					Model.Name = newProjectForm.textBox1.Text;
-					projectListBox.Items[0] = " " + Model.Name;
+					projectListBox.Items[0] = Model.Name.ToProjectItemTitle();
 				}
 			}
 			else
@@ -831,23 +827,37 @@ namespace NextGraphics
 		}
 
 		/// <summary>
-		/// Clears all data and prepares UI for new project. Optionally it can also show the new project dialog.
+		/// Shows the projet name dialog and returns true if user confirmed the name (in this case it also updates <see cref="Model.Name"/>), otherwise returns false.
+		/// </summary>
+		public bool ShowProjectNameDialog()
+		{
+			NewProjectForm newProjectForm = new NewProjectForm()
+			{
+				ProjectName = Model.Name,
+			};
+
+			newProjectForm.ShowDialog();
+
+			if (newProjectForm.DialogResult == DialogResult.OK)
+			{
+				Model.Name = newProjectForm.ProjectName;
+				return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Clears all data and prepares UI for new project. Optionally it can also show the new project dialog (in this case, <see cref="Model.Name"/> will be updated if user confirms it).
 		/// </summary>
 		private void CreateNewProject(bool showDialog = false)
 		{
 			if (showDialog)
 			{
-				NewProjectForm newProjectForm = new NewProjectForm();
-
-				newProjectForm.ShowDialog();
-
-				if (newProjectForm.DialogResult == DialogResult.OK)
+				if (!ShowProjectNameDialog())
 				{
-					Model.Name = newProjectForm.textBox1.Text;
-					CreateNewProject();
+					return;
 				}
-
-				return;
 			}
 
 			Model.Clear();
@@ -992,7 +1002,7 @@ namespace NextGraphics
 
 			bool rejected = false;
 
-			foreach (String file in addImagesDialog.FileNames)
+			foreach (string file in addImagesDialog.FileNames)
 			{
 				bool found = false;
 				for (int i = 0; i < Model.Images.Count; i++)
@@ -1012,7 +1022,7 @@ namespace NextGraphics
 
 				Model.Images.Add(image);
 				imageForms.Add(new ImageForm { MdiParent = this });
-				projectListBox.Items.Add("  " + Path.GetFileName(file));
+				projectListBox.Items.Add(Path.GetFileName(file).ToProjectItemTitle());
 			}
 
 			if (rejected == true)
@@ -1053,25 +1063,24 @@ namespace NextGraphics
 		private void SetForm()
 		{
 			projectListBox.Items.Clear();
-			projectListBox.Items.Add(" " + Model.Name);
-			Model.Images.ForEach(filename => projectListBox.Items.Add(" " + filename));
+			projectListBox.Items.Add(Model.Name.ToProjectItemTitle());
+			Model.Images.ForEach(image => projectListBox.Items.Add(image.Filename.ToProjectItemTitle()));
 
 			blockHeightTextBox.Text = Model.GridHeight.ToString();
 			blockWidthTextBox.Text = Model.GridWidth.ToString();
 
-			if (Model.OutputType == OutputType.Sprites)
+			switch (Model.OutputType)
 			{
-				exportAsSpritesRadioButton.Checked = true;
-				exportAsBlocksRadioButton.Checked = false;
-				selectedRadio = exportAsSpritesRadioButton;
-				//charsPanel.Width	=	blocksAcross/outSize;
-			}
-			else //outputData.Blocks;
-			{
-				exportAsBlocksRadioButton.Checked = true;
-				exportAsSpritesRadioButton.Checked = false;
-				selectedRadio = exportAsBlocksRadioButton;
-				//charsPanel.Width	=	blocksAcross/outSize;
+				case OutputType.Sprites:
+					exportAsSpritesRadioButton.Checked = true;
+					exportAsBlocksRadioButton.Checked = false;
+					selectedRadio = exportAsSpritesRadioButton;
+					break;
+				default:
+					exportAsBlocksRadioButton.Checked = true;
+					exportAsSpritesRadioButton.Checked = false;
+					selectedRadio = exportAsBlocksRadioButton;
+					break;
 			}
 
 			Refresh();
@@ -1084,7 +1093,7 @@ namespace NextGraphics
 		{
 			// At this point SourceImage list is already setup in the model, so we need to check for bitmap validity, remove invalid images and establish image windows for each valid one.
 			projectListBox.Items.Clear();
-			projectListBox.Items.Add(" " + Model.Name);
+			projectListBox.Items.Add(Model.Name.ToProjectItemTitle());
 
 			DisposeImageWindows();
 
@@ -1098,8 +1107,13 @@ namespace NextGraphics
 					continue;
 				}
 
-				projectListBox.Items.Add(" " + Path.GetFileName(image.Filename));
-				imageForms.Add(new ImageForm { MdiParent = this });
+				var name = Path.GetFileName(image.Filename);
+				projectListBox.Items.Add(name.ToProjectItemTitle());
+
+				imageForms.Add(new ImageForm { 
+					Text = name,
+					MdiParent = this
+				});
 			}
 
 			foreach (string name in removeNames)
@@ -1300,5 +1314,13 @@ namespace NextGraphics
 		}
 
 		#endregion
+	}
+
+	internal static class Extensions
+	{
+		public static string ToProjectItemTitle(this string name)
+		{
+			return $" {name}";
+		}
 	}
 }

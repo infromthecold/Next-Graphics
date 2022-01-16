@@ -217,6 +217,7 @@ NotSupported:
 				Application.UseWaitCursor	=	false;
 			}
 		}
+
 		public void fillList()
 		{
 			this.listBox1.Items.Clear();
