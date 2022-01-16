@@ -238,28 +238,26 @@ namespace NextGraphics
 		private void selectPaletteButton_Click(object sender, EventArgs e)
 		{
 			// select	
-			imageSelectForm.fullNames.Clear();
-			foreach (var image in Model.Images)
-			{
-				imageSelectForm.fullNames.Add(image.Filename);
-			}
 			imageSelectForm.StartPosition = FormStartPosition.CenterParent;
-			imageSelectForm.fillList();
+			imageSelectForm.FillFilenamesFromModel();
 			imageSelectForm.ShowDialog();
-			imageSelectForm.paletteFiles = false;
+			imageSelectForm.PaletteFiles = false;
 			messageLabel.Visible = false;
 
-			if (imageSelectForm.DialogResult == DialogResult.OK && imageSelectForm.fullNames.Count > 0 && imageSelectForm.listBox1.SelectedIndex >= 0)
+			if (imageSelectForm.DialogResult == DialogResult.OK)
 			{
-				for (int c = 0; c < imageSelectForm.count; c++)
+				for (int c = 0; c < imageSelectForm.ColoursCount; c++)
 				{
-					var toIndex = imageSelectForm.too + c;
-					var fromIndex = imageSelectForm.from + c;
-					Palette[toIndex].Red = imageSelectForm.loadedPalette[fromIndex, 0];
-					Palette[toIndex].Green = imageSelectForm.loadedPalette[fromIndex, 1];
-					Palette[toIndex].Blue = imageSelectForm.loadedPalette[fromIndex, 2];
+					var toIndex = imageSelectForm.ToIndex + c;
+					var fromIndex = imageSelectForm.FromIndex + c;
+
+					Palette[toIndex].Red = imageSelectForm.LoadedPalette[fromIndex, 0];
+					Palette[toIndex].Green = imageSelectForm.LoadedPalette[fromIndex, 1];
+					Palette[toIndex].Blue = imageSelectForm.LoadedPalette[fromIndex, 2];
+
 					colourButtons[toIndex].BackColor = Palette[toIndex].ToColor();
 				}
+
 				customTypeRadioButton.Checked = true;
 			}
 		}
@@ -278,27 +276,22 @@ namespace NextGraphics
 
 			if (loadPaletteDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				imageSelectForm.fullNames.Clear();
-				foreach (string name in loadPaletteDialog.FileNames)
-				{
-					imageSelectForm.fullNames.Add(name);
-				}
-
-				imageSelectForm.paletteFiles = true;
-				imageSelectForm.fillList();
+				imageSelectForm.FillFilenames(loadPaletteDialog.FileNames);
+				imageSelectForm.PaletteFiles = true;
+				imageSelectForm.FillFilenamesFromModel();
 				imageSelectForm.StartPosition = FormStartPosition.CenterParent;
 				imageSelectForm.ShowDialog();
 
-				if (imageSelectForm.DialogResult == DialogResult.OK && imageSelectForm.fullNames.Count > 0 && imageSelectForm.listBox1.SelectedIndex >= 0)
+				if (imageSelectForm.DialogResult == DialogResult.OK)
 				{
 					// open the palette import panel
-					for (int c = 0; c < imageSelectForm.count; c++)
+					for (int c = 0; c < imageSelectForm.ColoursCount; c++)
 					{
-						var toIndex = imageSelectForm.too + c;
-						var fromIndex = imageSelectForm.from + c;
-						Palette[toIndex].Red = imageSelectForm.loadedPalette[fromIndex, 0];
-						Palette[toIndex].Green = imageSelectForm.loadedPalette[fromIndex, 1];
-						Palette[toIndex].Blue = imageSelectForm.loadedPalette[fromIndex, 2];
+						var toIndex = imageSelectForm.ToIndex + c;
+						var fromIndex = imageSelectForm.FromIndex + c;
+						Palette[toIndex].Red = imageSelectForm.LoadedPalette[fromIndex, 0];
+						Palette[toIndex].Green = imageSelectForm.LoadedPalette[fromIndex, 1];
+						Palette[toIndex].Blue = imageSelectForm.LoadedPalette[fromIndex, 2];
 						colourButtons[toIndex].BackColor = Palette[toIndex].ToColor();
 					}
 					customTypeRadioButton.Checked = true;
