@@ -117,11 +117,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="About.cs">
+    <Compile Include="AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="About.Designer.cs">
-      <DependentUpon>About.cs</DependentUpon>
+    <Compile Include="AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DEBUGFORM.cs">
       <SubType>Form</SubType>
@@ -182,11 +182,11 @@
     <Compile Include="RebuildForm.Designer.cs">
       <DependentUpon>RebuildForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="fileTree.cs">
+    <Compile Include="FileTreeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="fileTree.Designer.cs">
-      <DependentUpon>fileTree.cs</DependentUpon>
+    <Compile Include="FileTreeForm.Designer.cs">
+      <DependentUpon>FileTreeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="SettingsForm.cs">
       <SubType>Form</SubType>
@@ -232,14 +232,14 @@
     <Compile Include="ImageForm.Designer.cs">
       <DependentUpon>ImageForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="About.resx">
-      <DependentUpon>About.cs</DependentUpon>
+    <EmbeddedResource Include="AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DEBUGFORM.resx">
       <DependentUpon>DEBUGFORM.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="fileTree.resx">
-      <DependentUpon>fileTree.cs</DependentUpon>
+    <EmbeddedResource Include="FileTreeForm.resx">
+      <DependentUpon>FileTreeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>

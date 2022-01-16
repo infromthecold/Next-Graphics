@@ -467,7 +467,7 @@ namespace NextGraphics
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			About about = new About();
+			AboutForm about = new AboutForm();
 			about.ShowDialog();
 		}
 
