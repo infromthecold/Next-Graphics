@@ -219,11 +219,11 @@
       <DependentUpon>PaletteForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="Progress.cs">
+    <Compile Include="ProgressForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Progress.Designer.cs">
-      <DependentUpon>Progress.cs</DependentUpon>
+    <Compile Include="ProgressForm.Designer.cs">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ImageForm.cs">
@@ -268,8 +268,8 @@
     <EmbeddedResource Include="PaletteForm.resx">
       <DependentUpon>PaletteForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Progress.resx">
-      <DependentUpon>Progress.cs</DependentUpon>
+    <EmbeddedResource Include="ProgressForm.resx">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
