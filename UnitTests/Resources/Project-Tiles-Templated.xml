@@ -4,7 +4,7 @@
 	<File Path="C:\tiles.bmp" />
 	<File Path="/a/file/with/slashes" />
 	<File Path="\the\file\with\backslashes" />
-	<Settings {0}="true" center="4" xSize="9" ySize="10" fourBit="true" binary="false" binaryBlocks="true" Repeats="false" MirrorX="false" MirrorY="true" Rotations="false" Transparent="false" Sort="true" blocksImage="false" tilesImage="true" transBlock="true" transTile="false" across="5" accurate="983" format="{1}" textFlips="true" reduce="true" />
+	<Settings {0}="true" comments="0" center="4" xSize="9" ySize="10" fourBit="true" binary="false" binaryBlocks="true" Repeats="false" MirrorX="false" MirrorY="true" Rotations="false" Transparent="false" Sort="true" blocksImage="false" tilesImage="true" transBlock="true" transTile="false" across="5" accurate="983" format="{1}" textFlips="true" reduce="true" />
 	<Dialogs OutputIndex="1" ImageIndex="1" />
 	<Palette Mapping="{2}" Transparent="0" Used="6" Start="1">
 	  <Colour0 Red="10" Green="11" Blue="12" />

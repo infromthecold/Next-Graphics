@@ -92,6 +92,13 @@ namespace UnitTests
 		}
 
 		[TestMethod]
+		public void SettingsCommentTypeSaved()
+		{
+			SettingsRunner.Setup(model => model.CommentType = CommentType.Full).Verify("1", "comments");
+			SettingsRunner.Setup(model => model.CommentType = CommentType.None).Verify("0", "comments");
+		}
+
+		[TestMethod]
 		public void SettingsIgnoreCopiesSaved()
 		{
 			SettingsRunner.Setup(model => model.IgnoreCopies = false).Verify("false", "Repeats");
