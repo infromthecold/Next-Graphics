@@ -117,11 +117,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="About.cs">
+    <Compile Include="AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="About.Designer.cs">
-      <DependentUpon>About.cs</DependentUpon>
+    <Compile Include="AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DEBUGFORM.cs">
       <SubType>Form</SubType>
@@ -158,17 +158,17 @@
     <Compile Include="Models\SourceImage.cs" />
     <Compile Include="Models\SpriteInfo.cs" />
     <Compile Include="Models\Types.cs" />
-    <Compile Include="infoWindow.cs">
+    <Compile Include="InfoForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="infoWindow.Designer.cs">
-      <DependentUpon>infoWindow.cs</DependentUpon>
+    <Compile Include="InfoForm.Designer.cs">
+      <DependentUpon>InfoForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="paletteOffset.cs">
+    <Compile Include="PaletteOffsetForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="paletteOffset.Designer.cs">
-      <DependentUpon>paletteOffset.cs</DependentUpon>
+    <Compile Include="PaletteOffsetForm.Designer.cs">
+      <DependentUpon>PaletteOffsetForm.cs</DependentUpon>
     </Compile>
     <Compile Include="parallaxTool.cs">
       <SubType>Form</SubType>
@@ -176,17 +176,17 @@
     <Compile Include="parallaxTool.Designer.cs">
       <DependentUpon>parallaxTool.cs</DependentUpon>
     </Compile>
-    <Compile Include="rebuild.cs">
+    <Compile Include="RebuildForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="rebuild.Designer.cs">
-      <DependentUpon>rebuild.cs</DependentUpon>
+    <Compile Include="RebuildForm.Designer.cs">
+      <DependentUpon>RebuildForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="fileTree.cs">
+    <Compile Include="FileTreeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="fileTree.Designer.cs">
-      <DependentUpon>fileTree.cs</DependentUpon>
+    <Compile Include="FileTreeForm.Designer.cs">
+      <DependentUpon>FileTreeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="SettingsForm.cs">
       <SubType>Form</SubType>
@@ -219,39 +219,39 @@
       <DependentUpon>PaletteForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="Progress.cs">
+    <Compile Include="ProgressForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Progress.Designer.cs">
-      <DependentUpon>Progress.cs</DependentUpon>
+    <Compile Include="ProgressForm.Designer.cs">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="imageWindow.cs">
+    <Compile Include="ImageForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="imageWindow.Designer.cs">
-      <DependentUpon>imageWindow.cs</DependentUpon>
+    <Compile Include="ImageForm.Designer.cs">
+      <DependentUpon>ImageForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="About.resx">
-      <DependentUpon>About.cs</DependentUpon>
+    <EmbeddedResource Include="AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DEBUGFORM.resx">
       <DependentUpon>DEBUGFORM.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="fileTree.resx">
-      <DependentUpon>fileTree.cs</DependentUpon>
+    <EmbeddedResource Include="FileTreeForm.resx">
+      <DependentUpon>FileTreeForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="infoWindow.resx">
-      <DependentUpon>infoWindow.cs</DependentUpon>
+    <EmbeddedResource Include="InfoForm.resx">
+      <DependentUpon>InfoForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="paletteOffset.resx">
-      <DependentUpon>paletteOffset.cs</DependentUpon>
+    <EmbeddedResource Include="PaletteOffsetForm.resx">
+      <DependentUpon>PaletteOffsetForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="parallaxTool.resx">
       <DependentUpon>parallaxTool.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="rebuild.resx">
-      <DependentUpon>rebuild.cs</DependentUpon>
+    <EmbeddedResource Include="RebuildForm.resx">
+      <DependentUpon>RebuildForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
@@ -268,8 +268,8 @@
     <EmbeddedResource Include="PaletteForm.resx">
       <DependentUpon>PaletteForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Progress.resx">
-      <DependentUpon>Progress.cs</DependentUpon>
+    <EmbeddedResource Include="ProgressForm.resx">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -281,8 +281,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="imageWindow.resx">
-      <DependentUpon>imageWindow.cs</DependentUpon>
+    <EmbeddedResource Include="ImageForm.resx">
+      <DependentUpon>ImageForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="my.pfx" />
     <None Include="NextGraphics_TemporaryKey.pfx" />

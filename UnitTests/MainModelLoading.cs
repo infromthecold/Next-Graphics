@@ -67,6 +67,17 @@ namespace UnitTests
 		}
 
 		[TestMethod]
+		public void SettingsCommentTypeLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute & verify (note we only test for none variant since full is the default - would be nice to add both in the future)
+			model.Load(TestDocument());
+			Assert.AreEqual(CommentType.None, model.CommentType);
+		}
+
+		[TestMethod]
 		public void SettingsIgnoreCopiesLoaded()
 		{
 			// setup

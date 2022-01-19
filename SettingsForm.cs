@@ -1,13 +1,6 @@
 ﻿using NextGraphics.Models;
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NextGraphics
@@ -21,7 +14,7 @@ namespace NextGraphics
 		public SettingsForm()
 		{
 			InitializeComponent();
-			MC.Checked		=	true;
+			spriteCenterMCRadioButton.Checked		=	true;
 		}
 
 		#endregion
@@ -30,53 +23,61 @@ namespace NextGraphics
 
 		private void settingsPanel_Load(object sender, EventArgs e)
 		{
+			ignoreAccuracyTextBox.Text = Model.Accuracy.ToString();
+			ignoreCopiesCheckBox.Checked = Model.IgnoreCopies;
+			ignoreMirroredXCheckBox.Checked = Model.IgnoreMirroredX;
+			ignoreMirroredYCheckBox.Checked = Model.IgnoreMirroredY;
+			ignoreRotatedCheckBox.Checked = Model.IgnoreRotated;
+			ignoreTransparentPixelsCheckBox.Checked = Model.IgnoreTransparentPixels;
+
 			ApplyCenterPosition(Model.CenterPosition);
-			FourBit.Checked = Model.FourBit;
-			reduce.Checked = Model.Reduced;
-			textFlips.Checked = Model.TextFlips;
-			binaryOut.Checked = Model.BinaryOutput;
-			binaryBlocks.Enabled = binaryOut.Checked;
-			Repeats.Checked = Model.IgnoreCopies;
-			mirrorX.Checked = Model.IgnoreMirroredX;
-			mirrorY.Checked = Model.IgnoreMirroredY;
-			rotations.Checked = Model.IgnoreRotated;
-			Transparent.Checked = Model.IgnoreTransparentPixels;
-			sortTransparent.Checked = Model.TransparentFirst;
-			blocksOut.Checked = Model.BlocksAsImage;
-			tilesOut.Checked = Model.TilesAsImage;
-			transBlock.Checked = Model.TransparentBlocks;
-			transTile.Checked = Model.TransparentTiles;
-			tilesAcross.Text = Model.BlocsAcross.ToString();
-			blocksFormat.SelectedIndex = (int)Model.ImageFormat;
-			Accuracy.Text = Model.Accuracy.ToString();
+
+			output4BitsCheckBox.Checked = Model.FourBit;
+			outputReducedCheckBox.Checked = Model.Reduced;
+			outputTextFlipsCheckBox.Checked = Model.TextFlips;
+			outputBinaryCheckBox.Checked = Model.BinaryOutput;
+			outputBinaryBlocksCheckBox.Enabled = outputBinaryCheckBox.Checked;
+			outputTransparentFirstCheckBox.Checked = Model.TransparentFirst;
+			outputCommentLevelComboBox.SelectedIndex = (int)Model.CommentType;
+
+			mappingBlocksAsImageCheckBox.Checked = Model.BlocksAsImage;
+			mappingTilesAsImageCheckBox.Checked = Model.TilesAsImage;
+			mappingTransparentBlocksCheckBox.Checked = Model.TransparentBlocks;
+			mappingTransparentTilesCheckBox.Checked = Model.TransparentTiles;
+			mappingTilesAcrossTextBox.Text = Model.BlocsAcross.ToString();
+			mappingFileFormatComboBox.SelectedIndex = (int)Model.ImageFormat;
 		}
 
 		private void settingsPanel_FormClosing(object sender, FormClosingEventArgs e)
 		{
+			Model.IgnoreCopies = ignoreCopiesCheckBox.Checked;
+			Model.IgnoreMirroredX = ignoreMirroredXCheckBox.Checked;
+			Model.IgnoreMirroredY = ignoreMirroredYCheckBox.Checked;
+			Model.IgnoreRotated = ignoreRotatedCheckBox.Checked;
+			Model.IgnoreTransparentPixels = ignoreTransparentPixelsCheckBox.Checked;
+			Model.Accuracy = int.Parse(ignoreAccuracyTextBox.Text);
+
 			Model.CenterPosition = GetCenterPosition();
-			Model.FourBit = FourBit.Checked;
-			Model.Reduced = reduce.Checked;
-			Model.TextFlips = textFlips.Checked;
-			Model.BinaryOutput = binaryOut.Checked;
-			Model.IgnoreCopies = Repeats.Checked;
-			Model.IgnoreMirroredX = mirrorX.Checked;
-			Model.IgnoreMirroredY = mirrorY.Checked;
-			Model.IgnoreRotated = rotations.Checked;
-			Model.IgnoreTransparentPixels = Transparent.Checked;
-			Model.TransparentFirst = sortTransparent.Checked;
-			Model.BlocksAsImage = blocksOut.Checked;
-			Model.TilesAsImage = tilesOut.Checked;
-			Model.TransparentBlocks = transBlock.Checked;
-			Model.TransparentTiles = transTile.Checked;
-			Model.BlocsAcross = int.Parse(tilesAcross.Text);
-			Model.ImageFormat = (ImageFormat)blocksFormat.SelectedIndex;
-			Model.Accuracy = int.Parse(Accuracy.Text);
+
+			Model.FourBit = output4BitsCheckBox.Checked;
+			Model.Reduced = outputReducedCheckBox.Checked;
+			Model.TextFlips = outputTextFlipsCheckBox.Checked;
+			Model.BinaryOutput = outputBinaryCheckBox.Checked;
+			Model.TransparentFirst = outputTransparentFirstCheckBox.Checked;
+			Model.CommentType = (CommentType)outputCommentLevelComboBox.SelectedIndex;
+
+			Model.BlocksAsImage = mappingBlocksAsImageCheckBox.Checked;
+			Model.TilesAsImage = mappingTilesAsImageCheckBox.Checked;
+			Model.TransparentBlocks = mappingTransparentBlocksCheckBox.Checked;
+			Model.TransparentTiles = mappingTransparentTilesCheckBox.Checked;
+			Model.BlocsAcross = int.Parse(mappingTilesAcrossTextBox.Text);
+			Model.ImageFormat = (ImageFormat)mappingFileFormatComboBox.SelectedIndex;
 		}
 
 		private void binaryOut_CheckedChanged(object sender, EventArgs e)
 		{
 			// Binary blocks option is only enabled if binary out is checked
-			binaryBlocks.Enabled = binaryOut.Checked;
+			outputBinaryBlocksCheckBox.Enabled = outputBinaryCheckBox.Checked;
 		}
 
 		#endregion
@@ -88,66 +89,66 @@ namespace NextGraphics
 			switch (center)
 			{
 				case 0:
-					TL.Checked = true;
+					spriteCenterTLRadioButton.Checked = true;
 					break;
 				case 1:
-					TC.Checked = true;
+					spriteCenterTCRadioButton.Checked = true;
 					break;
 				case 2:
-					TR.Checked = true;
+					spriteCenterTRRadioButton.Checked = true;
 					break;
 				case 3:
-					ML.Checked = true;
+					spriteCenterMLRadioButton.Checked = true;
 					break;
 				case 4:
-					MC.Checked = true;
+					spriteCenterMCRadioButton.Checked = true;
 					break;
 				case 5:
-					MR.Checked = true;
+					spriteCenterMRRadioButton.Checked = true;
 					break;
 				case 6:
-					BL.Checked = true;
+					spriteCenterBLRadioButton.Checked = true;
 					break;
 				case 7:
-					BC.Checked = true;
+					spriteCenterBCRadioButton.Checked = true;
 					break;
 				case 8:
-					BR.Checked = true;
+					spriteCenterBRRadioButton.Checked = true;
 					break;
 			}
 		}
 
 		private int GetCenterPosition()
 		{
-			if (TL.Checked)
+			if (spriteCenterTLRadioButton.Checked)
 			{
 				return 0;
 			}
-			else if (TC.Checked)
+			else if (spriteCenterTCRadioButton.Checked)
 			{
 				return 1;
 			}
-			else if (TR.Checked)
+			else if (spriteCenterTRRadioButton.Checked)
 			{
 				return 2;
 			}
-			else if (ML.Checked)
+			else if (spriteCenterMLRadioButton.Checked)
 			{
 				return 3;
 			}
-			else if (MC.Checked)
+			else if (spriteCenterMCRadioButton.Checked)
 			{
 				return 4;
 			}
-			else if (MR.Checked)
+			else if (spriteCenterMRRadioButton.Checked)
 			{
 				return 5;
 			}
-			else if (BL.Checked)
+			else if (spriteCenterBLRadioButton.Checked)
 			{
 				return 6;
 			}
-			else if (BC.Checked)
+			else if (spriteCenterBCRadioButton.Checked)
 			{
 				return 7;
 			}

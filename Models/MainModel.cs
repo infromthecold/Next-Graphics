@@ -16,6 +16,7 @@ namespace NextGraphics.Models
 		public Palette Palette { get; } = new Palette();
 
 		public OutputType OutputType { get; set; } = OutputType.Sprites;
+		public CommentType CommentType { get; set; } = CommentType.Full;
 		public ImageFormat ImageFormat { get; set; } = ImageFormat.BMP;
 
 		public bool IgnoreCopies { get; set; } = false;
@@ -48,7 +49,6 @@ namespace NextGraphics.Models
 		// This is not saved!
 		public Bitmap BlocksBitmap { get; private set; } = null;
 		public Bitmap CharsBitmap { get; private set; } = null;
-		public CommentType CommentType { get; set; } = CommentType.Full;
 
 		#region Initialization & Disposal
 
@@ -87,6 +87,7 @@ namespace NextGraphics.Models
 			{
 				OutputType = node.Attributes["sprites"] != null ? OutputType.Sprites : OutputType.Tiles;
 
+				node.WithAttribute("comments", value => CommentType = (CommentType)int.Parse(value));
 				node.WithAttribute("center", value => CenterPosition = int.Parse(value));
 				node.WithAttribute("xSize", value => GridWidth = int.Parse(value));
 				node.WithAttribute("ySize", value => GridHeight = int.Parse(value));
@@ -178,9 +179,10 @@ namespace NextGraphics.Models
 				case OutputType.Sprites: settingsNode.AddAttribute("sprites", "true"); break;
 				case OutputType.Tiles: settingsNode.AddAttribute("blocks", "true"); break;
 			}
-			settingsNode.AddAttribute("center", CenterPosition.ToString());
-			settingsNode.AddAttribute("xSize", GridWidth.ToString());
-			settingsNode.AddAttribute("ySize", GridHeight.ToString());
+			settingsNode.AddAttribute("comments", (int)CommentType);
+			settingsNode.AddAttribute("center", CenterPosition);
+			settingsNode.AddAttribute("xSize", GridWidth);
+			settingsNode.AddAttribute("ySize", GridHeight);
 			settingsNode.AddAttribute("fourBit", FourBit);
 			settingsNode.AddAttribute("binary", BinaryOutput);
 			settingsNode.AddAttribute("binaryBlocks", BinaryBlocksOutput);
@@ -196,7 +198,7 @@ namespace NextGraphics.Models
 			settingsNode.AddAttribute("transTile", TransparentTiles);
 			settingsNode.AddAttribute("across", BlocsAcross.ToString());
 			settingsNode.AddAttribute("accurate", Accuracy.ToString());
-			settingsNode.AddAttribute("format", ((int)ImageFormat).ToString());
+			settingsNode.AddAttribute("format", (int)ImageFormat);
 			settingsNode.AddAttribute("textFlips", TextFlips);
 			settingsNode.AddAttribute("reduce", Reduced);
 
@@ -300,6 +302,32 @@ namespace NextGraphics.Models
 
 		#endregion
 
+		#region Data enquiry
+
+		/// <summary>
+		/// Determines item width (based on <see cref="OutputType"/> and possibly other values).
+		/// </summary>
+		public int ItemWidth()
+		{
+			// Note: atm this code is suited for ZX Spectrum Next.
+			switch (OutputType)
+			{
+				case OutputType.Sprites: return 16;
+				default: return 8;
+			}
+		}
+
+		/// <summary>
+		/// Determines item width (based on <see cref="OutputType"/> and possibly other values).
+		/// </summary>
+		public int ItemHeight()
+		{
+			// Note: atm this code is suited for ZX Spectrum Next.
+			return ItemWidth();
+		}
+
+		#endregion
+
 		#region Helpers
 
 		private void CreateBitmaps()
@@ -357,6 +385,11 @@ namespace NextGraphics.Models
 			node.Attributes.Append(attr);
 
 			return attr;
+		}
+
+		public static XmlAttribute AddAttribute(this XmlNode node, string name, int value)
+		{
+			return AddAttribute(node, name, value.ToString());
 		}
 
 		public static XmlAttribute AddAttribute(this XmlNode node, string name, bool value)

@@ -15,11 +15,6 @@ namespace NextGraphics.Models
 	public class IndexedBitmap : IDisposable
 	{
 		/// <summary>
-		/// Underlying <see cref="Bitmap"/>.
-		/// </summary>
-		public Bitmap Bitmap { get; private set; }
-
-		/// <summary>
 		/// Bitmap width in pixels.
 		/// </summary>
 		public int Width { get; private set; }
@@ -35,7 +30,6 @@ namespace NextGraphics.Models
 		public bool Transparent { get; set; }
 
 		private short[] Colours { get; set; }
-		private GCHandle ColourHandler { get; set; }
 
 		#region Initialization & disposal
 
@@ -44,8 +38,6 @@ namespace NextGraphics.Models
 			Width = width;
 			Height = height;
 			Colours = new short[width * height];
-			ColourHandler = GCHandle.Alloc(Colours, GCHandleType.Pinned);
-			Bitmap = new Bitmap(width, height, width, PixelFormat.Format8bppIndexed, ColourHandler.AddrOfPinnedObject());
 		}
 
 		~IndexedBitmap()
@@ -55,12 +47,7 @@ namespace NextGraphics.Models
 
 		public void Dispose()
 		{
-			if (Bitmap != null)
-			{
-				ColourHandler.Free();
-				Bitmap.Dispose();
-				Bitmap = null;
-			}
+			// Nothing to do here right now; we used to have a Bitmap that we disposed here, and since the rest of the code already takes care of calling dispose, leaving the empty implementation in place if we need to add some of the functionality in the future.
 		}
 
 		#endregion

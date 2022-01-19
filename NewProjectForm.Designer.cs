@@ -29,62 +29,62 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewProjectForm));
-			this.label1 = new System.Windows.Forms.Label();
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.outCancel = new System.Windows.Forms.Button();
-			this.outOk = new System.Windows.Forms.Button();
+			this.projectNameLabel = new System.Windows.Forms.Label();
+			this.projectNameTextBox = new System.Windows.Forms.TextBox();
+			this.cancelButton = new System.Windows.Forms.Button();
+			this.okButton = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
-			// label1
+			// projectNameLabel
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(13, 23);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(71, 13);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Project Name";
+			this.projectNameLabel.AutoSize = true;
+			this.projectNameLabel.Location = new System.Drawing.Point(13, 23);
+			this.projectNameLabel.Name = "projectNameLabel";
+			this.projectNameLabel.Size = new System.Drawing.Size(71, 13);
+			this.projectNameLabel.TabIndex = 0;
+			this.projectNameLabel.Text = "Project Name";
 			// 
-			// textBox1
+			// projectNameTextBox
 			// 
-			this.textBox1.Location = new System.Drawing.Point(90, 20);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(232, 20);
-			this.textBox1.TabIndex = 1;
-			this.textBox1.Text = "Next graphics project name";
+			this.projectNameTextBox.Location = new System.Drawing.Point(90, 20);
+			this.projectNameTextBox.Name = "projectNameTextBox";
+			this.projectNameTextBox.Size = new System.Drawing.Size(232, 20);
+			this.projectNameTextBox.TabIndex = 1;
+			this.projectNameTextBox.Text = "Next graphics project name";
 			// 
-			// outCancel
+			// cancelButton
 			// 
-			this.outCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.outCancel.Location = new System.Drawing.Point(9, 61);
-			this.outCancel.Name = "outCancel";
-			this.outCancel.Size = new System.Drawing.Size(75, 23);
-			this.outCancel.TabIndex = 6;
-			this.outCancel.Text = "Cancel";
-			this.outCancel.UseVisualStyleBackColor = true;
+			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.cancelButton.Location = new System.Drawing.Point(9, 61);
+			this.cancelButton.Name = "cancelButton";
+			this.cancelButton.Size = new System.Drawing.Size(75, 23);
+			this.cancelButton.TabIndex = 6;
+			this.cancelButton.Text = "Cancel";
+			this.cancelButton.UseVisualStyleBackColor = true;
 			// 
-			// outOk
+			// okButton
 			// 
-			this.outOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.outOk.Location = new System.Drawing.Point(247, 61);
-			this.outOk.Name = "outOk";
-			this.outOk.Size = new System.Drawing.Size(75, 23);
-			this.outOk.TabIndex = 5;
-			this.outOk.Text = "OK";
-			this.outOk.UseVisualStyleBackColor = true;
+			this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.okButton.Location = new System.Drawing.Point(247, 61);
+			this.okButton.Name = "okButton";
+			this.okButton.Size = new System.Drawing.Size(75, 23);
+			this.okButton.TabIndex = 5;
+			this.okButton.Text = "OK";
+			this.okButton.UseVisualStyleBackColor = true;
 			// 
-			// newProject
+			// NewProjectForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(336, 96);
-			this.Controls.Add(this.outCancel);
-			this.Controls.Add(this.outOk);
-			this.Controls.Add(this.textBox1);
-			this.Controls.Add(this.label1);
+			this.Controls.Add(this.cancelButton);
+			this.Controls.Add(this.okButton);
+			this.Controls.Add(this.projectNameTextBox);
+			this.Controls.Add(this.projectNameLabel);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
-			this.Name = "newProject";
+			this.Name = "NewProjectForm";
 			this.ShowInTaskbar = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -96,9 +96,9 @@
 
 		#endregion
 
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Button outCancel;
-		private System.Windows.Forms.Button outOk;
-		public System.Windows.Forms.TextBox textBox1;
+		private System.Windows.Forms.Label projectNameLabel;
+		private System.Windows.Forms.Button cancelButton;
+		private System.Windows.Forms.Button okButton;
+		private System.Windows.Forms.TextBox projectNameTextBox;
 	}
 }
