@@ -176,18 +176,6 @@
     <Compile Include="parallaxTool.Designer.cs">
       <DependentUpon>parallaxTool.cs</DependentUpon>
     </Compile>
-    <Compile Include="RebuildForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RebuildForm.Designer.cs">
-      <DependentUpon>RebuildForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FileTreeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FileTreeForm.Designer.cs">
-      <DependentUpon>FileTreeForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -219,12 +207,6 @@
       <DependentUpon>PaletteForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="ProgressForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ProgressForm.Designer.cs">
-      <DependentUpon>ProgressForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ImageForm.cs">
       <SubType>Form</SubType>
@@ -238,9 +220,6 @@
     <EmbeddedResource Include="DEBUGFORM.resx">
       <DependentUpon>DEBUGFORM.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FileTreeForm.resx">
-      <DependentUpon>FileTreeForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -249,9 +228,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="parallaxTool.resx">
       <DependentUpon>parallaxTool.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RebuildForm.resx">
-      <DependentUpon>RebuildForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
@@ -267,9 +243,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PaletteForm.resx">
       <DependentUpon>PaletteForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ProgressForm.resx">
-      <DependentUpon>ProgressForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

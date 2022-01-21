@@ -42,7 +42,6 @@ namespace NextGraphics
 		private readonly PaletteForm paletteForm = new PaletteForm();
 		private readonly SettingsForm settingsForm = new SettingsForm();
 		private readonly PaletteOffsetForm offsetPanel = new PaletteOffsetForm();
-		private readonly RebuildForm rebuildDialog = new RebuildForm();
 
 		private readonly SaveFileDialog projectSaveDialog = new SaveFileDialog();
 		private readonly OpenFileDialog openProjectDialog = new OpenFileDialog();
