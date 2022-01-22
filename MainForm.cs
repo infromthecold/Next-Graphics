@@ -52,7 +52,6 @@ namespace NextGraphics
 		private string parentDirectory = "f:/";
 		private string projectPath = "";
 		private bool isPaletteSet = false;
-		private bool isPaletteBatchOperation = false;
 
 		private readonly NumberFormatInfo numberFormatInfo = new NumberFormatInfo();
 
@@ -496,60 +495,41 @@ namespace NextGraphics
 
 		private void paletteToolStripButton_Click(object sender, EventArgs e)
 		{
-			paletteForm.StartPosition = FormStartPosition.CenterParent;
-			paletteForm.Model = Model;
-			paletteForm.ShowDialog();
-
-			if (paletteForm.DialogResult == DialogResult.OK)
-			{
-				isPaletteSet = true;
-
-				if (isPaletteBatchOperation)
-				{
-					makeBlocksToolStripButton.PerformClick();
-				}
-			}
+			SelectPalette();
 		}
 
 		private void makeBlocksToolStripButton_Click(object sender, EventArgs e)
 		{
-			UpdateBlockWidth();
-			UpdateBlockHeight();
-
 			if (!isPaletteSet)
 			{
 				var result = MessageBox.Show("Do you want to set the palette mapping first?", "Palette mapping", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (result == DialogResult.Yes)
 				{
-					isPaletteBatchOperation = true;
-					paletteToolStripButton.PerformClick();
+					SelectPalette(() => {
+						RemapData();
+					});
 					return;
 				}
 			}
 
-			isPaletteBatchOperation = false;
-			RunLongOperation(() => Exporter.Remap());
+			RemapData();
 		}
 
 		private void exportToolStripButton_Click(object sender, EventArgs e)
 		{
 			if (!Exporter.Data.IsRemapped)
 			{
-				MessageBox.Show("You need to remap the graphics before you can output!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				SelectPalette(() =>
+				{
+					RemapData(() =>
+					{
+						ExportData();
+					});
+				});
 				return;
 			}
 
-			outputFilesDialog.FileName = Model.Name.ToLower();
-			outputFilesDialog.Filter = "Machine Code (*.asm)|*.asm|All Files (*.*)|*.*";
-			outputFilesDialog.FilterIndex = Model.OutputFilesFilterIndex;
-			outputFilesDialog.RestoreDirectory = false;
-			outputFilesDialog.InitialDirectory = $"{parentDirectory}\\Output\\";
-
-			if (outputFilesDialog.ShowDialog() == DialogResult.OK)
-			{
-				Model.OutputFilesFilterIndex = outputFilesDialog.FilterIndex;
-				ExportData(outputFilesDialog.FileName);
-			}
+			ExportData();
 		}
 
 		private void infoToolStripButton_Click(object sender, EventArgs e)
@@ -814,12 +794,12 @@ namespace NextGraphics
 
 		#endregion
 
-		#region Helpers
+		#region Project handling
 
 		/// <summary>
 		/// Sets the parent folder for the project.
 		/// </summary>
-		public void SetParentFolder(string path)
+		private void SetParentFolder(string path)
 		{
 			DirectoryInfo parentDir = Directory.GetParent(path);
 			parentDirectory = parentDir.Parent.FullName;
@@ -828,7 +808,7 @@ namespace NextGraphics
 		/// <summary>
 		/// Shows the projet name dialog and returns true if user confirmed the name (in this case it also updates <see cref="Model.Name"/>), otherwise returns false.
 		/// </summary>
-		public bool ShowProjectNameDialog()
+		private bool ShowProjectNameDialog()
 		{
 			NewProjectForm newProjectForm = new NewProjectForm()
 			{
@@ -956,10 +936,7 @@ namespace NextGraphics
 		/// </summary>
 		private void LoadProjectFromFile(string filename)
 		{
-			XmlDocument document = new XmlDocument();
-			document.Load(filename);
-
-			Model.Load(document);
+			Model.Load(filename);
 			Model.UpdateBlocksAcross(blocksPictureBox.Width);
 
 			isPaletteSet = false;
@@ -1030,11 +1007,83 @@ namespace NextGraphics
 			}
 		}
 
+		#endregion
+
+		#region Exporting
+
 		/// <summary>
-		/// Exports data to the given path.
+		/// Requests user to select palette. If selected, given action is called (useful when chaining multiple actions). Note: if action is provided, it is assumed this call is part of multi-step process, so if palette is already set, no dialog is shown.
 		/// </summary>
-		private void ExportData(string sourceFilename)
+		private void SelectPalette(Action completed = null) 
 		{
+			if (completed != null && isPaletteSet)
+			{
+				completed();
+				return;
+			}
+
+			paletteForm.StartPosition = FormStartPosition.CenterParent;
+			paletteForm.Model = Model;
+			paletteForm.ShowDialog();
+
+			if (paletteForm.DialogResult == DialogResult.OK)
+			{
+				isPaletteSet = true;
+
+				if (completed != null)
+				{
+					completed();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Remaps data. If successful, given action is called (useful when chaining multiple actions). All prerequisites must be met before calling.
+		/// </summary>
+		private void RemapData(Action completed = null)
+		{
+			UpdateBlockWidth();
+			UpdateBlockHeight();
+
+			RunLongOperation(() => {
+				try
+				{
+					Exporter.Remap();
+
+					if (completed != null)
+					{
+						Invoke(completed);
+					}
+				}
+				catch (Exception e)
+				{
+					MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
+			});
+		}
+
+		/// <summary>
+		/// Exports data to the given path. If source filename is not given, dialog is shown to ask for it, otherwise the given file is used for exporting.
+		/// </summary>
+		private void ExportData(string sourceFilename = null)
+		{
+			if (sourceFilename == null)
+			{
+				outputFilesDialog.FileName = Model.Name.ToLower();
+				outputFilesDialog.Filter = "Machine Code (*.asm)|*.asm|All Files (*.*)|*.*";
+				outputFilesDialog.FilterIndex = Model.OutputFilesFilterIndex;
+				outputFilesDialog.RestoreDirectory = false;
+				outputFilesDialog.InitialDirectory = $"{parentDirectory}\\Output\\";
+
+				if (outputFilesDialog.ShowDialog() == DialogResult.OK)
+				{
+					Model.OutputFilesFilterIndex = outputFilesDialog.FilterIndex;
+					ExportData(outputFilesDialog.FileName);
+				}
+
+				return;
+			}
+
 #if PROPRIETARY
 			ExportParameters.FourBitColourConverter = (colour) => (byte)parallaxWindow.getColour(colourByte);
 #endif
@@ -1055,6 +1104,10 @@ namespace NextGraphics
 				}
 			});
 		}
+
+		#endregion
+
+		#region Helpers
 
 		/// <summary>
 		/// Initalizes the settings from a loaded image.
@@ -1136,38 +1189,6 @@ namespace NextGraphics
 			{
 				gfx.FillRectangle(brush, 0, 0, thisBitmap.Width, thisBitmap.Height);
 			}
-		}
-
-		/// <summary>
-		/// Disables all actions, runs the operation implemented as given action on background thread and enables all actions when complete.
-		/// </summary>
-		private async void RunLongOperation(Action action)
-		{
-			void EnableActions(bool enable)
-			{
-				newToolStripButton.Enabled = enable;
-				openProjectButton.Enabled = enable;
-				saveToolStripButton.Enabled = enable;
-				addImagesToolStripButton.Enabled = enable;
-				paletteToolStripButton.Enabled = enable;
-				makeBlocksToolStripButton.Enabled = enable;
-				exportToolStripButton.Enabled = enable;
-				infoToolStripButton.Enabled = enable;
-				settingsButton.Enabled = enable;
-				exportAsSpritesRadioButton.Enabled = enable;
-				exportAsBlocksRadioButton.Enabled = enable;
-				blockWidthTextBox.Enabled = enable;
-				blockHeightTextBox.Enabled = enable;
-
-				fileMenu.Enabled = enable;
-				toolsToolStripMenuItem.Enabled = enable;
-			}
-
-			EnableActions(false);
-
-			await Task.Run(action);
-
-			EnableActions(true);
 		}
 
 		/// <summary>
@@ -1310,6 +1331,38 @@ namespace NextGraphics
 			form.Height = Height - top - (toolStrip.Height + 200);
 
 			form.Refresh();
+		}
+
+		/// <summary>
+		/// Disables all actions, runs the operation implemented as given action on background thread and enables all actions when complete.
+		/// </summary>
+		private async void RunLongOperation(Action action)
+		{
+			void EnableActions(bool enable)
+			{
+				newToolStripButton.Enabled = enable;
+				openProjectButton.Enabled = enable;
+				saveToolStripButton.Enabled = enable;
+				addImagesToolStripButton.Enabled = enable;
+				paletteToolStripButton.Enabled = enable;
+				makeBlocksToolStripButton.Enabled = enable;
+				exportToolStripButton.Enabled = enable;
+				infoToolStripButton.Enabled = enable;
+				settingsButton.Enabled = enable;
+				exportAsSpritesRadioButton.Enabled = enable;
+				exportAsBlocksRadioButton.Enabled = enable;
+				blockWidthTextBox.Enabled = enable;
+				blockHeightTextBox.Enabled = enable;
+
+				fileMenu.Enabled = enable;
+				toolsToolStripMenuItem.Enabled = enable;
+			}
+
+			EnableActions(false);
+
+			await Task.Run(action);
+
+			EnableActions(true);
 		}
 
 		#endregion
