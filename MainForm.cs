@@ -76,24 +76,14 @@ namespace NextGraphics
 
 			InitializeComponent();
 
-			ClearBitmap(Model.BlocksBitmap);
-			blocksPictureBox.Image = Model.BlocksBitmap;
-			blocksPictureBox.Height = Model.BlocksBitmap.Height;
-			blocksPictureBox.Width = Model.BlocksBitmap.Width;
-
 #if DEBUG_WINDOW
 			DEBUG_WINDOW = new DEBUGFORM();
 			DEBUG_WINDOW.Show();
 #endif
-
-			ClearBitmap(Model.CharsBitmap);
-			charsPictureBox.Image = Model.CharsBitmap;
 			toolStripProgressBar1.Minimum = 0;
 			toolStripProgressBar1.Maximum = 0;
 
-			blocksPictureBox.Invalidate();
-			blocksPictureBox.Refresh();
-
+			ClearData();	// Clearing data will also take care of linking UI to fresh model data.
 			Model.UpdateBlocksAcross(blocksPictureBox.Width);
 
 			SetForm();
@@ -839,24 +829,7 @@ namespace NextGraphics
 				}
 			}
 
-			Model.Clear();
-
-			SetForm();
-
-			ClearBitmap(Model.BlocksBitmap);
-			blocksPictureBox.Image = Model.BlocksBitmap;
-			blocksPictureBox.Height = Model.BlocksBitmap.Height;
-			blocksPictureBox.Width = Model.BlocksBitmap.Width;
-			blocksPictureBox.Invalidate(true);
-			blocksPictureBox.Refresh();
-
-			ClearBitmap(Model.CharsBitmap);
-			charsPictureBox.Image = Model.CharsBitmap;
-			charsPictureBox.Invalidate(true);
-			charsPictureBox.Refresh();
-
-			isPaletteSet = false;
-
+			ClearData();
 			SetForm();
 			DisposeImageWindows();
 		}
@@ -936,10 +909,10 @@ namespace NextGraphics
 		/// </summary>
 		private void LoadProjectFromFile(string filename)
 		{
+			ClearData();
+
 			Model.Load(filename);
 			Model.UpdateBlocksAcross(blocksPictureBox.Width);
-
-			isPaletteSet = false;
 
 			SetForm();
 			UpdateProjectListBox();
@@ -1005,6 +978,27 @@ namespace NextGraphics
 			{
 				MessageBox.Show("Duplicate files are not allowed", "Duplicates Found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
+		}
+
+		private void ClearData()
+		{
+			isPaletteSet = false;
+
+			Model.Clear();
+			Exporter.Data.Clear();
+
+			// We must establish the link to new bitmaps since we recreate them in Model when calling Clear.
+			ClearBitmap(Model.BlocksBitmap);
+			blocksPictureBox.Image = Model.BlocksBitmap;
+			blocksPictureBox.Height = Model.BlocksBitmap.Height;
+			blocksPictureBox.Width = Model.BlocksBitmap.Width;
+			blocksPictureBox.Invalidate(true);
+			blocksPictureBox.Refresh();
+
+			ClearBitmap(Model.CharsBitmap);
+			charsPictureBox.Image = Model.CharsBitmap;
+			charsPictureBox.Invalidate(true);
+			charsPictureBox.Refresh();
 		}
 
 		#endregion

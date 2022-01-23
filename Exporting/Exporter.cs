@@ -267,5 +267,18 @@ namespace NextGraphics.Exporting
 		}
 
 		#endregion
+
+		#region Helpers
+
+		/// <summary>
+		/// Clears all the data, so next time full export will be run.
+		/// </summary>
+		public void Clear()
+		{
+			// At the moment, we only clear export data. But it's convenient to have this method too, so callers can clear directly on exporter and not think of all the inner objects that also need clearing
+			Data.Clear();
+		}
+
+		#endregion
 	}
 }
