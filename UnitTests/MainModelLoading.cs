@@ -206,7 +206,7 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(true, model.TextFlips);
+			Assert.AreEqual(true, model.AttributesAsText);
 		}
 
 		[TestMethod]

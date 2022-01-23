@@ -14,6 +14,7 @@ using System.Xml;
 using UnitTests.Data;
 using NextGraphics.Exporting.Common;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace UnitTests
 {
@@ -1022,10 +1023,16 @@ namespace UnitTests
 				// Note: we could assert on both lists direclty, but then assertion errors are not very helpful...
 				Assert.AreEqual(expectedLines.Count, actualLines.Count, $"assembler lines count is different");
 
+				string SanitizedLine(string line)
+				{
+					return Regex.Replace(line, @"\s+", " ");
+				}
+
 				for (var i=0; i<expectedLines.Count; i++)
 				{
-					var expectedLine = expectedLines[i];
-					var actualLine = actualLines[i];
+					// We replace all whitespace with single space to match only on actual data.
+					var expectedLine = SanitizedLine(expectedLines[i]);
+					var actualLine = SanitizedLine(actualLines[i]);
 					Assert.AreEqual(expectedLine, actualLine, $"assembler line {i + 1} different");
 				}
 			}

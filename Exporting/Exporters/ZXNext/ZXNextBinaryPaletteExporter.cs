@@ -21,7 +21,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 
 				for (int j = 0; j < Model.Palette.UsedCount; j++)
 				{
-					writer.Write((byte)AsPalette8Bit(Model.Palette[Model.Palette.StartIndex + j]));
+					writer.Write(Model.Palette[Model.Palette.StartIndex + j].To8BitPaletteByte());
 				}
 			}
 		}

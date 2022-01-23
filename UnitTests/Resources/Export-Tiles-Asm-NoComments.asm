@@ -52,7 +52,6 @@ TestTile3:
 				.db	$05,$54,$44,$50
 				.db	$00,$05,$55,$00
 				.db	$00,$00,$00,$00
-// Collisions Left Width Top Height
 
 TestBlock0:		.db	0,0
 TestBlock1:		.db	0,1

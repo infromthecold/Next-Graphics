@@ -16,8 +16,6 @@ TEST_TILE_SIZE:		equ	32
 
 TEST_TILES:		equ	4
 
-// Collisions Left Width Top Height
-
 TestBlock0:		.db	0,0
 TestBlock1:		.db	0,1
 TestBlock2:		.db	0,2

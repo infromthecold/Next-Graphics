@@ -248,6 +248,14 @@ namespace NextGraphics.Models
 			}
 
 			/// <summary>
+			/// Returns this <see cref="Palette.Colour"/> as 8-bit palette byte.
+			/// </summary>
+			public byte To8BitPaletteByte()
+			{
+				return AsPalette8Bit(Red, Green, Blue);
+			}
+
+			/// <summary>
 			/// Note naming - color not colour - this is to indicate the result is System.Drawing.Color not Colour object
 			/// </summary>
 			public Color ToColor()
@@ -263,6 +271,14 @@ namespace NextGraphics.Models
 				Red = color.R;
 				Green = color.G;
 				Blue = color.B;
+			}
+
+			private byte AsPalette8Bit(decimal red, decimal green, decimal blue)
+			{
+				byte r = (byte)Math.Round(red / (255 / 7));
+				byte g = (byte)Math.Round(green / (255 / 7));
+				byte b = (byte)Math.Round(blue / (255 / 3));
+				return (byte)((r << 5) | (g << 2) | b);
 			}
 		}
 

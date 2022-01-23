@@ -28,7 +28,6 @@ TEST_TILES:		equ	4
 
 TestTileWidth:	equ	1
 TestTileHeight:	equ	1
-// Collisions Left Width Top Height
 
 TestBlock0:		.db	0,0
 TestBlock1:		.db	0,1

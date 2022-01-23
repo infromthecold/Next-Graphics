@@ -173,8 +173,7 @@ namespace UnitTests.Properties {
         ///spritesCollision1:		.db	3,10,1,13
         ///spritesCollision2:		.db	2,11,1,13
         ///spritesCollision3:		.db	2,11,1,13
-        ///spritesCollision4:		.db	1,13,2,10
-        ///spri [rest of string was truncated]&quot;;.
+        ///spritesCollision4:		.db	1,13,2,10 [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Export_Sprites_Asm_Binary_NoComments {
             get {
@@ -864,7 +863,7 @@ namespace UnitTests.Properties {
         ///	&lt;File Path=&quot;C:\tiles.bmp&quot; /&gt;
         ///	&lt;File Path=&quot;/a/file/with/slashes&quot; /&gt;
         ///	&lt;File Path=&quot;\the\file\with\backslashes&quot; /&gt;
-        ///	&lt;Settings {0}=&quot;true&quot; center=&quot;4&quot; xSize=&quot;9&quot; ySize=&quot;10&quot; fourBit=&quot;true&quot; binary=&quot;false&quot; binaryBlocks=&quot;true&quot; Repeats=&quot;false&quot; MirrorX=&quot;false&quot; MirrorY=&quot;true&quot; Rotations=&quot;false&quot; Transparent=&quot;false&quot; Sort=&quot;true&quot; blocksImage=&quot;false&quot; tilesImage=&quot;true&quot; transBlock=&quot;true&quot; transTile=&quot;false&quot; across=&quot;5&quot; accurate=&quot;983&quot; format=&quot;{1}&quot; textFlips=&quot;true&quot; reduce=&quot;true&quot;  [rest of string was truncated]&quot;;.
+        ///	&lt;Settings {0}=&quot;true&quot; comments=&quot;0&quot; center=&quot;4&quot; xSize=&quot;9&quot; ySize=&quot;10&quot; fourBit=&quot;true&quot; binary=&quot;false&quot; binaryBlocks=&quot;true&quot; Repeats=&quot;false&quot; MirrorX=&quot;false&quot; MirrorY=&quot;true&quot; Rotations=&quot;false&quot; Transparent=&quot;false&quot; Sort=&quot;true&quot; blocksImage=&quot;false&quot; tilesImage=&quot;true&quot; transBlock=&quot;true&quot; transTile=&quot;false&quot; across=&quot;5&quot; accurate=&quot;983&quot; format=&quot;{1}&quot; textFlips=&quot;true&quot; r [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Project_Tiles_Templated {
             get {

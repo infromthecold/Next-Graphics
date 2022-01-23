@@ -178,8 +178,8 @@ namespace UnitTests
 		[TestMethod]
 		public void SettingsTextFlipsSaved()
 		{
-			SettingsRunner.Setup(model => model.TextFlips = false).Verify("false", "textFlips");
-			SettingsRunner.Setup(model => model.TextFlips = true).Verify("true", "textFlips");
+			SettingsRunner.Setup(model => model.AttributesAsText = false).Verify("false", "textFlips");
+			SettingsRunner.Setup(model => model.AttributesAsText = true).Verify("true", "textFlips");
 		}
 
 		[TestMethod]

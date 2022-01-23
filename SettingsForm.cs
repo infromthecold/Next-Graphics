@@ -34,7 +34,7 @@ namespace NextGraphics
 
 			output4BitsCheckBox.Checked = Model.FourBit;
 			outputReducedCheckBox.Checked = Model.Reduced;
-			outputTextFlipsCheckBox.Checked = Model.TextFlips;
+			outputTextFlipsCheckBox.Checked = Model.AttributesAsText;
 			outputBinaryCheckBox.Checked = Model.BinaryOutput;
 			outputBinaryBlocksCheckBox.Enabled = outputBinaryCheckBox.Checked;
 			outputTransparentFirstCheckBox.Checked = Model.TransparentFirst;
@@ -61,7 +61,7 @@ namespace NextGraphics
 
 			Model.FourBit = output4BitsCheckBox.Checked;
 			Model.Reduced = outputReducedCheckBox.Checked;
-			Model.TextFlips = outputTextFlipsCheckBox.Checked;
+			Model.AttributesAsText = outputTextFlipsCheckBox.Checked;
 			Model.BinaryOutput = outputBinaryCheckBox.Checked;
 			Model.TransparentFirst = outputTransparentFirstCheckBox.Checked;
 			Model.CommentType = (CommentType)outputCommentLevelComboBox.SelectedIndex;
