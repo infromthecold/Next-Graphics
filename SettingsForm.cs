@@ -39,6 +39,7 @@ namespace NextGraphics
 			outputBinaryBlocksCheckBox.Enabled = outputBinaryCheckBox.Checked;
 			outputTransparentFirstCheckBox.Checked = Model.TransparentFirst;
 			outputCommentLevelComboBox.SelectedIndex = (int)Model.CommentType;
+			outputPaletteFormatComboBox.SelectedIndex = (int)Model.PaletteFormat;
 
 			mappingBlocksAsImageCheckBox.Checked = Model.BlocksAsImage;
 			mappingTilesAsImageCheckBox.Checked = Model.TilesAsImage;
@@ -65,6 +66,7 @@ namespace NextGraphics
 			Model.BinaryOutput = outputBinaryCheckBox.Checked;
 			Model.TransparentFirst = outputTransparentFirstCheckBox.Checked;
 			Model.CommentType = (CommentType)outputCommentLevelComboBox.SelectedIndex;
+			Model.PaletteFormat = (PaletteFormat)outputPaletteFormatComboBox.SelectedIndex;
 
 			Model.BlocksAsImage = mappingBlocksAsImageCheckBox.Checked;
 			Model.TilesAsImage = mappingTilesAsImageCheckBox.Checked;
