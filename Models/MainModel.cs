@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace NextGraphics.Models
@@ -19,6 +17,7 @@ namespace NextGraphics.Models
 		public OutputType OutputType { get; set; } = OutputType.Sprites;
 		public CommentType CommentType { get; set; } = CommentType.Full;
 		public ImageFormat ImageFormat { get; set; } = ImageFormat.BMP;
+		public PaletteFormat PaletteFormat { get; set; } = PaletteFormat.Next8Bit;
 
 		public bool IgnoreCopies { get; set; } = false;
 		public bool IgnoreMirroredX { get; set; } = false;
@@ -127,6 +126,7 @@ namespace NextGraphics.Models
 				node.WithAttribute("across", value => BlocsAcross = int.Parse(value));
 				node.WithAttribute("accurate", value => Accuracy = int.Parse(value));
 				node.WithAttribute("format", value => ImageFormat = (ImageFormat)int.Parse(value));
+				node.WithAttribute("PaletteFormat", value => PaletteFormat = (PaletteFormat)int.Parse(value));
 				node.WithAttribute("textFlips", value => AttributesAsText = bool.Parse(value));
 				node.WithAttribute("reduce", value => Reduced = bool.Parse(value));
 			});
@@ -216,6 +216,7 @@ namespace NextGraphics.Models
 			settingsNode.AddAttribute("across", BlocsAcross.ToString());
 			settingsNode.AddAttribute("accurate", Accuracy.ToString());
 			settingsNode.AddAttribute("format", (int)ImageFormat);
+			settingsNode.AddAttribute("PaletteFormat", (int)PaletteFormat);
 			settingsNode.AddAttribute("textFlips", AttributesAsText);
 			settingsNode.AddAttribute("reduce", Reduced);
 

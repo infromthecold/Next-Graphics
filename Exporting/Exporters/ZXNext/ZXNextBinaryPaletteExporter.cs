@@ -1,11 +1,7 @@
 ﻿using NextGraphics.Exporting.Exporters.Base;
 
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NextGraphics.Exporting.Exporters.ZXNext
 {
@@ -21,7 +17,10 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 
 				for (int j = 0; j < Model.Palette.UsedCount; j++)
 				{
-					writer.Write(Model.Palette[Model.Palette.StartIndex + j].To8BitPaletteByte());
+					Model.Palette[Model.Palette.StartIndex + j].ToRawBytes(Model.PaletteFormat).ForEach(x =>
+					{
+						writer.Write(x);
+					});
 				}
 			}
 		}

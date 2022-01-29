@@ -308,6 +308,21 @@ namespace UnitTests
 			Assert.AreEqual(ImageFormat.JPG, model.ImageFormat);
 		}
 
+		[TestMethod]
+		public void SettingsPaletteFormatLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute & verify
+			model.Load(TestDocument(paletteFormat: "0"));
+			Assert.AreEqual(PaletteFormat.Next8Bit, model.PaletteFormat);
+
+			// execute & verify
+			model.Load(TestDocument(paletteFormat: "1"));
+			Assert.AreEqual(PaletteFormat.Next9Bit, model.PaletteFormat);
+		}
+
 		#endregion
 
 		#region Palette
@@ -386,9 +401,17 @@ namespace UnitTests
 
 		#region Creation
 
-		private XmlDocument TestDocument(string outputType = "blocks", string imageFormat = "0", string paletteMapping="Custom")
+		private XmlDocument TestDocument(
+			string outputType = "blocks", 
+			string imageFormat = "0", 
+			string paletteMapping="Custom",
+			string paletteFormat="0")
 		{
-			return DataCreator.XmlDocumentTilesTemplated(outputType, imageFormat, paletteMapping);
+			return DataCreator.XmlDocumentTilesTemplated(
+				outputType, 
+				imageFormat, 
+				paletteMapping,
+				paletteFormat);
 		}
 
 		#endregion

@@ -145,7 +145,10 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 					Blue = palette.Blue,
 				};
 
-				colour.Values.Add(new ByteValue(palette.To8BitPaletteByte()));
+				palette.ToRawBytes(Model.PaletteFormat).ForEach(c =>
+				{
+					colour.Values.Add(new ByteValue(c));
+				});
 
 				colour.Values.SetupListItem();
 

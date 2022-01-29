@@ -14,7 +14,7 @@
 	{{~for colour in palette~}}
 			db	{{for byte in colour.values-}}
 			%{{byte.as_binary-}}
-			{{-if !byte.is_last}}, {{end-}}
+			{{-if !byte.is_last}},{{end-}}
 			{{-end # for colour.values}}{{if comments_can_export}}	//	{{colour.red}},{{colour.green}},{{colour.blue}}{{end}}
 	{{~end # for colours~}}
 {{~else if palette_is_next_256~}}
