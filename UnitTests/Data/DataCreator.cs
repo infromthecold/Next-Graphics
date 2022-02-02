@@ -4,13 +4,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Drawing;
-using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace UnitTests.Data
 {
@@ -48,11 +43,15 @@ namespace UnitTests.Data
 			return result;
 		}
 
-		public static XmlDocument XmlDocumentTilesTemplated(string outputType = "blocks", string imageFormat = "0", string paletteMapping = "Custom")
+		public static XmlDocument XmlDocumentTilesTemplated(
+			string outputType = "blocks", 
+			string imageFormat = "0", 
+			string paletteMapping = "Custom",
+			string paletteFormat = "0")
 		{
 			var template = Properties.Resources.Project_Tiles_Templated;
 
-			var xml = String.Format(template, outputType, imageFormat, paletteMapping);
+			var xml = string.Format(template, outputType, imageFormat, paletteMapping, paletteFormat);
 
 			var result = new XmlDocument();
 			result.LoadXml(xml);
@@ -63,119 +62,251 @@ namespace UnitTests.Data
 
 		#region Assembler
 
-		public static string AssemblerTiles(DateTime time, CommentType comments, bool withImages = false)
+		public static string AssemblerTiles(
+			DateTime time, 
+			CommentType comments, 
+			PaletteFormat paletteFormat = PaletteFormat.Next8Bit, 
+			bool withImages = false)
 		{
-			// Note: assembler file doesn't differ in this case if images are also exported.
-			var resource = comments == CommentType.Full ? 
-				Properties.Resources.Export_Tiles_Asm : 
-				Properties.Resources.Export_Tiles_Asm_NoComments;
-			return String.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
+			// Note: at the moment there's no difference in output between images or no images option. Leaving the option in so unit tests are ready in case this will change in the future.
+			string resource;
+
+			switch (comments)
+			{
+				case CommentType.Full:
+					switch (paletteFormat)
+					{
+						case PaletteFormat.Next9Bit:
+							resource = Properties.Resources.Export_Tiles_Asm_PaletteNext9Bit;
+							break;
+						default:
+							resource = Properties.Resources.Export_Tiles_Asm;
+							break;
+					}
+					break;
+
+				default:
+					switch (paletteFormat)
+					{
+						case PaletteFormat.Next9Bit:
+							resource = Properties.Resources.Export_Tiles_Asm_NoComments_PaletteNext9Bit;
+							break;
+						default:
+							resource = Properties.Resources.Export_Tiles_Asm_NoComments;
+							break;
+					}
+					break;
+			}
+
+			return string.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
 		}
 
-		public static string AssemblerTilesAndBinary(DateTime time, CommentType comments, bool withImages = false)
+		public static string AssemblerTilesAndBinary(
+			DateTime time, 
+			CommentType comments, 
+			PaletteFormat paletteFormat = PaletteFormat.Next8Bit, 
+			bool withImages = false)
 		{
+			// Note: at the moment there's no difference in output between images or no images option. Leaving the option in so unit tests are ready in case this will change in the future.
 			string resource = "";
 
 			switch (comments)
 			{
 				case CommentType.Full:
-					resource = withImages ? 
-						Properties.Resources.Export_Tiles_Asm_Binary_Images : 
-						Properties.Resources.Export_Tiles_Asm_Binary;
+					switch (paletteFormat)
+					{
+						case PaletteFormat.Next9Bit:
+							resource = Properties.Resources.Export_Tiles_Asm_Binary_PaletteNext9Bit;
+							break;
+						default:
+							resource = Properties.Resources.Export_Tiles_Asm_Binary;
+							break;
+					}
 					break;
 
 				case CommentType.None:
-					resource = withImages ? 
-						Properties.Resources.Export_Tiles_Asm_Binary_Images : 
-						Properties.Resources.Export_Tiles_Asm_Binary_NoComments;
+					switch (paletteFormat)
+					{
+						case PaletteFormat.Next9Bit:
+							resource = Properties.Resources.Export_Tiles_Asm_Binary_NoComments_PaletteNext9Bit;
+							break;
+						default:
+							resource = Properties.Resources.Export_Tiles_Asm_Binary_NoComments;
+							break;
+					}
 					break;
 			}
 			
-			return String.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
+			return string.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
 		}
 
-		public static string AssemblerTilesAndBinaryAndBlocks(DateTime time, CommentType comments, bool withImages = false)
+		public static string AssemblerTilesAndBinaryAndBlocks(
+			DateTime time, 
+			CommentType comments, 
+			PaletteFormat paletteFormat = PaletteFormat.Next8Bit, 
+			bool withImages = false)
 		{
+			// Note: at the moment there's no difference in output between images or no images option. Leaving the option in so unit tests are ready in case this will change in the future.
 			string resource = "";
 
 			switch (comments)
 			{
 				case CommentType.Full:
-					resource = withImages ? 
-						Properties.Resources.Export_Tiles_Asm_BinaryBlocks_Images : 
-						Properties.Resources.Export_Tiles_Asm_BinaryBlocks;
+					switch (paletteFormat)
+					{
+						case PaletteFormat.Next9Bit:
+							resource = Properties.Resources.Export_Tiles_Asm_BinaryBlocks_PaletteNext9Bit;
+							break;
+						default:
+							resource = Properties.Resources.Export_Tiles_Asm_BinaryBlocks;
+							break;
+					}
 					break;
 
 				case CommentType.None:
-					resource = withImages ? 
-						Properties.Resources.Export_Tiles_Asm_BinaryBlocks_Images : 
-						Properties.Resources.Export_Tiles_Asm_BinaryBlocks_NoComments;
+					switch (paletteFormat)
+					{
+						case PaletteFormat.Next9Bit:
+							resource = Properties.Resources.Export_Tiles_Asm_BinaryBlocks_NoComments_PaletteNext9Bit;
+							break;
+						default:
+							resource = Properties.Resources.Export_Tiles_Asm_BinaryBlocks_NoComments;
+							break;
+					}
 					break;
 			}
 
-			return String.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
+			return string.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
 		}
 
-		public static string AssemblerSprites(DateTime time, CommentType comments, bool withImages = false)
+		public static string AssemblerSprites(
+			DateTime time, 
+			CommentType comments, 
+			PaletteFormat paletteFormat = PaletteFormat.Next8Bit, 
+			bool withImages = false)
 		{
-			// Note: assembler file doesn't differ in this case if images are also exported.
-			var resource = comments == CommentType.Full ? 
-				Properties.Resources.Export_Sprites_Asm : 
-				Properties.Resources.Export_Sprites_Asm_NoComments;
-			return String.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
+			// Note: at the moment there's no difference in output between images or no images option. Leaving the option in so unit tests are ready in case this will change in the future.
+			string resource;
+
+			switch (comments)
+			{
+				case CommentType.Full:
+					switch (paletteFormat)
+					{
+						case PaletteFormat.Next9Bit:
+							resource = Properties.Resources.Export_Sprites_Asm_PaletteNext9Bit;
+							break;
+						default:
+							resource = Properties.Resources.Export_Sprites_Asm;
+							break;
+					}
+					break;
+
+				default:
+					switch (paletteFormat)
+					{
+						case PaletteFormat.Next9Bit:
+							resource = Properties.Resources.Export_Sprites_Asm_NoComments_PaletteNext9Bit;
+							break;
+						default:
+							resource = Properties.Resources.Export_Sprites_Asm_NoComments;
+							break;
+					}
+					break;
+			}
+
+			return string.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
 		}
 
-		public static string AssemblerSpritesAndBinary(DateTime time, CommentType comments, bool withImages = false)
+		public static string AssemblerSpritesAndBinary(
+			DateTime time, 
+			CommentType comments, 
+			PaletteFormat paletteFormat = PaletteFormat.Next8Bit,
+			bool withImages = false)
 		{
+			// Note: at the moment there's no difference in output between images or no images option. Leaving the option in so unit tests are ready in case this will change in the future.
 			string resource = "";
 
 			switch (comments)
 			{
 				case CommentType.Full:
-					resource = withImages ?
-						Properties.Resources.Export_Sprites_Asm_Binary_Images :
-						Properties.Resources.Export_Sprites_Asm_Binary;
+					switch (paletteFormat)
+					{
+						case PaletteFormat.Next9Bit:
+							resource = Properties.Resources.Export_Sprites_Asm_Binary_PaletteNext9Bit;
+							break;
+						default:
+							resource = Properties.Resources.Export_Sprites_Asm_Binary;
+							break;
+					}
 					break;
 
 				case CommentType.None:
-					resource = withImages ?
-						Properties.Resources.Export_Sprites_Asm_Binary_Images :
-						Properties.Resources.Export_Sprites_Asm_Binary_NoComments;
+					switch (paletteFormat)
+					{
+						case PaletteFormat.Next9Bit:
+							resource = Properties.Resources.Export_Sprites_Asm_Binary_NoComments_PaletteNext9Bit;
+							break;
+						default:
+							resource = Properties.Resources.Export_Sprites_Asm_Binary_NoComments;
+							break;
+					}
 					break;
 			}
 
-			return String.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
+			return string.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
 		}
 
-		public static string AssemblerSpritesAndBinaryAndBlocks(DateTime time, CommentType comments, bool withImages = false)
+		public static string AssemblerSpritesAndBinaryAndBlocks(
+			DateTime time, 
+			CommentType comments, 
+			PaletteFormat paletteFormat = PaletteFormat.Next8Bit, 
+			bool withImages = false)
 		{
+			// Note: at the moment there's no difference in output between images or no images option. Leaving the option in so unit tests are ready in case this will change in the future.
 			string resource = "";
 
 			switch (comments)
 			{
 				case CommentType.Full:
-					resource = withImages ?
-						Properties.Resources.Export_Sprites_Asm_BinaryBlocks_Images :
-						Properties.Resources.Export_Sprites_Asm_BinaryBlocks;
+					switch (paletteFormat)
+					{
+						case PaletteFormat.Next9Bit:
+							resource = Properties.Resources.Export_Sprites_Asm_BinaryBlocks_PaletteNext9Bit;
+							break;
+						default:
+							resource = Properties.Resources.Export_Sprites_Asm_BinaryBlocks;
+							break;
+					}
 					break;
 
 				case CommentType.None:
-					resource = withImages ?
-						Properties.Resources.Export_Sprites_Asm_BinaryBlocks_Images :
-						Properties.Resources.Export_Sprites_Asm_BinaryBlocks_NoComments;
+					switch (paletteFormat)
+					{
+						case PaletteFormat.Next9Bit:
+							resource = Properties.Resources.Export_Sprites_Asm_BinaryBlocks_NoComments_PaletteNext9Bit;
+							break;
+						default:
+							resource = Properties.Resources.Export_Sprites_Asm_BinaryBlocks_NoComments;
+							break;
+					}
 					break;
 			}
 
-			return String.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
+			return string.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
 		}
 
 		#endregion
 
 		#region Binary Tiles
 
-		public static byte[] TilesPal()
+		public static byte[] TilesPal(PaletteFormat paletteFormat = PaletteFormat.Next8Bit)
 		{
-			return Properties.Resources.Export_Tiles_Pal;
+			switch (paletteFormat)
+			{
+				case PaletteFormat.Next9Bit: return Properties.Resources.Export_Tiles_Pal_PaletteNext9Bit;
+				default: return Properties.Resources.Export_Tiles_Pal;
+			}
 		}
 
 		public static byte[] TilesBin()
@@ -235,10 +366,14 @@ namespace UnitTests.Data
 
 		#region Binary Sprites
 
-		public static byte[] SpritesPal()
+		public static byte[] SpritesPal(PaletteFormat paletteFormat = PaletteFormat.Next8Bit)
 		{
-			return Properties.Resources.Export_Sprites_Pal;
-		}
+			switch (paletteFormat)
+			{
+				case PaletteFormat.Next9Bit:  return Properties.Resources.Export_Sprites_Pal_PaletteNext9Bit;
+				default: return Properties.Resources.Export_Sprites_Pal;
+			}
+	}
 
 		public static byte[] SpritesBin()
 		{

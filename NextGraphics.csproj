@@ -104,8 +104,18 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Scriban, Version=2.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Scriban.2.1.4\lib\net45\Scriban.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.4.5.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Threading.Tasks.Extensions.4.5.1\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -176,18 +186,6 @@
     <Compile Include="parallaxTool.Designer.cs">
       <DependentUpon>parallaxTool.cs</DependentUpon>
     </Compile>
-    <Compile Include="RebuildForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RebuildForm.Designer.cs">
-      <DependentUpon>RebuildForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FileTreeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FileTreeForm.Designer.cs">
-      <DependentUpon>FileTreeForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -219,12 +217,6 @@
       <DependentUpon>PaletteForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="ProgressForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ProgressForm.Designer.cs">
-      <DependentUpon>ProgressForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ImageForm.cs">
       <SubType>Form</SubType>
@@ -238,9 +230,6 @@
     <EmbeddedResource Include="DEBUGFORM.resx">
       <DependentUpon>DEBUGFORM.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FileTreeForm.resx">
-      <DependentUpon>FileTreeForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -249,9 +238,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="parallaxTool.resx">
       <DependentUpon>parallaxTool.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RebuildForm.resx">
-      <DependentUpon>RebuildForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
@@ -267,9 +253,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PaletteForm.resx">
       <DependentUpon>PaletteForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ProgressForm.resx">
-      <DependentUpon>ProgressForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -315,6 +298,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Icon.ico" />
+    <None Include="Resources\DefaultAssemblerExportTemplate.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

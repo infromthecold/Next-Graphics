@@ -240,12 +240,18 @@ namespace NextGraphics.Models
 				}
 			}
 
+			#region Initialization & Disposal
+
 			public Colour(byte red, byte green, byte blue)
 			{
 				Red = red;
 				Green = green;
 				Blue = blue;
 			}
+
+			#endregion
+
+			#region Conversion
 
 			/// <summary>
 			/// Note naming - color not colour - this is to indicate the result is System.Drawing.Color not Colour object
@@ -264,6 +270,60 @@ namespace NextGraphics.Models
 				Green = color.G;
 				Blue = color.B;
 			}
+
+			#endregion
+
+			#region Raw data
+
+			/// <summary>
+			/// Returns this <see cref="Colour"/> as raw byte values. The content and number of bytes returned depend on the given <see cref="PaletteFormat"/>.
+			/// </summary>
+			public List<byte> ToRawBytes(PaletteFormat format)
+			{
+				byte Constrained(byte value, byte bits)
+				{
+					var multiple = (decimal)Math.Pow(2, bits) - 1;
+					return (byte)Math.Round((decimal)value * multiple / 255);
+				}
+
+				byte Combined(params int[] values)
+				{
+					byte result = 0;
+
+					foreach (var value in values)
+					{
+						result |= (byte)value;
+					}
+
+					return result;
+				}
+
+				switch (format)
+				{
+					case PaletteFormat.Next9Bit:
+					{
+						byte r = Constrained(Red, 3);
+						byte g = Constrained(Green, 3);
+						byte b = Constrained(Blue, 3);
+						return new List<byte> {
+							Combined(r << 5, g << 2, b >> 1),	// RRRGGGBB (bits 2 and 1 of blue)
+							Combined(b & 0b00000001)			// 0000000B (bit 0 of blue)
+						};
+					}
+
+					default:
+					{
+						byte r = Constrained(Red, 3);
+						byte g = Constrained(Green, 3);
+						byte b = Constrained(Blue, 2);
+						return new List<byte> {
+							Combined(r << 5, g << 2, b)			// RRRGGGBB
+						};
+					}
+				}
+			}
+
+			#endregion
 		}
 
 		#endregion

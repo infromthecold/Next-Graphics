@@ -127,20 +127,20 @@
   <data name="Export_Sprites_Asm_BinaryBlocks" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Sprites-Asm-BinaryBlocks.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="Export_Sprites_Asm_BinaryBlocks_Images" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Export-Sprites-Asm-BinaryBlocks-Images.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
   <data name="Export_Sprites_Asm_BinaryBlocks_NoComments" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Sprites-Asm-BinaryBlocks-NoComments.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="Export_Sprites_Asm_Binary_Images" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Export-Sprites-Asm-Binary-Images.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="Export_Sprites_Asm_Binary_NoComments" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Sprites-Asm-Binary-NoComments.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="Export_Sprites_Asm_NoComments" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Sprites-Asm-NoComments.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Sprites_Asm_NoComments_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Sprites-Asm-NoComments-PaletteNext9Bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Sprites_Asm_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Sprites-Asm-PaletteNext9Bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="Export_Sprites_Bin" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Sprites-Bin.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -193,6 +193,9 @@
   <data name="Export_Sprites_Pal" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Sprites-Pal.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Export_Sprites_Pal_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Sprites-Pal-PaletteNext9Bit.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="Export_Sprites_Til" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Sprites-Til.til;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -205,20 +208,23 @@
   <data name="Export_Tiles_Asm_BinaryBlocks" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Tiles-Asm-BinaryBlocks.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="Export_Tiles_Asm_BinaryBlocks_Images" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Export-Tiles-Asm-BinaryBlocks-Images.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
   <data name="Export_Tiles_Asm_BinaryBlocks_NoComments" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Tiles-Asm-BinaryBlocks-NoComments.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
-  <data name="Export_Tiles_Asm_Binary_Images" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Export-Tiles-Asm-Binary-Images.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  <data name="Export_Tiles_Asm_Binary_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm-Binary-PaletteNext9Bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="Export_Tiles_Asm_Binary_NoComments" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Tiles-Asm-Binary-NoComments.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="Export_Tiles_Asm_NoComments" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Tiles-Asm-NoComments.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Tiles_Asm_NoComments_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm-NoComments-PaletteNext9Bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Tiles_Asm_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm-PaletteNext9Bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="Export_Tiles_Bin" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Tiles-Bin.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -238,6 +244,9 @@
   <data name="Export_Tiles_Pal" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Tiles-Pal.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Export_Tiles_Pal_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Pal-PaletteNext9Bit.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="Export_Tiles_Til" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Tiles-Til.til;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -255,5 +264,26 @@
   </data>
   <data name="Project_Tiles_Templated" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Project-Tiles-Templated.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Tiles_Asm_Binary_NoComments_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm-Binary-NoComments-PaletteNext9Bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Sprites_Asm_BinaryBlocks_NoComments_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Sprites-Asm-BinaryBlocks-NoComments-PaletteNext9Bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Sprites_Asm_BinaryBlocks_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Sprites-Asm-BinaryBlocks-PaletteNext9Bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Sprites_Asm_Binary_NoComments_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Sprites-Asm-Binary-NoComments-PaletteNext9Bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Sprites_Asm_Binary_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Sprites-Asm-Binary-PaletteNext9Bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Tiles_Asm_BinaryBlocks_NoComments_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm-BinaryBlocks-NoComments-PaletteNext9Bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Tiles_Asm_BinaryBlocks_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tiles-Asm-BinaryBlocks-PaletteNext9Bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
 </root>

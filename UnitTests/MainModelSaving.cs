@@ -99,6 +99,13 @@ namespace UnitTests
 		}
 
 		[TestMethod]
+		public void SettingsPaletteFormatSaved()
+		{
+			SettingsRunner.Setup(model => model.PaletteFormat = PaletteFormat.Next9Bit).Verify("1", "PaletteFormat");
+			SettingsRunner.Setup(model => model.PaletteFormat = PaletteFormat.Next8Bit).Verify("0", "PaletteFormat");
+		}
+
+		[TestMethod]
 		public void SettingsIgnoreCopiesSaved()
 		{
 			SettingsRunner.Setup(model => model.IgnoreCopies = false).Verify("false", "Repeats");
@@ -178,8 +185,8 @@ namespace UnitTests
 		[TestMethod]
 		public void SettingsTextFlipsSaved()
 		{
-			SettingsRunner.Setup(model => model.TextFlips = false).Verify("false", "textFlips");
-			SettingsRunner.Setup(model => model.TextFlips = true).Verify("true", "textFlips");
+			SettingsRunner.Setup(model => model.AttributesAsText = false).Verify("false", "textFlips");
+			SettingsRunner.Setup(model => model.AttributesAsText = true).Verify("true", "textFlips");
 		}
 
 		[TestMethod]

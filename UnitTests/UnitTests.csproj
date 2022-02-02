@@ -66,11 +66,13 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\Export-Sprites-Bin.bin" />
+    <None Include="Resources\Export-Sprites-Pal-PaletteNext9Bit.pal" />
     <None Include="Resources\Export-Sprites-Pal.pal" />
     <None Include="Resources\Export-Sprites-Til.til" />
     <None Include="Resources\Export-Tiles-Bin.bin" />
     <None Include="Resources\Export-Tiles-Blk.blk" />
     <None Include="Resources\Export-Tiles-Map.map" />
+    <None Include="Resources\Export-Tiles-Pal-PaletteNext9Bit.pal" />
     <None Include="Resources\Export-Tiles-Pal.pal" />
     <None Include="Resources\Export-Tiles-Til.til" />
   </ItemGroup>
@@ -100,16 +102,13 @@
     <None Include="Resources\Export-Tiles-Asm-Binary-NoComments.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Tiles-Asm-Binary-Images.asm" />
+    <None Include="Resources\Export-Tiles-Asm-Binary-PaletteNext9Bit.asm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Export-Tiles-Asm-BinaryBlocks.asm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Export-Tiles-Asm-BinaryBlocks-NoComments.asm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Export-Tiles-Asm-BinaryBlocks-Images.asm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Export-Tiles-Image-Blocks.bmp" />
@@ -190,16 +189,23 @@
     <None Include="Resources\Export-Sprites-Asm-Binary-NoComments.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Asm-Binary-Images.asm" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Export-Sprites-Asm-BinaryBlocks.asm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Export-Sprites-Asm-BinaryBlocks-NoComments.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Asm-BinaryBlocks-Images.asm" />
+    <None Include="Resources\Export-Sprites-Asm-BinaryBlocks-NoComments-PaletteNext9Bit.asm" />
+    <None Include="Resources\Export-Sprites-Asm-BinaryBlocks-PaletteNext9Bit.asm" />
+    <None Include="Resources\Export-Sprites-Asm-Binary-NoComments-PaletteNext9Bit.asm" />
+    <None Include="Resources\Export-Sprites-Asm-Binary-PaletteNext9Bit.asm" />
+    <Content Include="Resources\Export-Sprites-Asm-NoComments-PaletteNext9Bit.asm" />
+    <Content Include="Resources\Export-Sprites-Asm-PaletteNext9Bit.asm" />
+    <None Include="Resources\Export-Tiles-Asm-BinaryBlocks-NoComments-PaletteNext9Bit.asm" />
+    <None Include="Resources\Export-Tiles-Asm-BinaryBlocks-PaletteNext9Bit.asm" />
+    <None Include="Resources\Export-Tiles-Asm-Binary-NoComments-PaletteNext9Bit.asm" />
+    <Content Include="Resources\Export-Tiles-Asm-NoComments-PaletteNext9Bit.asm" />
+    <Content Include="Resources\Export-Tiles-Asm-PaletteNext9Bit.asm" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

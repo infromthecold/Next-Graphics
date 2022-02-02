@@ -158,6 +158,24 @@ namespace NextGraphics.Models
 			return infos[index].SecondHalf;
 		}
 
+		public int GetNonTransparentPixelsCount()
+		{
+			var result = Size;
+
+			for (int y = 0; y < Height; y++)
+			{
+				for (int x = 0; x < Width; x++)
+				{
+					if (GetTransparent(x, y))
+					{
+						result--;
+					}
+				}
+			}
+
+			return result;
+		}
+
 		public void ClearOffset()
 		{
 			OffsetX = 0;

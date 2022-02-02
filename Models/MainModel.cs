@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace NextGraphics.Models
 {
 	public class MainModel
 	{
-		public List<SourceImage> Images { get; private set; } = new List<SourceImage>();
+		public string Filename { get; set; } = "";
 		public string Name { get; set; } = "";
+		public List<SourceImage> Images { get; private set; } = new List<SourceImage>();
 		public Palette Palette { get; } = new Palette();
 
 		public OutputType OutputType { get; set; } = OutputType.Sprites;
 		public CommentType CommentType { get; set; } = CommentType.Full;
 		public ImageFormat ImageFormat { get; set; } = ImageFormat.BMP;
+		public PaletteFormat PaletteFormat { get; set; } = PaletteFormat.Next8Bit;
 
 		public bool IgnoreCopies { get; set; } = false;
 		public bool IgnoreMirroredX { get; set; } = false;
@@ -34,7 +34,7 @@ namespace NextGraphics.Models
 		public bool TransparentFirst { get; set; } = false;
 		public bool FourBit { get; set; } = false;
 		public bool Reduced { get; set; } = false;
-		public bool TextFlips { get; set; } = false;
+		public bool AttributesAsText { get; set; } = false;
 		public bool BinaryOutput { get; set; } = false;
 		public bool BinaryBlocksOutput { get; set; } = false;
 
@@ -60,6 +60,22 @@ namespace NextGraphics.Models
 		#endregion
 
 		#region Serialization
+
+		/// <summary>
+		/// Loads the data from the given filename. This automatically assigns <see cref="Filename"/> as well.
+		/// </summary>
+		public void Load(string filename)
+		{
+			// Load and parse the XML.
+			XmlDocument document = new XmlDocument();
+			document.Load(filename);
+
+			// Load the data.
+			Load(document);
+
+			// If all is fine, assign the filename.
+			Filename = filename;
+		}
 
 		/// <summary>
 		/// Loads the data from the given <see cref="XmlDocument"/>. In case of failure, an exception will be thrown.
@@ -110,7 +126,8 @@ namespace NextGraphics.Models
 				node.WithAttribute("across", value => BlocsAcross = int.Parse(value));
 				node.WithAttribute("accurate", value => Accuracy = int.Parse(value));
 				node.WithAttribute("format", value => ImageFormat = (ImageFormat)int.Parse(value));
-				node.WithAttribute("textFlips", value => TextFlips = bool.Parse(value));
+				node.WithAttribute("PaletteFormat", value => PaletteFormat = (PaletteFormat)int.Parse(value));
+				node.WithAttribute("textFlips", value => AttributesAsText = bool.Parse(value));
 				node.WithAttribute("reduce", value => Reduced = bool.Parse(value));
 			});
 
@@ -199,7 +216,8 @@ namespace NextGraphics.Models
 			settingsNode.AddAttribute("across", BlocsAcross.ToString());
 			settingsNode.AddAttribute("accurate", Accuracy.ToString());
 			settingsNode.AddAttribute("format", (int)ImageFormat);
-			settingsNode.AddAttribute("textFlips", TextFlips);
+			settingsNode.AddAttribute("PaletteFormat", (int)PaletteFormat);
+			settingsNode.AddAttribute("textFlips", AttributesAsText);
 			settingsNode.AddAttribute("reduce", Reduced);
 
 			// Palette

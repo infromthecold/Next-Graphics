@@ -61,6 +61,25 @@ namespace NextGraphics.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {{- # The template uses Scriban template language https://github.com/scriban/scriban -}}
+        ///
+        ///{{- # At the top of the file we export a block of comments describing the origin and other information about this file -}}
+        ///// {{project_name}}.asm
+        ///// Created on {{export_date}} by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///{{~ # Number of palette colours used -}}
+        ///{{label_name | string.upcase}}_COLOURS:		equ	{{palette | array.size}}
+        ///
+        ///{{~ # Palette itself. If custom palette is specif [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string DefaultAssemblerExportTemplate {
+            get {
+                return ResourceManager.GetString("DefaultAssemblerExportTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project Name.
         /// </summary>
         internal static string NewProjectTitle {

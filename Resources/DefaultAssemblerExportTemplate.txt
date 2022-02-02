@@ -1,0 +1,127 @@
+{{- # The template uses Scriban template language https://github.com/scriban/scriban -}}
+
+{{- # At the top of the file we export a block of comments describing the origin and other information about this file -}}
+// {{project_name}}.asm
+// Created on {{export_date}} by the NextGraphics tool from
+// patricia curtis at luckyredfish dot com
+
+{{~ # Number of palette colours used -}}
+{{label_name | string.upcase}}_COLOURS:		equ	{{palette | array.size}}
+
+{{~ # Palette itself. If custom palette is specified, each byte of the colour is exported, otherwise just a comment -}}
+{{~if palette_is_custom~}}
+{{label_name}}Palette:
+	{{~for colour in palette~}}
+			db	{{for byte in colour.values-}}
+			%{{byte.as_binary-}}
+			{{-if !byte.is_last}},{{end-}}
+			{{-end # for colour.values}}{{if comments_can_export}}	//	{{colour.red}},{{colour.green}},{{colour.blue}}{{end}}
+	{{~end # for colours~}}
+{{~else if palette_is_next_256~}}
+// Mapped to the spectrum next 256 palette
+{{~else if palette_is_next_512~}}
+// Mapped to the spectrum next 512 palette
+{{~end~}}
+
+{{~ # Number of bytes each character (sprite or tile) uses -}}
+{{label_name | string.upcase}}_{{label_suffix | string.upcase}}_SIZE:		equ	{{parameter_block_size}}
+
+{{~ # Number of characters (sprites or tiles) we export -}}
+{{label_name | string.upcase}}_{{label_suffix | string.upcase}}S:		equ	{{characters | array.size}}
+
+{{~ # If character export is enabled, we export all the data about each character here. Each character is composed from an array of rows, each row from array of columns and each column for array of values. Each value represents a sinble byte of data. -}}
+{{~if characters_can_export # only export characters if needed -}}
+{{~for character in characters~}}
+{{label_name}}{{label_suffix}}{{character.index}}:
+	{{~for row in character.rows # enumerate all rows ~}}
+				.db	{{for column in row.columns # enumerate all columns of current row -}}
+			{{-for value in column.values # enumerate all values of current column -}}
+				${{-value.as_hex # we want to print it as hex string -}}
+				{{-if !value.is_last # if we have more values in row, add comma}},{{end-}}
+			{{-end # for values -}}
+			{{-if !column.is_last # if we have more columns in row, add comma}},{{end-}}
+		{{~end # for columns (needs end line, so no whitespace suppressor)}}
+	{{~end # for rows (need end line, so no whitepress suppressor)}}
+{{-end # for characters (we don't want any empty row in between hence - at the start) ~}}
+{{~end # if characters_can_export ~}}
+
+{{~ # If comments are enabled, print out some info about the structure of the data -}}
+{{~if comments_can_export~}}
+	{{~if export_is_sprites~}}
+				// number of sprites
+
+					// x offset from center of sprite
+					// y offset from center of sprite
+					// Palette offset with the X mirror,Y mirror, Rotate bits if set
+					// 4 bit colour bit and pattern offset bit
+					// index of the sprite at this position that makes up the frame
+
+				//...... repeated wide x tall times
+	{{~else~}}
+				// block data
+				// number of tiles (characters) tall
+				// number of tiles (characters) wide
+					// Palette offset with the X mirror,Y mirror, Rotate bits if set
+					// index of the character at this position that makes up the block
+				//...... repeated wide x tall times
+
+				//Note: Blocks/Tiles/characters output block 0 and tile 0 is blank.
+	{{~end~}}
+{{~end~}}
+
+{{~ # If character size is enabled, print them out-}}
+{{~if characters_size_can_export && comments_can_export~}}
+{{label_name}}{{label_suffix}}Width:	equ	{{character_width}}
+{{label_name}}{{label_suffix}}Height:	equ	{{character_height}}
+{{~end~}}
+
+{{~ # If collisions are enabled, print out the list for all characters -}}
+{{~if collisions_can_export~}}
+// Collisions Left Width Top Height
+	{{~for collision in collisions~}}
+{{label_name}}Collision{{collision.index}}:		.db	{{collision.x}},{{collision.width}},{{collision.y}},{{collision.height}}
+	{{~end # for collisions (needs end line so no whitespace suppressor)}}
+{{~end # if collisions_can_export ~}}
+
+{{~ # If frames are enabled, print out for each character -}}
+{{~if frames_can_export~}}
+	{{~for frame in frames~}}
+{{- # Each frame starts with the label, first byte is number of items followed, then loop of all frame items -}}
+{{label_name}}Frame{{frame.index}}:		.db	{{frame.items | array.size}},	{{for item in frame.items~}}
+			{{~ # First come X and Y offset bytes, then external -}}
+			{{~item.offset_x}},{{item.offset_y}},	{{label_name | string.upcase}}_OFFSET
+			{{-if item.is_text_attributes-}}
+				{{-if item.is_attribute_flip_x}}+XFLIP{{end-}}
+				{{-if item.is_attribute_flip_y}}+YFLIP{{end-}}
+				{{-if item.is_attribute_rotate}}+ROT{{end-}}
+			{{-else-}}
+				+{{-item.attributes.value-}}
+			{{-end # if item.is_text_attributes}},	{{item.four_bit_attributes.value}},{{item.id-}}
+			{{-if !item.is_last}}
+			.db		{{end-}}
+		{{-end #for item (needs end line so no whitespace suppressor)}}
+	{{~end # for frame (needs end line so no whitespace suppressor)}}
+{{~end # if frames_can_export -}}
+
+{{~ # If frames lookup export is enabled, list all frames. Note we use the same frame array as with data above. -}}
+{{-if frames_lookup_can_export-}}
+{{label_name}}Frames:		.dw	{{for frame in frames}}
+	{{-label_name}}Frame{{frame.index-}}
+	{{-if !frame.is_last}},{{end-}}
+	{{-end # for frames -}}
+{{-end # if frames_lookup_can_export ~}}
+
+{{~ # If tiles export is enabled, print out for each tile-}}
+{{-if tiles_can_export-}}
+	{{-for tile in tiles-}}
+{{label_name}}Block{{tile.index}}:{{for item in tile.items}}		{{if item.index > 0}}	{{end}}.db	{{item.attributes.value}},{{item.tile_index.value}}
+		{{~end # for items ~}}
+	{{~end # for tiles -}}
+{{~end # if tiles_can_export~}}
+
+{{~ # If binary files were created, link them into the exported file-}}
+{{~if binary_can_export~}}
+{{label_name | string.upcase}}_FILE_SIZE	equ	{{binary_file_size}}
+{{label_name}}File:			dw	{{label_name | string.upcase}}_FILE_SIZE
+			db	PATH,"game/level1/{{binary_file_path | string.downcase}}",0
+{{~end~}}

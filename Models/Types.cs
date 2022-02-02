@@ -19,6 +19,12 @@ namespace NextGraphics.Models
 		Custom
 	}
 
+	public enum PaletteFormat
+	{
+		Next8Bit,
+		Next9Bit
+	}
+
 	public enum ImageFormat
 	{
 		BMP,

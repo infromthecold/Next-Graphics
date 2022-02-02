@@ -5,12 +5,12 @@
 TEST_COLOURS:		equ	6
 
 TestPalette:
-			db	%01001001	//	72,72,72
-			db	%11111111	//	255,255,255
-			db	%11011011	//	218,218,218
-			db	%10110110	//	182,182,182
-			db	%10010010	//	145,145,145
-			db	%01101101	//	109,109,109
+			db	%01001001,%00000000
+			db	%11111111,%00000001
+			db	%11011011,%00000000
+			db	%10110110,%00000001
+			db	%10010010,%00000000
+			db	%01101101,%00000001
 
 TEST_TILE_SIZE:		equ	32
 
@@ -52,18 +52,6 @@ TestTile3:
 				.db	$05,$54,$44,$50
 				.db	$00,$05,$55,$00
 				.db	$00,$00,$00,$00
-
-				// block data
-				// number of tiles (characters) tall
-				// number of tiles (characters) wide
-					// Palette offset with the X mirror,Y mirror, Rotate bits if set
-					// index of the character at this position that makes up the block
-				//...... repeated wide x tall times
-
-				//Note: Blocks/Tiles/characters output block 0 and tile 0 is blank.
-
-TestTileWidth:	equ	1
-TestTileHeight:	equ	1
 
 TestBlock0:		.db	0,0
 TestBlock1:		.db	0,1

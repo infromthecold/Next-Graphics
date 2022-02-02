@@ -41,6 +41,8 @@
 			this.outputCommentLevelComboBox = new System.Windows.Forms.ComboBox();
 			this.outputCommentLevelLabel = new System.Windows.Forms.Label();
 			this.outputSettingGroupBox = new System.Windows.Forms.GroupBox();
+			this.outputPaletteFormatLabel = new System.Windows.Forms.Label();
+			this.outputPaletteFormatComboBox = new System.Windows.Forms.ComboBox();
 			this.outputTextFlipsCheckBox = new System.Windows.Forms.CheckBox();
 			this.outputReducedCheckBox = new System.Windows.Forms.CheckBox();
 			this.outputBinaryBlocksCheckBox = new System.Windows.Forms.CheckBox();
@@ -167,7 +169,7 @@
 			// closeButton
 			// 
 			this.closeButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.closeButton.Location = new System.Drawing.Point(139, 312);
+			this.closeButton.Location = new System.Drawing.Point(156, 312);
 			this.closeButton.Name = "closeButton";
 			this.closeButton.Size = new System.Drawing.Size(75, 23);
 			this.closeButton.TabIndex = 2;
@@ -182,7 +184,7 @@
             "Full comments"});
 			this.outputCommentLevelComboBox.Location = new System.Drawing.Point(6, 111);
 			this.outputCommentLevelComboBox.Name = "outputCommentLevelComboBox";
-			this.outputCommentLevelComboBox.Size = new System.Drawing.Size(163, 21);
+			this.outputCommentLevelComboBox.Size = new System.Drawing.Size(99, 21);
 			this.outputCommentLevelComboBox.TabIndex = 3;
 			// 
 			// outputCommentLevelLabel
@@ -196,6 +198,8 @@
 			// 
 			// outputSettingGroupBox
 			// 
+			this.outputSettingGroupBox.Controls.Add(this.outputPaletteFormatLabel);
+			this.outputSettingGroupBox.Controls.Add(this.outputPaletteFormatComboBox);
 			this.outputSettingGroupBox.Controls.Add(this.outputTextFlipsCheckBox);
 			this.outputSettingGroupBox.Controls.Add(this.outputReducedCheckBox);
 			this.outputSettingGroupBox.Controls.Add(this.outputBinaryBlocksCheckBox);
@@ -206,15 +210,35 @@
 			this.outputSettingGroupBox.Controls.Add(this.outputCommentLevelComboBox);
 			this.outputSettingGroupBox.Location = new System.Drawing.Point(156, 12);
 			this.outputSettingGroupBox.Name = "outputSettingGroupBox";
-			this.outputSettingGroupBox.Size = new System.Drawing.Size(221, 143);
+			this.outputSettingGroupBox.Size = new System.Drawing.Size(239, 143);
 			this.outputSettingGroupBox.TabIndex = 7;
 			this.outputSettingGroupBox.TabStop = false;
 			this.outputSettingGroupBox.Text = "Output Settings";
 			// 
+			// outputPaletteFormatLabel
+			// 
+			this.outputPaletteFormatLabel.AutoSize = true;
+			this.outputPaletteFormatLabel.Location = new System.Drawing.Point(120, 95);
+			this.outputPaletteFormatLabel.Name = "outputPaletteFormatLabel";
+			this.outputPaletteFormatLabel.Size = new System.Drawing.Size(75, 13);
+			this.outputPaletteFormatLabel.TabIndex = 32;
+			this.outputPaletteFormatLabel.Text = "Palette Format";
+			// 
+			// outputPaletteFormatComboBox
+			// 
+			this.outputPaletteFormatComboBox.FormattingEnabled = true;
+			this.outputPaletteFormatComboBox.Items.AddRange(new object[] {
+            "Next 8-bit",
+            "Next 9-bit"});
+			this.outputPaletteFormatComboBox.Location = new System.Drawing.Point(120, 111);
+			this.outputPaletteFormatComboBox.Name = "outputPaletteFormatComboBox";
+			this.outputPaletteFormatComboBox.Size = new System.Drawing.Size(113, 21);
+			this.outputPaletteFormatComboBox.TabIndex = 31;
+			// 
 			// outputTextFlipsCheckBox
 			// 
 			this.outputTextFlipsCheckBox.AutoSize = true;
-			this.outputTextFlipsCheckBox.Location = new System.Drawing.Point(114, 28);
+			this.outputTextFlipsCheckBox.Location = new System.Drawing.Point(123, 28);
 			this.outputTextFlipsCheckBox.Name = "outputTextFlipsCheckBox";
 			this.outputTextFlipsCheckBox.Size = new System.Drawing.Size(96, 17);
 			this.outputTextFlipsCheckBox.TabIndex = 30;
@@ -224,7 +248,7 @@
 			// outputReducedCheckBox
 			// 
 			this.outputReducedCheckBox.AutoSize = true;
-			this.outputReducedCheckBox.Location = new System.Drawing.Point(114, 50);
+			this.outputReducedCheckBox.Location = new System.Drawing.Point(123, 50);
 			this.outputReducedCheckBox.Name = "outputReducedCheckBox";
 			this.outputReducedCheckBox.Size = new System.Drawing.Size(70, 17);
 			this.outputReducedCheckBox.TabIndex = 22;
@@ -234,7 +258,7 @@
 			// outputBinaryBlocksCheckBox
 			// 
 			this.outputBinaryBlocksCheckBox.AutoSize = true;
-			this.outputBinaryBlocksCheckBox.Location = new System.Drawing.Point(114, 73);
+			this.outputBinaryBlocksCheckBox.Location = new System.Drawing.Point(123, 73);
 			this.outputBinaryBlocksCheckBox.Name = "outputBinaryBlocksCheckBox";
 			this.outputBinaryBlocksCheckBox.Size = new System.Drawing.Size(103, 17);
 			this.outputBinaryBlocksCheckBox.TabIndex = 21;
@@ -434,7 +458,7 @@
 			this.mappingBlocksGroupBox.Controls.Add(this.mappingFileFormatComboBox);
 			this.mappingBlocksGroupBox.Location = new System.Drawing.Point(156, 161);
 			this.mappingBlocksGroupBox.Name = "mappingBlocksGroupBox";
-			this.mappingBlocksGroupBox.Size = new System.Drawing.Size(221, 145);
+			this.mappingBlocksGroupBox.Size = new System.Drawing.Size(239, 145);
 			this.mappingBlocksGroupBox.TabIndex = 27;
 			this.mappingBlocksGroupBox.TabStop = false;
 			this.mappingBlocksGroupBox.Text = "Mapping Blocks";
@@ -472,7 +496,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(385, 342);
+			this.ClientSize = new System.Drawing.Size(407, 342);
 			this.Controls.Add(this.mappingBlocksGroupBox);
 			this.Controls.Add(this.spriteCenterGroupBox);
 			this.Controls.Add(this.closeButton);
@@ -534,5 +558,7 @@
 		private System.Windows.Forms.Label ignoreAccuracyLabel;
 		private System.Windows.Forms.CheckBox outputReducedCheckBox;
 		private System.Windows.Forms.CheckBox outputTextFlipsCheckBox;
+		private System.Windows.Forms.Label outputPaletteFormatLabel;
+		private System.Windows.Forms.ComboBox outputPaletteFormatComboBox;
 	}
 }
