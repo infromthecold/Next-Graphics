@@ -176,13 +176,13 @@ namespace NextGraphics
 				{
 					Bitmap srcBitmap;
 					// use the image in the image window rather than the loaded file
-					if (Model.Images[imagesListBox.SelectedIndex] != null)
+					if (Model.Sources[imagesListBox.SelectedIndex] is SourceImage image)
 					{
-						srcBitmap = (Bitmap)Model.Images[imagesListBox.SelectedIndex].Image.Clone();
+						srcBitmap = (Bitmap)image.Data.Clone();
 					}
 					else
 					{
-						using (var fs = new System.IO.FileStream(fullNames[imagesListBox.SelectedIndex], System.IO.FileMode.Open))
+						using (var fs = new FileStream(fullNames[imagesListBox.SelectedIndex], FileMode.Open))
 						{
 							var bmp = new Bitmap(fs);
 							srcBitmap = (Bitmap)bmp.Clone();
@@ -266,7 +266,7 @@ namespace NextGraphics
 
 		public void FillFilenamesFromModel()
 		{
-			FillFilenames(Model.Images.Select(image => $" {image.Filename}"));
+			FillFilenames(Model.Sources.Select(image => $" {image.Filename}"));
 		}
 
 		public void FillFilenames(IEnumerable<string> filenames)

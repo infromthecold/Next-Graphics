@@ -700,12 +700,11 @@ namespace NextGraphics
 		{
 			// move down
 			int thisIndex = projectListBox.SelectedIndex;
-			if (thisIndex <= Model.Images.Count - 1 && thisIndex > 0)
+			if (thisIndex <= Model.Sources.Count - 1 && thisIndex > 0)
 			{
-
-				var temp = Model.Images[thisIndex];
-				Model.Images[thisIndex] = Model.Images[thisIndex - 1];
-				Model.Images[thisIndex - 1] = temp;
+				var temp = Model.Sources[thisIndex];
+				Model.Sources[thisIndex] = Model.Sources[thisIndex - 1];
+				Model.Sources[thisIndex - 1] = temp;
 				projectListBox.SelectedIndex = thisIndex + 1;
 				UpdateProjectListBox();
 			}
@@ -714,14 +713,13 @@ namespace NextGraphics
 		private void moveUpImageToolStripButton_Click(object sender, EventArgs e)
 		{
 			//Move up
-
 			int thisIndex = projectListBox.SelectedIndex;
 			if (thisIndex > 1 && thisIndex > 0)
 			{
 				thisIndex--;
-				var temp = Model.Images[thisIndex - 1];
-				Model.Images[thisIndex - 1] = Model.Images[thisIndex];
-				Model.Images[thisIndex] = temp;
+				var temp = Model.Sources[thisIndex - 1];
+				Model.Sources[thisIndex - 1] = Model.Sources[thisIndex];
+				Model.Sources[thisIndex] = temp;
 				projectListBox.SelectedIndex = thisIndex;
 				UpdateProjectListBox();
 			}
@@ -739,7 +737,7 @@ namespace NextGraphics
 			var result = MessageBox.Show("Remove this image?", "Are you Sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 			if (result == DialogResult.Yes)
 			{
-				Model.Images.RemoveAt(projectListBox.SelectedIndex - 1);
+				Model.Sources.RemoveAt(projectListBox.SelectedIndex - 1);
 				UpdateProjectListBox();
 			}
 		}
@@ -748,11 +746,11 @@ namespace NextGraphics
 		{
 			DisposeImageWindows();
 
-			foreach (var image in Model.Images)
+			Model.ForEachSourceImage((image, idx) =>
 			{
-				image.ReloadImage();
+				image.Reload();
 				imageForms.Add(new ImageForm { MdiParent = this });
-			}
+			});
 		}
 
 		private void projectListBox_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -769,20 +767,21 @@ namespace NextGraphics
 			}
 			else
 			{
-				var image = Model.Images[index - 1];
-
-				if (imageForms[index - 1] == null || !imageForms[index - 1].Visible)
+				if (Model.Sources[index - 1] is SourceImage image)
 				{
-					imageForms[index - 1] = new ImageForm
+					if (imageForms[index - 1] == null || !imageForms[index - 1].Visible)
 					{
-						Text = Path.GetFileName(image.Filename),
-						MdiParent = this
-					};
+						imageForms[index - 1] = new ImageForm
+						{
+							Text = Path.GetFileName(image.Filename),
+							MdiParent = this
+						};
+					}
+
+					imageForms[index - 1].LoadImage(image.Filename, Model.GridWidth, Model.GridHeight);
+
+					MoveResizeAsMdiChild(imageForms[index - 1], show: true);
 				}
-
-				imageForms[index - 1].LoadImage(image.Filename, Model.GridWidth, Model.GridHeight);
-
-				MoveResizeAsMdiChild(imageForms[index - 1], show: true);
 			}
 		}
 
@@ -965,9 +964,9 @@ namespace NextGraphics
 			foreach (string file in addImagesDialog.FileNames)
 			{
 				bool found = false;
-				for (int i = 0; i < Model.Images.Count; i++)
+				for (int i = 0; i < Model.Sources.Count; i++)
 				{
-					if (file == Model.Images[i].Filename)
+					if (file == Model.Sources[i].Filename)
 					{
 						found = true;
 						rejected = true;
@@ -978,11 +977,11 @@ namespace NextGraphics
 				if (found) continue;
 
 				var image = new SourceImage(file);
-				if (!image.IsImageValid) continue;
+				if (!image.IsDataValid) continue;
 
-				Model.Images.Add(image);
+				Model.Sources.Add(image);
 				imageForms.Add(new ImageForm { MdiParent = this });
-				projectListBox.Items.Add(Path.GetFileName(file).ToProjectItemTitle());
+				projectListBox.Items.Add(image.ToProjectItemTitle());
 			}
 
 			if (rejected == true)
@@ -1121,7 +1120,7 @@ namespace NextGraphics
 		{
 			projectListBox.Items.Clear();
 			projectListBox.Items.Add(Model.Name.ToProjectItemTitle());
-			Model.Images.ForEach(image => projectListBox.Items.Add(image.Filename.ToProjectItemTitle()));
+			Model.Sources.ForEach(source => projectListBox.Items.Add(source.ToProjectItemTitle()));
 
 			blockHeightTextBox.Text = Model.GridHeight.ToString();
 			blockWidthTextBox.Text = Model.GridWidth.ToString();
@@ -1156,26 +1155,29 @@ namespace NextGraphics
 
 			var removeNames = new List<string>();
 
-			foreach (var image in Model.Images)
+			foreach (var source in Model.Sources)
 			{
-				if (!image.IsImageValid)
+				if (!source.IsDataValid)
 				{
-					removeNames.Add(image.Filename);
+					removeNames.Add(source.Filename);
 					continue;
 				}
 
-				var name = Path.GetFileName(image.Filename);
-				projectListBox.Items.Add(name.ToProjectItemTitle());
+				projectListBox.Items.Add(source.ToProjectItemTitle());
 
-				imageForms.Add(new ImageForm { 
-					Text = name,
-					MdiParent = this
-				});
+				if (source is SourceImage)
+				{
+					imageForms.Add(new ImageForm
+					{
+						Text = Path.GetFileName(source.Filename),
+						MdiParent = this
+					});
+				}
 			}
 
 			foreach (string name in removeNames)
 			{
-				Model.RemoveImage(name);
+				Model.RemoveSource(name);
 			}
 
 			if (removeNames.Count > 0)
@@ -1375,9 +1377,25 @@ namespace NextGraphics
 
 	internal static class Extensions
 	{
-		public static string ToProjectItemTitle(this string name)
+		public static string ToProjectItemTitle(this string name, string prefix = " ")
 		{
-			return $" {name}";
+			return $"{prefix} {name}";
+		}
+
+		public static string ToProjectItemTitle(this ISourceFile file)
+		{
+			string prefix;
+
+			if (file is SourceImage)
+			{
+				prefix = "🏔️";
+			}
+			else
+			{
+				prefix = " ";
+			}
+
+			return Path.GetFileName(file.Filename).ToProjectItemTitle(prefix);
 		}
 	}
 }

@@ -1377,7 +1377,7 @@ namespace UnitTests
 
 				// We load default data and rely on each test to set it up as needed. This sets up model with default parameters, but we can later change them as needed in each specific test.
 				var model = DataCreator.LoadModel(sourceDocument);
-				model.AddImage(new SourceImage("image1", sourceBitmap));
+				model.AddSource(new SourceImage("image1", sourceBitmap));
 
 				// Prepare exporter.
 				var exporter = new Exporter(model, parameters);

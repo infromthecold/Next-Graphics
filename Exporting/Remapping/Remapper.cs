@@ -81,11 +81,11 @@ namespace NextGraphics.Exporting.Remapping
 
 			Callbacks?.OnRemapDebug($"Reading images{Environment.NewLine}");
 
-			for (int idx = 0; idx < Data.Model.Images.Count; idx++)
+			// Remapping is only needed for images, not other types of sources.
+			Data.Model.ForEachSourceImage((image, idx) =>
 			{
 				Callbacks?.OnRemapDebug($"Handling image {idx}{Environment.NewLine}");
 
-				var image = Data.Model.Images[idx];
 				var sourceRect = new Rectangle();
 
 				if (Data.Model.OutputType == OutputType.Tiles)
@@ -93,15 +93,15 @@ namespace NextGraphics.Exporting.Remapping
 					CheckImageDimensions(image);
 				}
 
-				if (!image.IsImageValid)
+				if (!image.IsDataValid)
 				{
 					Callbacks?.OnRemapDebug($"Image is invalid, ignoring{Environment.NewLine}");
-					continue;
+					return;
 				}
 
-				for (int yBlocks = 0; yBlocks < ((image.Image.Height + (Data.Model.GridHeight - 1)) / Data.Model.GridHeight); yBlocks++)
+				for (int yBlocks = 0; yBlocks < ((image.Data.Height + (Data.Model.GridHeight - 1)) / Data.Model.GridHeight); yBlocks++)
 				{
-					for (int xBlocks = 0; xBlocks < (image.Image.Width / Data.Model.GridWidth); xBlocks++)
+					for (int xBlocks = 0; xBlocks < (image.Data.Width / Data.Model.GridWidth); xBlocks++)
 					{
 						sourceRect.X = xBlocks * Data.Model.GridWidth;
 						sourceRect.Y = yBlocks * Data.Model.GridHeight;
@@ -126,12 +126,15 @@ namespace NextGraphics.Exporting.Remapping
 							Data.Sprites[outBlock] = new SpriteInfo(objectsPerGridX, objectsPerGridY);
 						}
 
-						image.CopyRegionIntoBlock(
-							Data.Model.Palette, 
-							sourceRect, 
-							Data.Model.Reduced && Data.Model.OutputType == OutputType.Sprites, 
-							ref Data.Blocks[outBlock], 
-							ref Data.Sprites[outBlock]);
+						if (image is SourceImage sourceImage)
+						{
+							sourceImage.CopyRegionIntoBlock(
+								Data.Model.Palette,
+								sourceRect,
+								Data.Model.Reduced && Data.Model.OutputType == OutputType.Sprites,
+								ref Data.Blocks[outBlock],
+								ref Data.Sprites[outBlock]);
+						}
 
 						if (Data.Model.FourBit || Data.Model.OutputType == OutputType.Tiles)
 						{
@@ -181,7 +184,7 @@ namespace NextGraphics.Exporting.Remapping
 					Callbacks?.OnRemapDebug(Environment.NewLine);
 					Callbacks?.OnRemapUpdated();
 				}
-			}
+			});
 
 			int transparentCharactersCount = 0;
 
@@ -390,22 +393,22 @@ namespace NextGraphics.Exporting.Remapping
 
 		private void CheckImageDimensions(SourceImage image)
 		{
-			var isWidthDivisible = (image.Image.Width % Data.Model.GridWidth) == 0;
-			var isHeightDivisible = (image.Image.Height % Data.Model.GridHeight) == 0;
+			var isWidthDivisible = (image.Data.Width % Data.Model.GridWidth) == 0;
+			var isHeightDivisible = (image.Data.Height % Data.Model.GridHeight) == 0;
 
 			if (!isWidthDivisible && !isHeightDivisible)
 			{
-				Callbacks?.OnRemapWarning($"The image {Path.GetFileName(image.Filename)} ({image.Image.Width}x{image.Image.Height}) is not divisible by the width and height of your tiles ({Data.Model.GridWidth}x{Data.Model.GridHeight}), which will corrupt the output");
+				Callbacks?.OnRemapWarning($"The image {Path.GetFileName(image.Filename)} ({image.Data.Width}x{image.Data.Height}) is not divisible by the width and height of your tiles ({Data.Model.GridWidth}x{Data.Model.GridHeight}), which will corrupt the output");
 				allImagesProcessed = false;
 			}
 			else if (!isWidthDivisible)
 			{
-				Callbacks?.OnRemapWarning($"The image {Path.GetFileName(image.Filename)} ({image.Image.Width}x{image.Image.Height}) is not divisible by the width of your tiles ({Data.Model.GridWidth}), which will corrupt the output");
+				Callbacks?.OnRemapWarning($"The image {Path.GetFileName(image.Filename)} ({image.Data.Width}x{image.Data.Height}) is not divisible by the width of your tiles ({Data.Model.GridWidth}), which will corrupt the output");
 				allImagesProcessed = false;
 			}
 			else if (!isHeightDivisible)
 			{
-				Callbacks?.OnRemapWarning($"The image {Path.GetFileName(image.Filename)} ({image.Image.Width}x{image.Image.Height}) is not divisible by the height of your tiles ({Data.Model.GridHeight}), which will corrupt the output");
+				Callbacks?.OnRemapWarning($"The image {Path.GetFileName(image.Filename)} ({image.Data.Width}x{image.Data.Height}) is not divisible by the height of your tiles ({Data.Model.GridHeight}), which will corrupt the output");
 				allImagesProcessed = false;
 			}
 		}

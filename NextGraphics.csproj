@@ -165,6 +165,7 @@
     <Compile Include="Models\IndexedBitmap.cs" />
     <Compile Include="Models\MainModel.cs" />
     <Compile Include="Models\Palette.cs" />
+    <Compile Include="Models\SourceFile.cs" />
     <Compile Include="Models\SourceImage.cs" />
     <Compile Include="Models\SpriteInfo.cs" />
     <Compile Include="Models\Types.cs" />

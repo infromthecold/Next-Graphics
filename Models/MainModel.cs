@@ -11,7 +11,7 @@ namespace NextGraphics.Models
 	{
 		public string Filename { get; set; } = "";
 		public string Name { get; set; } = "";
-		public List<SourceImage> Images { get; private set; } = new List<SourceImage>();
+		public List<ISourceFile> Sources { get; private set; } = new List<ISourceFile>();
 		public Palette Palette { get; } = new Palette();
 
 		public OutputType OutputType { get; set; } = OutputType.Sprites;
@@ -91,11 +91,11 @@ namespace NextGraphics.Models
 			// Files
 			document.WithNodes("//Project/File", nodes =>
 			{
-				Images = new List<SourceImage>();
+				Sources = new List<ISourceFile>();
 				nodes.Cast<XmlNode>()
 					.Select(node => node.Attributes["Path"].Value)
 					.ToList()
-					.ForEach(path => AddImage(path));
+					.ForEach(path => AddSource(path));
 			});
 
 			// Settings
@@ -183,7 +183,7 @@ namespace NextGraphics.Models
 			nameNode.AddAttribute("Projectname", Name);
 
 			// Filenames
-			foreach (var image in Images)
+			foreach (var image in Sources)
 			{
 				var fileNode = projectNode.AddNode("File");
 				fileNode.AddAttribute("Path", image.Filename);
@@ -268,35 +268,32 @@ namespace NextGraphics.Models
 		}
 
 		/// <summary>
-		/// Simpler variant for adding an image to the <see cref="Images"/> list.
+		/// Simpler variant for adding an image to the <see cref="Sources"/> list.
 		/// </summary>
-		public void AddImage(SourceImage image)
+		public void AddSource(ISourceFile source)
 		{
-			Images.Add(image);
+			Sources.Add(source);
 		}
 
 		/// <summary>
-		/// Simpler variant for adding an image to the <see cref="Images"/> list. Note that while this will attempt to load the bitmap as well, loading may fail in which case the <see cref="SourceImage.Image"/> will be null!
+		/// Simpler variant for adding an image to the <see cref="Sources"/> list. Note that while this will attempt to load the bitmap as well, loading may fail in which case the <see cref="SourceImage.Data"/> will be null!
 		/// </summary>
-		public void AddImage(string filename)
+		public void AddSource(string filename)
 		{
-			AddImage(new SourceImage(filename));
+			AddSource(new SourceImage(filename));
 		}
 
 		/// <summary>
 		/// Removes the image by its filename. Note: it's preferred to use this function than removing images directly from the list as this also takes care of disposing underlying bitmaps.
 		/// </summary>
-		public void RemoveImage(string filename) {
-			int index = Images.FindIndex(image => image.Filename == filename);
+		public void RemoveSource(string filename) {
+			int index = Sources.FindIndex(source => source.Filename == filename);
 			if (index < 0) return;
 			
-			var item = Images[index];
-			if (item.Image != null)
-			{
-				item.Image.Dispose();
-			}
+			var item = Sources[index];
+			item.Dispose();
 
-			Images.RemoveAt(index);
+			Sources.RemoveAt(index);
 		}
 
 		/// <summary>
@@ -304,15 +301,12 @@ namespace NextGraphics.Models
 		/// </summary>
 		public void Clear()
 		{
-			Images.ForEach(image =>
+			Sources.ForEach(source =>
 			{
-				if (image.Image != null)
-				{
-					image.Image.Dispose();
-				}
+				source.Dispose();
 			});
 
-			Images.Clear();
+			Sources.Clear();
 			Palette.Clear();
 
 			CreateBitmaps();
@@ -321,6 +315,47 @@ namespace NextGraphics.Models
 		#endregion
 
 		#region Data enquiry
+
+		/// <summary>
+		/// Returns enumerable of all <see cref="Source"/>s which represent an image with either tiles or sprites.
+		/// </summary>
+		public IEnumerable<SourceImage> SourceImages()
+		{
+			return Sources.Where(source => source is SourceImage).Select(source => source as SourceImage);
+		}
+
+		/// <summary>
+		/// Enumerates <see cref="Sources"/> and calls given closure for each source that represents an image.
+		/// </summary>
+		public void ForEachSourceImage(Action<SourceImage, int> imageHandler)
+		{
+			for (int i = 0; i < Sources.Count; i++) {
+				var source = Sources[i];
+
+				if (source is SourceImage image)
+				{
+					imageHandler(image, i);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns the item from the <see cref="Sources"/> that corresponds to the given filename or null if none found.
+		/// </summary>
+		/// <param name="filename"></param>
+		/// <returns></returns>
+		public ISourceFile SourceWithFilename(string filename)
+		{
+			foreach (var source in Sources)
+			{
+				if (source.Filename == filename)
+				{
+					return source;
+				}
+			}
+
+			return null;
+		}
 
 		/// <summary>
 		/// Determines item width (based on <see cref="OutputType"/> and possibly other values).
