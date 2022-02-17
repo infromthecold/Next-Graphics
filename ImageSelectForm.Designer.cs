@@ -184,10 +184,12 @@
 			// 
 			// ImageSelectForm
 			// 
+			this.AcceptButton = this.importButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
+			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(513, 405);
 			this.Controls.Add(this.toLabel);
 			this.Controls.Add(this.toTextBox);

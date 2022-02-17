@@ -238,10 +238,10 @@ namespace NextGraphics
 		private void selectPaletteButton_Click(object sender, EventArgs e)
 		{
 			// select	
+			imageSelectForm.IsUsingModel = true;
 			imageSelectForm.StartPosition = FormStartPosition.CenterParent;
 			imageSelectForm.FillFilenamesFromModel();
 			imageSelectForm.ShowDialog();
-			imageSelectForm.PaletteFiles = false;
 			messageLabel.Visible = false;
 
 			if (imageSelectForm.DialogResult == DialogResult.OK)
@@ -264,11 +264,7 @@ namespace NextGraphics
 
 		private void loadPaletteButton_Click(object sender, EventArgs e)
 		{
-			//selectForm.loadPalette(sender,e);
-
-			//byte[]	bytesBuffer				=	new	byte[2];
 			OpenFileDialog loadPaletteDialog = new OpenFileDialog();
-			//loadPaletteDialog.InitialDirectory		=	Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 			loadPaletteDialog.Multiselect = true;
 			loadPaletteDialog.RestoreDirectory = true;
 			loadPaletteDialog.Filter = "Palette Files (*.act)|*.act|Mac Palette Files (*.8bct)|*.8bct|All Files (*.*)|*.*";
@@ -276,10 +272,9 @@ namespace NextGraphics
 
 			if (loadPaletteDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				imageSelectForm.FillFilenames(loadPaletteDialog.FileNames);
-				imageSelectForm.PaletteFiles = true;
-				imageSelectForm.FillFilenamesFromModel();
+				imageSelectForm.IsUsingModel = false;
 				imageSelectForm.StartPosition = FormStartPosition.CenterParent;
+				imageSelectForm.FillFilenames(loadPaletteDialog.FileNames);
 				imageSelectForm.ShowDialog();
 
 				if (imageSelectForm.DialogResult == DialogResult.OK)
