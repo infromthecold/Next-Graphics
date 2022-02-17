@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,6 +50,17 @@ namespace NextGraphics.Models
 				bits >>= 1;
 			}
 			return outString;
+		}
+	}
+
+	public static class ReaderExtensions
+	{
+		public static void Skip(this BinaryReader reader, int bytes)
+		{
+			for (int i = 0; i < bytes; i++)
+			{
+				reader.ReadByte();
+			}
 		}
 	}
 }

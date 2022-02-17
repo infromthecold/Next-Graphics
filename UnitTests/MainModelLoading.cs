@@ -49,6 +49,49 @@ namespace UnitTests
 
 		#endregion
 
+		#region Dialogs
+
+		[TestMethod]
+		public void DialogsOutputIndexLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual(1, model.OutputFilesFilterIndex);
+		}
+
+		[TestMethod]
+		public void DialogsImageIndexLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual(2, model.AddImagesFilterIndex);
+		}
+
+		[TestMethod]
+		public void DialogsTilemapIndexLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual(3, model.AddTilemapsFilterIndex);
+		}
+
+		#endregion
+
 		#region Settings
 
 		[TestMethod]
@@ -306,6 +349,17 @@ namespace UnitTests
 			// execute & verify
 			model.Load(TestDocument(imageFormat: "2"));
 			Assert.AreEqual(ImageFormat.JPG, model.ImageFormat);
+		}
+
+		[TestMethod]
+		public void SettingsTilemapExportTypeLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute & verify
+			model.Load(TestDocument());
+			Assert.AreEqual(TilemapExportType.AttributesIndexAsTwoBytes, model.TilemapExportType);
 		}
 
 		[TestMethod]

@@ -167,6 +167,10 @@
     <Compile Include="Models\Palette.cs" />
     <Compile Include="Models\SourceFile.cs" />
     <Compile Include="Models\SourceImage.cs" />
+    <Compile Include="Models\SourceTilemap.cs" />
+    <Compile Include="Models\SourceTilemapMap.cs" />
+    <Compile Include="Models\SourceTilemapStm.cs" />
+    <Compile Include="Models\SourceTilemapText.cs" />
     <Compile Include="Models\SpriteInfo.cs" />
     <Compile Include="Models\Types.cs" />
     <Compile Include="InfoForm.cs">

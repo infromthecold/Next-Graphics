@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace NextGraphics.Models
 {
@@ -26,7 +27,7 @@ namespace NextGraphics.Models
 			{
 				Bitmap result = null;
 
-				using (var fs = new System.IO.FileStream(filename, System.IO.FileMode.Open))
+				using (var fs = new FileStream(filename, FileMode.Open))
 				{
 					var bmp = new Bitmap(fs);
 					result = new Bitmap(bmp.Width, bmp.Height);

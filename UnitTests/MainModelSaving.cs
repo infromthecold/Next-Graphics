@@ -253,6 +253,14 @@ namespace UnitTests
 			SettingsRunner.Setup(model => model.ImageFormat = ImageFormat.JPG).Verify("2", "format");
 		}
 
+		[TestMethod]
+		public void SettingsTilemapExportTypeSaved()
+		{
+			SettingsRunner.Setup(model => model.TilemapExportType = TilemapExportType.AttributesIndexAsWord).Verify("0", "TilemapExport");
+			SettingsRunner.Setup(model => model.TilemapExportType = TilemapExportType.AttributesIndexAsTwoBytes).Verify("1", "TilemapExport");
+			SettingsRunner.Setup(model => model.TilemapExportType = TilemapExportType.IndexOnly).Verify("2", "TilemapExport");
+		}
+
 		private class SettingsRunner
 		{
 			private MainModel _model;
@@ -398,6 +406,20 @@ namespace UnitTests
 
 			// verify
 			Assert.AreEqual("51", document.DialogsNode().Attributes["ImageIndex"].Value);
+		}
+
+		[TestMethod]
+		public void AddTilemapsFilterIndexSaved()
+		{
+			// setup
+			var model = new MainModel();
+			model.AddTilemapsFilterIndex = 42;
+
+			// execute
+			var document = model.Save();
+
+			// verify
+			Assert.AreEqual("42", document.DialogsNode().Attributes["TilemapIndex"].Value);
 		}
 
 		#endregion

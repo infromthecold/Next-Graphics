@@ -11,13 +11,14 @@ namespace NextGraphics.Models
 	{
 		public string Filename { get; set; } = "";
 		public string Name { get; set; } = "";
-		public List<ISourceFile> Sources { get; private set; } = new List<ISourceFile>();
 		public Palette Palette { get; } = new Palette();
+		public List<ISourceFile> Sources { get; private set; } = new List<ISourceFile>();
 
 		public OutputType OutputType { get; set; } = OutputType.Sprites;
 		public CommentType CommentType { get; set; } = CommentType.Full;
 		public ImageFormat ImageFormat { get; set; } = ImageFormat.BMP;
 		public PaletteFormat PaletteFormat { get; set; } = PaletteFormat.Next8Bit;
+		public TilemapExportType TilemapExportType { get; set; } = TilemapExportType.AttributesIndexAsWord;
 
 		public bool IgnoreCopies { get; set; } = false;
 		public bool IgnoreMirroredX { get; set; } = false;
@@ -45,6 +46,7 @@ namespace NextGraphics.Models
 
 		public int OutputFilesFilterIndex { get; set; } = 0;
 		public int AddImagesFilterIndex { get; set; } = 0;
+		public int AddTilemapsFilterIndex { get; set; } = 0;
 
 		// This is not saved!
 		public Bitmap BlocksBitmap { get; private set; } = null;
@@ -92,10 +94,21 @@ namespace NextGraphics.Models
 			document.WithNodes("//Project/File", nodes =>
 			{
 				Sources = new List<ISourceFile>();
-				nodes.Cast<XmlNode>()
-					.Select(node => node.Attributes["Path"].Value)
-					.ToList()
-					.ForEach(path => AddSource(path));
+				foreach (XmlNode node in nodes)
+				{
+					var path = node.Attributes["Path"].Value;
+					var type = node.Attribute("Type", "");
+
+					switch (type)
+					{
+						case "Tilemap":
+							AddSource(SourceTilemap.Create(path));
+							break;
+						default:
+							AddSource(new SourceImage(path));
+							break;
+					}
+				}
 			});
 
 			// Settings
@@ -127,8 +140,17 @@ namespace NextGraphics.Models
 				node.WithAttribute("accurate", value => Accuracy = int.Parse(value));
 				node.WithAttribute("format", value => ImageFormat = (ImageFormat)int.Parse(value));
 				node.WithAttribute("PaletteFormat", value => PaletteFormat = (PaletteFormat)int.Parse(value));
+				node.WithAttribute("TilemapExport", value => TilemapExportType = (TilemapExportType)int.Parse(value));
 				node.WithAttribute("textFlips", value => AttributesAsText = bool.Parse(value));
 				node.WithAttribute("reduce", value => Reduced = bool.Parse(value));
+			});
+
+			// Dialogs
+			document.WithNode("//Project/Dialogs", node =>
+			{
+				node.WithAttribute("OutputIndex", value => { OutputFilesFilterIndex = int.Parse(value); });
+				node.WithAttribute("ImageIndex", value => { AddImagesFilterIndex = int.Parse(value); });
+				node.WithAttribute("TilemapIndex", value => { AddTilemapsFilterIndex = int.Parse(value); });
 			});
 
 			// Palette
@@ -183,10 +205,15 @@ namespace NextGraphics.Models
 			nameNode.AddAttribute("Projectname", Name);
 
 			// Filenames
-			foreach (var image in Sources)
+			foreach (var source in Sources)
 			{
 				var fileNode = projectNode.AddNode("File");
-				fileNode.AddAttribute("Path", image.Filename);
+				fileNode.AddAttribute("Path", source.Filename);
+
+				if (source is SourceTilemap)
+				{
+					fileNode.AddAttribute("Type", "Tilemap");
+				}
 			}
 
 			// Settings
@@ -217,8 +244,15 @@ namespace NextGraphics.Models
 			settingsNode.AddAttribute("accurate", Accuracy.ToString());
 			settingsNode.AddAttribute("format", (int)ImageFormat);
 			settingsNode.AddAttribute("PaletteFormat", (int)PaletteFormat);
+			settingsNode.AddAttribute("TilemapExport", (int)TilemapExportType);
 			settingsNode.AddAttribute("textFlips", AttributesAsText);
 			settingsNode.AddAttribute("reduce", Reduced);
+
+			// Dialogs
+			var dialogsNode = projectNode.AddNode("Dialogs");
+			dialogsNode.AddAttribute("OutputIndex", OutputFilesFilterIndex.ToString());
+			dialogsNode.AddAttribute("ImageIndex", AddImagesFilterIndex.ToString());
+			dialogsNode.AddAttribute("TilemapIndex", AddTilemapsFilterIndex.ToString());
 
 			// Palette
 			var paletteNode = projectNode.AddNode("Palette");
@@ -233,11 +267,6 @@ namespace NextGraphics.Models
 				colourNode.AddAttribute("Green", colour.Green.ToString());
 				colourNode.AddAttribute("Blue", colour.Blue.ToString());
 			}
-
-			// Dialogs
-			var dialogsNode = projectNode.AddNode("Dialogs");
-			dialogsNode.AddAttribute("OutputIndex", OutputFilesFilterIndex.ToString());
-			dialogsNode.AddAttribute("ImageIndex", AddImagesFilterIndex.ToString());
 
 			// After all data is saved, pass project node to closure so additional data can be appended.
 			if (projectNodeHandler != null)
@@ -317,11 +346,19 @@ namespace NextGraphics.Models
 		#region Data enquiry
 
 		/// <summary>
-		/// Returns enumerable of all <see cref="Source"/>s which represent an image with either tiles or sprites.
+		/// Returns enumerable of all <see cref="Sources"/> which represent an image with either tiles or sprites.
 		/// </summary>
 		public IEnumerable<SourceImage> SourceImages()
 		{
 			return Sources.Where(source => source is SourceImage).Select(source => source as SourceImage);
+		}
+
+		/// <summary>
+		/// Returns enumerable of all <see cref="Sources"/> which represent a tilemap.
+		/// </summary>
+		public IEnumerable<SourceTilemap> SourceTilemaps()
+		{
+			return Sources.Where(source => source is SourceTilemap).Select(source => source as SourceTilemap);
 		}
 
 		/// <summary>
@@ -335,6 +372,22 @@ namespace NextGraphics.Models
 				if (source is SourceImage image)
 				{
 					imageHandler(image, i);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Enumerates <see cref="Sources"/> and calls given closure for each source that represents a tilemap.
+		/// </summary>
+		public void ForEachSourceTilemap(Action<SourceTilemap, int> tilemapHandler)
+		{
+			for (int i = 0; i < Sources.Count; i++)
+			{
+				var source = Sources[i];
+
+				if (source is SourceTilemap tilemap)
+				{
+					tilemapHandler(tilemap, i);
 				}
 			}
 		}
@@ -419,6 +472,18 @@ namespace NextGraphics.Models
 
 			handler(attribute.Value);
 			return true;
+		}
+
+		public static string Attribute(this XmlNode node, string name, string defaultValue)
+		{
+			string result = defaultValue;
+
+			node.WithAttribute(name, value =>
+			{
+				result = value;
+			});
+
+			return result;
 		}
 
 		public static XmlNode AddNode(this XmlNode node, string name)

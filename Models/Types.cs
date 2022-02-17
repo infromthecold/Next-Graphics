@@ -38,6 +38,13 @@ namespace NextGraphics.Models
 		Full
 	}
 
+	public enum TilemapExportType
+	{
+		AttributesIndexAsWord,
+		AttributesIndexAsTwoBytes,
+		IndexOnly
+	}
+
 	public enum BlockType
 	{
 		Original,
