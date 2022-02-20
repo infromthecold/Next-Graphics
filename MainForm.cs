@@ -103,6 +103,12 @@ namespace NextGraphics
 			parallaxWindow.main = this;
 			numberFormatInfo.NegativeSign = "-";
 #endif
+
+			var recentProject = Properties.Settings.Default.RecentProject;
+			if (recentProject != null && File.Exists(recentProject))
+			{
+				LoadProjectFromFile(recentProject);
+			}
 		}
 
 		#endregion
@@ -791,8 +797,13 @@ namespace NextGraphics
 		/// </summary>
 		private void SetParentFolder(string path)
 		{
+			// Store parent folder for later use.
 			DirectoryInfo parentDir = Directory.GetParent(path);
 			parentDirectory = parentDir.Parent.FullName;
+
+			// Save the path to the settings so we can reopen automatically on next launch.
+			Properties.Settings.Default.RecentProject = path;
+			Properties.Settings.Default.Save();
 		}
 
 		/// <summary>
