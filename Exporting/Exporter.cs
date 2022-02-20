@@ -76,6 +76,7 @@ namespace NextGraphics.Exporting
 				exporters.Add(new ZXNextBinaryTilesDataExporter());
 				exporters.Add(new ZXNextBinaryTilesMapExporter());
 				exporters.Add(new ZXNextBinaryTilesExporter());
+				exporters.Add(new ZXNextBinaryTilemapsExporter());
 				exporters.Add(new ZXNextBinaryPaletteExporter());
 				exporters.Add(new ZXNextAssemblerExporter());
 			}
@@ -84,6 +85,7 @@ namespace NextGraphics.Exporting
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.
 				exporters.Add(new ZXNextBinaryTilesDataExporter());
 				exporters.Add(new ZXNextBinaryTilesMapExporter());
+				exporters.Add(new ZXNextBinaryTilemapsExporter());
 				exporters.Add(new ZXNextBinaryPaletteExporter());
 				exporters.Add(new ZXNextAssemblerExporter());
 			}

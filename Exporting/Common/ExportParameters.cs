@@ -52,7 +52,7 @@ namespace NextGraphics.Exporting.Common
 		public Func<Stream> BinaryStream { get; set; }
 
 		/// <summary>
-		/// Stream into which map data will be generated (only if configuration requires this). If property is null, this is not generated.
+		/// Stream into which each tile attributes and index will be generated (only if configuration requires this). If property is null, this is not generated.
 		/// </summary>
 		public Func<Stream> MapStream { get; set; }
 
@@ -70,6 +70,11 @@ namespace NextGraphics.Exporting.Common
 		/// Stream into which tiles image will be generated (only if configuration requires this). If property is null, this is not generated.
 		/// </summary>
 		public Func<Stream> TilesImageStream { get; set; }
+
+		/// <summary>
+		/// Stream into which each individual tilemap will be generated (only if configuration requires this). Called for each individual tilemap with tilemap index passed in as parameter. If property is null, this is not generated.
+		/// </summary>
+		public Func<int, Stream> TilemapsStream { get; set; }
 
 		/// <summary>
 		/// Stream into which blocks image will be generated (only if configuration requires this). If property is null, this is not generated.

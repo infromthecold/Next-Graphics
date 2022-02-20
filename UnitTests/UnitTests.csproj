@@ -69,6 +69,7 @@
     <None Include="Resources\Export-Sprites-Pal-PaletteNext9Bit.pal" />
     <None Include="Resources\Export-Sprites-Pal.pal" />
     <None Include="Resources\Export-Sprites-Til.til" />
+    <None Include="Resources\Export-Tilemaps-Tilemap0.tlm" />
     <None Include="Resources\Export-Tiles-Bin.bin" />
     <None Include="Resources\Export-Tiles-Blk.blk" />
     <None Include="Resources\Export-Tiles-Map.map" />
@@ -117,6 +118,7 @@
     <None Include="Resources\Export-Tiles-Image-Tiles.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Project-Tilemap-2x2.map" />
     <None Include="Resources\Project-Tiles-Templated.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -204,6 +206,10 @@
     <None Include="Resources\Export-Tiles-Asm-BinaryBlocks-NoComments-PaletteNext9Bit.asm" />
     <None Include="Resources\Export-Tiles-Asm-BinaryBlocks-PaletteNext9Bit.asm" />
     <None Include="Resources\Export-Tiles-Asm-Binary-NoComments-PaletteNext9Bit.asm" />
+    <None Include="Resources\Export-Tilemaps-Asm-Binary.asm" />
+    <None Include="Resources\Export-Tilemaps-Asm.asm" />
+    <None Include="Resources\Export-Tilemaps-Asm-2-Bytes.asm" />
+    <None Include="Resources\Export-Tilemaps-Asm-1-Byte.asm" />
     <Content Include="Resources\Export-Tiles-Asm-NoComments-PaletteNext9Bit.asm" />
     <Content Include="Resources\Export-Tiles-Asm-PaletteNext9Bit.asm" />
   </ItemGroup>

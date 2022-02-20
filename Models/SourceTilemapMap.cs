@@ -6,14 +6,35 @@ using System.IO;
 namespace NextGraphics.Models
 {
 	/// <summary>
-	/// Support for GBA .map files. Doesn't support remapping tile indexes and tile attributes. Requires tiles image from preferred bitmap editor exactly in the order the tiles will be exported from Next Graphics (presumably that image is attached to the project).
+	/// Support for GBA .map files. Supports flipped tiles (X and Y), but no rotations (well, maybe the format supports rotations, but Pro Motion NG creates a new tilemap in such case, so can't verify).
+	/// 
+	/// Requires tiles image from preferred bitmap editor exactly in the order the tiles will be exported from Next Graphics (ideally that image is attached to the project as source image).
 	/// 
 	/// Binary format, all values little endian
 	/// 
 	/// Offset	Size	Description
 	/// 0		4		width (number of columns)
 	/// 4		4		height (number of rows)
-	/// 8+		2		tile index (repeated width x height times)
+	/// 8+		2		[width * height] tiles, each 2 bytes
+	/// 
+	/// Tile format
+	/// Offset	Size	Description
+	/// 0		1		tile index
+	/// 1		1		tile attributes
+	/// 
+	/// Tile attributes (bits)
+	/// 76543210
+	///     ||
+	///     |+---- 1 if flipped X
+	///     +----- 1 if flipped Y
+	/// 
+	/// Possible combinations
+	/// 76543210	HEX
+	/// --------
+	/// 00000000	00	regular tile
+	/// 00000100	04	flipped X
+	/// 00001000	08	flipped Y
+	/// 00001100	0C	flipped X & Y
 	/// </summary>
 	public class SourceTilemapMap : SourceTilemap
 	{
@@ -48,7 +69,17 @@ namespace NextGraphics.Models
 						{
 							for (int x = 0; x < width; x++)
 							{
-								result.Tiles[y, x] = reader.ReadInt16();
+								var index = reader.ReadByte();
+
+								var attributes = reader.ReadByte();
+								var flippedX = (attributes & 0b00000100) > 0;
+								var flippedY = (attributes & 0b00001000) > 0;
+
+								result.Tiles[y, x] = new TilemapData.Tile(
+									index,
+									flippedX,
+									flippedY,
+									false);
 							}
 						}
 

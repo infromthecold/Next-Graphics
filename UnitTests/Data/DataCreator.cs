@@ -62,6 +62,36 @@ namespace UnitTests.Data
 
 		#region Assembler
 
+		public static string AssemblerTilemaps(
+			DateTime time,
+			TilemapExportType tilemapExportType,
+			bool binary)
+		{
+			string resource;
+
+			if (binary)
+			{
+				resource = Properties.Resources.Export_Tilemaps_Asm_Binary;
+			}
+			else
+			{
+				switch (tilemapExportType)
+				{
+					case TilemapExportType.AttributesIndexAsWord:
+						resource = Properties.Resources.Export_Tilemaps_Asm;
+						break;
+					case TilemapExportType.AttributesIndexAsTwoBytes:
+						resource = Properties.Resources.Export_Tilemaps_Asm_2_Bytes;
+						break;
+					default:
+						resource = Properties.Resources.Export_Tilemaps_Asm_1_Byte;
+						break;
+				}
+			}
+
+			return string.Format(resource, time.ToString("F", CultureInfo.CurrentCulture));
+		}
+
 		public static string AssemblerTiles(
 			DateTime time, 
 			CommentType comments, 
@@ -433,7 +463,16 @@ namespace UnitTests.Data
 
 		#endregion
 
-		#region Images
+		#region Binary Tilemaps
+
+		public static byte[] TilemapGeneratedData2x2()
+		{
+			return Properties.Resources.Export_Tilemaps_Tilemap0;
+		}
+
+		#endregion
+
+		#region Sources
 
 		public static Bitmap ImageTiles1()
 		{
@@ -443,6 +482,33 @@ namespace UnitTests.Data
 		public static Bitmap ImageSprites1()
 		{
 			return new Bitmap(Properties.Resources.Project_Sprites_Image1);
+		}
+
+		public static TilemapData TilemapData2x2()
+		{
+			var width = 2;
+			var height = 2;
+			
+			var result = new TilemapData(width, height);
+			var data = Properties.Resources.Project_Tilemap_2x2;
+
+			var i = 8;
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < width; x++)
+				{
+					var index = data[i++];
+					
+					var attributes = data[i++];
+					var flippedX = (attributes & (1 << 3)) > 0;
+					var flippedY = (attributes & (1 << 2)) > 0;
+					var rotated = (attributes & (1 << 1)) > 0;
+
+					result.Tiles[y, x] = new TilemapData.Tile(index, flippedX, flippedY, rotated);
+				}
+			}
+
+			return result;
 		}
 
 		#endregion

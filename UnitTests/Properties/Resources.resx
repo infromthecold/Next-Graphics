@@ -286,4 +286,22 @@
   <data name="Export_Tiles_Asm_BinaryBlocks_PaletteNext9Bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Export-Tiles-Asm-BinaryBlocks-PaletteNext9Bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="Project_Tilemap_2x2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Project-Tilemap-2x2.map;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Export_Tilemaps_Asm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tilemaps-Asm.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Tilemaps_Asm_Binary" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tilemaps-Asm-Binary.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Tilemaps_Tilemap0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tilemaps-Tilemap0.tlm;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Export_Tilemaps_Asm_1_Byte" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tilemaps-Asm-1-Byte.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Export_Tilemaps_Asm_2_Bytes" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Export-Tilemaps-Asm-2-Bytes.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
 </root>

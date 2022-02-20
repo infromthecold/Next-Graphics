@@ -107,7 +107,7 @@
 {{-if frames_lookup_can_export-}}
 {{label_name}}Frames:		.dw	{{for frame in frames}}
 	{{-label_name}}Frame{{frame.index-}}
-	{{-if !frame.is_last}},{{end-}}
+	{{-if !frame.is_last}},{{end-}} 
 	{{-end # for frames -}}
 {{-end # if frames_lookup_can_export ~}}
 
@@ -118,6 +118,42 @@
 		{{~end # for items ~}}
 	{{~end # for tiles -}}
 {{~end # if tiles_can_export~}}
+
+{{~ # If tilemap export is enabled, print it out. Note: this template will adjust output based on settinsg from the app. However regardless of settings, full data is always available. So if creating custom templates, only relevant part needs to be implemented. -}}
+{{-if tilemap_can_export-}}
+{{~if comments_can_export~}}
+			// Each tilemap defines width and height (in tiles), total size in bytes and list of all tiles.
+{{~end~}}
+{{label_name | string.upcase}}_TILEMAPS:			equ	{{tilemaps | array.size}}
+
+	{{~for tilemap in tilemaps~}}
+		{{~capture tilemap_label~}}{{label_name}}_Tilemap{{tilemap.name_or_index}}{{~end~}}
+{{tilemap_label | string.upcase}}_WIDTH:		equ	{{tilemap.width}}
+{{tilemap_label | string.upcase}}_HEIGHT:		equ	{{tilemap.height}}
+{{tilemap_label | string.upcase}}_SIZE:		equ	{{tilemap.size}}
+{{~if tilemap_data_can_export~}}
+{{tilemap_label}}:
+		{{~if comments_can_export~}}
+			{{~if tilemap.is_attributes_desired && tilemap.is_word_output~}}
+			// Each tile is defined as word with first (low) byte represents tile index and second (high) byte attributes.
+			{{~else if tilemap.is_attributes_desired~}}
+			// Each tile is defined as 2 bytes, first (low) byte represents tile index and second (high) byte attributes.
+			{{~else~}}
+			// Each tile is defined as single byte, representing the tile index.
+			{{~end~}}
+		{{~end~}}
+		{{~for row in tilemap.rows~}}
+			{{~if tilemap.is_attributes_desired && tilemap.is_word_output~}}
+			dw	{{for tile in row.tiles-}}${{tile.as_word.as_hex}}{{-if !tile.is_last}},{{end}}{{end # for tiles}}
+			{{~else if tilemap.is_attributes_desired~}}
+			db	{{for tile in row.tiles-}}${{tile.tile_index.as_hex}},${{tile.attributes.as_hex}}{{-if !tile.is_last}},{{end}}{{end # for tiles}}
+			{{~else~}}
+			db	{{for tile in row.tiles-}}${{tile.tile_index.as_hex}}{{-if !tile.is_last}},{{end}}{{end # for tiles}}
+			{{~end # if tilemap.is_attributes_required~}}
+		{{~end # for rows~}}
+{{~end # if tilemap_data_can_export~}}
+	{{~end # for tilemaps~}}
+{{~end # if tilemap_can_export~}}
 
 {{~ # If binary files were created, link them into the exported file-}}
 {{~if binary_can_export~}}

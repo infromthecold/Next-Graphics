@@ -1317,13 +1317,141 @@ namespace UnitTests
 
 		#endregion
 
+		#region Tilemaps
+
+		// note: we only test 2 configurations here, one is assembler output, the other binary. Everything else is exactly the same as for tiles/sprites.
+
+		[TestMethod]
+		public void Tilemap_Assembler_Words()
+		{
+			TestTilemaps((model, parameters, exporter) =>
+			{
+				// setup
+				model.BinaryOutput = false;
+				model.TilemapExportType = TilemapExportType.AttributesIndexAsWord;
+
+				// execute
+				exporter.Remap();
+				exporter.Export();
+
+				// verify
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
+				VerifyBinaryIsEmpty(parameters.MapStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
+				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(10, parameters.TilemapsStream, "tilemaps");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilemaps(parameters.Time, TilemapExportType.AttributesIndexAsWord, false));
+			});
+		}
+
+		[TestMethod]
+		public void Tilemap_Assembler_2Bytes()
+		{
+			TestTilemaps((model, parameters, exporter) =>
+			{
+				// setup
+				model.BinaryOutput = false;
+				model.TilemapExportType = TilemapExportType.AttributesIndexAsTwoBytes;
+
+				// execute
+				exporter.Remap();
+				exporter.Export();
+
+				// verify
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
+				VerifyBinaryIsEmpty(parameters.MapStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
+				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(10, parameters.TilemapsStream, "tilemaps");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilemaps(parameters.Time, TilemapExportType.AttributesIndexAsTwoBytes, false));
+			});
+		}
+
+		[TestMethod]
+		public void Tilemap_Assembler_1Byte()
+		{
+			TestTilemaps((model, parameters, exporter) =>
+			{
+				// setup
+				model.BinaryOutput = false;
+				model.TilemapExportType = TilemapExportType.IndexOnly;
+
+				// execute
+				exporter.Remap();
+				exporter.Export();
+
+				// verify
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
+				VerifyBinaryIsEmpty(parameters.MapStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
+				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(10, parameters.TilemapsStream, "tilemaps");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilemaps(parameters.Time, TilemapExportType.IndexOnly, false));
+			});
+		}
+
+		[TestMethod]
+		public void Tilemap_Binary()
+		{
+			TestTilemaps((model, parameters, exporter) =>
+			{
+				// setup
+				model.BinaryOutput = true;
+
+				// execute
+				exporter.Remap();
+				exporter.Export();
+
+				// verify
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
+				VerifyBinaryIsEmpty(parameters.MapStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
+				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinaryArray(1, (i) => DataCreator.TilemapGeneratedData2x2(), parameters.TilemapsStream, "tilemaps");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilemaps(parameters.Time, TilemapExportType.AttributesIndexAsWord, true));
+			});
+		}
+
+		#endregion
+
 		#region Creating
+
+		private void TestTilemaps(Action<MainModel, ExportParameters, Exporter> tester)
+		{
+			Test(
+				DataCreator.XmlDocumentTiles(),	// we can reuse tiles document
+				null,							// no source image needed
+				DataCreator.TilemapData2x2(),
+				(model, parameters, exporter) =>
+				{
+					// For tilemaps we only test a subset since the rest of the export is exactly like tiles/sprites. So we can setup common values here.
+					model.OutputType = OutputType.Tiles;
+					model.CommentType = CommentType.Full;
+					model.PaletteFormat = PaletteFormat.Next8Bit;
+
+					// After common values are set, we can call out to tester to further setup or run the test.
+					tester(model, parameters, exporter);
+				});
+		}
 
 		private void TestTiles(Action<MainModel, ExportParameters, Exporter> tester)
 		{
 			Test(
 				DataCreator.XmlDocumentTiles(),
 				DataCreator.ImageTiles1(),
+				null,
 				tester);
 		}
 
@@ -1332,10 +1460,15 @@ namespace UnitTests
 			Test(
 				DataCreator.XmlDocumentSprites(),
 				DataCreator.ImageSprites1(),
+				null,
 				tester);
 		}
 
-		private void Test(XmlDocument sourceDocument, Bitmap sourceBitmap, Action<MainModel, ExportParameters, Exporter> tester)
+		private void Test(
+			XmlDocument sourceDocument, 
+			Bitmap sourceBitmap, 
+			TilemapData sourceTilemap,
+			Action<MainModel, ExportParameters, Exporter> tester)
 		{
 			// We use memory streams so that we can later on examine the results without writing out files - faster and more predictable. 
 			using (
@@ -1348,6 +1481,7 @@ namespace UnitTests
 				tilesInfoStream = new MemoryStream(),
 				blocksImageStream = new MemoryStream())
 			{
+				var tilemapStreams = new MemoryStream[10];
 				var blockStreams = new MemoryStream[40];
 
 				// We want streams to be "constant", created only once per test and then reused whenever anyone calls out the closures.
@@ -1364,6 +1498,14 @@ namespace UnitTests
 					TilesStream = () => tilesStream,
 					TilesInfoStream = () => tilesInfoStream,
 					TilesImageStream = () => tilesImageStream,
+					TilemapsStream = (i) =>
+					{
+						if (tilemapStreams[i] == null)
+						{
+							tilemapStreams[i] = new MemoryStream();
+						}
+						return tilemapStreams[i];
+					},
 					BlocksImageStream = () => blocksImageStream,
 					BlockImageStream = (i) =>
 					{
@@ -1377,7 +1519,16 @@ namespace UnitTests
 
 				// We load default data and rely on each test to set it up as needed. This sets up model with default parameters, but we can later change them as needed in each specific test.
 				var model = DataCreator.LoadModel(sourceDocument);
-				model.AddSource(new SourceImage("image1", sourceBitmap));
+
+				if (sourceBitmap != null)
+				{
+					model.AddSource(new SourceImage("image1", sourceBitmap));
+				}
+
+				if (sourceTilemap != null)
+				{
+					model.AddSource(new SourceTilemapMap("tilemap1", sourceTilemap));
+				}
 
 				// Prepare exporter.
 				var exporter = new Exporter(model, parameters);

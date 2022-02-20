@@ -6,7 +6,9 @@ using System.IO;
 namespace NextGraphics.Models
 {
 	/// <summary>
-	/// Support for STMP .stm files. Doesn't support remapping tile indexes and tile attributes. Requires tiles image from preferred bitmap editor exactly in the order the tiles will be exported from Next Graphics (presumably that image is attached to the project).
+	/// Support for STMP .stm files. Supports flipped tiles (X and Y), but no rotations (well, maybe the format supports rotations, but Pro Motion NG creates a new tilemap in such case, so can't verify).
+	/// 
+	/// Requires tiles image from preferred bitmap editor exactly in the order the tiles will be exported from Next Graphics (ideally that image is attached to the project as source image).
 	/// 
 	/// Binary format, all values little endian
 	/// 
@@ -14,7 +16,14 @@ namespace NextGraphics.Models
 	/// 0		4		fixed 0x53544D50 (= ASCII "STMP")
 	/// 4		2		width (number of columns)
 	/// 6		2		height (number of rows)
-	/// 8+		4		tile index (repeated width x height times)
+	/// 8+		4		[width * height] tiles, each 4 bytes
+	/// 
+	/// Tile format:
+	/// 
+	/// Offset	Size	Description
+	/// 0		2		tile index
+	/// 2		1		if 1 flipped Y, otherwise no horizontal flip
+	/// 3		1		if 1 flipped Y, otherwise no vertical flip
 	/// </summary>
 	public class SourceTilemapStm : SourceTilemap
 	{
@@ -51,9 +60,15 @@ namespace NextGraphics.Models
 						{
 							for (int x = 0; x < width; x++)
 							{
-								var index = reader.ReadInt32();
+								var index = reader.ReadInt16();
+								var flippedX = reader.ReadByte() == 1;
+								var flippedY = reader.ReadByte() == 1;
 
-								result.Tiles[y, x] = new TilemapData.Tile(index);
+								result.Tiles[y, x] = new TilemapData.Tile(
+									index,
+									flippedX,
+									flippedY,
+									false);
 							}
 						}
 

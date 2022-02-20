@@ -30,6 +30,11 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 				var isFullBinaryExport = Model.BinaryOutput && Model.BinaryBlocksOutput;
 				var sanitizedModelName = Regex.Replace(Model.Name, @"\s+", ""); // Strips all whitespace from model name
 
+				var characterWidth = ExportData.Sprites[0] != null ? ExportData.Sprites[0].Width : 0;
+				var characterHeight = ExportData.Sprites[0] != null ? ExportData.Sprites[0].Height : 0;
+
+				var tilemaps = Model.SourceTilemaps().ToList();
+
 				// Note: scriban (template engine) transforms capitalized names (for example ProjectName) into lowercase and underscore (project_name), so we simply use expected syntax here to avoid confusion.
 				// Note: in general, all data is available even if corresponding "x_can_export" flag is false; it's up to template file to determine whether to respect flag or not. This given template writer more versatility.
 				var result = template.Render(new
@@ -56,8 +61,8 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 
 					characters_can_export = !Model.BinaryOutput,
 					characters_size_can_export = Model.OutputType == OutputType.Tiles,
-					character_width = ExportData.Sprites[0].Width,
-					character_height = ExportData.Sprites[0].Height,
+					character_width = characterWidth,
+					character_height = characterHeight,
 					characters = CreateTemplateCharacters(),
 
 					collisions_can_export = !isFullBinaryExport && Model.OutputType == OutputType.Sprites,
@@ -69,6 +74,10 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 
 					tiles_can_export = !isFullBinaryExport && Model.OutputType == OutputType.Tiles,
 					tiles = CreateTemplateTiles(),
+
+					tilemap_can_export = Model.OutputType == OutputType.Tiles && tilemaps.Count > 0,
+					tilemap_data_can_export = !Model.BinaryOutput && Model.OutputType == OutputType.Tiles && tilemaps.Count > 0,
+					tilemaps = CreateTemplateTilemaps(),
 
 					binary_can_export = Model.BinaryOutput,
 					binary_file_size = ExportData.BinarySize,
@@ -150,12 +159,12 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 					colour.Values.Add(new ByteValue(c));
 				});
 
-				colour.Values.SetupListItem();
+				colour.Values.SetupListItems();
 
 				result.Add(colour);
 			}
 
-			return result.SetupListItem();
+			return result.SetupListItems();
 		}
 
 		private IEnumerable<TemplateCharacter> CreateTemplateCharacters()
@@ -184,7 +193,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 						{
 							var column = row.Columns.Last();
 							column.Values.Add(new ByteValue(v));
-							column.Values.SetupListItem();
+							column.Values.SetupListItems();
 						}
 
 						if (Model.FourBit || Model.OutputType == OutputType.Tiles)
@@ -209,12 +218,12 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 						}
 					}
 
-					row.Columns.SetupListItem();
+					row.Columns.SetupListItems();
 
 					rows.Add(row);
 				}
 
-				rows.SetupListItem();
+				rows.SetupListItems();
 
 				return rows;
 			}
@@ -231,7 +240,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 				});
 			}
 
-			return result.SetupListItem();
+			return result.SetupListItems();
 		}
 
 		private IEnumerable<TemplateCollision> CreateTemplateCollisions()
@@ -251,7 +260,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 				});
 			}
 
-			return result.SetupListItem();
+			return result.SetupListItems();
 		}
 
 		private IEnumerable<TemplateFrame> CreateTemplateFrames()
@@ -349,12 +358,12 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 					}
 				}
 
-				frame.Items.SetupListItem();
+				frame.Items.SetupListItems();
 
 				result.Add(frame);
 			}
 
-			return result.SetupListItem();
+			return result.SetupListItems();
 		}
 
 		private IEnumerable<TemplateTile> CreateTemplateTiles()
@@ -411,12 +420,64 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 					}
 				}
 
-				tile.Items.SetupListItem();
+				tile.Items.SetupListItems();
 
 				result.Add(tile);
 			}
 
-			return result.SetupListItem();
+			return result.SetupListItems();
+		}
+
+		private IEnumerable<TemplateTilemap> CreateTemplateTilemaps()
+		{
+			var result = new List<TemplateTilemap>();
+
+			foreach (var tilemap in Model.SourceTilemaps())
+			{
+				var templateTilemap = new TemplateTilemap();
+
+				switch (Model.TilemapExportType)
+				{
+					case TilemapExportType.AttributesIndexAsWord:
+						templateTilemap.IsAttributesDesired = true;
+						templateTilemap.IsWordOutput = true;
+						break;
+					case TilemapExportType.AttributesIndexAsTwoBytes:
+						templateTilemap.IsAttributesDesired = true;
+						templateTilemap.IsWordOutput = false;
+						break;
+					case TilemapExportType.IndexOnly:
+						templateTilemap.IsAttributesDesired = false;
+						templateTilemap.IsWordOutput = false;	// ignored in this case, but makes it explicit
+						break;
+				}
+
+				templateTilemap.Width = tilemap.Data.Width;
+				templateTilemap.Height = tilemap.Data.Height;
+
+				for (int y = 0; y < tilemap.Data.Height; y++)
+				{
+					var templateRow = new TemplateTilemap.Row();
+
+					for (int x = 0; x < tilemap.Data.Width; x++)
+					{
+						var tile = tilemap.Data.Tiles[y, x];
+						var index = (byte)tile.Index;
+						var attributes = tile.ZXNextTileAttributes();
+						var templateTile = new TemplateTilemap.Tile(attributes, index);
+						
+						templateRow.Tiles.Add(templateTile);
+					}
+
+					templateRow.Tiles.SetupListItems();
+					templateTilemap.Rows.Add(templateRow);
+				}
+
+				templateTilemap.Rows.SetupListItems();
+				result.Add(templateTilemap);
+			}
+
+			return result.SetupListItems();
 		}
 
 		#endregion
@@ -491,6 +552,39 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 			}
 		}
 
+		private class TemplateTilemap : ListItem
+		{
+			public string Name { get; set; } = "";
+			public string NameOrIndex { get => Name.Length > 0 ? Name : Index.ToString(); }
+
+			public int Width { get; set; } = 0;
+			public int Height { get; set; } = 0;
+			public int Size { get => IsAttributesDesired ? Width * Height * 2 : Width * Height; }
+
+			public bool IsAttributesDesired { get; set; } = true;
+			public bool IsWordOutput { get; set; } = true;
+
+			public List<Row> Rows { get; set; } = new List<Row>();
+
+			public class Row : ListItem
+			{
+				public List<Tile> Tiles { get; set; } = new List<Tile>();
+			}
+
+			public class Tile : ListItem
+			{
+				public ByteValue Attributes { get; set; } = new ByteValue();
+				public ByteValue TileIndex { get; set; } = new ByteValue();
+				public WordValue AsWord { get => new WordValue(Attributes, TileIndex); }
+
+				public Tile(byte attributes, byte index)
+				{
+					Attributes.Value = attributes;
+					TileIndex.Value = index;
+				}
+			}
+		}
+
 		private class ByteValue : ListItem
 		{
 			public byte Value { get; set; } = 0;
@@ -501,6 +595,35 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 			{
 				Value = value;
 			}
+		}
+
+		private class WordValue : ListItem
+		{
+			public short Value {
+				get {
+					short high = HighByte.Value;
+					short low = LowByte.Value;
+
+					return (short)(((short)(high << 8)) | low);
+				}
+			}
+
+			public string AsBinary { get => $"{LowByte.AsBinary}{HighByte.AsBinary}"; }
+			public string AsHex { get => $"{LowByte.AsHex}{HighByte.AsHex}"; }
+
+			public ByteValue HighByte { get; set; }
+			public ByteValue LowByte { get; set; }
+
+			public WordValue(ByteValue high, ByteValue low)
+			{
+				HighByte = high;
+				LowByte = low;
+			}
+
+			public WordValue(byte high = 0, byte low = 0) : this(new ByteValue(high), new ByteValue(low))
+			{
+			}
+
 		}
 
 		#endregion
@@ -517,9 +640,9 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 	static class ZXNextAssemblerExtensions
 	{
 		/// <summary>
-		/// Updates all items of the list to have <see cref="ListItem.Index"/> and <see cref="ListItem.IsLast" represent item position in the list.
+		/// Updates all items of the list to have <see cref="ListItem.Index"/> and <see cref="ListItem.IsLast" represent item position in the list. Returns the source list as convenience so we can use it as a sort of "builder pattern".
 		/// </summary>
-		public static IEnumerable<T> SetupListItem<T>(this IEnumerable<T> enumerable) where T : ListItem
+		public static IEnumerable<T> SetupListItems<T>(this IEnumerable<T> enumerable) where T : ListItem
 		{
 			ListItem lastItem = null;
 			int index = 0;
@@ -539,8 +662,40 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 				lastItem.IsLast = true;
 			}
 
-			// Since we return the list, this function can be used as part of "builder pattern".
 			return enumerable;
+		}
+
+		/// <summary>
+		/// Calculates binary attributes for given tile suitable for ZX Next export. Format is:
+		/// 
+		/// Bit
+		/// 76543210
+		/// --------
+		///     |||
+		///     ||+--- rotated clockwise
+		///     |+---- X mirror
+		///     +----- Y mirror
+		/// </summary>
+		public static byte ZXNextTileAttributes(this TilemapData.Tile tile)
+		{
+			byte result = 0;
+
+			if (tile.RotatedClockwise)
+			{
+				result += 1 << 1;
+			}
+
+			if (tile.FlippedY)
+			{
+				result += 1 << 2;
+			}
+
+			if (tile.FlippedX)
+			{
+				result += 1 << 3;
+			}
+
+			return result;
 		}
 	}
 

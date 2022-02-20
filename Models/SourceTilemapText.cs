@@ -8,7 +8,9 @@ using System.Linq;
 namespace NextGraphics.Models
 {
 	/// <summary>
-	/// Support for text based tilemaps. Doesn't support remapping tile indexes and tile attributes. Requires tiles image from preferred bitmap editor exactly in the order the tiles will be exported from Next Graphics (presumably that image is attached to the project).
+	/// Support for text based tilemaps. Doesn't support any tile attributes (flipping or rotation).
+	/// 
+	/// Requires tiles image from preferred bitmap editor exactly in the order the tiles will be exported from Next Graphics (ideally that image is attached to the project as source image).
 	/// 
 	/// The format requires each text row to contain comma delimited decimal numbers representing tile indices. Each row is required to have exact same number of numbers (aka columns). Therefore the first row is used to determine the number of columns. All whitespace is ignored however, including empty lines in betwen.
 	/// 

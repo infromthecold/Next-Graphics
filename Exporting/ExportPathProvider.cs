@@ -52,6 +52,11 @@ namespace NextGraphics.Exporting
 
 		public string BlocksImageFilename { get => FilenameWithAppendix("blocks", _imageFormat.Extension()); }
 
+		public string TilemapFilename(int index)
+		{
+			return FilenameWithAppendix($"tilemap{index}", "tilemap");
+		}
+
 		public string BlockImageFilename(int index)
 		{
 			return FilenameWithAppendix($"sprite{index}", _imageFormat.Extension());
@@ -70,6 +75,7 @@ namespace NextGraphics.Exporting
 			parameters.TilesStream = () => PrepareStream(TilesFilename);
 			parameters.TilesInfoStream = () => PrepareStream(TilesInfoFilename);
 			parameters.TilesImageStream = () => PrepareStream(TilesImageFilename);
+			parameters.TilemapsStream = (index) => PrepareStream(TilemapFilename(index));
 			parameters.BlocksImageStream = () => PrepareStream(BlocksImageFilename);
 			parameters.BlockImageStream = (index) => PrepareStream(BlockImageFilename(index));
 		}

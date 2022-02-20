@@ -54,18 +54,38 @@ namespace NextGraphics.Models
 		/// <summary>
 		/// Two dimensional array of all tiles; first index represents row, second column within the row.
 		/// </summary>
-		public int[,] Tiles { get; set; }
+		public Tile[,] Tiles { get; set; }
 
 		public TilemapData(int width, int height)
 		{
 			Width = width;
 			Height = height;
-			Tiles = new int[Height, Width];
+			Tiles = new Tile[Height, Width];
 		}
 
 		public void Dispose()
 		{
 			Tiles = null;
+		}
+
+		public class Tile
+		{
+			public int Index { get; set; } = 0;
+			public bool FlippedX { get; set; } = false;
+			public bool FlippedY { get; set; } = false;
+			public bool RotatedClockwise { get; set; } = false;
+
+			public Tile(
+				int index, 
+				bool flippedX = false, 
+				bool flippedY = false, 
+				bool rotatedClockwise = false)
+			{
+				Index = index;
+				FlippedX = flippedX;
+				FlippedY = flippedY;
+				RotatedClockwise = rotatedClockwise;
+			}
 		}
 	}
 

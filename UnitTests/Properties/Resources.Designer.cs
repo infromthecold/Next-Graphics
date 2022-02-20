@@ -276,18 +276,18 @@ namespace UnitTests.Properties {
         ///SPRITES_COLOURS:		equ	5
         ///
         ///spritesPalette:
-        ///			db	%11100111
-        ///			db	%00000000
-        ///			db	%11111100
-        ///			db	%01111000
-        ///			db	%10010111
+        ///			db	%11100111,%00000001
+        ///			db	%00000000,%00000000
+        ///			db	%11111100,%00000000
+        ///			db	%01111000,%00000000
+        ///			db	%10010111,%00000001
         ///
         ///SPRITES_SPRITE_SIZE:		equ	256
         ///
         ///SPRITES_SPRITES:		equ	5
         ///
         ///
-        ///spritesFrames:		.dw	spritesFrame0,spritesFrame1,spritesFrame2,spritesFrame3,spritesFrame4,spritesFrame5,spritesFrame6,spritesFrame7,spritesFrame8,spritesFrame9,spritesFrame10,spritesFrame11,spritesFrame12,spr [rest of string was truncated]&quot;;.
+        ///spritesFrames:		.dw	spritesFrame0,spritesFrame1,spritesFrame2,spritesFrame3,spritesFrame4,spritesFrame5,spritesFrame6,spritesFrame7,spritesFrame8,spritesFrame [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Export_Sprites_Asm_BinaryBlocks_NoComments_PaletteNext9Bit {
             get {
@@ -596,6 +596,140 @@ namespace UnitTests.Properties {
         public static byte[] Export_Sprites_Til {
             get {
                 object obj = ResourceManager.GetObject("Export_Sprites_Til", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on {0} by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	6
+        ///
+        ///TestPalette:
+        ///			db	%01001001	//	72,72,72
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11011011	//	218,218,218
+        ///			db	%10110110	//	182,182,182
+        ///			db	%10010010	//	145,145,145
+        ///			db	%01101101	//	109,109,109
+        ///
+        ///TEST_TILE_SIZE:		equ	32
+        ///
+        ///TEST_TILES:		equ	0
+        ///
+        ///
+        ///				// block data
+        ///				// number of tiles (characters) tall
+        ///				// number of tiles (characters) wide
+        ///					// Palette offse [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Export_Tilemaps_Asm {
+            get {
+                return ResourceManager.GetString("Export_Tilemaps_Asm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on {0} by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	6
+        ///
+        ///TestPalette:
+        ///			db	%01001001	//	72,72,72
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11011011	//	218,218,218
+        ///			db	%10110110	//	182,182,182
+        ///			db	%10010010	//	145,145,145
+        ///			db	%01101101	//	109,109,109
+        ///
+        ///TEST_TILE_SIZE:		equ	32
+        ///
+        ///TEST_TILES:		equ	0
+        ///
+        ///
+        ///				// block data
+        ///				// number of tiles (characters) tall
+        ///				// number of tiles (characters) wide
+        ///					// Palette offse [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Export_Tilemaps_Asm_1_Byte {
+            get {
+                return ResourceManager.GetString("Export_Tilemaps_Asm_1_Byte", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on {0} by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	6
+        ///
+        ///TestPalette:
+        ///			db	%01001001	//	72,72,72
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11011011	//	218,218,218
+        ///			db	%10110110	//	182,182,182
+        ///			db	%10010010	//	145,145,145
+        ///			db	%01101101	//	109,109,109
+        ///
+        ///TEST_TILE_SIZE:		equ	32
+        ///
+        ///TEST_TILES:		equ	0
+        ///
+        ///
+        ///				// block data
+        ///				// number of tiles (characters) tall
+        ///				// number of tiles (characters) wide
+        ///					// Palette offse [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Export_Tilemaps_Asm_2_Bytes {
+            get {
+                return ResourceManager.GetString("Export_Tilemaps_Asm_2_Bytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on {0} by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	6
+        ///
+        ///TestPalette:
+        ///			db	%01001001	//	72,72,72
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11011011	//	218,218,218
+        ///			db	%10110110	//	182,182,182
+        ///			db	%10010010	//	145,145,145
+        ///			db	%01101101	//	109,109,109
+        ///
+        ///TEST_TILE_SIZE:		equ	32
+        ///
+        ///TEST_TILES:		equ	0
+        ///
+        ///
+        ///				// block data
+        ///				// number of tiles (characters) tall
+        ///				// number of tiles (characters) wide
+        ///					// Palette offse [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Export_Tilemaps_Asm_Binary {
+            get {
+                return ResourceManager.GetString("Export_Tilemaps_Asm_Binary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] Export_Tilemaps_Tilemap0 {
+            get {
+                object obj = ResourceManager.GetObject("Export_Tilemaps_Tilemap0", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -1085,6 +1219,16 @@ namespace UnitTests.Properties {
             get {
                 object obj = ResourceManager.GetObject("Project_Sprites_Image1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] Project_Tilemap_2x2 {
+            get {
+                object obj = ResourceManager.GetObject("Project_Tilemap_2x2", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         

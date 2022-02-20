@@ -147,6 +147,7 @@
     <Compile Include="Exporting\Exporter.cs" />
     <Compile Include="Exporting\Exporters\Base\BaseExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryPaletteExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilemapsExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesDataExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesMapExporter.cs" />
