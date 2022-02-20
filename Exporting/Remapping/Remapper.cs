@@ -49,215 +49,225 @@ namespace NextGraphics.Exporting.Remapping
 
 		public void Remap()
 		{
-			Data.IsRemapped = false;
-
-			Callbacks?.OnRemapStarted();
-			Callbacks?.OnRemapDebug($"Starting remap{Environment.NewLine}");
-
-			Data.Clear();
-			Data.ObjectSize = Data.Model.ItemWidth();	// Note: this only works as long as item width is the same as height...
-			Data.BlockSize = CalculateBlockSize();
-			Data.ImageOffset = CalculateImageOffset();
-
-			objectSize = Data.ObjectSize;
-			maxObjectsCount = Data.Model.OutputType == OutputType.Sprites ? 128 : ExportData.MAX_OBJECTS - 1;
-			objectsPerGridX = (Data.Model.GridWidth / objectSize);
-			objectsPerGridY = (Data.Model.GridHeight / objectSize);
-
-			if (Data.Model.OutputType == OutputType.Tiles)
+			try
 			{
-				Callbacks?.OnRemapDebug("Preparing data for tiles export");
+				Data.IsRemapped = false;
 
-				if (Data.Model.TransparentBlocks)
-				{
-					MakeFirstBlockTransparent();
-				}
+				Callbacks?.OnRemapStarted();
+				Callbacks?.OnRemapDebug($"Starting remap{Environment.NewLine}");
 
-				if (Data.Model.TransparentTiles)
-				{
-					MakeFirstTileTransparent();
-				}
-			}
+				Data.Clear();
+				Data.ObjectSize = Data.Model.ItemWidth();   // Note: this only works as long as item width is the same as height...
+				Data.BlockSize = CalculateBlockSize();
+				Data.ImageOffset = CalculateImageOffset();
 
-			Callbacks?.OnRemapDebug($"Reading images{Environment.NewLine}");
-
-			// Remapping is only needed for images, not other types of sources.
-			Data.Model.ForEachSourceImage((image, idx) =>
-			{
-				Callbacks?.OnRemapDebug($"Handling image {idx}{Environment.NewLine}");
-
-				var sourceRect = new Rectangle();
+				objectSize = Data.ObjectSize;
+				maxObjectsCount = Data.Model.OutputType == OutputType.Sprites ? 128 : ExportData.MAX_OBJECTS - 1;
+				objectsPerGridX = (Data.Model.GridWidth / objectSize);
+				objectsPerGridY = (Data.Model.GridHeight / objectSize);
 
 				if (Data.Model.OutputType == OutputType.Tiles)
 				{
-					CheckImageDimensions(image);
-				}
+					Callbacks?.OnRemapDebug("Preparing data for tiles export");
 
-				if (!image.IsDataValid)
-				{
-					Callbacks?.OnRemapDebug($"Image is invalid, ignoring{Environment.NewLine}");
-					return;
-				}
-
-				for (int yBlocks = 0; yBlocks < ((image.Data.Height + (Data.Model.GridHeight - 1)) / Data.Model.GridHeight); yBlocks++)
-				{
-					for (int xBlocks = 0; xBlocks < (image.Data.Width / Data.Model.GridWidth); xBlocks++)
+					if (Data.Model.TransparentBlocks)
 					{
-						sourceRect.X = xBlocks * Data.Model.GridWidth;
-						sourceRect.Y = yBlocks * Data.Model.GridHeight;
-						sourceRect.Width = Data.Model.GridWidth;
-						sourceRect.Height = Data.Model.GridHeight;
+						MakeFirstBlockTransparent();
+					}
 
-						if (outBlock > ExportData.MAX_BLOCKS)
-						{
-							Callbacks?.OnRemapWarning($"Too many blocks/sprites{Environment.NewLine}");
-							Callbacks?.OnRemapUpdated();
-							Callbacks?.OnRemapCompleted(false);
-							return;
-						}
+					if (Data.Model.TransparentTiles)
+					{
+						MakeFirstTileTransparent();
+					}
+				}
 
-						if (Data.Blocks[outBlock] == null)
-						{
-							Data.Blocks[outBlock] = new IndexedBitmap(Data.Model.GridWidth, Data.Model.GridHeight);
-						}
+				Callbacks?.OnRemapDebug($"Reading images{Environment.NewLine}");
 
-						if (Data.Sprites[outBlock] == null)
-						{
-							Data.Sprites[outBlock] = new SpriteInfo(objectsPerGridX, objectsPerGridY);
-						}
+				// Remapping is only needed for images, not other types of sources.
+				Data.Model.ForEachSourceImage((image, idx) =>
+				{
+					Callbacks?.OnRemapDebug($"Handling image {idx}{Environment.NewLine}");
 
-						if (image is SourceImage sourceImage)
-						{
-							sourceImage.CopyRegionIntoBlock(
-								Data.Model.Palette,
-								sourceRect,
-								Data.Model.Reduced && Data.Model.OutputType == OutputType.Sprites,
-								ref Data.Blocks[outBlock],
-								ref Data.Sprites[outBlock]);
-						}
+					var sourceRect = new Rectangle();
 
-						if (Data.Model.FourBit || Data.Model.OutputType == OutputType.Tiles)
-						{
-							Data.Blocks[outBlock].RemapTo4Bit(Data.Model.Palette, Data.Model.GridWidth, Data.Model.GridHeight, objectSize);
-						}
+					if (Data.Model.OutputType == OutputType.Tiles)
+					{
+						CheckImageDimensions(image);
+					}
 
-						if (Data.Blocks[outBlock].IsTransparent(Data.Model.Palette.TransparentIndex))
+					if (!image.IsDataValid)
+					{
+						Callbacks?.OnRemapDebug($"Image is invalid, ignoring{Environment.NewLine}");
+						return;
+					}
+
+					for (int yBlocks = 0; yBlocks < ((image.Data.Height + (Data.Model.GridHeight - 1)) / Data.Model.GridHeight); yBlocks++)
+					{
+						for (int xBlocks = 0; xBlocks < (image.Data.Width / Data.Model.GridWidth); xBlocks++)
 						{
+							sourceRect.X = xBlocks * Data.Model.GridWidth;
+							sourceRect.Y = yBlocks * Data.Model.GridHeight;
+							sourceRect.Width = Data.Model.GridWidth;
+							sourceRect.Height = Data.Model.GridHeight;
+
+							if (outBlock > ExportData.MAX_BLOCKS)
+							{
+								Callbacks?.OnRemapWarning($"Too many blocks/sprites{Environment.NewLine}");
+								Callbacks?.OnRemapUpdated();
+								Callbacks?.OnRemapCompleted(false);
+								return;
+							}
+
+							if (Data.Blocks[outBlock] == null)
+							{
+								Data.Blocks[outBlock] = new IndexedBitmap(Data.Model.GridWidth, Data.Model.GridHeight);
+							}
+
+							if (Data.Sprites[outBlock] == null)
+							{
+								Data.Sprites[outBlock] = new SpriteInfo(objectsPerGridX, objectsPerGridY);
+							}
+
+							if (image is SourceImage sourceImage)
+							{
+								sourceImage.CopyRegionIntoBlock(
+									Data.Model.Palette,
+									sourceRect,
+									Data.Model.Reduced && Data.Model.OutputType == OutputType.Sprites,
+									ref Data.Blocks[outBlock],
+									ref Data.Sprites[outBlock]);
+							}
+
+							if (Data.Model.FourBit || Data.Model.OutputType == OutputType.Tiles)
+							{
+								Data.Blocks[outBlock].RemapTo4Bit(Data.Model.Palette, Data.Model.GridWidth, Data.Model.GridHeight, objectSize);
+							}
+
+							if (Data.Blocks[outBlock].IsTransparent(Data.Model.Palette.TransparentIndex))
+							{
 							// We only draw first transparent block.
 							Callbacks?.OnRemapDebug($"Block is transparent{Environment.NewLine}");
-							if (outBlock > 0)
-							{
-								continue;
-							}
-						}
-
-						for (int yChar = 0; yChar < objectsPerGridY; yChar++)
-						{
-							for (int xChar = 0; xChar < objectsPerGridX; xChar++)
-							{
-								if (Data.Model.FourBit || Data.Model.OutputType == OutputType.Tiles)
+								if (outBlock > 0)
 								{
-									paletteOffset = Data.Blocks[outBlock].GetPixel(xChar * objectSize, yChar * objectSize) & 0x0f0;
+									continue;
 								}
-
-								PrepareSpriteData(xChar, yChar);
 							}
-						}
 
-						Callbacks?.OnRemapDisplayBlocksCount(outBlock);
+							for (int yChar = 0; yChar < objectsPerGridY; yChar++)
+							{
+								for (int xChar = 0; xChar < objectsPerGridX; xChar++)
+								{
+									if (Data.Model.FourBit || Data.Model.OutputType == OutputType.Tiles)
+									{
+										paletteOffset = Data.Blocks[outBlock].GetPixel(xChar * objectSize, yChar * objectSize) & 0x0f0;
+									}
 
-						if (Model.OutputType == OutputType.Tiles)
-						{
-							if (!IsSpriteDuplicated(outBlock, objectsPerGridX, objectsPerGridY))
+									PrepareSpriteData(xChar, yChar);
+								}
+							}
+
+							Callbacks?.OnRemapDisplayBlocksCount(outBlock);
+
+							if (Model.OutputType == OutputType.Tiles)
+							{
+								if (!IsSpriteDuplicated(outBlock, objectsPerGridX, objectsPerGridY))
+								{
+									outBlock++;
+								}
+							}
+							else
 							{
 								outBlock++;
 							}
-						}
-						else
-						{
-							outBlock++;
+
+							Callbacks?.OnRemapDebug($"- {Environment.NewLine}");
 						}
 
-						Callbacks?.OnRemapDebug($"- {Environment.NewLine}");
+						Callbacks?.OnRemapDebug(Environment.NewLine);
+						Callbacks?.OnRemapUpdated();
+					}
+				});
+
+				int transparentCharactersCount = 0;
+
+				if (Data.Model.TransparentFirst && Model.OutputType == OutputType.Tiles)
+				{
+					int sortedIndex = 0;
+
+					// On first pass we only handle transparent blocks.
+					PrepareCharacters(
+						(index, transparent) => transparent ? sortedIndex : -1,
+						() =>
+						{
+							transparentCharactersCount++;
+							sortedIndex++;
+						});
+
+					// On second pass we only handle non-transparent blocks.
+					PrepareCharacters(
+						(index, transparent) => transparent ? -1 : sortedIndex,
+						() =>
+						{
+							sortedIndex++;
+						});
+				}
+				else
+				{
+					// In this case we have straightforward loop.
+					PrepareCharacters(
+						(index, transparent) => index,
+						() => { });
+				}
+
+				outXBlock = 0;
+				outYBlock = 0;
+				var frame = new Rectangle();
+
+				for (int b = 0; b < outBlock; b++)
+				{
+					frame.X = outXBlock * Model.GridWidth;
+					frame.Y = outYBlock * Model.GridHeight;
+					frame.Width = Model.GridWidth;
+					frame.Height = Model.GridHeight;
+
+					CopyCharactersToBlocksBitmap(frame, b);
+
+					Callbacks?.OnRemapDisplayBlocksCount(b);
+					if (Model.OutputType == OutputType.Sprites)
+					{
+						SetSpriteCollisions(b);
 					}
 
-					Callbacks?.OnRemapDebug(Environment.NewLine);
-					Callbacks?.OnRemapUpdated();
-				}
-			});
-
-			int transparentCharactersCount = 0;
-
-			if (Data.Model.TransparentFirst && Model.OutputType == OutputType.Tiles)
-			{
-				int sortedIndex = 0;
-
-				// On first pass we only handle transparent blocks.
-				PrepareCharacters(
-					(index, transparent) => transparent ? sortedIndex : -1,
-					() =>
+					outXBlock++;
+					if (outXBlock >= Model.BlocsAcross)
 					{
-						transparentCharactersCount++;
-						sortedIndex++;
-					});
-
-				// On second pass we only handle non-transparent blocks.
-				PrepareCharacters(
-					(index, transparent) => transparent ? -1 : sortedIndex,
-					() =>
-					{
-						sortedIndex++;
-					});
-			}
-			else
-			{
-				// In this case we have straightforward loop.
-				PrepareCharacters(
-					(index, transparent) => index,
-					() => { });
-			}
-
-			outXBlock = 0;
-			outYBlock = 0;
-			var frame = new Rectangle();
-
-			for (int b = 0; b < outBlock; b++)
-			{
-				frame.X = outXBlock * Model.GridWidth;
-				frame.Y = outYBlock * Model.GridHeight;
-				frame.Width = Model.GridWidth;
-				frame.Height = Model.GridHeight;
-
-				CopyCharactersToBlocksBitmap(frame, b);
-
-				Callbacks?.OnRemapDisplayBlocksCount(b);
-				if (Model.OutputType == OutputType.Sprites)
-				{
-					SetSpriteCollisions(b);
+						outXBlock = 0;
+						outYBlock++;
+					}
 				}
 
-				outXBlock++;
-				if (outXBlock >= Model.BlocsAcross)
+				Data.CharactersCount = outChar;
+				Data.BlocksCount = outBlock;
+
+				Callbacks?.OnRemapDebug("Remap completed");
+
+				if (outChar > maxObjectsCount)
 				{
-					outXBlock = 0;
-					outYBlock++;
+					Callbacks?.OnRemapWarning("Too many characters in your tiles");
 				}
+
+				Data.IsRemapped = true;
+
+				Callbacks?.OnRemapDisplayCharactersCount(outChar, transparentCharactersCount);
 			}
-
-			Data.CharactersCount = outChar;
-			Data.BlocksCount = outBlock;
-
-			Callbacks?.OnRemapDebug("Remap completed");
-
-			if (outChar > maxObjectsCount)
+			catch (Exception e)
 			{
-				Callbacks?.OnRemapWarning("Too many characters in your tiles");
+				throw e;
 			}
-
-			Data.IsRemapped = true;
-
-			Callbacks?.OnRemapDisplayCharactersCount(outChar, transparentCharactersCount);
-			Callbacks?.OnRemapCompleted(allImagesProcessed);
+			finally
+			{
+				Callbacks?.OnRemapCompleted(allImagesProcessed);
+			}
 		}
 
 		/// <summary>

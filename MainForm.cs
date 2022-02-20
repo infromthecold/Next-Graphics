@@ -1133,18 +1133,11 @@ namespace NextGraphics
 			UpdateBlockHeight();
 
 			RunLongOperation(() => {
-				try
-				{
-					Exporter.Remap();
+				Exporter.Remap();
 
-					if (completed != null)
-					{
-						Invoke(completed);
-					}
-				}
-				catch (Exception e)
+				if (completed != null)
 				{
-					MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					Invoke(completed);
 				}
 			});
 		}
@@ -1177,18 +1170,11 @@ namespace NextGraphics
 
 			RunLongOperation(() =>
 			{
-				try
-				{
-					ExportPaths = new ExportPathProvider(sourceFilename, Model.ImageFormat);
+				ExportPaths = new ExportPathProvider(sourceFilename, Model.ImageFormat);
 
-					ExportPaths.AssignExportStreams(Exporter.Data.Parameters);
+				ExportPaths.AssignExportStreams(Exporter.Data.Parameters);
 
-					Exporter.Export();
-				}
-				catch (Exception e)
-				{
-					MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				}
+				Exporter.Export();
 			});
 		}
 
@@ -1426,6 +1412,9 @@ namespace NextGraphics
 		/// <summary>
 		/// Disables all actions, runs the operation implemented as given action on background thread and enables all actions when complete.
 		/// </summary>
+		/// <remarks>
+		/// Note that action is free to throw an exception. It will be caught and displayed to user.
+		/// </remarks>
 		private async void RunLongOperation(Action action)
 		{
 			void EnableActions(bool enable)
@@ -1450,7 +1439,24 @@ namespace NextGraphics
 
 			EnableActions(false);
 
-			await Task.Run(action);
+			Exception exception = null;
+
+			await Task.Run(() =>
+			{
+				try
+				{
+					action();
+				}
+				catch (Exception e)
+				{
+					exception = e;
+				}
+			});
+
+			if (exception != null)
+			{
+				MessageBox.Show(exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
 
 			EnableActions(true);
 		}
