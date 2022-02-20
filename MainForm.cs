@@ -13,6 +13,8 @@ using NextGraphics.Models;
 using NextGraphics.Exporting;
 using NextGraphics.Exporting.Common;
 using System.Threading.Tasks;
+using NextGraphics.Utils;
+using System.Linq;
 
 namespace NextGraphics
 {
@@ -44,13 +46,14 @@ namespace NextGraphics
 		private readonly PaletteOffsetForm offsetPanel = new PaletteOffsetForm();
 
 		private readonly SaveFileDialog projectSaveDialog = new SaveFileDialog();
-		private readonly OpenFileDialog openProjectDialog = new OpenFileDialog();
+		private readonly OpenFileDialog projectOpenDialog = new OpenFileDialog();
 		private readonly OpenFileDialog batchProjectDialog = new OpenFileDialog();
 		private readonly SaveFileDialog outputFilesDialog = new SaveFileDialog();
 		private readonly OpenFileDialog addImagesDialog = new OpenFileDialog();
+		private readonly OpenFileDialog addTilemapsDialog = new OpenFileDialog();
 
 		private string parentDirectory = "f:/";
-		private string projectPath = "";
+		private string projectPath = string.Empty;
 		private bool isPaletteSet = false;
 
 		private readonly NumberFormatInfo numberFormatInfo = new NumberFormatInfo();
@@ -88,15 +91,28 @@ namespace NextGraphics
 
 			SetForm();
 
+			var imageFiltersBuilder = new DialogFilterBuilder();
 			ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-			string sep = string.Empty;
 			foreach (var c in codecs)
 			{
-				string codecName = c.CodecName.Substring(8).Replace("Codec", "Files").Trim();
-				addImagesDialog.Filter = string.Format("{0}{1}{2} ({3})|{3}", addImagesDialog.Filter, sep, codecName, c.FilenameExtension);
-				sep = "|";
+				var codecName = c.CodecName.Substring(8).Replace("Codec", "Files").Trim();
+				imageFiltersBuilder.Add(codecName, c.FilenameExtension);
 			}
-			addImagesDialog.Filter = string.Format("{0}{1}{2} ({3})|{3}", addImagesDialog.Filter, sep, "All Files", "*.*");
+			imageFiltersBuilder.Add("All Files", "*.*");
+			addImagesDialog.Filter = imageFiltersBuilder.Filters;
+
+			var tilemapFiltersBuilder = new DialogFilterBuilder();
+			tilemapFiltersBuilder.Add("GBA Tile Map", "*.map");
+			tilemapFiltersBuilder.Add("STM Tile Map", "*.stm");
+			tilemapFiltersBuilder.Add("Text Tile Map", "*.txm;*.txt");
+			tilemapFiltersBuilder.Add("All Files", "*.*");
+			addTilemapsDialog.Filter = tilemapFiltersBuilder.Filters;
+
+			var projectFiltersBuilder = new DialogFilterBuilder();
+			projectFiltersBuilder.Add("Project Files", "*.xml");
+			projectFiltersBuilder.Add("All Files", "*.*");
+			projectOpenDialog.Filter = projectFiltersBuilder.Filters;
+			projectSaveDialog.Filter = projectFiltersBuilder.Filters;
 
 #if PROPRIETARY
 			parallaxWindow.thePalette = thePalette;
@@ -283,6 +299,11 @@ namespace NextGraphics
 		private void addImagesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			AddImagesToProject(true);
+		}
+
+		private void addTilemapsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			AddTilemapsToProject(true);
 		}
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -487,6 +508,11 @@ namespace NextGraphics
 		private void addImagesToolStripButton_Click(object sender, EventArgs e)
 		{
 			AddImagesToProject(true);
+		}
+
+		private void addTilemapsToolStripButton_Click(object sender, EventArgs e)
+		{
+			AddTilemapsToProject(true);
 		}
 
 		private void paletteToolStripButton_Click(object sender, EventArgs e)
@@ -707,6 +733,7 @@ namespace NextGraphics
 				Model.Sources[thisIndex - 1] = temp;
 				projectListBox.SelectedIndex = thisIndex + 1;
 				UpdateProjectListBox();
+				SaveProject();
 			}
 		}
 
@@ -722,6 +749,7 @@ namespace NextGraphics
 				Model.Sources[thisIndex] = temp;
 				projectListBox.SelectedIndex = thisIndex;
 				UpdateProjectListBox();
+				SaveProject();
 			}
 		}
 		
@@ -739,6 +767,7 @@ namespace NextGraphics
 			{
 				Model.Sources.RemoveAt(projectListBox.SelectedIndex - 1);
 				UpdateProjectListBox();
+				SaveProject();
 			}
 		}
 
@@ -854,7 +883,6 @@ namespace NextGraphics
 				if (projectPath.Length == 0 || forceDialog)
 				{
 					projectSaveDialog.FileName = Model.Name + ".xml";
-					projectSaveDialog.Filter = "Project Files (*.xml)|*.xml|All Files (*.*)|*.*";
 					projectSaveDialog.FilterIndex = 1;
 					projectSaveDialog.RestoreDirectory = false;
 					projectSaveDialog.InitialDirectory = parentDirectory + "\\Projects\\";
@@ -878,22 +906,8 @@ namespace NextGraphics
 			int transIndex = Model.Palette.TransparentIndex;
 			int loadedColourCount = Model.Palette.UsedCount;
 			int loadedColourStart = Model.Palette.StartIndex;
-			using (XmlTextWriter writer = new XmlTextWriter(projectPath, Encoding.UTF8))
-			{
-				writer.Formatting = Formatting.Indented;
-				XmlDocument document = Model.Save(projectNode =>
-				{
-#if PROPRIETARY
-					projectNode.AppendChild(parallaxWindow.writeParallax(doc));
-#endif
-				});
 
-				document.WriteContentTo(writer);
-				writer.Flush();
-				writer.Close();
-				// mStream.Flush();
-				//myStream.Write(doc.InnerXml);
-			}
+			SaveProject();
 		}
 
 		/// <summary>
@@ -901,15 +915,14 @@ namespace NextGraphics
 		/// </summary>
 		private void LoadProjectWithDialog()
 		{
-			openProjectDialog.Multiselect = false;
-			openProjectDialog.RestoreDirectory = false;
-			openProjectDialog.InitialDirectory = parentDirectory + "\\Projects\\";
-			openProjectDialog.Filter = "Project Files (*.xml)|*.xml|All Files (*.*)|*.*";
+			projectOpenDialog.Multiselect = false;
+			projectOpenDialog.RestoreDirectory = false;
+			projectOpenDialog.InitialDirectory = parentDirectory + "\\Projects\\";
 
-			if (openProjectDialog.ShowDialog(this) == DialogResult.OK)
+			if (projectOpenDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				projectPath = openProjectDialog.FileName;
-				SetParentFolder(Path.GetFullPath(openProjectDialog.FileName));
+				projectPath = projectOpenDialog.FileName;
+				SetParentFolder(Path.GetFullPath(projectOpenDialog.FileName));
 				LoadProjectFromFile(projectPath);
 			}
 		}
@@ -946,7 +959,7 @@ namespace NextGraphics
 			{
 				addImagesDialog.Multiselect = true;
 				addImagesDialog.RestoreDirectory = false;
-				addImagesDialog.InitialDirectory = parentDirectory + "\\Renders\\";
+				addImagesDialog.InitialDirectory = parentDirectory;
 				addImagesDialog.FilterIndex = Model.AddImagesFilterIndex;
 				if (addImagesDialog.ShowDialog(this) == DialogResult.OK)
 				{
@@ -957,42 +970,66 @@ namespace NextGraphics
 			}
 
 			// Note: as we keep dialog alive, we simply take the data from it. Not ideal way of doing things, but reduces the need to add additional state to the class or use separate function for handling.
+
 			Model.AddImagesFilterIndex = addImagesDialog.FilterIndex;
+			SaveProject();
+			AddNewSources(addImagesDialog.FileNames, file => new SourceImage(file));
+		}
 
-			bool rejected = false;
-
-			foreach (string file in addImagesDialog.FileNames)
+		/// <summary>
+		/// Adds tilemap(s) to project. Optionally it can also show open tilemap dialog.
+		/// </summary>
+		private void AddTilemapsToProject(bool showDialog = false)
+		{
+			if (showDialog)
 			{
-				bool found = false;
-				for (int i = 0; i < Model.Sources.Count; i++)
+				addTilemapsDialog.Multiselect = true;
+				addTilemapsDialog.RestoreDirectory = false;
+				addTilemapsDialog.InitialDirectory = parentDirectory;
+				addTilemapsDialog.FilterIndex = Model.AddTilemapsFilterIndex;
+				if (addTilemapsDialog.ShowDialog(this) == DialogResult.OK)
 				{
-					if (file == Model.Sources[i].Filename)
-					{
-						found = true;
-						rejected = true;
-						break;
-					}
+					AddTilemapsToProject();
 				}
 
-				if (found) continue;
-
-				var image = new SourceImage(file);
-				if (!image.IsDataValid) continue;
-
-				Model.Sources.Add(image);
-				imageForms.Add(new ImageForm { MdiParent = this });
-				projectListBox.Items.Add(image.ToProjectItemTitle());
+				return;
 			}
 
-			if (rejected == true)
+			// Note: as we keep dialog alive, we simply take the data from it. Not ideal way of doing things, but reduces the need to add additional state to the class or use separate function for handling.
+
+			Model.AddTilemapsFilterIndex = addTilemapsDialog.FilterIndex;
+			SaveProject();
+
+			AddNewSources(addTilemapsDialog.FileNames, file => SourceTilemap.Create(file));
+		}
+
+		private void SaveProject()
+		{
+			if (projectPath.Length == 0)
 			{
-				MessageBox.Show("Duplicate files are not allowed", "Duplicates Found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				return;
+			}
+
+			using (XmlTextWriter writer = new XmlTextWriter(projectPath, Encoding.UTF8))
+			{
+				writer.Formatting = Formatting.Indented;
+				XmlDocument document = Model.Save(projectNode =>
+				{
+#if PROPRIETARY
+					projectNode.AppendChild(parallaxWindow.writeParallax(doc));
+#endif
+				});
+
+				document.WriteContentTo(writer);
+				writer.Flush();
+				writer.Close();
 			}
 		}
 
 		private void ClearData()
 		{
 			isPaletteSet = false;
+			projectPath = string.Empty;
 
 			Model.Clear();
 			Exporter.Data.Clear();
@@ -1009,6 +1046,52 @@ namespace NextGraphics
 			charsPictureBox.Image = Model.CharsBitmap;
 			charsPictureBox.Invalidate(true);
 			charsPictureBox.Refresh();
+		}
+
+		private void AddNewSources(string[] filenames, Func<string, ISourceFile> handler)
+		{
+			var failedFiles = new List<string>();
+			bool rejected = false;
+
+			foreach (string file in filenames)
+			{
+				bool found = false;
+				for (int i = 0; i < Model.Sources.Count; i++)
+				{
+					if (file == Model.Sources[i].Filename)
+					{
+						found = true;
+						rejected = true;
+						break;
+					}
+				}
+
+				if (found) continue;
+
+				var source = handler(file);
+				if (source == null || !source.IsDataValid)
+				{
+					failedFiles.Add(Path.GetFileName(file));
+					continue;
+				}
+
+				Model.Sources.Add(source);
+			}
+
+			UpdateProjectListBox();
+
+			if (failedFiles.Count > 0)
+			{
+				var newline = Environment.NewLine;
+				var names = string.Join(newline, failedFiles);
+				MessageBox.Show($"Errors were detected in:{newline}{names}", "Errors Detected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				return;
+			}
+			
+			if (rejected)
+			{
+				MessageBox.Show("Duplicate files were detected and were ignored", "Duplicates Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
 		}
 
 		#endregion
@@ -1350,7 +1433,7 @@ namespace NextGraphics
 				newToolStripButton.Enabled = enable;
 				openProjectButton.Enabled = enable;
 				saveToolStripButton.Enabled = enable;
-				addImagesToolStripButton.Enabled = enable;
+				addTilemapsToolStripButton.Enabled = enable;
 				paletteToolStripButton.Enabled = enable;
 				makeBlocksToolStripButton.Enabled = enable;
 				exportToolStripButton.Enabled = enable;
@@ -1389,6 +1472,10 @@ namespace NextGraphics
 			if (file is SourceImage)
 			{
 				prefix = "🏔️";
+			}
+			else if (file is SourceTilemap)
+			{
+				prefix = "🧱";
 			}
 			else
 			{

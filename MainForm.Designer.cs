@@ -36,6 +36,7 @@
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.addImagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.addTilemapsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -62,6 +63,7 @@
 			this.openProjectButton = new System.Windows.Forms.ToolStripButton();
 			this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.addImagesToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.addTilemapsToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.paletteToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.makeBlocksToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -131,6 +133,7 @@
             this.openToolStripMenuItem,
             this.toolStripSeparator3,
             this.addImagesToolStripMenuItem,
+            this.addTilemapsToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
             this.toolStripSeparator4,
@@ -173,6 +176,14 @@
 			this.addImagesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.addImagesToolStripMenuItem.Text = "Add Images";
 			this.addImagesToolStripMenuItem.Click += new System.EventHandler(this.addImagesToolStripMenuItem_Click);
+			// 
+			// addTilemapsToolStripMenuItem
+			// 
+			this.addTilemapsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("addTilemapsToolStripMenuItem.Image")));
+			this.addTilemapsToolStripMenuItem.Name = "addTilemapsToolStripMenuItem";
+			this.addTilemapsToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.addTilemapsToolStripMenuItem.Text = "Add Tilemaps";
+			this.addTilemapsToolStripMenuItem.Click += new System.EventHandler(this.addTilemapsToolStripMenuItem_Click);
 			// 
 			// saveToolStripMenuItem
 			// 
@@ -342,6 +353,7 @@
             this.openProjectButton,
             this.saveToolStripButton,
             this.addImagesToolStripButton,
+            this.addTilemapsToolStripButton,
             this.paletteToolStripButton,
             this.makeBlocksToolStripButton,
             this.toolStripSeparator2,
@@ -400,8 +412,21 @@
 			this.addImagesToolStripButton.Name = "addImagesToolStripButton";
 			this.addImagesToolStripButton.Size = new System.Drawing.Size(36, 43);
 			this.addImagesToolStripButton.Text = "Add Images";
-			this.addImagesToolStripButton.ToolTipText = "Add Images to the image list";
-			this.addImagesToolStripButton.Click += new System.EventHandler(this.addImagesToolStripButton_Click);
+			this.addImagesToolStripButton.ToolTipText = "Add images to the project";
+			this.addImagesToolStripButton.Click += new System.EventHandler(this.addImagesToolStripMenuItem_Click);
+			// 
+			// addTilemapsToolStripButton
+			// 
+			this.addTilemapsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.addTilemapsToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("addTilemapsToolStripButton.Image")));
+			this.addTilemapsToolStripButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+			this.addTilemapsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.addTilemapsToolStripButton.Margin = new System.Windows.Forms.Padding(2, 10, 2, 2);
+			this.addTilemapsToolStripButton.Name = "addTilemapsToolStripButton";
+			this.addTilemapsToolStripButton.Size = new System.Drawing.Size(36, 43);
+			this.addTilemapsToolStripButton.Text = "Add Images";
+			this.addTilemapsToolStripButton.ToolTipText = "Add tilemaps to the project";
+			this.addTilemapsToolStripButton.Click += new System.EventHandler(this.addTilemapsToolStripButton_Click);
 			// 
 			// paletteToolStripButton
 			// 
@@ -477,7 +502,6 @@
 			this.exportAsBlocksRadioButton.Name = "exportAsBlocksRadioButton";
 			this.exportAsBlocksRadioButton.Size = new System.Drawing.Size(66, 17);
 			this.exportAsBlocksRadioButton.TabIndex = 10;
-			this.exportAsBlocksRadioButton.TabStop = true;
 			this.exportAsBlocksRadioButton.Text = "Blockset";
 			this.toolTip.SetToolTip(this.exportAsBlocksRadioButton, "Output Tilemap data 8x8 pixels");
 			this.exportAsBlocksRadioButton.UseVisualStyleBackColor = true;
@@ -486,6 +510,7 @@
 			// exportAsSpritesRadioButton
 			// 
 			this.exportAsSpritesRadioButton.AutoSize = true;
+			this.exportAsSpritesRadioButton.Checked = true;
 			this.exportAsSpritesRadioButton.Location = new System.Drawing.Point(97, 19);
 			this.exportAsSpritesRadioButton.Name = "exportAsSpritesRadioButton";
 			this.exportAsSpritesRadioButton.Size = new System.Drawing.Size(57, 17);
@@ -713,7 +738,7 @@
 			this.groupBox1.Controls.Add(this.label4);
 			this.groupBox1.Controls.Add(this.blockHeightTextBox);
 			this.groupBox1.Controls.Add(this.blockWidthTextBox);
-			this.groupBox1.Location = new System.Drawing.Point(378, 24);
+			this.groupBox1.Location = new System.Drawing.Point(426, 24);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(387, 48);
 			this.groupBox1.TabIndex = 16;
@@ -845,7 +870,7 @@
 		private System.Windows.Forms.ToolTip toolTip;
 		private System.Windows.Forms.Panel filesPanel;
 		private System.Windows.Forms.ListBox projectListBox;
-		private System.Windows.Forms.ToolStripButton addImagesToolStripButton;
+		private System.Windows.Forms.ToolStripButton addTilemapsToolStripButton;
 		private System.Windows.Forms.ToolStripMenuItem addImagesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton exportToolStripButton;
 		private System.Windows.Forms.ColorDialog colorDialog1;
@@ -882,6 +907,8 @@
 		private System.Windows.Forms.ToolStripMenuItem batchProcessProjectsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem WAVToRAWToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton infoToolStripButton;
+		private System.Windows.Forms.ToolStripButton addImagesToolStripButton;
+		private System.Windows.Forms.ToolStripMenuItem addTilemapsToolStripMenuItem;
 	}
 }
 
