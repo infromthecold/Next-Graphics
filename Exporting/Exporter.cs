@@ -70,7 +70,7 @@ namespace NextGraphics.Exporting
 
 		private void RegisterTilesExporters(List<BaseExporter> exporters)
 		{
-			if (Data.Model.BinaryOutput && Data.Model.BinaryBlocksOutput)
+			if (Data.Model.BinaryOutput && Data.Model.BinaryFramesAttributesOutput)
 			{
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.
 				exporters.Add(new ZXNextBinaryTilesDataExporter());
@@ -94,21 +94,16 @@ namespace NextGraphics.Exporting
 				exporters.Add(new ZXNextAssemblerExporter());
 			}
 
-			if (Data.Model.BlocksAsImage)
+			if (Data.Model.TilesExportAsImage)
 			{
 				exporters.Add(new ZXNextBlocksAsImageExporter());
-			}
-
-			if (Data.Model.TilesAsImage)
-			{
-				exporters.Add(new ZXNextTilesAsImageExporter());
 				exporters.Add(new ZXNextTilesInfoExporter());
 			}
 		}
 
 		private void RegisterSpriteExporters(List<BaseExporter> exporters)
 		{
-			if (Data.Model.BinaryOutput && Data.Model.BinaryBlocksOutput)
+			if (Data.Model.BinaryOutput && Data.Model.BinaryFramesAttributesOutput)
 			{
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.
 				exporters.Add(new ZXNextBinaryTilesDataExporter());
@@ -128,10 +123,9 @@ namespace NextGraphics.Exporting
 				exporters.Add(new ZXNextAssemblerExporter());
 			}
 
-			// Note: sprites mode exports each block as its own image, but it's controller by tiles flag (not sure if this is a bug or feature, leaving it as such, it's really simple to change!
-			if (Data.Model.TilesAsImage)
+			if (Data.Model.SpritesExportAsImages)
 			{
-				exporters.Add(new ZXNextSpritesBlocksAsImageExporter());
+				exporters.Add(new ZXNextSpritesAsImageExporter());
 				exporters.Add(new ZXNextSpritesTilesAsImageExporter());
 			}
 		}

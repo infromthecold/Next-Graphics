@@ -27,7 +27,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 			int xPos = 0;
 
 			int startBlock = 0;
-			if (!Model.TransparentBlocks)
+			if (!Model.TilesExportAsImageTransparent)
 			{
 				startBlock = 1;
 			}

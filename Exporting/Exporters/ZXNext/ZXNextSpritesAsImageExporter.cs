@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace NextGraphics.Exporting.Exporters.ZXNext
 {
-	public class ZXNextSpritesBlocksAsImageExporter : BaseExporter
+	public class ZXNextSpritesAsImageExporter : BaseExporter
 	{
 		#region Overrides
 

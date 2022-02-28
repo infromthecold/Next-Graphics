@@ -76,7 +76,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 								writer.Write(writeByte);
 
 								writeByte = 0;
-								if (Model.FourBit)
+								if (Model.SpritesFourBit)
 								{
 									writeByte = (byte)(writeByte | 128);
 									if (((ExportData.Sprites[s].GetId(x, y) - IdReduction) & 1) == 1)

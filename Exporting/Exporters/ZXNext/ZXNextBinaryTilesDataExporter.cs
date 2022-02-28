@@ -32,7 +32,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 					{
 						for (int x = 0; x < ExportData.Chars[s].Width; x++)
 						{
-							if (Model.FourBit || Model.OutputType == OutputType.Tiles)
+							if (Model.SpritesFourBit || Model.OutputType == OutputType.Tiles)
 							{
 								var colourByte = (byte)(ExportData.Chars[s].GetPixel(x, y) & 0x0f);
 

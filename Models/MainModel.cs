@@ -33,16 +33,17 @@ namespace NextGraphics.Models
 		public int Accuracy { get; set; } = 100;
 
 		public bool TransparentFirst { get; set; } = false;
-		public bool FourBit { get; set; } = false;
-		public bool Reduced { get; set; } = false;
-		public bool AttributesAsText { get; set; } = false;
 		public bool BinaryOutput { get; set; } = false;
-		public bool BinaryBlocksOutput { get; set; } = false;
+		public bool BinaryFramesAttributesOutput { get; set; } = false;
 
-		public bool BlocksAsImage { get; set; } = false;
-		public bool TilesAsImage { get; set; } = false;
-		public bool TransparentBlocks { get; set; } = false;
-		public bool TransparentTiles { get; set; } = false;
+		public bool TilesExportAsImage { get; set; } = false;
+		public bool TilesExportAsImageTransparent { get; set; } = false;
+
+		public bool SpritesFourBit { get; set; } = false;
+		public bool SpritesReduced { get; set; } = false;
+		public bool SpritesAttributesAsText { get; set; } = false;
+		public bool SpritesExportAsImages { get; set; } = false;
+		public bool SpritesExportAsImageTransparent { get; set; } = false;
 
 		public int OutputFilesFilterIndex { get; set; } = 0;
 		public int AddImagesFilterIndex { get; set; } = 0;
@@ -121,7 +122,7 @@ namespace NextGraphics.Models
 				node.WithAttribute("xSize", value => GridWidth = int.Parse(value));
 				node.WithAttribute("ySize", value => GridHeight = int.Parse(value));
 				node.WithAttribute("binary", value => BinaryOutput = bool.Parse(value));
-				node.WithAttribute("binaryBlocks", value => BinaryBlocksOutput = bool.Parse(value));
+				node.WithAttribute("binaryBlocks", value => BinaryFramesAttributesOutput = bool.Parse(value));
 				node.WithAttribute("MirrorX", value => IgnoreMirroredX = bool.Parse(value));
 				node.WithAttribute("MirrorY", value => IgnoreMirroredY = bool.Parse(value));
 				node.WithAttribute("Rotations", value => IgnoreRotated = bool.Parse(value));
@@ -129,20 +130,20 @@ namespace NextGraphics.Models
 				node.WithAttribute("xSize", value => GridWidth = int.Parse(value));
 				node.WithAttribute("ySize", value => GridHeight = int.Parse(value));
 				node.WithAttribute("Sort", value => TransparentFirst = bool.Parse(value));
-				node.WithAttribute("fourBit", value => FourBit = bool.Parse(value));
+				node.WithAttribute("fourBit", value => SpritesFourBit = bool.Parse(value));
 				node.WithAttribute("binary", value => BinaryOutput = bool.Parse(value));
-				node.WithAttribute("binaryBlocks", value => BinaryBlocksOutput = bool.Parse(value));
-				node.WithAttribute("blocksImage", value => BlocksAsImage = bool.Parse(value));
-				node.WithAttribute("tilesImage", value => TilesAsImage = bool.Parse(value));
-				node.WithAttribute("transBlock", value => TransparentBlocks = bool.Parse(value));
-				node.WithAttribute("transTile", value => TransparentTiles = bool.Parse(value));
+				node.WithAttribute("binaryBlocks", value => BinaryFramesAttributesOutput = bool.Parse(value));
+				node.WithAttribute("blocksImage", value => TilesExportAsImage = bool.Parse(value));
+				node.WithAttribute("tilesImage", value => SpritesExportAsImages = bool.Parse(value));
+				node.WithAttribute("transBlock", value => TilesExportAsImageTransparent = bool.Parse(value));
+				node.WithAttribute("transTile", value => SpritesExportAsImageTransparent = bool.Parse(value));
 				node.WithAttribute("across", value => BlocsAcross = int.Parse(value));
 				node.WithAttribute("accurate", value => Accuracy = int.Parse(value));
 				node.WithAttribute("format", value => ImageFormat = (ImageFormat)int.Parse(value));
 				node.WithAttribute("PaletteFormat", value => PaletteFormat = (PaletteFormat)int.Parse(value));
 				node.WithAttribute("TilemapExport", value => TilemapExportType = (TilemapExportType)int.Parse(value));
-				node.WithAttribute("textFlips", value => AttributesAsText = bool.Parse(value));
-				node.WithAttribute("reduce", value => Reduced = bool.Parse(value));
+				node.WithAttribute("textFlips", value => SpritesAttributesAsText = bool.Parse(value));
+				node.WithAttribute("reduce", value => SpritesReduced = bool.Parse(value));
 			});
 
 			// Dialogs
@@ -227,26 +228,26 @@ namespace NextGraphics.Models
 			settingsNode.AddAttribute("center", CenterPosition);
 			settingsNode.AddAttribute("xSize", GridWidth);
 			settingsNode.AddAttribute("ySize", GridHeight);
-			settingsNode.AddAttribute("fourBit", FourBit);
+			settingsNode.AddAttribute("fourBit", SpritesFourBit);
 			settingsNode.AddAttribute("binary", BinaryOutput);
-			settingsNode.AddAttribute("binaryBlocks", BinaryBlocksOutput);
+			settingsNode.AddAttribute("binaryBlocks", BinaryFramesAttributesOutput);
 			settingsNode.AddAttribute("Repeats", IgnoreCopies);
 			settingsNode.AddAttribute("MirrorX", IgnoreMirroredX);
 			settingsNode.AddAttribute("MirrorY", IgnoreMirroredY);
 			settingsNode.AddAttribute("Rotations", IgnoreRotated);
 			settingsNode.AddAttribute("Transparent", IgnoreTransparentPixels);
 			settingsNode.AddAttribute("Sort", TransparentFirst);
-			settingsNode.AddAttribute("blocksImage", BlocksAsImage);
-			settingsNode.AddAttribute("tilesImage", TilesAsImage);
-			settingsNode.AddAttribute("transBlock", TransparentBlocks);
-			settingsNode.AddAttribute("transTile", TransparentTiles);
+			settingsNode.AddAttribute("blocksImage", TilesExportAsImage);
+			settingsNode.AddAttribute("tilesImage", SpritesExportAsImages);
+			settingsNode.AddAttribute("transBlock", TilesExportAsImageTransparent);
+			settingsNode.AddAttribute("transTile", SpritesExportAsImageTransparent);
 			settingsNode.AddAttribute("across", BlocsAcross.ToString());
 			settingsNode.AddAttribute("accurate", Accuracy.ToString());
 			settingsNode.AddAttribute("format", (int)ImageFormat);
 			settingsNode.AddAttribute("PaletteFormat", (int)PaletteFormat);
 			settingsNode.AddAttribute("TilemapExport", (int)TilemapExportType);
-			settingsNode.AddAttribute("textFlips", AttributesAsText);
-			settingsNode.AddAttribute("reduce", Reduced);
+			settingsNode.AddAttribute("textFlips", SpritesAttributesAsText);
+			settingsNode.AddAttribute("reduce", SpritesReduced);
 
 			// Dialogs
 			var dialogsNode = projectNode.AddNode("Dialogs");

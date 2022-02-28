@@ -27,7 +27,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 
 			using (var writer = new StreamWriter(Parameters.SourceStream()))
 			{
-				var isFullBinaryExport = Model.BinaryOutput && Model.BinaryBlocksOutput;
+				var isFullBinaryExport = Model.BinaryOutput && Model.BinaryFramesAttributesOutput;
 				var sanitizedModelName = Regex.Replace(Model.Name, @"\s+", ""); // Strips all whitespace from model name
 
 				var characterWidth = ExportData.Sprites[0] != null ? ExportData.Sprites[0].Width : 0;
@@ -196,7 +196,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 							column.Values.SetupListItems();
 						}
 
-						if (Model.FourBit || Model.OutputType == OutputType.Tiles)
+						if (Model.SpritesFourBit || Model.OutputType == OutputType.Tiles)
 						{
 							if ((x & 1) == 0)
 							{
@@ -287,8 +287,8 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 						// Create new data for this iteration.
 						var item = new TemplateFrame.Item
 						{
-							IsTextAttributes = Model.AttributesAsText,
-							IsFourBit = Model.FourBit,
+							IsTextAttributes = Model.SpritesAttributesAsText,
+							IsFourBit = Model.SpritesFourBit,
 						};
 
 						// Note: the main reason for using inline functions it to be able to collapse them to avoid code clutter.
@@ -296,7 +296,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 						void AssignId()
 						{
 							item.Id = sprite.GetId(x, y);
-							if (Model.FourBit)
+							if (Model.SpritesFourBit)
 							{
 								item.Id = (short)((item.Id - IdReduction) / 2);
 							}
@@ -339,7 +339,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 						void AssignFourBitAttributes()
 						{
 							item.FourBitAttributes.Value = 0;
-							if (Model.FourBit)
+							if (Model.SpritesFourBit)
 							{
 								item.FourBitAttributes.Value |= (byte)128;
 								if (((sprite.GetId(x, y) - IdReduction) & 1) == 1)

@@ -171,22 +171,22 @@ namespace UnitTests
 		[TestMethod]
 		public void SettingsFourBitSaved()
 		{
-			SettingsRunner.Setup(model => model.FourBit = false).Verify("false", "fourBit");
-			SettingsRunner.Setup(model => model.FourBit = true).Verify("true", "fourBit");
+			SettingsRunner.Setup(model => model.SpritesFourBit = false).Verify("false", "fourBit");
+			SettingsRunner.Setup(model => model.SpritesFourBit = true).Verify("true", "fourBit");
 		}
 
 		[TestMethod]
 		public void SettingsReducedSaved()
 		{
-			SettingsRunner.Setup(model => model.Reduced = false).Verify("false", "reduce");
-			SettingsRunner.Setup(model => model.Reduced = true).Verify("true", "reduce");
+			SettingsRunner.Setup(model => model.SpritesReduced = false).Verify("false", "reduce");
+			SettingsRunner.Setup(model => model.SpritesReduced = true).Verify("true", "reduce");
 		}
 
 		[TestMethod]
 		public void SettingsTextFlipsSaved()
 		{
-			SettingsRunner.Setup(model => model.AttributesAsText = false).Verify("false", "textFlips");
-			SettingsRunner.Setup(model => model.AttributesAsText = true).Verify("true", "textFlips");
+			SettingsRunner.Setup(model => model.SpritesAttributesAsText = false).Verify("false", "textFlips");
+			SettingsRunner.Setup(model => model.SpritesAttributesAsText = true).Verify("true", "textFlips");
 		}
 
 		[TestMethod]
@@ -199,36 +199,36 @@ namespace UnitTests
 		[TestMethod]
 		public void SettingsBinaryBlocksOutputSaved()
 		{
-			SettingsRunner.Setup(model => model.BinaryBlocksOutput = false).Verify("false", "binaryBlocks");
-			SettingsRunner.Setup(model => model.BinaryBlocksOutput = true).Verify("true", "binaryBlocks");
+			SettingsRunner.Setup(model => model.BinaryFramesAttributesOutput = false).Verify("false", "binaryBlocks");
+			SettingsRunner.Setup(model => model.BinaryFramesAttributesOutput = true).Verify("true", "binaryBlocks");
 		}
 
 		[TestMethod]
 		public void SettingsBlocksAsImageSaved()
 		{
-			SettingsRunner.Setup(model => model.BlocksAsImage = false).Verify("false", "blocksImage");
-			SettingsRunner.Setup(model => model.BlocksAsImage = true).Verify("true", "blocksImage");
+			SettingsRunner.Setup(model => model.TilesExportAsImage = false).Verify("false", "blocksImage");
+			SettingsRunner.Setup(model => model.TilesExportAsImage = true).Verify("true", "blocksImage");
 		}
 
 		[TestMethod]
 		public void SettingsTilesAsImageSaved()
 		{
-			SettingsRunner.Setup(model => model.TilesAsImage = false).Verify("false", "tilesImage");
-			SettingsRunner.Setup(model => model.TilesAsImage = true).Verify("true", "tilesImage");
+			SettingsRunner.Setup(model => model.SpritesExportAsImages = false).Verify("false", "tilesImage");
+			SettingsRunner.Setup(model => model.SpritesExportAsImages = true).Verify("true", "tilesImage");
 		}
 
 		[TestMethod]
 		public void SettingsTransparentBlocksSaved()
 		{
-			SettingsRunner.Setup(model => model.TransparentBlocks = false).Verify("false", "transBlock");
-			SettingsRunner.Setup(model => model.TransparentBlocks = true).Verify("true", "transBlock");
+			SettingsRunner.Setup(model => model.TilesExportAsImageTransparent = false).Verify("false", "transBlock");
+			SettingsRunner.Setup(model => model.TilesExportAsImageTransparent = true).Verify("true", "transBlock");
 		}
 
 		[TestMethod]
 		public void SettingsTransparentTilesSaved()
 		{
-			SettingsRunner.Setup(model => model.TransparentTiles = false).Verify("false", "transTile");
-			SettingsRunner.Setup(model => model.TransparentTiles = true).Verify("true", "transTile");
+			SettingsRunner.Setup(model => model.SpritesExportAsImageTransparent = false).Verify("false", "transTile");
+			SettingsRunner.Setup(model => model.SpritesExportAsImageTransparent = true).Verify("true", "transTile");
 		}
 
 		[TestMethod]

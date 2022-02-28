@@ -151,12 +151,10 @@
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesDataExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesMapExporter.cs" />
-    <Compile Include="Exporting\Exporters\Base\BaseObjectAsImageExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBlocksAsImageExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextAssemblerExporter.cs" />
-    <Compile Include="Exporting\Exporters\ZXNext\ZXNextSpritesBlocksAsImageExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextSpritesAsImageExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextSpritesTilesAsImageExporter.cs" />
-    <Compile Include="Exporting\Exporters\ZXNext\ZXNextTilesAsImageExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextTilesInfoExporter.cs" />
     <Compile Include="Exporting\ExportPathProvider.cs" />
     <Compile Include="Exporting\Remapping\Remapper.cs" />

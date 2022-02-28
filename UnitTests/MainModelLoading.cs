@@ -223,7 +223,7 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(true, model.FourBit);
+			Assert.AreEqual(true, model.SpritesFourBit);
 		}
 
 		[TestMethod]
@@ -236,7 +236,7 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(true, model.Reduced);
+			Assert.AreEqual(true, model.SpritesReduced);
 		}
 
 		[TestMethod]
@@ -249,7 +249,7 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(true, model.AttributesAsText);
+			Assert.AreEqual(true, model.SpritesAttributesAsText);
 		}
 
 		[TestMethod]
@@ -275,7 +275,7 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(true, model.BinaryBlocksOutput);
+			Assert.AreEqual(true, model.BinaryFramesAttributesOutput);
 		}
 
 		[TestMethod]
@@ -288,8 +288,8 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(false, model.BlocksAsImage);
-			Assert.AreEqual(true, model.TilesAsImage);
+			Assert.AreEqual(false, model.TilesExportAsImage);
+			Assert.AreEqual(true, model.SpritesExportAsImages);
 		}
 
 		[TestMethod]
@@ -302,8 +302,8 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(true, model.TransparentBlocks);
-			Assert.AreEqual(false, model.TransparentTiles);
+			Assert.AreEqual(true, model.TilesExportAsImageTransparent);
+			Assert.AreEqual(false, model.SpritesExportAsImageTransparent);
 		}
 
 		[TestMethod]

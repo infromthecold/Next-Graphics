@@ -70,13 +70,9 @@ namespace NextGraphics.Exporting.Remapping
 				{
 					Callbacks?.OnRemapDebug("Preparing data for tiles export");
 
-					if (Data.Model.TransparentBlocks)
+					if (Data.Model.TilesExportAsImageTransparent)
 					{
 						MakeFirstBlockTransparent();
-					}
-
-					if (Data.Model.TransparentTiles)
-					{
 						MakeFirstTileTransparent();
 					}
 				}
@@ -133,12 +129,12 @@ namespace NextGraphics.Exporting.Remapping
 								sourceImage.CopyRegionIntoBlock(
 									Data.Model.Palette,
 									sourceRect,
-									Data.Model.Reduced && Data.Model.OutputType == OutputType.Sprites,
+									Data.Model.SpritesReduced && Data.Model.OutputType == OutputType.Sprites,
 									ref Data.Blocks[outBlock],
 									ref Data.Sprites[outBlock]);
 							}
 
-							if (Data.Model.FourBit || Data.Model.OutputType == OutputType.Tiles)
+							if (Data.Model.SpritesFourBit || Data.Model.OutputType == OutputType.Tiles)
 							{
 								Data.Blocks[outBlock].RemapTo4Bit(Data.Model.Palette, Data.Model.GridWidth, Data.Model.GridHeight, objectSize);
 							}
@@ -157,7 +153,7 @@ namespace NextGraphics.Exporting.Remapping
 							{
 								for (int xChar = 0; xChar < objectsPerGridX; xChar++)
 								{
-									if (Data.Model.FourBit || Data.Model.OutputType == OutputType.Tiles)
+									if (Data.Model.SpritesFourBit || Data.Model.OutputType == OutputType.Tiles)
 									{
 										paletteOffset = Data.Blocks[outBlock].GetPixel(xChar * objectSize, yChar * objectSize) & 0x0f0;
 									}
@@ -687,7 +683,7 @@ namespace NextGraphics.Exporting.Remapping
 		{
 			if (Data.Model.OutputType == OutputType.Sprites)
 			{
-				if (!Data.Model.FourBit)
+				if (!Data.Model.SpritesFourBit)
 				{
 					// 8-bit sprites use 1 byte per pixel and are 16x16 pixels.
 					return 256;
