@@ -500,9 +500,9 @@
 			this.exportAsBlocksRadioButton.AutoSize = true;
 			this.exportAsBlocksRadioButton.Location = new System.Drawing.Point(160, 20);
 			this.exportAsBlocksRadioButton.Name = "exportAsBlocksRadioButton";
-			this.exportAsBlocksRadioButton.Size = new System.Drawing.Size(66, 17);
+			this.exportAsBlocksRadioButton.Size = new System.Drawing.Size(62, 17);
 			this.exportAsBlocksRadioButton.TabIndex = 10;
-			this.exportAsBlocksRadioButton.Text = "Blockset";
+			this.exportAsBlocksRadioButton.Text = "Tilemap";
 			this.toolTip.SetToolTip(this.exportAsBlocksRadioButton, "Output Tilemap data 8x8 pixels");
 			this.exportAsBlocksRadioButton.UseVisualStyleBackColor = true;
 			this.exportAsBlocksRadioButton.CheckedChanged += new System.EventHandler(this.exportAsBlocksRadioButton_CheckedChanged);
