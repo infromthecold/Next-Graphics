@@ -30,7 +30,6 @@ namespace NextGraphics
 		private Exporter Exporter { get; set; }
 		private ExportPathProvider ExportPaths { get; set; }
 
-		private RadioButton selectedRadio;
 		private List<ImageForm> imageForms = new List<ImageForm>();
 #if PROPRIETARY
 		public	parallaxTool		parallaxWindow		=	new	parallaxTool();
@@ -74,6 +73,10 @@ namespace NextGraphics
 			{
 				Name = Properties.Resources.NewProjectTitle
 			};
+
+			Model.OutputTypeChanged += Model_OutputTypeChanged;
+			Model.GridWidthChanged += Model_GridWidthChanged;
+			Model.GridHeightChanged += Model_GridHeightChanged;
 
 			Exporter = new Exporter(Model, exportParameters);
 
@@ -600,12 +603,8 @@ namespace NextGraphics
 			RadioButton rb = sender as RadioButton;
 			if (rb.Checked)
 			{
-				// Keep track of the selected RadioButton by saving a reference to it.
-				selectedRadio = rb;
+				Model.OutputType = OutputType.Tiles;
 			}
-			Model.OutputType = OutputType.Tiles;
-			charsPictureBox.Invalidate();
-			charsPictureBox.Refresh();
 		}
 
 		private void exportAsSpritesRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -613,12 +612,8 @@ namespace NextGraphics
 			RadioButton rb = sender as RadioButton;
 			if (rb.Checked)
 			{
-				// Keep track of the selected RadioButton by saving a reference to it.
-				selectedRadio = rb;
+				Model.OutputType = OutputType.Sprites;
 			}
-			Model.OutputType = OutputType.Sprites;
-			charsPictureBox.Invalidate();
-			charsPictureBox.Refresh();
 		}
 
 		private void blockWidthTextBox_Leave(object sender, EventArgs e)
@@ -675,7 +670,7 @@ namespace NextGraphics
 			}
 
 			// Note: atm sprite/tile size is hard code and suits ZX Spectrum Next, it would be better to move this elsewhere - `MainModel` for example...
-			charsForm.CopyImage(Model.CharsBitmap, Model.ItemWidth(), Model.ItemHeight(), 1f);
+			charsForm.CopyImage(Model.CharsBitmap, Model.DefaultItemWidth(), Model.DefaultItemHeight(), 1f);
 
 			MoveResizeAsMdiChild(charsForm, show: true);
 		}
@@ -812,6 +807,29 @@ namespace NextGraphics
 					MoveResizeAsMdiChild(imageForms[index - 1], show: true);
 				}
 			}
+		}
+
+		#endregion
+
+		#region Model events
+
+		private void Model_OutputTypeChanged(object sender, MainModel.OutputTypeChangedEventArgs e)
+		{
+			UpdateOutputTypeControls(e.OutputType);
+			charsPictureBox.Invalidate();
+			charsPictureBox.Refresh();
+		}
+
+		private void Model_GridWidthChanged(object sender, MainModel.SizeChangedEventArgs e)
+		{
+			// When model width changes, we should simply apply it to UI without any further handling
+			blockWidthTextBox.Text = e.Size.ToString();
+		}
+
+		private void Model_GridHeightChanged(object sender, MainModel.SizeChangedEventArgs e)
+		{
+			// When model height changes, we should simply apply it to UI without any further handling.
+			blockHeightTextBox.Text = e.Size.ToString();
 		}
 
 		#endregion
@@ -1194,21 +1212,22 @@ namespace NextGraphics
 			blockHeightTextBox.Text = Model.GridHeight.ToString();
 			blockWidthTextBox.Text = Model.GridWidth.ToString();
 
-			switch (Model.OutputType)
+			UpdateOutputTypeControls(Model.OutputType);
+
+			Refresh();
+		}
+
+		private void UpdateOutputTypeControls(OutputType type)
+		{
+			switch (type)
 			{
 				case OutputType.Sprites:
 					exportAsSpritesRadioButton.Checked = true;
-					exportAsBlocksRadioButton.Checked = false;
-					selectedRadio = exportAsSpritesRadioButton;
 					break;
 				default:
 					exportAsBlocksRadioButton.Checked = true;
-					exportAsSpritesRadioButton.Checked = false;
-					selectedRadio = exportAsBlocksRadioButton;
 					break;
 			}
-
-			Refresh();
 		}
 
 		/// <summary>
@@ -1272,48 +1291,17 @@ namespace NextGraphics
 		/// </summary>
 		private void UpdateBlockWidth()
 		{
-			int size;
-			if (int.TryParse(blockWidthTextBox.Text, out size))
+			if (int.TryParse(blockWidthTextBox.Text, out int size))
 			{
-				Model.GridWidth = size;
+				// Make sure arbitrary value is constrained within allowed range.
+				Model.GridWidth = Model.ConstrainItemWidth(size);
 
-				var itemWidth = Model.ItemWidth();
-
-				if (Model.OutputType == OutputType.Sprites)
-				{
-					if (Model.GridWidth < itemWidth)
-					{
-						Model.GridWidth = itemWidth;
-					}
-					else if (Model.GridWidth > 320)
-					{
-						Model.GridWidth = 320;
-					}
-					else
-					{
-						Model.GridWidth = (Model.GridWidth + 15) & ~0xF;
-					}
-				}
-				else
-				{
-					if (Model.GridWidth < itemWidth)
-					{
-						Model.GridWidth = itemWidth;
-					}
-					else if (Model.GridWidth > 128)
-					{
-						Model.GridWidth = 128;
-					}
-					else
-					{
-						Model.GridWidth = (Model.GridHeight + 7) & ~0x7;
-					}
-				}
+				// Make sure UI reflects the actual value, in case it was constrained.
 				blockWidthTextBox.Text = Model.GridWidth.ToString();
 			}
 			else
 			{
-				Model.GridWidth = 32;
+				// When unable to parse, leave original value.
 				blockWidthTextBox.Text = Model.GridWidth.ToString();
 			}
 
@@ -1328,51 +1316,20 @@ namespace NextGraphics
 		/// </summary>
 		private void UpdateBlockHeight()
 		{
-			int size;
-
-			if (int.TryParse(blockHeightTextBox.Text, out size))
+			if (int.TryParse(blockHeightTextBox.Text, out int size))
 			{
-				Model.GridHeight = size;
+				// Make sure arbitrary value is constrained within allowed range.
+				Model.GridHeight = Model.ConstrainItemHeight(size);
 
-				var itemWidth = Model.ItemWidth();
-
-				if (Model.OutputType == OutputType.Sprites)
-				{
-					if (Model.GridHeight < itemWidth)
-					{
-						Model.GridHeight = itemWidth;
-					}
-					else if (Model.GridHeight > 320)
-					{
-						Model.GridHeight = 320;
-					}
-					else
-					{
-						Model.GridHeight = (Model.GridHeight + 15) & ~0xF;
-					}
-				}
-				else
-				{
-					if (Model.GridHeight < itemWidth)
-					{
-						Model.GridHeight = itemWidth;
-					}
-					else if (Model.GridHeight > 128)
-					{
-						Model.GridHeight = 128;
-					}
-					else
-					{
-						Model.GridHeight = (Model.GridHeight + 7) & ~0x7;
-					}
-				}
-				blockHeightTextBox.Text = Model.GridHeight.ToString();
+				// Make sure UI reflects the actual value.
+				blockHeightTextBox.Text = Model.GridWidth.ToString();
 			}
 			else
 			{
-				Model.GridHeight = 32;
-				blockHeightTextBox.Text = Model.GridHeight.ToString();
+				// When unable to parse, leave original value.
+				blockHeightTextBox.Text = Model.GridWidth.ToString();
 			}
+
 			blocksPictureBox.Invalidate();
 			blocksPictureBox.Refresh();
 		}

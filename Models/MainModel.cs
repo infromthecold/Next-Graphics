@@ -14,7 +14,6 @@ namespace NextGraphics.Models
 		public Palette Palette { get; } = new Palette();
 		public List<ISourceFile> Sources { get; private set; } = new List<ISourceFile>();
 
-		public OutputType OutputType { get; set; } = OutputType.Sprites;
 		public CommentType CommentType { get; set; } = CommentType.Full;
 		public ImageFormat ImageFormat { get; set; } = ImageFormat.BMP;
 		public PaletteFormat PaletteFormat { get; set; } = PaletteFormat.Next8Bit;
@@ -27,8 +26,6 @@ namespace NextGraphics.Models
 		public bool IgnoreTransparentPixels { get; set; } = false;
 
 		public int CenterPosition { get; set; } = 4;
-		public int GridWidth { get; set; } = 32;
-		public int GridHeight { get; set; } = 32;
 		public int BlocsAcross { get; set; } = 1;
 		public int Accuracy { get; set; } = 100;
 
@@ -49,9 +46,73 @@ namespace NextGraphics.Models
 		public int AddImagesFilterIndex { get; set; } = 0;
 		public int AddTilemapsFilterIndex { get; set; } = 0;
 
-		// This is not saved!
+		#region Not saved properties
+
 		public Bitmap BlocksBitmap { get; private set; } = null;
 		public Bitmap CharsBitmap { get; private set; } = null;
+
+		#endregion
+
+		#region Properties raising events
+
+		public OutputType OutputType
+		{
+			get => _outputType;
+			set
+			{
+				if (value != _outputType)
+				{
+					_outputType = value;
+
+					if (OutputTypeChanged != null)
+					{
+						OutputTypeChanged(this, new OutputTypeChangedEventArgs(_outputType));
+					}
+
+					GridWidth = ConstrainItemWidth(GridWidth);
+					GridHeight = ConstrainItemHeight(GridHeight);
+				}
+			}
+		}
+		private OutputType _outputType = OutputType.Sprites;
+
+		public int GridWidth
+		{
+			get => _gridWidth;
+			set
+			{
+				if (value != _gridWidth)
+				{
+					_gridWidth = value;
+
+					if (GridWidthChanged != null)
+					{
+						GridWidthChanged(this, new SizeChangedEventArgs(_gridWidth));
+					}
+				}
+			}
+		}
+		private int _gridWidth = 32;
+
+		public int GridHeight
+		{
+			get => _gridHeight;
+			set
+			{
+				if (value != _gridHeight)
+				{
+					_gridHeight = value;
+
+					if (GridHeightChanged != null)
+					{
+						GridHeightChanged(this, new SizeChangedEventArgs(_gridHeight));
+					}
+				}
+			}
+		}
+		private int _gridHeight = 32;
+
+		#endregion
 
 		#region Initialization & Disposal
 
@@ -59,6 +120,25 @@ namespace NextGraphics.Models
 		{
 			CreateBitmaps();
 		}
+
+		#endregion
+
+		#region Events
+
+		/// <summary>
+		/// Raised when <see cref="OutputType"/> changes.
+		/// </summary>
+		public event EventHandler<OutputTypeChangedEventArgs> OutputTypeChanged;
+
+		/// <summary>
+		/// Raised when <see cref="GridWidth"/> value changes.
+		/// </summary>
+		public event EventHandler<SizeChangedEventArgs> GridWidthChanged;
+
+		/// <summary>
+		/// Raised when <see cref="GridHeight"/> value changes.
+		/// </summary>
+		public event EventHandler<SizeChangedEventArgs> GridHeightChanged;
 
 		#endregion
 
@@ -411,10 +491,81 @@ namespace NextGraphics.Models
 			return null;
 		}
 
+		#endregion
+
+		#region Default sizes
+
+		/// <summary>
+		/// Constraints the given proposed width to be within acceptable range based on project parameters.
+		/// </summary>
+		public int ConstrainItemWidth(int proposedWidth)
+		{
+			var defaultWidth = DefaultItemWidth();
+			var maxWidth = MaximumItemWidth();
+
+			if (proposedWidth < defaultWidth)
+			{
+				return defaultWidth;
+			}
+			else if (proposedWidth > maxWidth)
+			{
+				return maxWidth;
+			}
+			else
+			{
+				var referenceWidth = defaultWidth - 1;
+				return (proposedWidth + referenceWidth) & ~referenceWidth;
+			}
+		}
+
+		/// <summary>
+		/// Constraints the given proposed height to be within acceptable range based on project parameters.
+		/// </summary>
+		public int ConstrainItemHeight(int proposedHeight)
+		{
+			var defaultHeight = DefaultItemHeight();
+			var maxHeight = MaximumItemHeight();
+
+			if (proposedHeight < defaultHeight)
+			{
+				return defaultHeight;
+			}
+			else if (proposedHeight > maxHeight)
+			{
+				return maxHeight;
+			}
+			else
+			{
+				var referenceHeight = defaultHeight - 1;
+				return (proposedHeight + referenceHeight) & ~referenceHeight;
+			}
+		}
+
+		/// <summary>
+		/// Returns maximum item width (based on <see cref="OutputType"/> and possibly other values).
+		/// </summary>
+		public int MaximumItemWidth()
+		{
+			switch (OutputType)
+			{
+				case OutputType.Sprites: return 320;
+				case OutputType.Tiles: return 128;
+				default: return 16;
+			}
+		}
+
+		/// <summary>
+		/// Returns maximum item height (based on <see cref="OutputType"/> and possibly other values).
+		/// </summary>
+		public int MaximumItemHeight()
+		{
+			return MaximumItemWidth();
+		}
+
 		/// <summary>
 		/// Determines item width (based on <see cref="OutputType"/> and possibly other values).
 		/// </summary>
-		public int ItemWidth()
+		public int DefaultItemWidth()
 		{
 			// Note: atm this code is suited for ZX Spectrum Next.
 			switch (OutputType)
@@ -427,10 +578,10 @@ namespace NextGraphics.Models
 		/// <summary>
 		/// Determines item width (based on <see cref="OutputType"/> and possibly other values).
 		/// </summary>
-		public int ItemHeight()
+		public int DefaultItemHeight()
 		{
 			// Note: atm this code is suited for ZX Spectrum Next.
-			return ItemWidth();
+			return DefaultItemWidth();
 		}
 
 		#endregion
@@ -441,6 +592,30 @@ namespace NextGraphics.Models
 		{
 			BlocksBitmap = new Bitmap(128, 512, PixelFormat.Format24bppRgb);
 			CharsBitmap = new Bitmap(128, 256 * 16, PixelFormat.Format24bppRgb);
+		}
+
+		#endregion
+
+		#region Declarations
+
+		public class OutputTypeChangedEventArgs : EventArgs
+		{
+			public OutputTypeChangedEventArgs(OutputType type)
+			{
+				this.OutputType = type;
+			}
+
+			public OutputType OutputType { get; private set; }
+		}
+
+		public class SizeChangedEventArgs : EventArgs
+		{
+			public SizeChangedEventArgs(int size)
+			{
+				this.Size = size;
+			}
+
+			public int Size { get; private set; }
 		}
 
 		#endregion

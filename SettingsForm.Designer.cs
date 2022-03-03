@@ -426,6 +426,7 @@
 			this.commonHeightTextBox.Size = new System.Drawing.Size(40, 22);
 			this.commonHeightTextBox.TabIndex = 19;
 			this.commonHeightTextBox.Text = "0";
+			this.commonHeightTextBox.Leave += new System.EventHandler(this.commonHeightTextBox_Leave);
 			// 
 			// commonWidthTextBox
 			// 
@@ -435,6 +436,7 @@
 			this.commonWidthTextBox.Size = new System.Drawing.Size(40, 22);
 			this.commonWidthTextBox.TabIndex = 18;
 			this.commonWidthTextBox.Text = "0";
+			this.commonWidthTextBox.Leave += new System.EventHandler(this.commonWidthTextBox_Leave);
 			// 
 			// optionsTabPage
 			// 

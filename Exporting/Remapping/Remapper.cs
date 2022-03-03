@@ -57,7 +57,7 @@ namespace NextGraphics.Exporting.Remapping
 				Callbacks?.OnRemapDebug($"Starting remap{Environment.NewLine}");
 
 				Data.Clear();
-				Data.ObjectSize = Data.Model.ItemWidth();   // Note: this only works as long as item width is the same as height...
+				Data.ObjectSize = Data.Model.DefaultItemWidth();   // Note: this only works as long as item width is the same as height...
 				Data.BlockSize = CalculateBlockSize();
 				Data.ImageOffset = CalculateImageOffset();
 

@@ -79,15 +79,9 @@ namespace NextGraphics
 
 		private void settingsPanel_Load(object sender, EventArgs e)
 		{
-			switch (Model.OutputType)
-			{
-				case OutputType.Sprites:
-					commonSpritesRadioButton.Checked = true;
-					break;
-				case OutputType.Tiles:
-					commonTilemapRadioButton.Checked = true;
-					break;
-			}
+			CommonUpdateOutputTypeControls(Model.OutputType);
+			commonWidthTextBox.Text = Model.GridWidth.ToString();
+			commonHeightTextBox.Text = Model.GridHeight.ToString();
 			commonIgnoreCopiesCheckBox.Checked = Model.IgnoreCopies;
 			commonIgnoreMirroredXCheckBox.Checked = Model.IgnoreMirroredX;
 			commonIgnoreMirroredYCheckBox.Checked = Model.IgnoreMirroredY;
@@ -107,15 +101,19 @@ namespace NextGraphics
 			tilemapTilesAsImageTransparentFirstCheckBox.Checked = Model.TilesExportAsImageTransparent;
 			tilemapExportTypeComboBox.SelectedIndex = (int)Model.TilemapExportType;
 
-			SpritesApplyCenterPosition(Model.CenterPosition);
+			SpritesUpdateCenterPositionControls(Model.CenterPosition);
 			sprites4BitsCheckBox.Checked = Model.SpritesFourBit;
 			spritesReducedCheckBox.Checked = Model.SpritesReduced;
 			spritesAttributesAsTextCheckBox.Checked = Model.SpritesAttributesAsText;
 			spritesAsImageCheckBox.Checked = Model.SpritesExportAsImages;
 
-			UpdateOutputTypeNamingControls(Model.OutputType);
-			UpdateOutputTypeEnabledControls(Model.OutputType);
-			UpdateConditionallyEnabledControls();
+			OutputTypeTextChangingControls.Update(Model.OutputType);
+			OutputTypeEnabledControls.Update(Model.OutputType);
+			ConditionallyEnabledControls.Update();
+
+			Model.OutputTypeChanged += Model_OutputTypeChanged;
+			Model.GridWidthChanged += Model_GridWidthChanged;
+			Model.GridHeightChanged += Model_GridHeightChanged;
 		}
 
 		private void settingsPanel_FormClosing(object sender, FormClosingEventArgs e)
@@ -153,51 +151,100 @@ namespace NextGraphics
 
 		private void commonSpritesRadioButton_CheckedChanged(object sender, EventArgs e)
 		{
-			UpdateOutputTypeNamingControls(OutputType.Sprites);
-			UpdateOutputTypeEnabledControls(OutputType.Sprites);
+			var control = sender as RadioButton;
+			if (control.Checked)
+			{
+				Model.OutputType = OutputType.Sprites;
+				OutputTypeTextChangingControls.Update(Model.OutputType);
+				OutputTypeEnabledControls.Update(Model.OutputType);
+			}
 		}
 
 		private void commonTilemapRadioButton_CheckedChanged(object sender, EventArgs e)
 		{
-			UpdateOutputTypeNamingControls(OutputType.Tiles);
-			UpdateOutputTypeEnabledControls(OutputType.Tiles);
+			var control = sender as RadioButton;
+			if (control.Checked) {
+				Model.OutputType = OutputType.Tiles;
+				OutputTypeTextChangingControls.Update(Model.OutputType);
+				OutputTypeEnabledControls.Update(Model.OutputType);
+			}
+		}
+
+		private void commonWidthTextBox_Leave(object sender, EventArgs e)
+		{
+			if (int.TryParse(commonWidthTextBox.Text, out int size))
+			{
+				// Make sure arbitrary value is constrained within allowed range.
+				Model.GridWidth = Model.ConstrainItemWidth(size);
+
+				// Make sure UI reflects the actual value, in case it was constrained.
+				commonWidthTextBox.Text = Model.GridWidth.ToString();
+			}
+			else
+			{
+				// When unable to parse, leave original value.
+				commonWidthTextBox.Text = Model.GridWidth.ToString();
+			}
+		}
+
+		private void commonHeightTextBox_Leave(object sender, EventArgs e)
+		{
+			if (int.TryParse(commonHeightTextBox.Text, out int size))
+			{
+				// Make sure arbitrary value is constrained within allowed range.
+				Model.GridHeight = Model.ConstrainItemHeight(size);
+
+				// Make sure UI reflects the actual value.
+				commonHeightTextBox.Text = Model.GridHeight.ToString();
+			}
+			else
+			{
+				// When unable to parse, leave original value.
+				commonHeightTextBox.Text = Model.GridHeight.ToString();
+			}
 		}
 
 		#endregion
 
+		#region Model
+
+		private void Model_OutputTypeChanged(object sender, MainModel.OutputTypeChangedEventArgs e)
+		{
+			CommonUpdateOutputTypeControls(e.OutputType);
+		}
+
+		private void Model_GridWidthChanged(object sender, MainModel.SizeChangedEventArgs e)
+		{
+			// When model width changes, we should simply apply it to UI without any further handling
+			commonWidthTextBox.Text = e.Size.ToString();
+		}
+
+		private void Model_GridHeightChanged(object sender, MainModel.SizeChangedEventArgs e)
+		{
+			// When model height changes, we should simply apply it to UI without any further handling.
+			commonHeightTextBox.Text = e.Size.ToString();
+		}
+
 		#endregion
-
-		#region Controls handling
-
-		private void UpdateOutputTypeNamingControls(OutputType type)
-		{
-			foreach (var data in OutputTypeTextChangingControls)
-			{
-				data.Update(type);
-			}
-		}
-
-		private void UpdateOutputTypeEnabledControls(OutputType type)
-		{
-			foreach (var data in OutputTypeEnabledControls)
-			{
-				data.Update(type);
-			}
-		}
-
-		private void UpdateConditionallyEnabledControls()
-		{
-			foreach (var data in ConditionallyEnabledControls)
-			{
-				data.Update();
-			}
-		}
 
 		#endregion
 
 		#region Helpers
 
-		private void SpritesApplyCenterPosition(int center)
+		private void CommonUpdateOutputTypeControls(OutputType type)
+		{
+			switch (type)
+			{
+				case OutputType.Sprites:
+					commonSpritesRadioButton.Checked = true;
+					break;
+				case OutputType.Tiles:
+					commonTilemapRadioButton.Checked = true;
+					break;
+			}
+		}
+
+		private void SpritesUpdateCenterPositionControls(int center)
 		{
 			switch (center)
 			{
@@ -281,14 +328,19 @@ namespace NextGraphics
 
 		public static class Extensions
 		{
-			public static void Add(this List<OutputTypeNamingData> list, Action<OutputTypeNamingData.Builder> builder)
+			public static void Add(
+				this List<OutputTypeNamingData> list, 
+				Action<OutputTypeNamingData.Builder> builder)
 			{
 				var handler = new OutputTypeNamingData.Builder(list);
 
 				builder(handler);
 			}
 
-			public static void Add(this List<OutputTypeEnabledData> list, OutputType type, Action<OutputTypeEnabledData.Builder> builder)
+			public static void Add(
+				this List<OutputTypeEnabledData> list, 
+				OutputType type, 
+				Action<OutputTypeEnabledData.Builder> builder)
 			{
 				var item = new OutputTypeEnabledData(type);
 
@@ -298,7 +350,9 @@ namespace NextGraphics
 				list.Add(item);
 			}
 
-			public static void Add(this List<ConditionallyEnabledData> list, CheckBox parent, Action<ConditionallyEnabledData.Builder> builder)
+			public static void Add(
+				this List<ConditionallyEnabledData> list, 
+				CheckBox parent, Action<ConditionallyEnabledData.Builder> builder)
 			{
 				var item = new ConditionallyEnabledData(parent);
 
@@ -306,6 +360,35 @@ namespace NextGraphics
 				builder(handler);
 
 				list.Add(item);
+			}
+
+			public static void Update(
+				this List<OutputTypeNamingData> list, 
+				OutputType type)
+			{
+				foreach (var item in list)
+				{
+					item.Update(type);
+				}
+			}
+
+			public static void Update(
+				this List<OutputTypeEnabledData> list,
+				OutputType type)
+			{
+				foreach (var item in list)
+				{
+					item.Update(type);
+				}
+			}
+
+			public static void Update(
+				this List<ConditionallyEnabledData> list)
+			{
+				foreach (var item in list)
+				{
+					item.Update();
+				}
 			}
 		}
 
