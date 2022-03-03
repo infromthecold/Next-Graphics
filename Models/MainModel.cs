@@ -42,70 +42,66 @@ namespace NextGraphics.Models
 		public OutputType OutputType
 		{
 			get => _outputType;
-			set
+			set => RaiseRemapRequired(value, ref _outputType, () =>
 			{
-				if (value != _outputType)
+				if (OutputTypeChanged != null)
 				{
-					_outputType = value;
-
-					if (OutputTypeChanged != null)
-					{
-						OutputTypeChanged(this, new OutputTypeChangedEventArgs(_outputType));
-					}
-
-					GridWidth = ConstrainItemWidth(GridWidth);
-					GridHeight = ConstrainItemHeight(GridHeight);
-
-					RaiseRemapRequired();
+					OutputTypeChanged(this, new OutputTypeChangedEventArgs(value));
 				}
-			}
+
+				GridWidth = ConstrainItemWidth(GridWidth);
+				GridHeight = ConstrainItemHeight(GridHeight);
+
+			});
 		}
 		private OutputType _outputType = OutputType.Sprites;
 
 		public int GridWidth
 		{
 			get => _gridWidth;
-			set
+			set => RaiseRemapRequired(value, ref _gridWidth, () =>
 			{
-				if (value != _gridWidth)
+				if (GridWidthChanged != null)
 				{
-					_gridWidth = value;
+					GridWidthChanged(this, new SizeChangedEventArgs(value));
 
-					if (GridWidthChanged != null)
+					if (BlocksAcrossWidthProvider != null && value > 0)
 					{
-						GridWidthChanged(this, new SizeChangedEventArgs(_gridWidth));
+						var width = BlocksAcrossWidthProvider();
+						BlocksAcross = (int)Math.Floor((float)width / (float)value);
 					}
-
-					RaiseRemapRequired();
+					else
+					{
+						BlocksAcross = 0;
+					}
 				}
-			}
+			});
 		}
 		private int _gridWidth = 32;
 
 		public int GridHeight
 		{
 			get => _gridHeight;
-			set
+			set => RaiseRemapRequired(value, ref _gridHeight, () =>
 			{
-				if (value != _gridHeight)
+				if (GridHeightChanged != null)
 				{
-					_gridHeight = value;
-
-					if (GridHeightChanged != null)
-					{
-						GridHeightChanged(this, new SizeChangedEventArgs(_gridHeight));
-					}
-
-					RaiseRemapRequired();
+					GridHeightChanged(this, new SizeChangedEventArgs(_gridHeight));
 				}
-			}
+			});
 		}
 		private int _gridHeight = 32;
 
-		public int BlocsAcross
+		public int BlocksAcross
 		{
 			get => _blocksAcross;
-			set => RaiseRemapRequired(value, ref _blocksAcross);
+			set => RaiseRemapRequired(value, ref _blocksAcross, () =>
+			{
+				if (BlocksAcrossChanged != null)
+				{
+					BlocksAcrossChanged(this, new SizeChangedEventArgs(value));
+				}
+			});
 		}
 		private int _blocksAcross = 1;
 
@@ -198,6 +194,11 @@ namespace NextGraphics.Models
 		#region Events
 
 		/// <summary>
+		/// This is not event per-se, but it is a callback for just a single object that's responsible for providing number of blocks across value. It's called when relevant data changes. Implementor is expected to return the width of the bitmap into which blocks will be layed. The model will update <see cref="BlocksAcross"/> property as result and raise events as needed.
+		/// </summary>
+		public Func<int> BlocksAcrossWidthProvider { get; set; } = null;
+
+		/// <summary>
 		/// Raised when <see cref="OutputType"/> changes.
 		/// </summary>
 		public event EventHandler<OutputTypeChangedEventArgs> OutputTypeChanged;
@@ -211,6 +212,11 @@ namespace NextGraphics.Models
 		/// Raised when <see cref="GridHeight"/> value changes.
 		/// </summary>
 		public event EventHandler<SizeChangedEventArgs> GridHeightChanged;
+
+		/// <summary>
+		/// Raised when <see cref="BlocksAcross"/> value changes.
+		/// </summary>
+		public event EventHandler<SizeChangedEventArgs> BlocksAcrossChanged;
 
 		/// <summary>
 		/// Raised when any property that requires remap is changed. Note: this event may be raised very frequently, multiple times in succession (for example when loading data), so don't perform resource intensive operations in event handlers!
@@ -303,7 +309,7 @@ namespace NextGraphics.Models
 				node.WithAttribute("tilesImage", value => SpritesExportAsImages = bool.Parse(value));
 				node.WithAttribute("transBlock", value => TilesExportAsImageTransparent = bool.Parse(value));
 				node.WithAttribute("transTile", value => SpritesExportAsImageTransparent = bool.Parse(value));
-				node.WithAttribute("across", value => BlocsAcross = int.Parse(value));
+				node.WithAttribute("across", value => BlocksAcross = int.Parse(value));
 				node.WithAttribute("accurate", value => Accuracy = int.Parse(value));
 				node.WithAttribute("format", value => ImageFormat = (ImageFormat)int.Parse(value));
 				node.WithAttribute("PaletteFormat", value => PaletteFormat = (PaletteFormat)int.Parse(value));
@@ -407,7 +413,7 @@ namespace NextGraphics.Models
 			settingsNode.AddAttribute("tilesImage", SpritesExportAsImages);
 			settingsNode.AddAttribute("transBlock", TilesExportAsImageTransparent);
 			settingsNode.AddAttribute("transTile", SpritesExportAsImageTransparent);
-			settingsNode.AddAttribute("across", BlocsAcross.ToString());
+			settingsNode.AddAttribute("across", BlocksAcross.ToString());
 			settingsNode.AddAttribute("accurate", Accuracy.ToString());
 			settingsNode.AddAttribute("format", (int)ImageFormat);
 			settingsNode.AddAttribute("PaletteFormat", (int)PaletteFormat);
@@ -447,21 +453,6 @@ namespace NextGraphics.Models
 		#endregion
 
 		#region Data handling
-
-		/// <summary>
-		/// Updates <see cref="BlocsAcross"/> using the given output window width in pixels.
-		/// </summary>
-		public void UpdateBlocksAcross(int windowWidth)
-		{
-			if (GridWidth == 0)
-			{
-				BlocsAcross = 0;
-			}
-			else
-			{
-				BlocsAcross = (int)Math.Floor((float)windowWidth / GridWidth);
-			}
-		}
 
 		/// <summary>
 		/// Simpler variant for adding an image to the <see cref="Sources"/> list.
@@ -683,6 +674,9 @@ namespace NextGraphics.Models
 			CharsBitmap = new Bitmap(128, 256 * 16, PixelFormat.Format24bppRgb);
 		}
 
+		/// <summary>
+		/// Unconditionally raises <see cref="RemapRequired"/> event.
+		/// </summary>
 		private void RaiseRemapRequired()
 		{
 			if (RemapRequired != null)
@@ -691,12 +685,29 @@ namespace NextGraphics.Models
 			}
 		}
 
-		private void RaiseRemapRequired<T>(T value, ref T field)
+		/// <summary>
+		/// If the given value is different from current one (stored in given field), then the following happens in given order:
+		/// 
+		/// 1. the new value is assigned to the given field
+		/// 2. <see cref="onChange"/> is called (optional, only if not null)
+		/// 3. <see cref="RemapRequired"/> event is raised
+		/// 
+		/// If the value is the same, then nothing happens.
+		/// </summary>
+		private void RaiseRemapRequired<T>(T value, ref T field, Action onChange = null)
 		{
 			if (!Equals(value, field))
 			{
+				// First assign the new value to the field.
 				field = value;
 
+				// If on change action is provided, call it. This gives caller a chance to perform additional logic before `RemapRequired` event is raised. For example adjust some dependant values or raise another event.
+				if (onChange != null)
+				{
+					onChange();
+				}
+
+				// Finally raise the `RemapRequired` event.
 				RaiseRemapRequired();
 			}
 		}

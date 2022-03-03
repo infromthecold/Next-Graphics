@@ -94,7 +94,7 @@ namespace NextGraphics
 			optionsBinaryDataCheckBox.Checked = Model.BinaryOutput;
 			optionsBinaryFramesAttributesCheckBox.Checked = Model.BinaryFramesAttributesOutput;
 			optionsFileFormatComboBox.SelectedIndex = (int)Model.ImageFormat;
-			optionsTilesAcrossTextBox.Text = Model.BlocsAcross.ToString();
+			optionsTilesAcrossTextBox.Text = Model.BlocksAcross.ToString();
 
 			tilemapTransparentFirstCheckBox.Checked = Model.TransparentFirst;
 			tilemapTilesAsImageCheckBox.Checked = Model.TilesExportAsImage;
@@ -114,6 +114,7 @@ namespace NextGraphics
 			Model.OutputTypeChanged += Model_OutputTypeChanged;
 			Model.GridWidthChanged += Model_GridWidthChanged;
 			Model.GridHeightChanged += Model_GridHeightChanged;
+			Model.BlocksAcrossChanged += Model_BlocksAcrossChanged;
 		}
 
 		private void settingsPanel_FormClosing(object sender, FormClosingEventArgs e)
@@ -131,7 +132,7 @@ namespace NextGraphics
 			Model.BinaryOutput = optionsBinaryDataCheckBox.Checked;
 			Model.BinaryFramesAttributesOutput = optionsBinaryFramesAttributesCheckBox.Checked;
 			Model.ImageFormat = (ImageFormat)optionsFileFormatComboBox.SelectedIndex;
-			Model.BlocsAcross = int.Parse(optionsTilesAcrossTextBox.Text);
+			Model.BlocksAcross = int.Parse(optionsTilesAcrossTextBox.Text);
 
 			Model.TransparentFirst = tilemapTransparentFirstCheckBox.Checked;
 			Model.TilesExportAsImage = tilemapTilesAsImageCheckBox.Checked;
@@ -215,14 +216,17 @@ namespace NextGraphics
 
 		private void Model_GridWidthChanged(object sender, MainModel.SizeChangedEventArgs e)
 		{
-			// When model width changes, we should simply apply it to UI without any further handling
 			commonWidthTextBox.Text = e.Size.ToString();
 		}
 
 		private void Model_GridHeightChanged(object sender, MainModel.SizeChangedEventArgs e)
 		{
-			// When model height changes, we should simply apply it to UI without any further handling.
 			commonHeightTextBox.Text = e.Size.ToString();
+		}
+
+		private void Model_BlocksAcrossChanged(object sender, MainModel.SizeChangedEventArgs e)
+		{
+			optionsTilesAcrossTextBox.Text = e.Size.ToString();
 		}
 
 		#endregion

@@ -13,7 +13,7 @@ namespace NextGraphics.Models
 	public class SpriteInfo : IDisposable
 	{
 		public bool Disposed { get; private set; }
-		public BlockInfo[] infos { get; private set; }
+		public BlockInfo[] Infos { get; private set; }
 		public int Width { get; private set; }
 		public int Height { get; private set; }
 		public int Top { get; set; }
@@ -40,10 +40,10 @@ namespace NextGraphics.Models
 			Width = width;
 			Height = height;
 			Used = true;
-			infos = new BlockInfo[Size];
+			Infos = new BlockInfo[Size];
 			for (int b = 0; b < Size; b++)
 			{
-				infos[b] = new BlockInfo();
+				Infos[b] = new BlockInfo();
 			}
 			Disposed = false;
 		}
@@ -79,83 +79,83 @@ namespace NextGraphics.Models
 			bool hasTran)
 		{
 			int index = x + (y * Width);
-			infos[index].Repeated = repeated;
-			infos[index].FlippedX = flippedX;
-			infos[index].FlippedY = flippedY;
-			infos[index].Rotated = rotated;
-			infos[index].Transparent = transparent;
-			infos[index].PaletteOffset = paletteOffset;
-			infos[index].HasTransparent = hasTran;
+			Infos[index].Repeated = repeated;
+			Infos[index].FlippedX = flippedX;
+			Infos[index].FlippedY = flippedY;
+			Infos[index].Rotated = rotated;
+			Infos[index].Transparent = transparent;
+			Infos[index].PaletteOffset = paletteOffset;
+			Infos[index].HasTransparent = hasTran;
 			if ((originalId & 1) == 0)
 			{
-				infos[index].SecondHalf = false;
+				Infos[index].SecondHalf = false;
 			}
 			else
 			{
-				infos[index].SecondHalf = true;
+				Infos[index].SecondHalf = true;
 			}
-			infos[index].OriginalID = originalId;
-			infos[index].Position = new Point(x, y);
+			Infos[index].OriginalID = originalId;
+			Infos[index].Position = new Point(x, y);
 		}
 
 		public bool GetRepeated(int x, int y)
 		{
 			int index = x + (y * (Width));
-			return infos[index].Repeated;
+			return Infos[index].Repeated;
 		}
 
 		public byte GetPaletteOffset(int x, int y)
 		{
 			int index = x + (y * (Width));
-			return (byte)infos[index].PaletteOffset;
+			return (byte)Infos[index].PaletteOffset;
 		}
 
 		public bool GetFlippedX(int x, int y)
 		{
 			int index = x + (y * (Width));
-			return infos[index].FlippedX;
+			return Infos[index].FlippedX;
 		}
 
 		public bool GetFlippedY(int x, int y)
 		{
 			int index = x + (y * (Width));
-			return infos[index].FlippedY;
+			return Infos[index].FlippedY;
 		}
 
 		public bool GetRotated(int x, int y)
 		{
 			int index = x + (y * (Width));
-			return infos[index].Rotated;
+			return Infos[index].Rotated;
 		}
 
 		public Int16 GetId(int x, int y)
 		{
 			int index = x + (y * (Width));
-			return infos[index].OriginalID;
+			return Infos[index].OriginalID;
 		}
 
 		public Int16 GetXPos(int x, int y)
 		{
 			int index = x + (y * (Width));
-			return (Int16)infos[index].Position.X;
+			return (Int16)Infos[index].Position.X;
 		}
 
 		public Int16 GetYpos(int x, int y)
 		{
 			int index = x + (y * (Width));
-			return (Int16)infos[index].Position.Y;
+			return (Int16)Infos[index].Position.Y;
 		}
 
 		public bool GetTransparent(int x, int y)
 		{
 			int index = x + (y * (Width));
-			return infos[index].Transparent;
+			return Infos[index].Transparent;
 		}
 
 		public bool GetWhichHalf(int x, int y)
 		{
 			int index = x + (y * (Width));
-			return infos[index].SecondHalf;
+			return Infos[index].SecondHalf;
 		}
 
 		public int GetNonTransparentPixelsCount()

@@ -229,8 +229,8 @@ namespace NextGraphics.Exporting
 				{
 					appender(Color.Black, "\t");
 
-					var color = Data.Sprites[b].infos[chr].HasTransparent ? Color.Red : Color.Black;
-					appender(color, $"{Data.SortIndexes[Data.Sprites[b].infos[chr].OriginalID]},");
+					var color = Data.Sprites[b].Infos[chr].HasTransparent ? Color.Red : Color.Black;
+					appender(color, $"{Data.SortIndexes[Data.Sprites[b].Infos[chr].OriginalID]},");
 				}
 
 				appender(Color.Black, Environment.NewLine);
@@ -252,7 +252,7 @@ namespace NextGraphics.Exporting
 
 				for (int chr = 0; chr < count; chr++)
 				{
-					counts[Data.SortIndexes[Data.Sprites[b].infos[chr].OriginalID]]++;
+					counts[Data.SortIndexes[Data.Sprites[b].Infos[chr].OriginalID]]++;
 				}
 			}
 

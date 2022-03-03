@@ -21,7 +21,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 			int tileWidth = 16;
 			int tileHeight = tileWidth;
 
-			int across = Model.BlocsAcross;
+			int across = Model.BlocksAcross;
 			int down = (int)Math.Round((double)ExportData.CharactersCount / across);
 
 			Bitmap image = new Bitmap(tileWidth * across, tileHeight * down, PixelFormat.Format24bppRgb);

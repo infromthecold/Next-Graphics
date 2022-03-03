@@ -74,6 +74,8 @@ namespace NextGraphics
 				Name = Properties.Resources.NewProjectTitle
 			};
 
+			Model.BlocksAcrossWidthProvider = () => blocksPictureBox.Width;
+
 			Model.OutputTypeChanged += Model_OutputTypeChanged;
 			Model.GridWidthChanged += Model_GridWidthChanged;
 			Model.GridHeightChanged += Model_GridHeightChanged;
@@ -821,16 +823,11 @@ namespace NextGraphics
 
 		private void Model_GridWidthChanged(object sender, MainModel.SizeChangedEventArgs e)
 		{
-			// Update width text box.
 			blockWidthTextBox.Text = e.Size.ToString();
-
-			// Recalculate tiles across.
-			Model.UpdateBlocksAcross(blocksPictureBox.Width);
 		}
 
 		private void Model_GridHeightChanged(object sender, MainModel.SizeChangedEventArgs e)
 		{
-			// When model height changes, we should simply apply it to UI without any further handling.
 			blockHeightTextBox.Text = e.Size.ToString();
 		}
 
@@ -1329,12 +1326,12 @@ namespace NextGraphics
 				Model.GridHeight = Model.ConstrainItemHeight(size);
 
 				// Make sure UI reflects the actual value.
-				blockHeightTextBox.Text = Model.GridWidth.ToString();
+				blockHeightTextBox.Text = Model.GridHeight.ToString();
 			}
 			else
 			{
 				// When unable to parse, leave original value.
-				blockHeightTextBox.Text = Model.GridWidth.ToString();
+				blockHeightTextBox.Text = Model.GridHeight.ToString();
 			}
 
 			blocksPictureBox.Invalidate();

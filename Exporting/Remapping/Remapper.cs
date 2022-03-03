@@ -141,8 +141,9 @@ namespace NextGraphics.Exporting.Remapping
 
 							if (Data.Blocks[outBlock].IsTransparent(Data.Model.Palette.TransparentIndex))
 							{
-							// We only draw first transparent block.
-							Callbacks?.OnRemapDebug($"Block is transparent{Environment.NewLine}");
+								// We only draw first transparent block.
+								Callbacks?.OnRemapDebug($"Block is transparent{Environment.NewLine}");
+
 								if (outBlock > 0)
 								{
 									continue;
@@ -164,16 +165,18 @@ namespace NextGraphics.Exporting.Remapping
 
 							Callbacks?.OnRemapDisplayBlocksCount(outBlock);
 
-							if (Model.OutputType == OutputType.Tiles)
+							switch (Model.OutputType)
 							{
-								if (!IsSpriteDuplicated(outBlock, objectsPerGridX, objectsPerGridY))
-								{
+								case OutputType.Tiles:
+									if (!IsSpriteDuplicated(outBlock, objectsPerGridX, objectsPerGridY))
+									{
+										outBlock++;
+									}
+									break;
+
+								default:
 									outBlock++;
-								}
-							}
-							else
-							{
-								outBlock++;
+									break;
 							}
 
 							Callbacks?.OnRemapDebug($"- {Environment.NewLine}");
@@ -192,8 +195,7 @@ namespace NextGraphics.Exporting.Remapping
 
 					// On first pass we only handle transparent blocks.
 					PrepareCharacters(
-						(index, transparent) => transparent ? sortedIndex : -1,
-						() =>
+						(index, transparent) => transparent ? sortedIndex : -1, () => 
 						{
 							transparentCharactersCount++;
 							sortedIndex++;
@@ -201,8 +203,7 @@ namespace NextGraphics.Exporting.Remapping
 
 					// On second pass we only handle non-transparent blocks.
 					PrepareCharacters(
-						(index, transparent) => transparent ? -1 : sortedIndex,
-						() =>
+						(index, transparent) => transparent ? -1 : sortedIndex, () => 
 						{
 							sortedIndex++;
 						});
@@ -235,7 +236,7 @@ namespace NextGraphics.Exporting.Remapping
 					}
 
 					outXBlock++;
-					if (outXBlock >= Model.BlocsAcross)
+					if (outXBlock >= Model.BlocksAcross)
 					{
 						outXBlock = 0;
 						outYBlock++;
@@ -287,8 +288,11 @@ namespace NextGraphics.Exporting.Remapping
 					Data.Chars[indexForLoop] = null;
 				}
 
-				var charBitmap = new IndexedBitmap(objectSize, objectSize);
-				charBitmap.Transparent = tempData.Transparent;
+				var charBitmap = new IndexedBitmap(objectSize, objectSize)
+				{
+					Transparent = tempData.Transparent
+				};
+
 				Data.Chars[indexForLoop] = charBitmap;
 
 				for (int y = 0; y < tempData.Height; y++)
@@ -308,7 +312,6 @@ namespace NextGraphics.Exporting.Remapping
 
 		private void PrepareSpriteData(int x, int y)
 		{
-			// Returns true if sprite was created, false otherwise
 			for (short c = 0; c < outChar; c++)
 			{
 				var repeatResult = RepeatedCharType(c, x * objectSize, y * objectSize);
@@ -480,15 +483,15 @@ namespace NextGraphics.Exporting.Remapping
 
 			for (int chr = 0; chr < (Model.GridWidth / objectSize) * (Model.GridHeight / objectSize); chr++)
 			{
-				bool flipX = Data.Sprites[currentBlock].infos[chr].FlippedX;
-				bool flipY = Data.Sprites[currentBlock].infos[chr].FlippedY;
-				bool rotate = Data.Sprites[currentBlock].infos[chr].Rotated;
-				int id = Data.Sprites[currentBlock].infos[chr].OriginalID;
+				bool flipX = Data.Sprites[currentBlock].Infos[chr].FlippedX;
+				bool flipY = Data.Sprites[currentBlock].Infos[chr].FlippedY;
+				bool rotate = Data.Sprites[currentBlock].Infos[chr].Rotated;
+				int id = Data.Sprites[currentBlock].Infos[chr].OriginalID;
 				int sortedId = Data.SortIndexes[id];
 				Bitmap tempBitmap = new Bitmap(objectSize, objectSize);
 				RotateFlipType flips = RotateFlipType.RotateNoneFlipNone;
 
-				String debugString = "";
+				string debugString = "";
 
 				for (int y = 0; y < objectSize; y++)
 				{
@@ -538,16 +541,17 @@ namespace NextGraphics.Exporting.Remapping
 
 				tempBitmap.RotateFlip(flips);
 
-				if (Data.Sprites[currentBlock].infos[chr].Transparent == false)
+				if (Data.Sprites[currentBlock].Infos[chr].Transparent == false)
 				{
 					for (int y = 0; y < objectSize; y++)
 					{
 						for (int x = 0; x < objectSize; x++)
 						{
 							var pixelColor = tempBitmap.GetPixel(x, y);
+
 							destBitmap.SetPixel(
-								destRegion.X + (Data.Sprites[currentBlock].infos[chr].Position.X * objectSize) + x, 
-								destRegion.Y + (Data.Sprites[currentBlock].infos[chr].Position.Y * objectSize) + y, 
+								destRegion.X + (Data.Sprites[currentBlock].Infos[chr].Position.X * objectSize) + x, 
+								destRegion.Y + (Data.Sprites[currentBlock].Infos[chr].Position.Y * objectSize) + y, 
 								pixelColor);
 						}
 					}
@@ -559,8 +563,8 @@ namespace NextGraphics.Exporting.Remapping
 							new Font("Areial", 7.0f, FontStyle.Bold),
 							new SolidBrush(Color.White),
 							new Point(
-								destRegion.X + (Data.Sprites[currentBlock].infos[chr].Position.X * objectSize) - 2,
-								destRegion.Y + (Data.Sprites[currentBlock].infos[chr].Position.Y * objectSize) - 2));
+								destRegion.X + (Data.Sprites[currentBlock].Infos[chr].Position.X * objectSize) - 2,
+								destRegion.Y + (Data.Sprites[currentBlock].Infos[chr].Position.Y * objectSize) - 2));
 					}
 				}
 			}
@@ -624,11 +628,13 @@ namespace NextGraphics.Exporting.Remapping
 
 		private void RequestCharacterDisplay(int index)
 		{
-			var frame = new Rectangle();
-			frame.X = objectGridX * objectSize;
-			frame.Y = objectGridY * objectSize;
-			frame.Width = objectSize;
-			frame.Height = objectSize;
+			var frame = new Rectangle
+			{
+				X = objectGridX * objectSize,
+				Y = objectGridY * objectSize,
+				Width = objectSize,
+				Height = objectSize
+			};
 
 			Callbacks?.OnRemapDisplayChar(frame, Data.Chars[index]);
 
@@ -763,10 +769,10 @@ namespace NextGraphics.Exporting.Remapping
 			IndexedBitmap currentBlock = Data.Blocks[outBlock];
 			IndexedBitmap rotateData = new IndexedBitmap(objectSize, objectSize);
 
-			Func<IndexedBitmap, int, int, short> identicalPixelProvider = (bitmap, x, y) => bitmap.GetPixel(x, y);
-			Func<IndexedBitmap, int, int, short> flippedXPixelProvider = (bitmap, x, y) => bitmap.GetPixel((objectSize - 1) - x, y);
-			Func<IndexedBitmap, int, int, short> flippedYPixelProvider = (bitmap, x, y) => bitmap.GetPixel(x, (objectSize - 1) - y);
-			Func<IndexedBitmap, int, int, short> flippedXYPixelProvider = (bitmap, x, y) => bitmap.GetPixel((objectSize - 1) - x, (objectSize - 1) - y);
+			short identicalPixelProvider(IndexedBitmap bitmap, int x, int y) => bitmap.GetPixel(x, y);
+			short flippedXPixelProvider(IndexedBitmap bitmap, int x, int y) => bitmap.GetPixel((objectSize - 1) - x, y);
+			short flippedYPixelProvider(IndexedBitmap bitmap, int x, int y) => bitmap.GetPixel(x, (objectSize - 1) - y);
+			short flippedXYPixelProvider(IndexedBitmap bitmap, int x, int y) => bitmap.GetPixel((objectSize - 1) - x, (objectSize - 1) - y);
 
 			// does it have any transparent pixels?
 			if (Data.Model.TransparentFirst || Data.Model.OutputType == OutputType.Sprites)
@@ -798,11 +804,7 @@ namespace NextGraphics.Exporting.Remapping
 			samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref Data.TempData[character], identicalPixelProvider);
 			if (Data.Model.IgnoreTransparentPixels && hasTransparentPixels)
 			{
-				if (samePixels == objectSize * objectSize)
-				{
-					return BlockType.Repeated;
-				}
-				return BlockType.Original;
+				return samePixels == objectSize * objectSize ? BlockType.Repeated : BlockType.Original;
 			}
 
 			// if its close to original % and not containing transparent!
@@ -812,7 +814,6 @@ namespace NextGraphics.Exporting.Remapping
 			}
 
 			samePixels = objectSize * objectSize;
-
 			if (!Data.Model.IgnoreMirroredX)
 			{
 				samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref Data.TempData[character], flippedXPixelProvider);

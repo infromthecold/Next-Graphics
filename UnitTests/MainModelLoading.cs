@@ -316,7 +316,7 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(5, model.BlocsAcross);
+			Assert.AreEqual(5, model.BlocksAcross);
 		}
 
 		[TestMethod]

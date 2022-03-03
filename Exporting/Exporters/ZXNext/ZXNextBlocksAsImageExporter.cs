@@ -18,7 +18,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 
 		protected override void OnExport()
 		{
-			int accross = Model.BlocsAcross;
+			int accross = Model.BlocksAcross;
 			int down = (int)Math.Round((double)ExportData.BlocksCount / accross) + 1;
 
 			Bitmap image = new Bitmap(Model.GridWidth * accross, Model.GridHeight * down, PixelFormat.Format24bppRgb);

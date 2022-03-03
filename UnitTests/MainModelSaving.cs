@@ -234,8 +234,8 @@ namespace UnitTests
 		[TestMethod]
 		public void SettingsBlocksAccrossSaved()
 		{
-			SettingsRunner.Setup(model => model.BlocsAcross = 7).Verify("7", "across");
-			SettingsRunner.Setup(model => model.BlocsAcross = 83).Verify("83", "across");
+			SettingsRunner.Setup(model => model.BlocksAcross = 7).Verify("7", "across");
+			SettingsRunner.Setup(model => model.BlocksAcross = 83).Verify("83", "across");
 		}
 
 		[TestMethod]
