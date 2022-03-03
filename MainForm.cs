@@ -77,6 +77,7 @@ namespace NextGraphics
 			Model.OutputTypeChanged += Model_OutputTypeChanged;
 			Model.GridWidthChanged += Model_GridWidthChanged;
 			Model.GridHeightChanged += Model_GridHeightChanged;
+			Model.RemapRequired += Model_RemapRequired;
 
 			Exporter = new Exporter(Model, exportParameters);
 
@@ -90,8 +91,6 @@ namespace NextGraphics
 			toolStripProgressBar1.Maximum = 0;
 
 			ClearData();	// Clearing data will also take care of linking UI to fresh model data.
-			Model.UpdateBlocksAcross(blocksPictureBox.Width);
-
 			SetForm();
 
 			var imageFiltersBuilder = new DialogFilterBuilder();
@@ -822,14 +821,22 @@ namespace NextGraphics
 
 		private void Model_GridWidthChanged(object sender, MainModel.SizeChangedEventArgs e)
 		{
-			// When model width changes, we should simply apply it to UI without any further handling
+			// Update width text box.
 			blockWidthTextBox.Text = e.Size.ToString();
+
+			// Recalculate tiles across.
+			Model.UpdateBlocksAcross(blocksPictureBox.Width);
 		}
 
 		private void Model_GridHeightChanged(object sender, MainModel.SizeChangedEventArgs e)
 		{
 			// When model height changes, we should simply apply it to UI without any further handling.
 			blockHeightTextBox.Text = e.Size.ToString();
+		}
+
+		private void Model_RemapRequired(object sender, EventArgs e)
+		{
+			Exporter.Data.Clear();
 		}
 
 		#endregion
@@ -953,7 +960,6 @@ namespace NextGraphics
 			ClearData();
 
 			Model.Load(filename);
-			Model.UpdateBlocksAcross(blocksPictureBox.Width);
 
 			SetForm();
 			UpdateProjectListBox();
@@ -966,6 +972,51 @@ namespace NextGraphics
 				parallaxWindow.loadProject();
 			}
 #endif
+		}
+
+		private void SaveProject()
+		{
+			if (projectPath.Length == 0)
+			{
+				return;
+			}
+
+			using (XmlTextWriter writer = new XmlTextWriter(projectPath, Encoding.UTF8))
+			{
+				writer.Formatting = Formatting.Indented;
+				XmlDocument document = Model.Save(projectNode =>
+				{
+#if PROPRIETARY
+					projectNode.AppendChild(parallaxWindow.writeParallax(doc));
+#endif
+				});
+
+				document.WriteContentTo(writer);
+				writer.Flush();
+				writer.Close();
+			}
+		}
+
+		private void ClearData()
+		{
+			isPaletteSet = false;
+			projectPath = string.Empty;
+
+			Model.Clear();
+			Exporter.Data.Clear();
+
+			// We must establish the link to new bitmaps since we recreate them in Model when calling Clear.
+			ClearBitmap(Model.BlocksBitmap);
+			blocksPictureBox.Image = Model.BlocksBitmap;
+			blocksPictureBox.Height = Model.BlocksBitmap.Height;
+			blocksPictureBox.Width = Model.BlocksBitmap.Width;
+			blocksPictureBox.Invalidate(true);
+			blocksPictureBox.Refresh();
+
+			ClearBitmap(Model.CharsBitmap);
+			charsPictureBox.Image = Model.CharsBitmap;
+			charsPictureBox.Invalidate(true);
+			charsPictureBox.Refresh();
 		}
 
 		/// <summary>
@@ -1021,51 +1072,6 @@ namespace NextGraphics
 			AddNewSources(addTilemapsDialog.FileNames, file => SourceTilemap.Create(file));
 		}
 
-		private void SaveProject()
-		{
-			if (projectPath.Length == 0)
-			{
-				return;
-			}
-
-			using (XmlTextWriter writer = new XmlTextWriter(projectPath, Encoding.UTF8))
-			{
-				writer.Formatting = Formatting.Indented;
-				XmlDocument document = Model.Save(projectNode =>
-				{
-#if PROPRIETARY
-					projectNode.AppendChild(parallaxWindow.writeParallax(doc));
-#endif
-				});
-
-				document.WriteContentTo(writer);
-				writer.Flush();
-				writer.Close();
-			}
-		}
-
-		private void ClearData()
-		{
-			isPaletteSet = false;
-			projectPath = string.Empty;
-
-			Model.Clear();
-			Exporter.Data.Clear();
-
-			// We must establish the link to new bitmaps since we recreate them in Model when calling Clear.
-			ClearBitmap(Model.BlocksBitmap);
-			blocksPictureBox.Image = Model.BlocksBitmap;
-			blocksPictureBox.Height = Model.BlocksBitmap.Height;
-			blocksPictureBox.Width = Model.BlocksBitmap.Width;
-			blocksPictureBox.Invalidate(true);
-			blocksPictureBox.Refresh();
-
-			ClearBitmap(Model.CharsBitmap);
-			charsPictureBox.Image = Model.CharsBitmap;
-			charsPictureBox.Invalidate(true);
-			charsPictureBox.Refresh();
-		}
-
 		private void AddNewSources(string[] filenames, Func<string, ISourceFile> handler)
 		{
 			var failedFiles = new List<string>();
@@ -1105,7 +1111,7 @@ namespace NextGraphics
 				MessageBox.Show($"Errors were detected in:{newline}{names}", "Errors Detected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return;
 			}
-			
+
 			if (rejected)
 			{
 				MessageBox.Show("Duplicate files were detected and were ignored", "Duplicates Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1217,6 +1223,9 @@ namespace NextGraphics
 			Refresh();
 		}
 
+		/// <summary>
+		/// Updates project/output type controls to reflect the given <see cref="OutputType"/>.
+		/// </summary>
 		private void UpdateOutputTypeControls(OutputType type)
 		{
 			switch (type)
@@ -1304,8 +1313,6 @@ namespace NextGraphics
 				// When unable to parse, leave original value.
 				blockWidthTextBox.Text = Model.GridWidth.ToString();
 			}
-
-			Model.UpdateBlocksAcross(blocksPictureBox.Width);
 
 			blocksPictureBox.Invalidate();
 			blocksPictureBox.Refresh();

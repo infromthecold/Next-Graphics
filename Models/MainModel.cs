@@ -19,25 +19,9 @@ namespace NextGraphics.Models
 		public PaletteFormat PaletteFormat { get; set; } = PaletteFormat.Next8Bit;
 		public TilemapExportType TilemapExportType { get; set; } = TilemapExportType.AttributesIndexAsWord;
 
-		public bool IgnoreCopies { get; set; } = false;
-		public bool IgnoreMirroredX { get; set; } = false;
-		public bool IgnoreMirroredY { get; set; } = false;
-		public bool IgnoreRotated { get; set; } = false;
-		public bool IgnoreTransparentPixels { get; set; } = false;
-
-		public int CenterPosition { get; set; } = 4;
-		public int BlocsAcross { get; set; } = 1;
-		public int Accuracy { get; set; } = 100;
-
-		public bool TransparentFirst { get; set; } = false;
 		public bool BinaryOutput { get; set; } = false;
-		public bool BinaryFramesAttributesOutput { get; set; } = false;
-
 		public bool TilesExportAsImage { get; set; } = false;
-		public bool TilesExportAsImageTransparent { get; set; } = false;
 
-		public bool SpritesFourBit { get; set; } = false;
-		public bool SpritesReduced { get; set; } = false;
 		public bool SpritesAttributesAsText { get; set; } = false;
 		public bool SpritesExportAsImages { get; set; } = false;
 		public bool SpritesExportAsImageTransparent { get; set; } = false;
@@ -71,6 +55,8 @@ namespace NextGraphics.Models
 
 					GridWidth = ConstrainItemWidth(GridWidth);
 					GridHeight = ConstrainItemHeight(GridHeight);
+
+					RaiseRemapRequired();
 				}
 			}
 		}
@@ -89,6 +75,8 @@ namespace NextGraphics.Models
 					{
 						GridWidthChanged(this, new SizeChangedEventArgs(_gridWidth));
 					}
+
+					RaiseRemapRequired();
 				}
 			}
 		}
@@ -107,19 +95,103 @@ namespace NextGraphics.Models
 					{
 						GridHeightChanged(this, new SizeChangedEventArgs(_gridHeight));
 					}
+
+					RaiseRemapRequired();
 				}
 			}
 		}
 		private int _gridHeight = 32;
 
-		#endregion
-
-		#region Initialization & Disposal
-
-		public MainModel()
+		public int BlocsAcross
 		{
-			CreateBitmaps();
+			get => _blocksAcross;
+			set => RaiseRemapRequired(value, ref _blocksAcross);
 		}
+		private int _blocksAcross = 1;
+
+		public bool IgnoreCopies
+		{
+			get => _ignoreCopies;
+			set => RaiseRemapRequired(value, ref _ignoreCopies);
+		}
+		private bool _ignoreCopies = false;
+
+		public bool IgnoreMirroredX
+		{
+			get => _ignoreMirroredX;
+			set => RaiseRemapRequired(value, ref _ignoreMirroredX);
+		}
+		private bool _ignoreMirroredX = false;
+
+		public bool IgnoreMirroredY
+		{
+			get => _ignoreMirroredY;
+			set => RaiseRemapRequired(value, ref _ignoreMirroredY);
+		}
+		private bool _ignoreMirroredY = false;
+
+		public bool IgnoreRotated
+		{
+			get => _ignoreRotated;
+			set => RaiseRemapRequired(value, ref _ignoreRotated);
+		}
+		private bool _ignoreRotated = false;
+
+		public bool IgnoreTransparentPixels
+		{
+			get => _ignoreTransparentPixels;
+			set => RaiseRemapRequired<bool>(value, ref _ignoreTransparentPixels);
+		}
+		private bool _ignoreTransparentPixels = false;
+
+		public int Accuracy
+		{
+			get => _accuracy;
+			set => RaiseRemapRequired(value, ref _accuracy);
+		}
+		private int _accuracy = 100;
+
+		public int CenterPosition
+		{
+			get => _centerPosition;
+			set => RaiseRemapRequired(value, ref _centerPosition);
+		}
+		private int _centerPosition = 4;
+
+		public bool TransparentFirst
+		{
+			get => _transparentFirst;
+			set => RaiseRemapRequired(value, ref _transparentFirst);
+		}
+		private bool _transparentFirst = false;
+
+		public bool SpritesFourBit
+		{
+			get => _spritesFourBit;
+			set => RaiseRemapRequired(value, ref _spritesFourBit);
+		}
+		private bool _spritesFourBit = false;
+
+		public bool SpritesReduced
+		{
+			get => _spritesReduced;
+			set => RaiseRemapRequired(value, ref _spritesReduced);
+		}
+		private bool _spritesReduced = false;
+
+		public bool BinaryFramesAttributesOutput
+		{
+			get => _binaryFramesAttributesOutput;
+			set => RaiseRemapRequired<bool>(value, ref _binaryFramesAttributesOutput);
+		}
+		private bool _binaryFramesAttributesOutput = false;
+
+		public bool TilesExportAsImageTransparent
+		{
+			get => _tilesExportAsImageTransparent;
+			set => RaiseRemapRequired(value, ref _tilesExportAsImageTransparent);
+		}
+		private bool _tilesExportAsImageTransparent = false;
 
 		#endregion
 
@@ -139,6 +211,20 @@ namespace NextGraphics.Models
 		/// Raised when <see cref="GridHeight"/> value changes.
 		/// </summary>
 		public event EventHandler<SizeChangedEventArgs> GridHeightChanged;
+
+		/// <summary>
+		/// Raised when any property that requires remap is changed. Note: this event may be raised very frequently, multiple times in succession (for example when loading data), so don't perform resource intensive operations in event handlers!
+		/// </summary>
+		public event EventHandler RemapRequired;
+
+		#endregion
+
+		#region Initialization & Disposal
+
+		public MainModel()
+		{
+			CreateBitmaps();
+		}
 
 		#endregion
 
@@ -383,6 +469,7 @@ namespace NextGraphics.Models
 		public void AddSource(ISourceFile source)
 		{
 			Sources.Add(source);
+			RaiseRemapRequired();
 		}
 
 		/// <summary>
@@ -404,6 +491,7 @@ namespace NextGraphics.Models
 			item.Dispose();
 
 			Sources.RemoveAt(index);
+			RaiseRemapRequired();
 		}
 
 		/// <summary>
@@ -420,6 +508,7 @@ namespace NextGraphics.Models
 			Palette.Clear();
 
 			CreateBitmaps();
+			RaiseRemapRequired();
 		}
 
 		#endregion
@@ -592,6 +681,24 @@ namespace NextGraphics.Models
 		{
 			BlocksBitmap = new Bitmap(128, 512, PixelFormat.Format24bppRgb);
 			CharsBitmap = new Bitmap(128, 256 * 16, PixelFormat.Format24bppRgb);
+		}
+
+		private void RaiseRemapRequired()
+		{
+			if (RemapRequired != null)
+			{
+				RemapRequired(this, new EventArgs());
+			}
+		}
+
+		private void RaiseRemapRequired<T>(T value, ref T field)
+		{
+			if (!Equals(value, field))
+			{
+				field = value;
+
+				RaiseRemapRequired();
+			}
 		}
 
 		#endregion
