@@ -12,8 +12,9 @@ using System.Globalization;
 using NextGraphics.Models;
 using NextGraphics.Exporting;
 using NextGraphics.Exporting.Common;
-using System.Threading.Tasks;
+using NextGraphics.Main;
 using NextGraphics.Utils;
+using System.Threading.Tasks;
 using System.Linq;
 
 namespace NextGraphics
@@ -1425,31 +1426,35 @@ namespace NextGraphics
 		#endregion
 	}
 
-	internal static class Extensions
+	// namespace so we can use simply `Extensions` for class name without clashing with other extensions in other files...
+	namespace Main
 	{
-		public static string ToProjectItemTitle(this string name, string prefix = " ")
+		internal static class Extensions
 		{
-			return $"{prefix} {name}";
-		}
-
-		public static string ToProjectItemTitle(this ISourceFile file)
-		{
-			string prefix;
-
-			if (file is SourceImage)
+			public static string ToProjectItemTitle(this string name, string prefix = " ")
 			{
-				prefix = "🏔️";
-			}
-			else if (file is SourceTilemap)
-			{
-				prefix = "🧱";
-			}
-			else
-			{
-				prefix = " ";
+				return $"{prefix} {name}";
 			}
 
-			return Path.GetFileName(file.Filename).ToProjectItemTitle(prefix);
+			public static string ToProjectItemTitle(this ISourceFile file)
+			{
+				string prefix;
+
+				if (file is SourceImage)
+				{
+					prefix = "🏔️";
+				}
+				else if (file is SourceTilemap)
+				{
+					prefix = "🧱";
+				}
+				else
+				{
+					prefix = " ";
+				}
+
+				return Path.GetFileName(file.Filename).ToProjectItemTitle(prefix);
+			}
 		}
 	}
 }
