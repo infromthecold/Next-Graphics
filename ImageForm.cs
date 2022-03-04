@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NextGraphics.Utils;
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,7 +23,7 @@ namespace NextGraphics
 		private double pictureHeight;
 		private double pictureRatio;
 		private double imageRatio;
-		private double maginNumber;
+		private double magicNumber;
 		private double realPictureHeight;
 		private double realPictureWidth;
 		private double windowScale;
@@ -83,34 +85,7 @@ namespace NextGraphics
 				sourcePictureBox.Image.Height,		// height of source rectangle
 				GraphicsUnit.Pixel);
 
-			Pen pen = new Pen(Color.Black);
-			float[] dashValues = { 4, 2 };
-			pen.DashPattern = dashValues;
-
-			// horizontal lines
-			Point fromLine = new Point();
-			Point tooLine = new Point();
-			int xScale = (int)(blockXSize * windowScaleX);
-			int yScale = (int)(blockYSize * windowScaleY);
-			for (int y = 0; y < sourcePictureBox.Image.Height / blockYSize; ++y)
-			{
-				fromLine.X = 0;
-				fromLine.Y = y * yScale;
-				tooLine.X = sourcePictureBox.Image.Width * xScale;
-				tooLine.Y = y * yScale;
-
-				g.DrawLine(pen, fromLine.X, fromLine.Y, tooLine.X, tooLine.Y);
-			}
-
-			// verticle lines
-			for (int x = 0; x < sourcePictureBox.Image.Width / blockXSize; ++x)
-			{
-				fromLine.X = x * xScale;
-				fromLine.Y = 0;
-				tooLine.X = x * xScale;
-				tooLine.Y = sourcePictureBox.Image.Height * yScale;
-				g.DrawLine(pen, fromLine.X, fromLine.Y, tooLine.X, tooLine.Y);
-			}
+			sourcePictureBox.Image.Render(e.Graphics, blockXSize, blockYSize, windowScaleX, windowScaleY);
 		}
 
 		private void sourceImagePanel_Resize(object sender, EventArgs e)
@@ -218,10 +193,10 @@ namespace NextGraphics
 
 			pictureRatio = (float)pictureWidth / pictureHeight;
 			imageRatio = (float)((float)sourcePictureBox.Image.Width / (float)sourcePictureBox.Image.Height);
-			maginNumber = imageRatio / pictureRatio;
+			magicNumber = imageRatio / pictureRatio;
 
-			realPictureHeight = sourcePictureBox.Image.Height / maginNumber;
-			realPictureWidth = sourcePictureBox.Image.Width / maginNumber;
+			realPictureHeight = sourcePictureBox.Image.Height / magicNumber;
+			realPictureWidth = sourcePictureBox.Image.Width / magicNumber;
 
 			windowScaleX = (pictureWidth / (float)sourcePictureBox.Image.Width);
 			windowScaleY = (pictureHeight / (float)sourcePictureBox.Image.Height);

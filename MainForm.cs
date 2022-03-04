@@ -59,7 +59,7 @@ namespace NextGraphics
 		private readonly NumberFormatInfo numberFormatInfo = new NumberFormatInfo();
 
 #if DEBUG_WINDOW
-		public	DEBUGFORM		DEBUG_WINDOW;
+		public DebugForm debugForm;
 #endif
 
 		#region Initialization & Disposal
@@ -87,8 +87,8 @@ namespace NextGraphics
 			InitializeComponent();
 
 #if DEBUG_WINDOW
-			DEBUG_WINDOW = new DEBUGFORM();
-			DEBUG_WINDOW.Show();
+			debugForm = new DebugForm();
+			debugForm.Show();
 #endif
 			toolStripProgressBar1.Minimum = 0;
 			toolStripProgressBar1.Maximum = 0;
@@ -140,10 +140,10 @@ namespace NextGraphics
 
 		public void OnRemapStarted()
 		{
-			ClearBitmap(Model.BlocksBitmap);
-			ClearBitmap(Model.CharsBitmap);
+			Model.BlocksBitmap.Clear();
+			Model.CharsBitmap.Clear();
 #if DEBUG_WINDOW
-			ClearBitmap(DEBUG_WINDOW.DEBUG_IMAGE);
+			debugForm.ClearImage();
 #endif
 
 			Invoke(new Action(() =>
@@ -182,8 +182,8 @@ namespace NextGraphics
 				toolStripProgressBar1.Maximum = 0;
 
 #if DEBUG_WINDOW
-				DEBUG_WINDOW.Invalidate(true);
-				DEBUG_WINDOW.Update();
+				debugForm.Invalidate(true);
+				debugForm.Update();
 #endif
 			}));
 		}
@@ -194,7 +194,7 @@ namespace NextGraphics
 			{
 				bitmap.CopyTo(Model.Palette, frame, Model.CharsBitmap);
 #if DEBUG_WINDOW
-				bitmap.CopyTo(Model.Palette, frame, DEBUG_WINDOW.DEBUG_IMAGE);
+				debugForm.CopyImage(Model.Palette, frame, bitmap);
 #endif
 			}));
 		}
@@ -634,30 +634,10 @@ namespace NextGraphics
 
 		private void charsPictureBox_Paint(object sender, PaintEventArgs e)
 		{
-			// Paints the grid on the sprites/characters display.
-			Graphics g = e.Graphics;
-			Pen pen = new Pen(Color.Black);
-			float[] dashValues = { 1, 1 };
+			var gridWidth = Model.DefaultItemWidth();
+			var gridHeight = Model.DefaultItemHeight();
 
-			int divLines = 8;
-			if (Model.OutputType == OutputType.Sprites)
-			{
-				divLines = 16;
-			}
-
-			pen.DashPattern = dashValues;
-
-			// horizontal lines
-			for (int y = 0; y < (blocksPictureBox.Image.Height / divLines) + 1; ++y)
-			{
-				g.DrawLine(pen, 0, y * divLines, blocksPictureBox.Image.Width, y * divLines);
-			}
-
-			// verticle lines
-			for (int x = 0; x < (blocksPictureBox.Image.Width / divLines) + 1; ++x)
-			{
-				g.DrawLine(pen, x * divLines, 0, x * divLines, blocksPictureBox.Image.Height);
-			}
+			charsPictureBox.Image.Render(e.Graphics, gridWidth, gridHeight);
 		}
 
 		private void charsPictureBox_Click(object sender, EventArgs e)
@@ -679,24 +659,7 @@ namespace NextGraphics
 
 		private void blocksPictureBox_Paint(object sender, PaintEventArgs e)
 		{
-			// Paints the grid on the object/blocks display.
-			Graphics g = e.Graphics;
-			Pen pen = new Pen(Color.Black);
-			float[] dashValues = { 4, 2 };
-
-			pen.DashPattern = dashValues;
-
-			// horizontal lines
-			for (int y = 0; y < (blocksPictureBox.Image.Height / Model.GridHeight) + 1; ++y)
-			{
-				g.DrawLine(pen, 0, y * Model.GridHeight, blocksPictureBox.Image.Width, y * Model.GridHeight);
-			}
-
-			// verticle lines
-			for (int x = 0; x < (blocksPictureBox.Image.Width / Model.GridWidth) + 1; ++x)
-			{
-				g.DrawLine(pen, x * Model.GridWidth, 0, x * Model.GridWidth, blocksPictureBox.Image.Height);
-			}
+			blocksPictureBox.Image.Render(e.Graphics, Model.GridWidth, Model.GridHeight);
 		}
 
 		private void blocksPictureBox_Click(object sender, EventArgs e)
@@ -1004,14 +967,14 @@ namespace NextGraphics
 			Exporter.Data.Clear();
 
 			// We must establish the link to new bitmaps since we recreate them in Model when calling Clear.
-			ClearBitmap(Model.BlocksBitmap);
+			Model.BlocksBitmap.Clear();
 			blocksPictureBox.Image = Model.BlocksBitmap;
 			blocksPictureBox.Height = Model.BlocksBitmap.Height;
 			blocksPictureBox.Width = Model.BlocksBitmap.Width;
 			blocksPictureBox.Invalidate(true);
 			blocksPictureBox.Refresh();
 
-			ClearBitmap(Model.CharsBitmap);
+			Model.CharsBitmap.Clear();
 			charsPictureBox.Image = Model.CharsBitmap;
 			charsPictureBox.Invalidate(true);
 			charsPictureBox.Refresh();
@@ -1278,18 +1241,6 @@ namespace NextGraphics
 			if (removeNames.Count > 0)
 			{
 				MessageBox.Show("Some images have been rejected as the image format is not supported", "Not Supported", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-			}
-		}
-
-		/// <summary>
-		/// Clears the given bitmap.
-		/// </summary>
-		private void ClearBitmap(Bitmap thisBitmap)
-		{
-			using (Graphics gfx = Graphics.FromImage(thisBitmap))
-			using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 255, 0, 255)))
-			{
-				gfx.FillRectangle(brush, 0, 0, thisBitmap.Width, thisBitmap.Height);
 			}
 		}
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NextGraphics.Models.Model;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -739,74 +740,77 @@ namespace NextGraphics.Models
 		#endregion
 	}
 
-	static class XmlExtensions
+	namespace Model
 	{
-		public static bool WithNodes(this XmlDocument document, string path, Action<XmlNodeList> handler)
+		static class Extensions
 		{
-			var nodes = document.SelectNodes(path);
-			if (nodes == null || nodes.Count == 0) return false;
-
-			handler(nodes);
-			return true;
-		}
-
-		public static bool WithNode(this XmlDocument document, string path, Action<XmlNode> handler)
-		{
-			var node = document.SelectSingleNode(path);
-			if (node == null) return false;
-
-			handler(node);
-			return true;
-		}
-
-		public static bool WithAttribute(this XmlNode node, string name, Action<string> handler)
-		{
-			var attribute = node.Attributes[name];
-			if (attribute == null) return false;
-
-			handler(attribute.Value);
-			return true;
-		}
-
-		public static string Attribute(this XmlNode node, string name, string defaultValue)
-		{
-			string result = defaultValue;
-
-			node.WithAttribute(name, value =>
+			public static bool WithNodes(this XmlDocument document, string path, Action<XmlNodeList> handler)
 			{
-				result = value;
-			});
+				var nodes = document.SelectNodes(path);
+				if (nodes == null || nodes.Count == 0) return false;
 
-			return result;
-		}
+				handler(nodes);
+				return true;
+			}
 
-		public static XmlNode AddNode(this XmlNode node, string name)
-		{
-			XmlNode result = node.OwnerDocument.CreateElement(name);
+			public static bool WithNode(this XmlDocument document, string path, Action<XmlNode> handler)
+			{
+				var node = document.SelectSingleNode(path);
+				if (node == null) return false;
 
-			node.AppendChild(result);
+				handler(node);
+				return true;
+			}
 
-			return result;
-		}
+			public static bool WithAttribute(this XmlNode node, string name, Action<string> handler)
+			{
+				var attribute = node.Attributes[name];
+				if (attribute == null) return false;
 
-		public static XmlAttribute AddAttribute(this XmlNode node, string name, string value)
-		{
-			XmlAttribute attr = node.OwnerDocument.CreateAttribute(name);
-			attr.Value = value;
+				handler(attribute.Value);
+				return true;
+			}
 
-			node.Attributes.Append(attr);
+			public static string Attribute(this XmlNode node, string name, string defaultValue)
+			{
+				string result = defaultValue;
 
-			return attr;
-		}
+				node.WithAttribute(name, value =>
+				{
+					result = value;
+				});
 
-		public static XmlAttribute AddAttribute(this XmlNode node, string name, int value)
-		{
-			return AddAttribute(node, name, value.ToString());
-		}
+				return result;
+			}
 
-		public static XmlAttribute AddAttribute(this XmlNode node, string name, bool value)
-		{
-			return AddAttribute(node, name, value ? "true" : "false");
+			public static XmlNode AddNode(this XmlNode node, string name)
+			{
+				XmlNode result = node.OwnerDocument.CreateElement(name);
+
+				node.AppendChild(result);
+
+				return result;
+			}
+
+			public static XmlAttribute AddAttribute(this XmlNode node, string name, string value)
+			{
+				XmlAttribute attr = node.OwnerDocument.CreateAttribute(name);
+				attr.Value = value;
+
+				node.Attributes.Append(attr);
+
+				return attr;
+			}
+
+			public static XmlAttribute AddAttribute(this XmlNode node, string name, int value)
+			{
+				return AddAttribute(node, name, value.ToString());
+			}
+
+			public static XmlAttribute AddAttribute(this XmlNode node, string name, bool value)
+			{
+				return AddAttribute(node, name, value ? "true" : "false");
+			}
 		}
 	}
 }

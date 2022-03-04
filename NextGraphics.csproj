@@ -133,11 +133,11 @@
     <Compile Include="AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DEBUGFORM.cs">
+    <Compile Include="DebugForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DEBUGFORM.Designer.cs">
-      <DependentUpon>DEBUGFORM.cs</DependentUpon>
+    <Compile Include="DebugForm.Designer.cs">
+      <DependentUpon>DebugForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Exporting\Common\ExportCallbacks.cs" />
     <Compile Include="Exporting\Common\ExportData.cs" />
@@ -228,12 +228,13 @@
     <Compile Include="ImageForm.Designer.cs">
       <DependentUpon>ImageForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\CommonExtensions.cs" />
     <Compile Include="Utils\DialogFilterBuilder.cs" />
     <EmbeddedResource Include="AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DEBUGFORM.resx">
-      <DependentUpon>DEBUGFORM.cs</DependentUpon>
+    <EmbeddedResource Include="DebugForm.resx">
+      <DependentUpon>DebugForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>
