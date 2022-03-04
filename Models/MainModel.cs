@@ -65,7 +65,6 @@ namespace NextGraphics.Models
 				if (GridWidthChanged != null)
 				{
 					GridWidthChanged(this, new SizeChangedEventArgs(value));
-
 					if (BlocksAcrossWidthProvider != null && value > 0)
 					{
 						var width = BlocksAcrossWidthProvider();
@@ -96,8 +95,9 @@ namespace NextGraphics.Models
 		public int BlocksAcross
 		{
 			get => _blocksAcross;
-			set => RaiseRemapRequired(value, ref _blocksAcross, () =>
+			set => RaiseRemapRequired(value > 0 ? value : 1, ref _blocksAcross, () =>
 			{
+				// Note: we don't allow value of 0 to be written. It happens when grid width/height are large enough and will mess up exporter.
 				if (BlocksAcrossChanged != null)
 				{
 					BlocksAcrossChanged(this, new SizeChangedEventArgs(value));
@@ -671,8 +671,8 @@ namespace NextGraphics.Models
 
 		private void CreateBitmaps()
 		{
-			BlocksBitmap = new Bitmap(128, 512, PixelFormat.Format24bppRgb);
-			CharsBitmap = new Bitmap(128, 256 * 16, PixelFormat.Format24bppRgb);
+			BlocksBitmap = new Bitmap(256, 512, PixelFormat.Format24bppRgb);
+			CharsBitmap = new Bitmap(256, 256 * 16, PixelFormat.Format24bppRgb);
 		}
 
 		/// <summary>

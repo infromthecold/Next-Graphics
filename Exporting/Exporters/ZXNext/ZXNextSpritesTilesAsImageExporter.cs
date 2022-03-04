@@ -18,11 +18,11 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 
 		protected override void OnExport()
 		{
-			int tileWidth = 16;
-			int tileHeight = tileWidth;
+			int tileWidth = Math.Max(Model.DefaultItemWidth(), Model.GridWidth);
+			int tileHeight = Math.Max(Model.DefaultItemHeight(), Model.GridHeight);
 
 			int across = Model.BlocksAcross;
-			int down = (int)Math.Round((double)ExportData.CharactersCount / across);
+			int down = Math.Max(1, (int)Math.Round((double)ExportData.CharactersCount / across));
 
 			Bitmap image = new Bitmap(tileWidth * across, tileHeight * down, PixelFormat.Format24bppRgb);
 

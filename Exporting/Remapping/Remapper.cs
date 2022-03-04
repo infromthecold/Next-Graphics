@@ -51,13 +51,11 @@ namespace NextGraphics.Exporting.Remapping
 		{
 			try
 			{
-				Data.IsRemapped = false;
-
 				Callbacks?.OnRemapStarted();
 				Callbacks?.OnRemapDebug($"Starting remap{Environment.NewLine}");
 
 				Data.Clear();
-				Data.ObjectSize = Data.Model.DefaultItemWidth();   // Note: this only works as long as item width is the same as height...
+				Data.ObjectSize = Math.Max(Data.Model.DefaultItemWidth(), Math.Max(Data.Model.GridWidth, Data.Model.GridHeight));	// Note: this only works as long as item width is the same as height...
 				Data.BlockSize = CalculateBlockSize();
 				Data.ImageOffset = CalculateImageOffset();
 
@@ -256,10 +254,6 @@ namespace NextGraphics.Exporting.Remapping
 				Data.IsRemapped = true;
 
 				Callbacks?.OnRemapDisplayCharactersCount(outChar, transparentCharactersCount);
-			}
-			catch (Exception e)
-			{
-				throw e;
 			}
 			finally
 			{

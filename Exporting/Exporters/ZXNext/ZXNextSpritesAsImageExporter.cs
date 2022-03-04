@@ -24,8 +24,8 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 				int fx = 0;
 				int fy = 0;
 
-				int spriteWidth = 16;
-				int spriteHeight = 16;
+				int spriteWidth = Math.Max(Model.DefaultItemWidth(), Model.GridWidth);
+				int spriteHeight = Math.Max(Model.DefaultItemHeight(), Model.GridHeight);
 
 				byte xChars = (byte)(Model.GridWidth / ExportData.ObjectSize);
 				byte yChars = (byte)(Model.GridHeight / ExportData.ObjectSize);

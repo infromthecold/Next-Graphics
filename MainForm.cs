@@ -1368,7 +1368,14 @@ namespace NextGraphics
 
 			if (exception != null)
 			{
-				MessageBox.Show(exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				var messageBuilder = new StringBuilder();
+				messageBuilder.AppendLine(exception.Message);
+				messageBuilder.AppendLine();
+				messageBuilder.AppendLine("Exception details have been copied to clipboard as convenience!");
+
+				Clipboard.SetText(exception.StackTrace);
+
+				MessageBox.Show(messageBuilder.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 
 			EnableActions(true);
