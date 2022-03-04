@@ -28,7 +28,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.closeButton = new System.Windows.Forms.Button();
 			this.spriteCenterBRRadioButton = new System.Windows.Forms.RadioButton();
 			this.spriteCenterBCRadioButton = new System.Windows.Forms.RadioButton();
 			this.spriteCenterBLRadioButton = new System.Windows.Forms.RadioButton();
@@ -100,16 +99,6 @@
 			this.spritesTabPage.SuspendLayout();
 			this.spriteCenterTableLayoutPanel.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// closeButton
-			// 
-			this.closeButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.closeButton.Location = new System.Drawing.Point(193, 244);
-			this.closeButton.Name = "closeButton";
-			this.closeButton.Size = new System.Drawing.Size(75, 23);
-			this.closeButton.TabIndex = 2;
-			this.closeButton.Text = "Close";
-			this.closeButton.UseVisualStyleBackColor = true;
 			// 
 			// spriteCenterBRRadioButton
 			// 
@@ -384,7 +373,6 @@
 			this.commonTilemapRadioButton.TabIndex = 17;
 			this.commonTilemapRadioButton.Text = "&Tilemap";
 			this.commonTilemapRadioButton.UseVisualStyleBackColor = true;
-			this.commonTilemapRadioButton.CheckedChanged += new System.EventHandler(this.commonTilemapRadioButton_CheckedChanged);
 			// 
 			// commonHeightLlabel
 			// 
@@ -407,7 +395,6 @@
 			this.commonSpritesRadioButton.TabStop = true;
 			this.commonSpritesRadioButton.Text = "&Sprites";
 			this.commonSpritesRadioButton.UseVisualStyleBackColor = true;
-			this.commonSpritesRadioButton.CheckedChanged += new System.EventHandler(this.commonSpritesRadioButton_CheckedChanged);
 			// 
 			// commonWidthLlabel
 			// 
@@ -426,7 +413,6 @@
 			this.commonHeightTextBox.Size = new System.Drawing.Size(40, 22);
 			this.commonHeightTextBox.TabIndex = 19;
 			this.commonHeightTextBox.Text = "0";
-			this.commonHeightTextBox.Leave += new System.EventHandler(this.commonHeightTextBox_Leave);
 			// 
 			// commonWidthTextBox
 			// 
@@ -436,7 +422,6 @@
 			this.commonWidthTextBox.Size = new System.Drawing.Size(40, 22);
 			this.commonWidthTextBox.TabIndex = 18;
 			this.commonWidthTextBox.Text = "0";
-			this.commonWidthTextBox.Leave += new System.EventHandler(this.commonWidthTextBox_Leave);
 			// 
 			// optionsTabPage
 			// 
@@ -817,14 +802,11 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(483, 279);
+			this.ClientSize = new System.Drawing.Size(453, 228);
 			this.Controls.Add(this.settingsTabControl);
-			this.Controls.Add(this.closeButton);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "SettingsForm";
 			this.Text = "Options";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.settingsPanel_FormClosing);
-			this.Load += new System.EventHandler(this.settingsPanel_Load);
 			this.settingsTabControl.ResumeLayout(false);
 			this.commonTabPage.ResumeLayout(false);
 			this.commonTabPage.PerformLayout();
@@ -843,7 +825,6 @@
 		}
 
 		#endregion
-		private System.Windows.Forms.Button closeButton;
 		private System.Windows.Forms.RadioButton spriteCenterBRRadioButton;
 		private System.Windows.Forms.RadioButton spriteCenterBCRadioButton;
 		private System.Windows.Forms.RadioButton spriteCenterBLRadioButton;

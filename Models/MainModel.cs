@@ -43,16 +43,15 @@ namespace NextGraphics.Models
 		public OutputType OutputType
 		{
 			get => _outputType;
-			set => RaiseRemapRequired(value, ref _outputType, () =>
+			set => RaiseRemapRequired(value, ref _outputType, constrainedValue =>
 			{
 				if (OutputTypeChanged != null)
 				{
-					OutputTypeChanged(this, new OutputTypeChangedEventArgs(value));
+					OutputTypeChanged(this, new OutputTypeChangedEventArgs(constrainedValue));
 				}
 
 				GridWidth = ConstrainItemWidth(GridWidth);
 				GridHeight = ConstrainItemHeight(GridHeight);
-
 			});
 		}
 		private OutputType _outputType = OutputType.Sprites;
@@ -60,20 +59,21 @@ namespace NextGraphics.Models
 		public int GridWidth
 		{
 			get => _gridWidth;
-			set => RaiseRemapRequired(value, ref _gridWidth, () =>
+			set => RaiseRemapRequired(ConstrainItemWidth(value), ref _gridWidth, constrainedValue =>
 			{
 				if (GridWidthChanged != null)
 				{
-					GridWidthChanged(this, new SizeChangedEventArgs(value));
-					if (BlocksAcrossWidthProvider != null && value > 0)
-					{
-						var width = BlocksAcrossWidthProvider();
-						BlocksAcross = (int)Math.Floor((float)width / (float)value);
-					}
-					else
-					{
-						BlocksAcross = 0;
-					}
+					GridWidthChanged(this, new SizeChangedEventArgs(constrainedValue));
+				}
+
+				if (BlocksAcrossWidthProvider != null && constrainedValue > 0)
+				{
+					var width = BlocksAcrossWidthProvider();
+					BlocksAcross = (int)Math.Floor((float)width / (float)constrainedValue);
+				}
+				else
+				{
+					BlocksAcross = 0;
 				}
 			});
 		}
@@ -82,25 +82,25 @@ namespace NextGraphics.Models
 		public int GridHeight
 		{
 			get => _gridHeight;
-			set => RaiseRemapRequired(value, ref _gridHeight, () =>
+			set => RaiseRemapRequired(ConstrainItemHeight(value), ref _gridHeight, actualValue =>
 			{
 				if (GridHeightChanged != null)
 				{
-					GridHeightChanged(this, new SizeChangedEventArgs(_gridHeight));
+					GridHeightChanged(this, new SizeChangedEventArgs(actualValue));
 				}
 			});
 		}
-		private int _gridHeight = 32;
+		private int _gridHeight = 3232;
 
 		public int BlocksAcross
 		{
 			get => _blocksAcross;
-			set => RaiseRemapRequired(value > 0 ? value : 1, ref _blocksAcross, () =>
+			set => RaiseRemapRequired(value > 0 ? value : 1, ref _blocksAcross, actualValue =>
 			{
 				// Note: we don't allow value of 0 to be written. It happens when grid width/height are large enough and will mess up exporter.
 				if (BlocksAcrossChanged != null)
 				{
-					BlocksAcrossChanged(this, new SizeChangedEventArgs(value));
+					BlocksAcrossChanged(this, new SizeChangedEventArgs(actualValue));
 				}
 			});
 		}
@@ -695,7 +695,7 @@ namespace NextGraphics.Models
 		/// 
 		/// If the value is the same, then nothing happens.
 		/// </summary>
-		private void RaiseRemapRequired<T>(T value, ref T field, Action onChange = null)
+		private void RaiseRemapRequired<T>(T value, ref T field, Action<T> onChange = null)
 		{
 			if (!Equals(value, field))
 			{
@@ -705,7 +705,7 @@ namespace NextGraphics.Models
 				// If on change action is provided, call it. This gives caller a chance to perform additional logic before `RemapRequired` event is raised. For example adjust some dependant values or raise another event.
 				if (onChange != null)
 				{
-					onChange();
+					onChange(value);
 				}
 
 				// Finally raise the `RemapRequired` event.

@@ -42,7 +42,6 @@ namespace NextGraphics
 		private ImageForm rebuildTilesForm = null;
 
 		private readonly PaletteForm paletteForm = new PaletteForm();
-		private readonly SettingsForm settingsForm = new SettingsForm();
 		private readonly PaletteOffsetForm offsetPanel = new PaletteOffsetForm();
 
 		private readonly SaveFileDialog projectSaveDialog = new SaveFileDialog();
@@ -595,9 +594,11 @@ namespace NextGraphics
 
 		private void settingsButton_Click(object sender, EventArgs e)
 		{
+			// Note: settings form is non-modal so it will automatically get disposed upon closing.
+			SettingsForm settingsForm = new SettingsForm();
 			settingsForm.StartPosition = FormStartPosition.CenterParent;
 			settingsForm.Model = Model;
-			settingsForm.ShowDialog();
+			settingsForm.Show(this);
 		}
 
 		private void exportAsBlocksRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -1252,7 +1253,7 @@ namespace NextGraphics
 			if (int.TryParse(blockWidthTextBox.Text, out int size))
 			{
 				// Make sure arbitrary value is constrained within allowed range.
-				Model.GridWidth = Model.ConstrainItemWidth(size);
+				Model.GridWidth = size;
 
 				// Make sure UI reflects the actual value, in case it was constrained.
 				blockWidthTextBox.Text = Model.GridWidth.ToString();
@@ -1275,7 +1276,7 @@ namespace NextGraphics
 			if (int.TryParse(blockHeightTextBox.Text, out int size))
 			{
 				// Make sure arbitrary value is constrained within allowed range.
-				Model.GridHeight = Model.ConstrainItemHeight(size);
+				Model.GridHeight = size;
 
 				// Make sure UI reflects the actual value.
 				blockHeightTextBox.Text = Model.GridHeight.ToString();
