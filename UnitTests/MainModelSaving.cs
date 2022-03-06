@@ -150,14 +150,16 @@ namespace UnitTests
 		[TestMethod]
 		public void SettingsGridXSaved()
 		{
-			SettingsRunner.Setup(model => model.GridWidth = 1).Verify("1", "xSize");
-			SettingsRunner.Setup(model => model.GridWidth = 123).Verify("123", "xSize");
+			// Note that grid is always constrained into multiple of default size!
+			SettingsRunner.Setup(model => model.GridWidth = 1).Verify("16", "xSize");
+			SettingsRunner.Setup(model => model.GridWidth = 17).Verify("32", "xSize");
 		}
 
 		[TestMethod]
 		public void SettingsGridYSaved()
 		{
-			SettingsRunner.Setup(model => model.GridHeight = 5).Verify("5", "ySize");
+			// Note that grid is always constrained into multiple of default size!
+			SettingsRunner.Setup(model => model.GridHeight = 5).Verify("16", "ySize");
 			SettingsRunner.Setup(model => model.GridHeight = 64).Verify("64", "ySize");
 		}
 

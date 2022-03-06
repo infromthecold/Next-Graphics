@@ -195,9 +195,9 @@ namespace UnitTests
 			// execute
 			model.Load(TestDocument());
 
-			// verify
-			Assert.AreEqual(9, model.GridWidth);
-			Assert.AreEqual(10, model.GridHeight);
+			// verify: note that grid is always adjusted into multiple of default size.
+			Assert.AreEqual(8, model.GridWidth);
+			Assert.AreEqual(16, model.GridHeight);
 		}
 
 		[TestMethod]
