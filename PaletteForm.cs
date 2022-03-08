@@ -258,6 +258,9 @@ namespace NextGraphics
 					colourButtons[toIndex].BackColor = Palette[toIndex].ToColor();
 				}
 
+				startIndexTextBox.Text = imageSelectForm.FromIndex.ToString();
+				colourCountTextBox.Text = imageSelectForm.ColoursCount.ToString();
+
 				customTypeRadioButton.Checked = true;
 			}
 		}
@@ -582,26 +585,15 @@ namespace NextGraphics
 		{
 			if (colourClicked != null)
 			{
-				if (hexColourTextBox.Text.Substring(0, 1) == "#")
-				{
-					if (hexColourTextBox.Text.Length == 7)
-					{
-						colourClicked.BackColor = Color.FromArgb(
-							Convert.ToInt32(hexColourTextBox.Text.Substring(1, 2), 16),
-							Convert.ToInt32(hexColourTextBox.Text.Substring(3, 2), 16),
-							Convert.ToInt32(hexColourTextBox.Text.Substring(5, 2), 16));
-					}
-				}
-				else
-				{
-					if (hexColourTextBox.Text.Length == 6)
-					{
-						colourClicked.BackColor = Color.FromArgb(
-							Convert.ToInt32(hexColourTextBox.Text.Substring(0, 2), 16),
-							Convert.ToInt32(hexColourTextBox.Text.Substring(2, 2), 16),
-							Convert.ToInt32(hexColourTextBox.Text.Substring(4, 2), 16));
-					}
-				}
+				var value = hexColourTextBox.Text;
+				if (value.Length >= 7 && value[0] == '#') value = value.Substring(1);
+				if (value.Length < 6) return;
+
+				var r = Convert.ToInt32(value.Substring(0, 2), 16);
+				var g = Convert.ToInt32(value.Substring(2, 2), 16);
+				var b = Convert.ToInt32(value.Substring(4, 2), 16);
+
+				colourClicked.BackColor = Color.FromArgb(r, g, b);
 			}
 		}
 		
