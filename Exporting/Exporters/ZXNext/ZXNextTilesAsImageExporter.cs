@@ -12,25 +12,29 @@ using System.Threading.Tasks;
 
 namespace NextGraphics.Exporting.Exporters.ZXNext
 {
-	public class ZXNextBlocksAsImageExporter : BaseExporter
+	/// <summary>
+	/// Exports all tiles as single image.
+	/// </summary>
+	public class ZXNextTilesAsImageExporter : BaseExporter
 	{
 		#region Overrides
 
 		protected override void OnExport()
 		{
-			int accross = Model.BlocksAcross;
-			int down = (int)Math.Round((double)ExportData.BlocksCount / accross) + 1;
-
-			Bitmap image = new Bitmap(Model.GridWidth * accross, Model.GridHeight * down, PixelFormat.Format24bppRgb);
-
-			int yPos = 0;
-			int xPos = 0;
-
 			int startBlock = 0;
 			if (!Model.TilesExportAsImageTransparent)
 			{
 				startBlock = 1;
 			}
+
+			int blocksCount = ExportData.BlocksCount - startBlock;
+			int accross = blocksCount < Model.BlocksAcross ? blocksCount : Model.BlocksAcross;
+			int down = (int)Math.Round((double)blocksCount / accross);
+
+			Bitmap image = new Bitmap(Model.GridWidth * accross, Model.GridHeight * down, PixelFormat.Format24bppRgb);
+
+			int yPos = 0;
+			int xPos = 0;
 
 			for (int b = startBlock; b < ExportData.BlocksCount; b++)
 			{
@@ -53,7 +57,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 				}
 			}
 
-			using (var stream = Parameters.BlocksImageStream())
+			using (var stream = Parameters.TilesImageStream())
 			{
 				image.Save(stream, Model.ImageFormat.ToSystemImageFormat());
 			}

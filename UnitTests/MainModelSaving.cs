@@ -292,6 +292,88 @@ namespace UnitTests
 			}
 		}
 
+		private class ExportExtensionsRunner
+		{
+			private MainModel _model;
+
+			private ExportExtensionsRunner(MainModel model)
+			{
+				_model = model;
+			}
+
+			public static ExportExtensionsRunner Setup(Action<MainModel> setup)
+			{
+				var model = new MainModel();
+
+				setup(model);
+
+				return new ExportExtensionsRunner(model);
+			}
+
+			public void Verify(string expected, string attributeName)
+			{
+				Assert.AreEqual(expected, _model.Save().ExportExtensionsNode().Attributes[attributeName].Value);
+			}
+
+			public void VerifyNotExists(string attributeName)
+			{
+				Assert.IsNull(_model.Save().ExportExtensionsNode().Attributes[attributeName]);
+			}
+		}
+
+		#endregion
+
+		#region Export extensions
+
+		[TestMethod]
+		public void SettingsExtensionAssemblerSaved()
+		{
+			ExportExtensionsRunner.Setup(model => model.ExportAssemblerFileExtension = "ex1").Verify("ex1", "Assembler");
+			ExportExtensionsRunner.Setup(model => model.ExportAssemblerFileExtension = "ex2").Verify("ex2", "Assembler");
+		}
+
+		[TestMethod]
+		public void SettingsExtensionPaletteSaved()
+		{
+			ExportExtensionsRunner.Setup(model => model.ExportBinaryPaletteFileExtension = "ex3").Verify("ex3", "Palette");
+			ExportExtensionsRunner.Setup(model => model.ExportBinaryPaletteFileExtension = "ex4").Verify("ex4", "Palette");
+		}
+
+		[TestMethod]
+		public void SettingsExtensionDataSaved()
+		{
+			ExportExtensionsRunner.Setup(model => model.ExportBinaryDataFileExtension = "ex5").Verify("ex5", "Data");
+			ExportExtensionsRunner.Setup(model => model.ExportBinaryDataFileExtension = "ex6").Verify("ex6", "Data");
+		}
+
+		[TestMethod]
+		public void SettingsExtensionTilesInfoSaved()
+		{
+			ExportExtensionsRunner.Setup(model => model.ExportBinaryTilesInfoFileExtension = "ex7").Verify("ex7", "TilesInfo");
+			ExportExtensionsRunner.Setup(model => model.ExportBinaryTilesInfoFileExtension = "ex8").Verify("ex8", "TilesInfo");
+		}
+
+		[TestMethod]
+		public void SettingsExtensionTileAttributesSaved()
+		{
+			ExportExtensionsRunner.Setup(model => model.ExportBinaryTileAttributesFileExtension = "ex9").Verify("ex9", "TileAttributes");
+			ExportExtensionsRunner.Setup(model => model.ExportBinaryTileAttributesFileExtension = "ex10").Verify("ex10", "TileAttributes");
+		}
+
+		[TestMethod]
+		public void SettingsExtensionTilemapSaved()
+		{
+			ExportExtensionsRunner.Setup(model => model.ExportBinaryTilemapFileExtension = "ex11").Verify("ex11", "Tilemap");
+			ExportExtensionsRunner.Setup(model => model.ExportBinaryTilemapFileExtension = "ex12").Verify("ex12", "Tilemap");
+		}
+
+		[TestMethod]
+		public void SettingsExtensionSpriteAttributesSaved()
+		{
+			ExportExtensionsRunner.Setup(model => model.ExportSpriteAttributesFileExtension = "ex13").Verify("ex13", "SpriteAttributes");
+			ExportExtensionsRunner.Setup(model => model.ExportSpriteAttributesFileExtension = "ex14").Verify("ex14", "SpriteAttributes");
+		}
+
 		#endregion
 
 		#region Palette
@@ -442,6 +524,11 @@ namespace UnitTests
 		internal static XmlNode SettingsNode(this XmlDocument document)
 		{
 			return document.SelectSingleNode("//Project/Settings");
+		}
+
+		internal static XmlNode ExportExtensionsNode(this XmlDocument document)
+		{
+			return document.SelectSingleNode("//Project/ExportExtensions");
 		}
 
 		internal static XmlNode PaletteNode(this XmlDocument document)

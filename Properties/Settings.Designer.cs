@@ -34,5 +34,89 @@ namespace NextGraphics.Properties {
                 this["RecentProject"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("asm")]
+        public string ExportAssemblerFileExtension {
+            get {
+                return ((string)(this["ExportAssemblerFileExtension"]));
+            }
+            set {
+                this["ExportAssemblerFileExtension"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("bin")]
+        public string ExportBinaryDataFileExtension {
+            get {
+                return ((string)(this["ExportBinaryDataFileExtension"]));
+            }
+            set {
+                this["ExportBinaryDataFileExtension"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("pal")]
+        public string ExportBinaryPaletteFileExtension {
+            get {
+                return ((string)(this["ExportBinaryPaletteFileExtension"]));
+            }
+            set {
+                this["ExportBinaryPaletteFileExtension"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("blk")]
+        public string ExportBinaryTilesInfoFileExtension {
+            get {
+                return ((string)(this["ExportBinaryTilesInfoFileExtension"]));
+            }
+            set {
+                this["ExportBinaryTilesInfoFileExtension"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("map")]
+        public string ExportBinaryTileAttributesFileExtension {
+            get {
+                return ((string)(this["ExportBinaryTileAttributesFileExtension"]));
+            }
+            set {
+                this["ExportBinaryTileAttributesFileExtension"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("tilemap")]
+        public string ExportBinaryTilemapFileExtension {
+            get {
+                return ((string)(this["ExportBinaryTilemapFileExtension"]));
+            }
+            set {
+                this["ExportBinaryTilemapFileExtension"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("til")]
+        public string ExportSpriteAttributesFileExtension {
+            get {
+                return ((string)(this["ExportSpriteAttributesFileExtension"]));
+            }
+            set {
+                this["ExportSpriteAttributesFileExtension"] = value;
+            }
+        }
     }
 }

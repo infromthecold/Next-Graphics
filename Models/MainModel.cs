@@ -31,6 +31,14 @@ namespace NextGraphics.Models
 		public int AddImagesFilterIndex { get; set; } = 0;
 		public int AddTilemapsFilterIndex { get; set; } = 0;
 
+		public string ExportAssemblerFileExtension { get; set; } = "asm";
+		public string ExportBinaryDataFileExtension { get; set; } = "bin";
+		public string ExportBinaryPaletteFileExtension { get; set; } = "pal";
+		public string ExportBinaryTilesInfoFileExtension { get; set; } = "blk";
+		public string ExportBinaryTileAttributesFileExtension { get; set; } = "map";
+		public string ExportBinaryTilemapFileExtension { get; set; } = "tilemap";
+		public string ExportSpriteAttributesFileExtension { get; set; } = "til";
+
 		#region Not saved properties
 
 		public Bitmap BlocksBitmap { get; private set; } = null;
@@ -231,6 +239,15 @@ namespace NextGraphics.Models
 		public MainModel()
 		{
 			CreateBitmaps();
+
+			// The idea with loading the values from settings is to allow across projects changes. These are the types of values that user is likely to change in every project, so we make it simpler. User can still change on per-project basis (though last change will be persisted in settings). Loading from settings works on the fact that settings keys are exactly the same as our properties.
+			ExportAssemblerFileExtension = Properties.Settings.Default[nameof(ExportAssemblerFileExtension)].ToString();
+			ExportBinaryDataFileExtension = Properties.Settings.Default[nameof(ExportBinaryDataFileExtension)].ToString();
+			ExportBinaryPaletteFileExtension = Properties.Settings.Default[nameof(ExportBinaryPaletteFileExtension)].ToString();
+			ExportBinaryTilesInfoFileExtension = Properties.Settings.Default[nameof(ExportBinaryTilesInfoFileExtension)].ToString();
+			ExportBinaryTileAttributesFileExtension = Properties.Settings.Default[nameof(ExportBinaryTileAttributesFileExtension)].ToString();
+			ExportBinaryTilemapFileExtension = Properties.Settings.Default[nameof(ExportBinaryTilemapFileExtension)].ToString();
+			ExportSpriteAttributesFileExtension = Properties.Settings.Default[nameof(ExportSpriteAttributesFileExtension)].ToString();
 		}
 
 		#endregion
@@ -317,6 +334,19 @@ namespace NextGraphics.Models
 				node.WithAttribute("TilemapExport", value => TilemapExportType = (TilemapExportType)int.Parse(value));
 				node.WithAttribute("textFlips", value => SpritesAttributesAsText = bool.Parse(value));
 				node.WithAttribute("reduce", value => SpritesReduced = bool.Parse(value));
+			});
+
+			// Export extensions
+
+			document.WithNode("//Project/ExportExtensions", node =>
+			{
+				node.WithAttribute("Assembler", value => { ExportAssemblerFileExtension = value; });
+				node.WithAttribute("Palette", value => { ExportBinaryPaletteFileExtension = value; });
+				node.WithAttribute("Data", value => { ExportBinaryDataFileExtension = value; });
+				node.WithAttribute("TilesInfo", value => { ExportBinaryTilesInfoFileExtension = value; });
+				node.WithAttribute("TileAttributes", value => { ExportBinaryTileAttributesFileExtension = value; });
+				node.WithAttribute("Tilemap", value => { ExportBinaryTilemapFileExtension = value; });
+				node.WithAttribute("SpriteAttributes", value => { ExportSpriteAttributesFileExtension = value; });
 			});
 
 			// Dialogs
@@ -421,6 +451,16 @@ namespace NextGraphics.Models
 			settingsNode.AddAttribute("TilemapExport", (int)TilemapExportType);
 			settingsNode.AddAttribute("textFlips", SpritesAttributesAsText);
 			settingsNode.AddAttribute("reduce", SpritesReduced);
+
+			// Export extensions
+			var exportExtensionsNode = projectNode.AddNode("ExportExtensions");
+			exportExtensionsNode.AddAttribute("Assembler", ExportAssemblerFileExtension);
+			exportExtensionsNode.AddAttribute("Palette", ExportBinaryPaletteFileExtension);
+			exportExtensionsNode.AddAttribute("Data", ExportBinaryDataFileExtension);
+			exportExtensionsNode.AddAttribute("TilesInfo", ExportBinaryTilesInfoFileExtension);
+			exportExtensionsNode.AddAttribute("TileAttributes", ExportBinaryTileAttributesFileExtension);
+			exportExtensionsNode.AddAttribute("Tilemap", ExportBinaryTilemapFileExtension);
+			exportExtensionsNode.AddAttribute("SpriteAttributes", ExportSpriteAttributesFileExtension);
 
 			// Dialogs
 			var dialogsNode = projectNode.AddNode("Dialogs");

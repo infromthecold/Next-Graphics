@@ -1,5 +1,6 @@
 ﻿using NextGraphics.Models;
 using NextGraphics.Settings;
+using NextGraphics.Utils;
 
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace NextGraphics
 					MapModelToOptionControls();
 					MapModelToTilemapControl();
 					MapModelToSpriteControls();
+					MapModelToFileExtensionControls();
 				}
 			}
 		}
@@ -163,14 +165,14 @@ namespace NextGraphics
 			SetupRadioButton(commonSpritesRadioButton, OutputType.Sprites);
 			SetupRadioButton(commonTilemapRadioButton, OutputType.Tiles);
 
-			commonWidthTextBox.MapTo(() => Model.GridWidth);
-			commonHeightTextBox.MapTo(() => Model.GridHeight);
+			commonWidthTextBox.MapIntTo(() => Model.GridWidth);
+			commonHeightTextBox.MapIntTo(() => Model.GridHeight);
 			commonIgnoreCopiesCheckBox.MapTo(() => Model.IgnoreCopies);
 			commonIgnoreMirroredXCheckBox.MapTo(() => Model.IgnoreMirroredX);
 			commonIgnoreMirroredYCheckBox.MapTo(() => Model.IgnoreMirroredY);
 			commonIgnoreRotatedCheckBox.MapTo(() => Model.IgnoreRotated);
 			commonIgnoreTransparentPixelsCheckBox.MapTo(() => Model.IgnoreTransparentPixels);
-			commonAccuracyTextBox.MapTo(() => Model.Accuracy);
+			commonAccuracyTextBox.MapIntTo(() => Model.Accuracy);
 		}
 
 		private void MapModelToOptionControls()
@@ -180,7 +182,7 @@ namespace NextGraphics
 			optionsBinaryDataCheckBox.MapTo(() => Model.BinaryOutput);
 			optionsBinaryFramesAttributesCheckBox.MapTo(() => Model.BinaryFramesAttributesOutput);
 			optionsFileFormatComboBox.MapTo(() => Model.ImageFormat);
-			optionsTilesAcrossTextBox.MapTo(() => Model.BlocksAcross);
+			optionsTilesAcrossTextBox.MapIntTo(() => Model.BlocksAcross);
 		}
 
 		private void MapModelToTilemapControl()
@@ -223,6 +225,20 @@ namespace NextGraphics
 			spritesReducedCheckBox.MapTo(() => Model.SpritesReduced);
 			spritesAttributesAsTextCheckBox.MapTo(() => Model.SpritesAttributesAsText);
 			spritesAsImageCheckBox.MapTo(() => Model.SpritesExportAsImages);
+		}
+
+		private void MapModelToFileExtensionControls()
+		{
+			// Settings changes work on the fact that model properties are called exactly like the settings keys.
+			extensionsAssemblerTtextBox.MapTextTo(() => Model.ExportAssemblerFileExtension, (name, value) => Properties.Settings.Default.SetAndSave(name, value));
+			extensionsBinaryDataTextBox.MapTextTo(() => Model.ExportBinaryDataFileExtension, (name, value) => Properties.Settings.Default.SetAndSave(name, value));
+			extensionsPaletteTextBox.MapTextTo(() => Model.ExportBinaryPaletteFileExtension, (name, value) => Properties.Settings.Default.SetAndSave(name, value));
+			
+			extensionsTilemapInfoTextBox.MapTextTo(() => Model.ExportBinaryTilesInfoFileExtension, (name, value) => Properties.Settings.Default.SetAndSave(name, value));
+			extensionsTilemapAttributesTextBox.MapTextTo(() => Model.ExportBinaryTileAttributesFileExtension, (name, value) => Properties.Settings.Default.SetAndSave(name, value));
+			extensionsTilemapTextBox.MapTextTo(() => Model.ExportBinaryTilemapFileExtension, (name, value) => Properties.Settings.Default.SetAndSave(name, value));
+
+			extensionsSpritesAttributesTextBox.MapTextTo(() => Model.ExportSpriteAttributesFileExtension, (name, value) => Properties.Settings.Default.SetAndSave(name, value));
 		}
 
 		#endregion
@@ -278,7 +294,7 @@ namespace NextGraphics
 			/// <summary>
 			/// Maps given <see cref="TextBox"/> to given integer property. First updates text box with current vluae, and assigns selection change event handler that updates the property after text box looses focus.
 			/// </summary>
-			public static void MapTo(
+			public static void MapIntTo(
 				this TextBox textBox,
 				Expression<Func<int>> expression)
 			{
@@ -304,6 +320,37 @@ namespace NextGraphics
 					{
 						// If parsing the value fails, reset back to current model value.
 						textBox.Text = lambda().ToString();
+					}
+				};
+			}
+
+			/// <summary>
+			/// Maps given <see cref="TextBox"/> to given string property. First updates text box with current vluae, and assigns selection change event handler that updates the property after text box looses focus. Additionally, the given lambda is optionally called after updating the model, if provided. 2 parameters are passed, first is the name of the property that changed, the second is the new value.
+			/// </summary>
+			public static void MapTextTo(
+				this TextBox textBox,
+				Expression<Func<string>> expression,
+				Action<string,string> customAction = null)
+			{
+				var lambda = expression.Compile();
+
+				var memberExpression = expression.Body as MemberExpression;
+				var memberName = memberExpression.Member.Name;
+				var memberParent = expression.GetRootObject();
+
+				textBox.Text = lambda();
+
+				textBox.Leave += (sender, e) =>
+				{
+					var value = textBox.Text;
+
+					// Update the model.
+					memberParent.GetType().GetProperty(memberName).SetValue(memberParent, value);
+
+					// Inform the caller.
+					if (customAction != null)
+					{
+						customAction(memberName, value);
 					}
 				};
 			}

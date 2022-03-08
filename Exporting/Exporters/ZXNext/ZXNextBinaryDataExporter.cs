@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace NextGraphics.Exporting.Exporters.ZXNext
 {
-	public class ZXNextBinaryTilesDataExporter : BaseExporter
+	public class ZXNextBinaryDataExporter : BaseExporter
 	{
 		#region Overrides
 

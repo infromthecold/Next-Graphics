@@ -314,7 +314,7 @@ namespace NextGraphics
 			SaveFileDialog savePaletteDialog = new SaveFileDialog();
 			//savePaletteDialog.InitialDirectory		=	Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 			savePaletteDialog.RestoreDirectory = true;
-			savePaletteDialog.Filter = "Palette Files (*.act)|*.act|Mac Palette Files (*.8bct)|*.8bct|Spectrum Next (*.asm)|*.asm|Spectrum Next (*.bas)|*.asm|All Files (*.*)|*.*";
+			savePaletteDialog.Filter = $"Palette Files (*.act)|*.act|Mac Palette Files (*.8bct)|*.8bct|Spectrum Next (*.{Model.ExportAssemblerFileExtension})|*.{Model.ExportAssemblerFileExtension}|Spectrum Next (*.bas)|*.asm|All Files (*.*)|*.*";
 			savePaletteDialog.FilterIndex = 1;
 			if (savePaletteDialog.ShowDialog(this) == DialogResult.OK)
 			{

@@ -10,6 +10,15 @@ namespace NextGraphics.Utils
 	public static class CommonExtensions
 	{
 		/// <summary>
+		/// Changes settings value and saves.
+		/// </summary>
+		internal static void SetAndSave(this Properties.Settings settings, string name, object value)
+		{
+			settings[name] = value;
+			settings.Save();
+		}
+
+		/// <summary>
 		/// Fills the given <see cref="Bitmap"/> with magenta.
 		/// </summary>
 		public static void Clear(this Bitmap bitmap)

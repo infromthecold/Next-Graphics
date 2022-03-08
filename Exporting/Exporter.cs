@@ -73,9 +73,8 @@ namespace NextGraphics.Exporting
 			if (Data.Model.BinaryOutput && Data.Model.BinaryFramesAttributesOutput)
 			{
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.
-				exporters.Add(new ZXNextBinaryTilesDataExporter());
-				exporters.Add(new ZXNextBinaryTilesMapExporter());
-				exporters.Add(new ZXNextBinaryTilesExporter());
+				exporters.Add(new ZXNextBinaryDataExporter());
+				exporters.Add(new ZXNextBinaryTileAttributesExporter());
 				exporters.Add(new ZXNextBinaryTilemapsExporter());
 				exporters.Add(new ZXNextBinaryPaletteExporter());
 				exporters.Add(new ZXNextAssemblerExporter());
@@ -83,8 +82,8 @@ namespace NextGraphics.Exporting
 			else if (Data.Model.BinaryOutput)
 			{
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.
-				exporters.Add(new ZXNextBinaryTilesDataExporter());
-				exporters.Add(new ZXNextBinaryTilesMapExporter());
+				exporters.Add(new ZXNextBinaryDataExporter());
+				exporters.Add(new ZXNextBinaryTileAttributesExporter());
 				exporters.Add(new ZXNextBinaryTilemapsExporter());
 				exporters.Add(new ZXNextBinaryPaletteExporter());
 				exporters.Add(new ZXNextAssemblerExporter());
@@ -96,7 +95,7 @@ namespace NextGraphics.Exporting
 
 			if (Data.Model.TilesExportAsImage)
 			{
-				exporters.Add(new ZXNextBlocksAsImageExporter());
+				exporters.Add(new ZXNextTilesAsImageExporter());
 				exporters.Add(new ZXNextTilesInfoExporter());
 			}
 		}
@@ -106,15 +105,15 @@ namespace NextGraphics.Exporting
 			if (Data.Model.BinaryOutput && Data.Model.BinaryFramesAttributesOutput)
 			{
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.
-				exporters.Add(new ZXNextBinaryTilesDataExporter());
-				exporters.Add(new ZXNextBinaryTilesExporter());
+				exporters.Add(new ZXNextBinaryDataExporter());
+				exporters.Add(new ZXNextBinarySpriteAttributesExporter());
 				exporters.Add(new ZXNextBinaryPaletteExporter());
 				exporters.Add(new ZXNextAssemblerExporter());
 			}
 			else if (Data.Model.BinaryOutput)
 			{
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.
-				exporters.Add(new ZXNextBinaryTilesDataExporter());
+				exporters.Add(new ZXNextBinaryDataExporter());
 				exporters.Add(new ZXNextBinaryPaletteExporter());
 				exporters.Add(new ZXNextAssemblerExporter());
 			}
@@ -125,8 +124,8 @@ namespace NextGraphics.Exporting
 
 			if (Data.Model.SpritesExportAsImages)
 			{
+				exporters.Add(new ZXNextSpritesAsImagesExporter());
 				exporters.Add(new ZXNextSpritesAsImageExporter());
-				exporters.Add(new ZXNextSpritesTilesAsImageExporter());
 			}
 		}
 

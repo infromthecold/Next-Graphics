@@ -48,11 +48,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.Full));
 			});
 		}
@@ -77,11 +77,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None));
 			});
 		}
@@ -106,11 +106,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.Full, PaletteFormat.Next9Bit));
 			});
 		}
@@ -135,11 +135,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, PaletteFormat.Next9Bit));
 			});
 		}
@@ -164,11 +164,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinary(parameters.TilesInfoStream, DataCreator.TilesBlk(), "blk");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageBlocks(), "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, withImages: true));
 			});
 		}
@@ -193,11 +193,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, withImages: true));
 			});
 		}
@@ -222,11 +222,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinary(parameters.TilesInfoStream, DataCreator.TilesBlk(), "blk");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageBlocks(), "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, withImages: true));
 			});
 		}
@@ -256,11 +256,11 @@ namespace UnitTests
 				// verify
 				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.TileAttributesStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.Full));
 			});
 		}
@@ -285,11 +285,11 @@ namespace UnitTests
 				// verify
 				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(PaletteFormat.Next9Bit), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.TileAttributesStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.Full, PaletteFormat.Next9Bit));
 			});
 		}
@@ -314,11 +314,11 @@ namespace UnitTests
 				// verify
 				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.TileAttributesStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.None));
 			});
 		}
@@ -343,11 +343,11 @@ namespace UnitTests
 				// verify
 				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(PaletteFormat.Next9Bit), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.TileAttributesStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.None, PaletteFormat.Next9Bit));
 			});
 		}
@@ -372,11 +372,11 @@ namespace UnitTests
 				// verify
 				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinary(parameters.TilesInfoStream, DataCreator.TilesBlk(), "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.TileAttributesStream, DataCreator.TilesMap(), "map");
+				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageBlocks(), "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.Full, withImages: true));
 			});
 		}
@@ -405,11 +405,11 @@ namespace UnitTests
 				// verify
 				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.TileAttributesStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.Full));
 			});
 		}
@@ -434,11 +434,11 @@ namespace UnitTests
 				// verify
 				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(PaletteFormat.Next9Bit), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.TileAttributesStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.Full, PaletteFormat.Next9Bit));
 			});
 		}
@@ -463,11 +463,11 @@ namespace UnitTests
 				// verify
 				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.TileAttributesStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.None));
 			});
 		}
@@ -492,11 +492,11 @@ namespace UnitTests
 				// verify
 				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(PaletteFormat.Next9Bit), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.TileAttributesStream, DataCreator.TilesMap(), "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.None, PaletteFormat.Next9Bit));
 			});
 		}
@@ -521,11 +521,11 @@ namespace UnitTests
 				// verify
 				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinary(parameters.TilesInfoStream, DataCreator.TilesBlk(), "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.TileAttributesStream, DataCreator.TilesMap(), "map");
+				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageBlocks(), "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.Full, withImages: true));
 			});
 		}
@@ -558,11 +558,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryArrayIsEmpty(20, parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, CommentType.Full));
 			});
 		}
@@ -587,11 +587,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryArrayIsEmpty(20, parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, CommentType.Full, PaletteFormat.Next9Bit));
 			});
 		}
@@ -616,11 +616,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryArrayIsEmpty(20, parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, CommentType.None));
 			});
 		}
@@ -645,11 +645,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryArrayIsEmpty(20, parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, CommentType.None, PaletteFormat.Next9Bit));
 			});
 		}
@@ -674,11 +674,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.SpritesImageTiles(), "tiles image");
-				VerifyBinaryArray(14, (i) => DataCreator.SpritesImageBlock(i), parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinary(parameters.SpritesImageStream, DataCreator.SpritesImageTiles(), "tiles image");
+				VerifyBinaryArray(14, (i) => DataCreator.SpritesImageBlock(i), parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, CommentType.None, withImages: true));
 			});
 		}
@@ -705,13 +705,13 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(20, parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinary(parameters.Time, CommentType.Full));
 			});
 		}
@@ -734,13 +734,13 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(PaletteFormat.Next9Bit), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(20, parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinary(parameters.Time, CommentType.Full, PaletteFormat.Next9Bit));
 			});
 		}
@@ -763,13 +763,13 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(20, parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinary(parameters.Time, CommentType.None));
 			});
 		}
@@ -792,13 +792,13 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(PaletteFormat.Next9Bit), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(20, parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinary(parameters.Time, CommentType.None, PaletteFormat.Next9Bit));
 			});
 		}
@@ -821,13 +821,13 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.SpritesImageTiles(), "tiles image");
-				VerifyBinaryArray(14, (i) => DataCreator.SpritesImageBlock(i), parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinary(parameters.SpritesImageStream, DataCreator.SpritesImageTiles(), "tiles image");
+				VerifyBinaryArray(14, (i) => DataCreator.SpritesImageBlock(i), parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinary(parameters.Time, CommentType.Full, withImages: true));
 			});
 		}
@@ -854,13 +854,13 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.SpritesTil(), "til");
+				VerifyBinary(parameters.SpriteAttributesStream, DataCreator.SpritesTil(), "til");
 				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(20, parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinaryAndBlocks(parameters.Time, CommentType.Full));
 			});
 		}
@@ -883,13 +883,13 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.SpritesTil(), "til");
+				VerifyBinary(parameters.SpriteAttributesStream, DataCreator.SpritesTil(), "til");
 				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(PaletteFormat.Next9Bit), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(20, parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinaryAndBlocks(parameters.Time, CommentType.Full, PaletteFormat.Next9Bit));
 			});
 		}
@@ -912,13 +912,13 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.SpritesTil(), "til");
+				VerifyBinary(parameters.SpriteAttributesStream, DataCreator.SpritesTil(), "til");
 				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(20, parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinaryAndBlocks(parameters.Time, CommentType.None));
 			});
 		}
@@ -941,13 +941,13 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.SpritesTil(), "til");
+				VerifyBinary(parameters.SpriteAttributesStream, DataCreator.SpritesTil(), "til");
 				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(PaletteFormat.Next9Bit), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(20, parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinaryAndBlocks(parameters.Time, CommentType.None, PaletteFormat.Next9Bit));
 			});
 		}
@@ -970,13 +970,13 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.SpritesTil(), "til");
+				VerifyBinary(parameters.SpriteAttributesStream, DataCreator.SpritesTil(), "til");
 				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
 				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.SpritesImageTiles(), "tiles image");
-				VerifyBinaryArray(14, (i) => DataCreator.SpritesImageBlock(i), parameters.BlockImageStream, "block image");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinary(parameters.SpritesImageStream, DataCreator.SpritesImageTiles(), "tiles image");
+				VerifyBinaryArray(14, (i) => DataCreator.SpritesImageBlock(i), parameters.SpriteImageStream, "block image");
 				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinaryAndBlocks(parameters.Time, CommentType.Full, withImages: true));
 			});
 		}
@@ -1005,11 +1005,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyBinaryArrayIsEmpty(10, parameters.TilemapsStream, "tilemaps");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilemaps(parameters.Time, TilemapExportType.AttributesIndexAsWord, false));
 			});
@@ -1031,11 +1031,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyBinaryArrayIsEmpty(10, parameters.TilemapsStream, "tilemaps");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilemaps(parameters.Time, TilemapExportType.AttributesIndexAsTwoBytes, false));
 			});
@@ -1057,11 +1057,11 @@ namespace UnitTests
 				// verify
 				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyBinaryArrayIsEmpty(10, parameters.TilemapsStream, "tilemaps");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilemaps(parameters.Time, TilemapExportType.IndexOnly, false));
 			});
@@ -1082,11 +1082,11 @@ namespace UnitTests
 				// verify
 				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
 				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
 				VerifyBinaryArray(1, (i) => DataCreator.TilemapGeneratedData2x2(), parameters.TilemapsStream, "tilemaps");
 				VerifyAssembler(parameters, DataCreator.AssemblerTilemaps(parameters.Time, TilemapExportType.AttributesIndexAsWord, true));
 			});
@@ -1162,10 +1162,10 @@ namespace UnitTests
 					SourceStream = () => sourceStream,
 					PaletteStream = () => paletteStream,
 					BinaryStream = () => binaryStream,
-					MapStream = () => mapStream,
-					TilesStream = () => tilesStream,
+					TileAttributesStream = () => mapStream,
+					SpriteAttributesStream = () => tilesStream,
 					TilesInfoStream = () => tilesInfoStream,
-					TilesImageStream = () => tilesImageStream,
+					SpritesImageStream = () => tilesImageStream,
 					TilemapsStream = (i) =>
 					{
 						if (tilemapStreams[i] == null)
@@ -1174,8 +1174,8 @@ namespace UnitTests
 						}
 						return tilemapStreams[i];
 					},
-					BlocksImageStream = () => blocksImageStream,
-					BlockImageStream = (i) =>
+					TilesImageStream = () => blocksImageStream,
+					SpriteImageStream = (i) =>
 					{
 						if (blockStreams[i] == null)
 						{

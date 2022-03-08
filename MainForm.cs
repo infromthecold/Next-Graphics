@@ -402,7 +402,7 @@ namespace NextGraphics
 
 						Exporter.Remap();
 
-						ExportData($"{parentDirectory}\\Output\\{Model.Name.ToLower()}.asm");
+						ExportData($"{parentDirectory}\\Output\\{Model.Name.ToLower()}.{Model.ExportAssemblerFileExtension}");
 					}
 				});
 			}
@@ -1136,7 +1136,7 @@ namespace NextGraphics
 			if (sourceFilename == null)
 			{
 				outputFilesDialog.FileName = Model.Name.ToLower();
-				outputFilesDialog.Filter = "Machine Code (*.asm)|*.asm|All Files (*.*)|*.*";
+				outputFilesDialog.Filter = $"Machine Code (*.{Model.ExportAssemblerFileExtension})|*.{Model.ExportAssemblerFileExtension}|All Files (*.*)|*.*";
 				outputFilesDialog.FilterIndex = Model.OutputFilesFilterIndex;
 				outputFilesDialog.RestoreDirectory = false;
 				outputFilesDialog.InitialDirectory = $"{parentDirectory}\\Output\\";
@@ -1156,7 +1156,7 @@ namespace NextGraphics
 
 			RunLongOperation(() =>
 			{
-				ExportPaths = new ExportPathProvider(sourceFilename, Model.ImageFormat);
+				ExportPaths = new ExportPathProvider(sourceFilename, Model);
 
 				ExportPaths.AssignExportStreams(Exporter.Data.Parameters);
 

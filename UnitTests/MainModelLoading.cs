@@ -379,6 +379,101 @@ namespace UnitTests
 
 		#endregion
 
+		#region Export extensions
+
+		[TestMethod]
+		public void ExportExtensionAssemblerLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex1", model.ExportAssemblerFileExtension);
+		}
+
+		[TestMethod]
+		public void ExportExtensionPaletteLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex2", model.ExportBinaryPaletteFileExtension);
+		}
+
+		[TestMethod]
+		public void ExportExtensionDataLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex3", model.ExportBinaryDataFileExtension);
+		}
+
+		[TestMethod]
+		public void ExportExtensionTilesInfoLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex4", model.ExportBinaryTilesInfoFileExtension);
+		}
+
+		[TestMethod]
+		public void ExportExtensionTileAttributesLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex5", model.ExportBinaryTileAttributesFileExtension);
+		}
+
+		[TestMethod]
+		public void ExportExtensionTilemapLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex6", model.ExportBinaryTilemapFileExtension);
+		}
+
+		[TestMethod]
+		public void ExportExtensionSpriteAttributesLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex7", model.ExportSpriteAttributesFileExtension);
+		}
+
+		#endregion
+
 		#region Palette
 
 		[TestMethod]

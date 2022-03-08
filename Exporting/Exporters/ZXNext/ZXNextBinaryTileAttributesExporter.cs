@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NextGraphics.Exporting.Exporters.ZXNext
 {
-	public class ZXNextBinaryTilesMapExporter : BaseExporter
+	public class ZXNextBinaryTileAttributesExporter : BaseExporter
 	{
 		#region Overrides
 
@@ -22,7 +22,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 				paletOffset = Parameters.ExportCallbacks.OnExportPaletteOffsetMapper(paletOffset);
 			}
 
-			using (var mapFile = new BinaryWriter(Parameters.MapStream()))
+			using (var mapFile = new BinaryWriter(Parameters.TileAttributesStream()))
 			{
 				byte xChars = (byte)(Model.GridWidth / ExportData.ObjectSize);
 				byte yChars = (byte)(Model.GridHeight / ExportData.ObjectSize);
@@ -38,19 +38,19 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 							mapFile.Write((byte)outInt);
 							outInt = paletOffset;
 
-							if (ExportData.Sprites[b].GetFlippedX(x, y) == true)
+							if (ExportData.Sprites[b].GetFlippedX(x, y))
 							{
-								outInt = outInt | 1 << 3;
+								outInt |= 1 << 3;
 							}
 
-							if (ExportData.Sprites[b].GetFlippedY(x, y) == true)
+							if (ExportData.Sprites[b].GetFlippedY(x, y))
 							{
-								outInt = outInt | 1 << 2;
+								outInt |= 1 << 2;
 							}
 
-							if (ExportData.Sprites[b].GetRotated(x, y) == true)
+							if (ExportData.Sprites[b].GetRotated(x, y))
 							{
-								outInt = outInt | 1 << 1;
+								outInt |= 1 << 1;
 							}
 
 							mapFile.Write((byte)outInt);

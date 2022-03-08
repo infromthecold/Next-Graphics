@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace NextGraphics.Exporting.Exporters.ZXNext
 {
 	/// <summary>
-	/// Similarly named to <see cref="ZXNextBinaryTilesMapExporter"/>, but the difference is important: this class exports each tilemap definition, while "tiles map" a list of all tiles with each containing attributes and index. The two can be complemented, for example, enabling index only export for tilemap definition (aka the result of this class ;) and then use "tiles map" to fetch attributes. Uses half the space for storing tilemaps definition, but comes on expense of not being able to set different attributes for different occurences of the same tile.
+	/// Similarly named to <see cref="ZXNextBinaryTileAttributesExporter"/>, but the difference is important: this class exports each tilemap definition, while "tiles map" a list of all tiles with each containing attributes and index. The two can be complemented, for example, enabling index only export for tilemap definition (aka the result of this class ;) and then use "tiles map" to fetch attributes. Uses half the space for storing tilemaps definition, but comes on expense of not being able to set different attributes for different occurences of the same tile.
 	/// </summary>
 	public class ZXNextBinaryTilemapsExporter : BaseExporter
 	{
