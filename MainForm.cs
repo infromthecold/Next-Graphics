@@ -908,9 +908,7 @@ namespace NextGraphics
 
 			if (projectOpenDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				projectPath = projectOpenDialog.FileName;
-				SetParentFolder(Path.GetFullPath(projectOpenDialog.FileName));
-				LoadProjectFromFile(projectPath);
+				LoadProjectFromFile(projectOpenDialog.FileName);
 			}
 		}
 
@@ -919,7 +917,11 @@ namespace NextGraphics
 		/// </summary>
 		private void LoadProjectFromFile(string filename)
 		{
+			// We need to clear data first, before assigning anything else to avoid new values being reset unintentionally.
 			ClearData();
+
+			projectPath = filename;
+			SetParentFolder(Path.GetFullPath(filename));
 
 			Model.Load(filename);
 
