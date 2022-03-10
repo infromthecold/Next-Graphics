@@ -179,6 +179,7 @@ namespace NextGraphics
 		{
 			optionsCommentLevelComboBox.MapTo(() => Model.CommentType);
 			optionsPaletteFormatComboBox.MapTo(() => Model.PaletteFormat);
+			optionsPaletteParsingComboBox.MapTo(() => Model.FourBitParsingMethod);
 			optionsBinaryDataCheckBox.MapTo(() => Model.BinaryOutput);
 			optionsBinaryFramesAttributesCheckBox.MapTo(() => Model.BinaryFramesAttributesOutput);
 			optionsFileFormatComboBox.MapTo(() => Model.ImageFormat);

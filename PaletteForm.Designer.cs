@@ -47,7 +47,7 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.colourCountTextBox = new System.Windows.Forms.TextBox();
-			this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+			this.colorDialog = new System.Windows.Forms.ColorDialog();
 			this.tColourIndex1 = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
 			this.hexColourTextBox = new System.Windows.Forms.TextBox();
@@ -456,7 +456,7 @@
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.TextBox colourCountTextBox;
-		private System.Windows.Forms.ColorDialog colorDialog1;
+		private System.Windows.Forms.ColorDialog colorDialog;
 		private System.Windows.Forms.Label tColourIndex1;
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.TextBox hexColourTextBox;

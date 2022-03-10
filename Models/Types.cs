@@ -25,6 +25,12 @@ namespace NextGraphics.Models
 		Next9Bit
 	}
 
+	public enum FourBitParsingMethod
+	{
+		Manual,
+		DetectPaletteBanks
+	}
+
 	public enum ImageFormat
 	{
 		BMP,

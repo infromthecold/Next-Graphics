@@ -352,6 +352,17 @@ namespace UnitTests
 		}
 
 		[TestMethod]
+		public void SettingsFourBitParsingLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute & verify
+			model.Load(TestDocument());
+			Assert.AreEqual(FourBitParsingMethod.DetectPaletteBanks, model.FourBitParsingMethod);
+		}
+
+		[TestMethod]
 		public void SettingsTilemapExportTypeLoaded()
 		{
 			// setup

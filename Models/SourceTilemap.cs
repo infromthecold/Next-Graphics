@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NextGraphics.Exporting.Common;
+
+using System;
 using System.IO;
 
 namespace NextGraphics.Models
@@ -71,6 +73,7 @@ namespace NextGraphics.Models
 		public class Tile
 		{
 			public int Index { get; set; } = 0;
+			public int PaletteBank { get; set; } = 0;
 			public bool FlippedX { get; set; } = false;
 			public bool FlippedY { get; set; } = false;
 			public bool RotatedClockwise { get; set; } = false;
@@ -85,6 +88,13 @@ namespace NextGraphics.Models
 				FlippedX = flippedX;
 				FlippedY = flippedY;
 				RotatedClockwise = rotatedClockwise;
+			}
+
+			public void UpdatePaletteBank(ExportData data)
+			{
+				// If auto-banking is not supported, we use 0.
+				var tile = data.Blocks[Index];
+				PaletteBank = tile.IsAutoBankingSupported ? data.Blocks[Index].PaletteBank : 0;
 			}
 		}
 	}

@@ -9,6 +9,7 @@
 {{label_name | string.upcase}}_COLOURS:		equ	{{palette | array.size}}
 
 {{~ # Palette itself. If custom palette is specified, each byte of the colour is exported, otherwise just a comment -}}
+{{~if palette_can_export~}}
 {{~if palette_is_custom~}}
 {{label_name}}Palette:
 	{{~for colour in palette~}}
@@ -21,7 +22,8 @@
 // Mapped to the spectrum next 256 palette
 {{~else if palette_is_next_512~}}
 // Mapped to the spectrum next 512 palette
-{{~end~}}
+{{~end #if palette_is_custom~}}
+{{~end #if palette_can_export~}}
 
 {{~ # Number of bytes each character (sprite or tile) uses -}}
 {{label_name | string.upcase}}_{{label_suffix | string.upcase}}_SIZE:		equ	{{parameter_block_size}}

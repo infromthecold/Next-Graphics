@@ -59,6 +59,8 @@
 			this.commonHeightTextBox = new System.Windows.Forms.TextBox();
 			this.commonWidthTextBox = new System.Windows.Forms.TextBox();
 			this.optionsTabPage = new System.Windows.Forms.TabPage();
+			this.optionsPaletteParsingLabel = new System.Windows.Forms.Label();
+			this.optionsPaletteParsingComboBox = new System.Windows.Forms.ComboBox();
 			this.optionsImageOptionsLabel = new System.Windows.Forms.Label();
 			this.optionsCommonOptionsLabel = new System.Windows.Forms.Label();
 			this.optionsTilesAcrossTextBox = new System.Windows.Forms.TextBox();
@@ -92,24 +94,24 @@
 			this.spritesOutputLabel = new System.Windows.Forms.Label();
 			this.spritesAsImageCheckBox = new System.Windows.Forms.CheckBox();
 			this.fileExtensionsTabPage = new System.Windows.Forms.TabPage();
+			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.extensionsGeneralTitleLabel = new System.Windows.Forms.Label();
+			this.extensionsTilemapLabel = new System.Windows.Forms.Label();
+			this.extensionsTilemapTextBox = new System.Windows.Forms.TextBox();
+			this.extensionsSpritesAttributesTextBox = new System.Windows.Forms.TextBox();
+			this.extensionsTilemapSpritesTitleLabel = new System.Windows.Forms.Label();
+			this.extensionsTilemapAttributesLabel = new System.Windows.Forms.Label();
+			this.extensionsTilemapAttributesTextBox = new System.Windows.Forms.TextBox();
+			this.extensionsSpritesAttributesLabel = new System.Windows.Forms.Label();
+			this.extensionsTilemapTitleLabel = new System.Windows.Forms.Label();
+			this.extensionsPaletteLabel = new System.Windows.Forms.Label();
+			this.extensionsPaletteTextBox = new System.Windows.Forms.TextBox();
 			this.extensionsAssemblerLabel = new System.Windows.Forms.Label();
 			this.extensionsAssemblerTtextBox = new System.Windows.Forms.TextBox();
-			this.extensionsBinaryDataTextBox = new System.Windows.Forms.TextBox();
 			this.extensionsBinaryDataLabel = new System.Windows.Forms.Label();
-			this.extensionsPaletteTextBox = new System.Windows.Forms.TextBox();
-			this.extensionsPaletteLabel = new System.Windows.Forms.Label();
-			this.extensionsTilemapTextBox = new System.Windows.Forms.TextBox();
-			this.extensionsTilemapLabel = new System.Windows.Forms.Label();
-			this.extensionsTilemapAttributesTextBox = new System.Windows.Forms.TextBox();
-			this.extensionsTilemapAttributesLabel = new System.Windows.Forms.Label();
+			this.extensionsBinaryDataTextBox = new System.Windows.Forms.TextBox();
 			this.extensionsTilemapInfoTextBox = new System.Windows.Forms.TextBox();
 			this.extensionsTilemapInfoLabel = new System.Windows.Forms.Label();
-			this.extensionsTilemapTitleLabel = new System.Windows.Forms.Label();
-			this.extensionsSpritesAttributesTextBox = new System.Windows.Forms.TextBox();
-			this.extensionsSpritesAttributesLabel = new System.Windows.Forms.Label();
-			this.extensionsTilemapSpritesTitleLabel = new System.Windows.Forms.Label();
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.settingsTabControl.SuspendLayout();
 			this.commonTabPage.SuspendLayout();
 			this.commonIgnoreRepeatsTableLayoutPanel.SuspendLayout();
@@ -447,6 +449,8 @@
 			// 
 			// optionsTabPage
 			// 
+			this.optionsTabPage.Controls.Add(this.optionsPaletteParsingLabel);
+			this.optionsTabPage.Controls.Add(this.optionsPaletteParsingComboBox);
 			this.optionsTabPage.Controls.Add(this.optionsImageOptionsLabel);
 			this.optionsTabPage.Controls.Add(this.optionsCommonOptionsLabel);
 			this.optionsTabPage.Controls.Add(this.optionsTilesAcrossTextBox);
@@ -468,6 +472,27 @@
 			this.optionsTabPage.TabIndex = 3;
 			this.optionsTabPage.Text = "Options";
 			// 
+			// optionsPaletteParsingLabel
+			// 
+			this.optionsPaletteParsingLabel.AutoSize = true;
+			this.optionsPaletteParsingLabel.Location = new System.Drawing.Point(6, 136);
+			this.optionsPaletteParsingLabel.Name = "optionsPaletteParsingLabel";
+			this.optionsPaletteParsingLabel.Size = new System.Drawing.Size(96, 13);
+			this.optionsPaletteParsingLabel.TabIndex = 51;
+			this.optionsPaletteParsingLabel.Text = "4-bit Palette Banks";
+			// 
+			// optionsPaletteParsingComboBox
+			// 
+			this.optionsPaletteParsingComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.optionsPaletteParsingComboBox.FormattingEnabled = true;
+			this.optionsPaletteParsingComboBox.Items.AddRange(new object[] {
+            "Manual",
+            "Detect 16-Colour Banks"});
+			this.optionsPaletteParsingComboBox.Location = new System.Drawing.Point(9, 152);
+			this.optionsPaletteParsingComboBox.Name = "optionsPaletteParsingComboBox";
+			this.optionsPaletteParsingComboBox.Size = new System.Drawing.Size(137, 21);
+			this.optionsPaletteParsingComboBox.TabIndex = 50;
+			// 
 			// optionsImageOptionsLabel
 			// 
 			this.optionsImageOptionsLabel.AutoSize = true;
@@ -482,7 +507,7 @@
 			// 
 			this.optionsCommonOptionsLabel.AutoSize = true;
 			this.optionsCommonOptionsLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.optionsCommonOptionsLabel.Location = new System.Drawing.Point(6, 83);
+			this.optionsCommonOptionsLabel.Location = new System.Drawing.Point(6, 73);
 			this.optionsCommonOptionsLabel.Name = "optionsCommonOptionsLabel";
 			this.optionsCommonOptionsLabel.Size = new System.Drawing.Size(103, 13);
 			this.optionsCommonOptionsLabel.TabIndex = 46;
@@ -542,7 +567,7 @@
 			// optionsPaletteFormatLabel
 			// 
 			this.optionsPaletteFormatLabel.AutoSize = true;
-			this.optionsPaletteFormatLabel.Location = new System.Drawing.Point(6, 103);
+			this.optionsPaletteFormatLabel.Location = new System.Drawing.Point(6, 93);
 			this.optionsPaletteFormatLabel.Name = "optionsPaletteFormatLabel";
 			this.optionsPaletteFormatLabel.Size = new System.Drawing.Size(75, 13);
 			this.optionsPaletteFormatLabel.TabIndex = 42;
@@ -564,9 +589,9 @@
 			this.optionsPaletteFormatComboBox.Items.AddRange(new object[] {
             "Next 8-bit",
             "Next 9-bit"});
-			this.optionsPaletteFormatComboBox.Location = new System.Drawing.Point(9, 119);
+			this.optionsPaletteFormatComboBox.Location = new System.Drawing.Point(9, 109);
 			this.optionsPaletteFormatComboBox.Name = "optionsPaletteFormatComboBox";
-			this.optionsPaletteFormatComboBox.Size = new System.Drawing.Size(113, 21);
+			this.optionsPaletteFormatComboBox.Size = new System.Drawing.Size(137, 21);
 			this.optionsPaletteFormatComboBox.TabIndex = 41;
 			// 
 			// optionsBinaryFramesAttributesCheckBox
@@ -574,9 +599,9 @@
 			this.optionsBinaryFramesAttributesCheckBox.AutoSize = true;
 			this.optionsBinaryFramesAttributesCheckBox.Location = new System.Drawing.Point(191, 51);
 			this.optionsBinaryFramesAttributesCheckBox.Name = "optionsBinaryFramesAttributesCheckBox";
-			this.optionsBinaryFramesAttributesCheckBox.Size = new System.Drawing.Size(187, 17);
+			this.optionsBinaryFramesAttributesCheckBox.Size = new System.Drawing.Size(153, 17);
 			this.optionsBinaryFramesAttributesCheckBox.TabIndex = 38;
-			this.optionsBinaryFramesAttributesCheckBox.Text = "Export {sprite frames|tile attributes}";
+			this.optionsBinaryFramesAttributesCheckBox.Text = "Export {sprite|tile} attributes";
 			this.optionsBinaryFramesAttributesCheckBox.UseVisualStyleBackColor = true;
 			// 
 			// optionsBinaryDataCheckBox
@@ -592,7 +617,7 @@
 			// optionsCommentLevelLabel
 			// 
 			this.optionsCommentLevelLabel.AutoSize = true;
-			this.optionsCommentLevelLabel.Location = new System.Drawing.Point(6, 28);
+			this.optionsCommentLevelLabel.Location = new System.Drawing.Point(6, 25);
 			this.optionsCommentLevelLabel.Name = "optionsCommentLevelLabel";
 			this.optionsCommentLevelLabel.Size = new System.Drawing.Size(80, 13);
 			this.optionsCommentLevelLabel.TabIndex = 34;
@@ -605,9 +630,9 @@
 			this.optionsCommentLevelComboBox.Items.AddRange(new object[] {
             "No comments",
             "Full comments"});
-			this.optionsCommentLevelComboBox.Location = new System.Drawing.Point(9, 44);
+			this.optionsCommentLevelComboBox.Location = new System.Drawing.Point(9, 41);
 			this.optionsCommentLevelComboBox.Name = "optionsCommentLevelComboBox";
-			this.optionsCommentLevelComboBox.Size = new System.Drawing.Size(99, 21);
+			this.optionsCommentLevelComboBox.Size = new System.Drawing.Size(137, 21);
 			this.optionsCommentLevelComboBox.TabIndex = 33;
 			// 
 			// tilemapTabPage
@@ -830,172 +855,6 @@
 			this.fileExtensionsTabPage.TabIndex = 5;
 			this.fileExtensionsTabPage.Text = "File Extensions";
 			// 
-			// extensionsGeneralTitleLabel
-			// 
-			this.extensionsGeneralTitleLabel.AutoSize = true;
-			this.tableLayoutPanel1.SetColumnSpan(this.extensionsGeneralTitleLabel, 2);
-			this.extensionsGeneralTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.extensionsGeneralTitleLabel.Location = new System.Drawing.Point(3, 0);
-			this.extensionsGeneralTitleLabel.Name = "extensionsGeneralTitleLabel";
-			this.extensionsGeneralTitleLabel.Size = new System.Drawing.Size(55, 13);
-			this.extensionsGeneralTitleLabel.TabIndex = 44;
-			this.extensionsGeneralTitleLabel.Text = "General:";
-			// 
-			// extensionsAssemblerLabel
-			// 
-			this.extensionsAssemblerLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.extensionsAssemblerLabel.AutoSize = true;
-			this.extensionsAssemblerLabel.Location = new System.Drawing.Point(8, 35);
-			this.extensionsAssemblerLabel.Name = "extensionsAssemblerLabel";
-			this.extensionsAssemblerLabel.Size = new System.Drawing.Size(55, 13);
-			this.extensionsAssemblerLabel.TabIndex = 45;
-			this.extensionsAssemblerLabel.Text = "Assembler";
-			this.extensionsAssemblerLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// extensionsAssemblerTtextBox
-			// 
-			this.extensionsAssemblerTtextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.extensionsAssemblerTtextBox.Location = new System.Drawing.Point(69, 32);
-			this.extensionsAssemblerTtextBox.Name = "extensionsAssemblerTtextBox";
-			this.extensionsAssemblerTtextBox.Size = new System.Drawing.Size(64, 20);
-			this.extensionsAssemblerTtextBox.TabIndex = 46;
-			// 
-			// extensionsBinaryDataTextBox
-			// 
-			this.extensionsBinaryDataTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.extensionsBinaryDataTextBox.Location = new System.Drawing.Point(69, 64);
-			this.extensionsBinaryDataTextBox.Name = "extensionsBinaryDataTextBox";
-			this.extensionsBinaryDataTextBox.Size = new System.Drawing.Size(64, 20);
-			this.extensionsBinaryDataTextBox.TabIndex = 48;
-			// 
-			// extensionsBinaryDataLabel
-			// 
-			this.extensionsBinaryDataLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.extensionsBinaryDataLabel.AutoSize = true;
-			this.extensionsBinaryDataLabel.Location = new System.Drawing.Point(3, 67);
-			this.extensionsBinaryDataLabel.Name = "extensionsBinaryDataLabel";
-			this.extensionsBinaryDataLabel.Size = new System.Drawing.Size(60, 13);
-			this.extensionsBinaryDataLabel.TabIndex = 47;
-			this.extensionsBinaryDataLabel.Text = "Binary data";
-			this.extensionsBinaryDataLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// extensionsPaletteTextBox
-			// 
-			this.extensionsPaletteTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.extensionsPaletteTextBox.Location = new System.Drawing.Point(69, 97);
-			this.extensionsPaletteTextBox.Name = "extensionsPaletteTextBox";
-			this.extensionsPaletteTextBox.Size = new System.Drawing.Size(64, 20);
-			this.extensionsPaletteTextBox.TabIndex = 50;
-			// 
-			// extensionsPaletteLabel
-			// 
-			this.extensionsPaletteLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.extensionsPaletteLabel.AutoSize = true;
-			this.extensionsPaletteLabel.Location = new System.Drawing.Point(23, 100);
-			this.extensionsPaletteLabel.Name = "extensionsPaletteLabel";
-			this.extensionsPaletteLabel.Size = new System.Drawing.Size(40, 13);
-			this.extensionsPaletteLabel.TabIndex = 49;
-			this.extensionsPaletteLabel.Text = "Palette";
-			this.extensionsPaletteLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// extensionsTilemapTextBox
-			// 
-			this.extensionsTilemapTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.extensionsTilemapTextBox.Location = new System.Drawing.Point(215, 97);
-			this.extensionsTilemapTextBox.Name = "extensionsTilemapTextBox";
-			this.extensionsTilemapTextBox.Size = new System.Drawing.Size(64, 20);
-			this.extensionsTilemapTextBox.TabIndex = 57;
-			// 
-			// extensionsTilemapLabel
-			// 
-			this.extensionsTilemapLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.extensionsTilemapLabel.AutoSize = true;
-			this.extensionsTilemapLabel.Location = new System.Drawing.Point(165, 100);
-			this.extensionsTilemapLabel.Name = "extensionsTilemapLabel";
-			this.extensionsTilemapLabel.Size = new System.Drawing.Size(44, 13);
-			this.extensionsTilemapLabel.TabIndex = 56;
-			this.extensionsTilemapLabel.Text = "Tilemap";
-			this.extensionsTilemapLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// extensionsTilemapAttributesTextBox
-			// 
-			this.extensionsTilemapAttributesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.extensionsTilemapAttributesTextBox.Location = new System.Drawing.Point(215, 64);
-			this.extensionsTilemapAttributesTextBox.Name = "extensionsTilemapAttributesTextBox";
-			this.extensionsTilemapAttributesTextBox.Size = new System.Drawing.Size(64, 20);
-			this.extensionsTilemapAttributesTextBox.TabIndex = 55;
-			// 
-			// extensionsTilemapAttributesLabel
-			// 
-			this.extensionsTilemapAttributesLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.extensionsTilemapAttributesLabel.AutoSize = true;
-			this.extensionsTilemapAttributesLabel.Location = new System.Drawing.Point(139, 67);
-			this.extensionsTilemapAttributesLabel.Name = "extensionsTilemapAttributesLabel";
-			this.extensionsTilemapAttributesLabel.Size = new System.Drawing.Size(70, 13);
-			this.extensionsTilemapAttributesLabel.TabIndex = 54;
-			this.extensionsTilemapAttributesLabel.Text = "Tile attributes";
-			this.extensionsTilemapAttributesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// extensionsTilemapInfoTextBox
-			// 
-			this.extensionsTilemapInfoTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.extensionsTilemapInfoTextBox.Location = new System.Drawing.Point(215, 32);
-			this.extensionsTilemapInfoTextBox.Name = "extensionsTilemapInfoTextBox";
-			this.extensionsTilemapInfoTextBox.Size = new System.Drawing.Size(64, 20);
-			this.extensionsTilemapInfoTextBox.TabIndex = 53;
-			// 
-			// extensionsTilemapInfoLabel
-			// 
-			this.extensionsTilemapInfoLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.extensionsTilemapInfoLabel.AutoSize = true;
-			this.extensionsTilemapInfoLabel.Location = new System.Drawing.Point(165, 35);
-			this.extensionsTilemapInfoLabel.Name = "extensionsTilemapInfoLabel";
-			this.extensionsTilemapInfoLabel.Size = new System.Drawing.Size(44, 13);
-			this.extensionsTilemapInfoLabel.TabIndex = 52;
-			this.extensionsTilemapInfoLabel.Text = "Tile info";
-			this.extensionsTilemapInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// extensionsTilemapTitleLabel
-			// 
-			this.extensionsTilemapTitleLabel.AutoSize = true;
-			this.tableLayoutPanel1.SetColumnSpan(this.extensionsTilemapTitleLabel, 2);
-			this.extensionsTilemapTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.extensionsTilemapTitleLabel.Location = new System.Drawing.Point(139, 0);
-			this.extensionsTilemapTitleLabel.Name = "extensionsTilemapTitleLabel";
-			this.extensionsTilemapTitleLabel.Size = new System.Drawing.Size(55, 13);
-			this.extensionsTilemapTitleLabel.TabIndex = 51;
-			this.extensionsTilemapTitleLabel.Text = "Tilemap:";
-			// 
-			// extensionsSpritesAttributesTextBox
-			// 
-			this.extensionsSpritesAttributesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.extensionsSpritesAttributesTextBox.Location = new System.Drawing.Point(342, 32);
-			this.extensionsSpritesAttributesTextBox.Name = "extensionsSpritesAttributesTextBox";
-			this.extensionsSpritesAttributesTextBox.Size = new System.Drawing.Size(65, 20);
-			this.extensionsSpritesAttributesTextBox.TabIndex = 60;
-			// 
-			// extensionsSpritesAttributesLabel
-			// 
-			this.extensionsSpritesAttributesLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-			this.extensionsSpritesAttributesLabel.AutoSize = true;
-			this.extensionsSpritesAttributesLabel.Location = new System.Drawing.Point(285, 35);
-			this.extensionsSpritesAttributesLabel.Name = "extensionsSpritesAttributesLabel";
-			this.extensionsSpritesAttributesLabel.Size = new System.Drawing.Size(51, 13);
-			this.extensionsSpritesAttributesLabel.TabIndex = 59;
-			this.extensionsSpritesAttributesLabel.Text = "Attributes";
-			this.extensionsSpritesAttributesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// extensionsTilemapSpritesTitleLabel
-			// 
-			this.extensionsTilemapSpritesTitleLabel.AutoSize = true;
-			this.tableLayoutPanel1.SetColumnSpan(this.extensionsTilemapSpritesTitleLabel, 2);
-			this.extensionsTilemapSpritesTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.extensionsTilemapSpritesTitleLabel.Location = new System.Drawing.Point(285, 0);
-			this.extensionsTilemapSpritesTitleLabel.Name = "extensionsTilemapSpritesTitleLabel";
-			this.extensionsTilemapSpritesTitleLabel.Size = new System.Drawing.Size(50, 13);
-			this.extensionsTilemapSpritesTitleLabel.TabIndex = 58;
-			this.extensionsTilemapSpritesTitleLabel.Text = "Sprites:";
-			// 
 			// tableLayoutPanel1
 			// 
 			this.tableLayoutPanel1.ColumnCount = 6;
@@ -1031,6 +890,172 @@
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(410, 124);
 			this.tableLayoutPanel1.TabIndex = 61;
+			// 
+			// extensionsGeneralTitleLabel
+			// 
+			this.extensionsGeneralTitleLabel.AutoSize = true;
+			this.tableLayoutPanel1.SetColumnSpan(this.extensionsGeneralTitleLabel, 2);
+			this.extensionsGeneralTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.extensionsGeneralTitleLabel.Location = new System.Drawing.Point(3, 0);
+			this.extensionsGeneralTitleLabel.Name = "extensionsGeneralTitleLabel";
+			this.extensionsGeneralTitleLabel.Size = new System.Drawing.Size(55, 13);
+			this.extensionsGeneralTitleLabel.TabIndex = 44;
+			this.extensionsGeneralTitleLabel.Text = "General:";
+			// 
+			// extensionsTilemapLabel
+			// 
+			this.extensionsTilemapLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.extensionsTilemapLabel.AutoSize = true;
+			this.extensionsTilemapLabel.Location = new System.Drawing.Point(165, 100);
+			this.extensionsTilemapLabel.Name = "extensionsTilemapLabel";
+			this.extensionsTilemapLabel.Size = new System.Drawing.Size(44, 13);
+			this.extensionsTilemapLabel.TabIndex = 56;
+			this.extensionsTilemapLabel.Text = "Tilemap";
+			this.extensionsTilemapLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// extensionsTilemapTextBox
+			// 
+			this.extensionsTilemapTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.extensionsTilemapTextBox.Location = new System.Drawing.Point(215, 97);
+			this.extensionsTilemapTextBox.Name = "extensionsTilemapTextBox";
+			this.extensionsTilemapTextBox.Size = new System.Drawing.Size(64, 20);
+			this.extensionsTilemapTextBox.TabIndex = 57;
+			// 
+			// extensionsSpritesAttributesTextBox
+			// 
+			this.extensionsSpritesAttributesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.extensionsSpritesAttributesTextBox.Location = new System.Drawing.Point(342, 32);
+			this.extensionsSpritesAttributesTextBox.Name = "extensionsSpritesAttributesTextBox";
+			this.extensionsSpritesAttributesTextBox.Size = new System.Drawing.Size(65, 20);
+			this.extensionsSpritesAttributesTextBox.TabIndex = 60;
+			// 
+			// extensionsTilemapSpritesTitleLabel
+			// 
+			this.extensionsTilemapSpritesTitleLabel.AutoSize = true;
+			this.tableLayoutPanel1.SetColumnSpan(this.extensionsTilemapSpritesTitleLabel, 2);
+			this.extensionsTilemapSpritesTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.extensionsTilemapSpritesTitleLabel.Location = new System.Drawing.Point(285, 0);
+			this.extensionsTilemapSpritesTitleLabel.Name = "extensionsTilemapSpritesTitleLabel";
+			this.extensionsTilemapSpritesTitleLabel.Size = new System.Drawing.Size(50, 13);
+			this.extensionsTilemapSpritesTitleLabel.TabIndex = 58;
+			this.extensionsTilemapSpritesTitleLabel.Text = "Sprites:";
+			// 
+			// extensionsTilemapAttributesLabel
+			// 
+			this.extensionsTilemapAttributesLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.extensionsTilemapAttributesLabel.AutoSize = true;
+			this.extensionsTilemapAttributesLabel.Location = new System.Drawing.Point(139, 67);
+			this.extensionsTilemapAttributesLabel.Name = "extensionsTilemapAttributesLabel";
+			this.extensionsTilemapAttributesLabel.Size = new System.Drawing.Size(70, 13);
+			this.extensionsTilemapAttributesLabel.TabIndex = 54;
+			this.extensionsTilemapAttributesLabel.Text = "Tile attributes";
+			this.extensionsTilemapAttributesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// extensionsTilemapAttributesTextBox
+			// 
+			this.extensionsTilemapAttributesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.extensionsTilemapAttributesTextBox.Location = new System.Drawing.Point(215, 64);
+			this.extensionsTilemapAttributesTextBox.Name = "extensionsTilemapAttributesTextBox";
+			this.extensionsTilemapAttributesTextBox.Size = new System.Drawing.Size(64, 20);
+			this.extensionsTilemapAttributesTextBox.TabIndex = 55;
+			// 
+			// extensionsSpritesAttributesLabel
+			// 
+			this.extensionsSpritesAttributesLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.extensionsSpritesAttributesLabel.AutoSize = true;
+			this.extensionsSpritesAttributesLabel.Location = new System.Drawing.Point(285, 35);
+			this.extensionsSpritesAttributesLabel.Name = "extensionsSpritesAttributesLabel";
+			this.extensionsSpritesAttributesLabel.Size = new System.Drawing.Size(51, 13);
+			this.extensionsSpritesAttributesLabel.TabIndex = 59;
+			this.extensionsSpritesAttributesLabel.Text = "Attributes";
+			this.extensionsSpritesAttributesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// extensionsTilemapTitleLabel
+			// 
+			this.extensionsTilemapTitleLabel.AutoSize = true;
+			this.tableLayoutPanel1.SetColumnSpan(this.extensionsTilemapTitleLabel, 2);
+			this.extensionsTilemapTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.extensionsTilemapTitleLabel.Location = new System.Drawing.Point(139, 0);
+			this.extensionsTilemapTitleLabel.Name = "extensionsTilemapTitleLabel";
+			this.extensionsTilemapTitleLabel.Size = new System.Drawing.Size(55, 13);
+			this.extensionsTilemapTitleLabel.TabIndex = 51;
+			this.extensionsTilemapTitleLabel.Text = "Tilemap:";
+			// 
+			// extensionsPaletteLabel
+			// 
+			this.extensionsPaletteLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.extensionsPaletteLabel.AutoSize = true;
+			this.extensionsPaletteLabel.Location = new System.Drawing.Point(23, 100);
+			this.extensionsPaletteLabel.Name = "extensionsPaletteLabel";
+			this.extensionsPaletteLabel.Size = new System.Drawing.Size(40, 13);
+			this.extensionsPaletteLabel.TabIndex = 49;
+			this.extensionsPaletteLabel.Text = "Palette";
+			this.extensionsPaletteLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// extensionsPaletteTextBox
+			// 
+			this.extensionsPaletteTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.extensionsPaletteTextBox.Location = new System.Drawing.Point(69, 97);
+			this.extensionsPaletteTextBox.Name = "extensionsPaletteTextBox";
+			this.extensionsPaletteTextBox.Size = new System.Drawing.Size(64, 20);
+			this.extensionsPaletteTextBox.TabIndex = 50;
+			// 
+			// extensionsAssemblerLabel
+			// 
+			this.extensionsAssemblerLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.extensionsAssemblerLabel.AutoSize = true;
+			this.extensionsAssemblerLabel.Location = new System.Drawing.Point(8, 35);
+			this.extensionsAssemblerLabel.Name = "extensionsAssemblerLabel";
+			this.extensionsAssemblerLabel.Size = new System.Drawing.Size(55, 13);
+			this.extensionsAssemblerLabel.TabIndex = 45;
+			this.extensionsAssemblerLabel.Text = "Assembler";
+			this.extensionsAssemblerLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// extensionsAssemblerTtextBox
+			// 
+			this.extensionsAssemblerTtextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.extensionsAssemblerTtextBox.Location = new System.Drawing.Point(69, 32);
+			this.extensionsAssemblerTtextBox.Name = "extensionsAssemblerTtextBox";
+			this.extensionsAssemblerTtextBox.Size = new System.Drawing.Size(64, 20);
+			this.extensionsAssemblerTtextBox.TabIndex = 46;
+			// 
+			// extensionsBinaryDataLabel
+			// 
+			this.extensionsBinaryDataLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.extensionsBinaryDataLabel.AutoSize = true;
+			this.extensionsBinaryDataLabel.Location = new System.Drawing.Point(3, 67);
+			this.extensionsBinaryDataLabel.Name = "extensionsBinaryDataLabel";
+			this.extensionsBinaryDataLabel.Size = new System.Drawing.Size(60, 13);
+			this.extensionsBinaryDataLabel.TabIndex = 47;
+			this.extensionsBinaryDataLabel.Text = "Binary data";
+			this.extensionsBinaryDataLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// extensionsBinaryDataTextBox
+			// 
+			this.extensionsBinaryDataTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.extensionsBinaryDataTextBox.Location = new System.Drawing.Point(69, 64);
+			this.extensionsBinaryDataTextBox.Name = "extensionsBinaryDataTextBox";
+			this.extensionsBinaryDataTextBox.Size = new System.Drawing.Size(64, 20);
+			this.extensionsBinaryDataTextBox.TabIndex = 48;
+			// 
+			// extensionsTilemapInfoTextBox
+			// 
+			this.extensionsTilemapInfoTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.extensionsTilemapInfoTextBox.Location = new System.Drawing.Point(215, 32);
+			this.extensionsTilemapInfoTextBox.Name = "extensionsTilemapInfoTextBox";
+			this.extensionsTilemapInfoTextBox.Size = new System.Drawing.Size(64, 20);
+			this.extensionsTilemapInfoTextBox.TabIndex = 53;
+			// 
+			// extensionsTilemapInfoLabel
+			// 
+			this.extensionsTilemapInfoLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.extensionsTilemapInfoLabel.AutoSize = true;
+			this.extensionsTilemapInfoLabel.Location = new System.Drawing.Point(165, 35);
+			this.extensionsTilemapInfoLabel.Name = "extensionsTilemapInfoLabel";
+			this.extensionsTilemapInfoLabel.Size = new System.Drawing.Size(44, 13);
+			this.extensionsTilemapInfoLabel.TabIndex = 52;
+			this.extensionsTilemapInfoLabel.Text = "Tile info";
+			this.extensionsTilemapInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// SettingsForm
 			// 
@@ -1144,5 +1169,7 @@
 		private System.Windows.Forms.Label extensionsSpritesAttributesLabel;
 		private System.Windows.Forms.Label extensionsTilemapSpritesTitleLabel;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+		private System.Windows.Forms.Label optionsPaletteParsingLabel;
+		private System.Windows.Forms.ComboBox optionsPaletteParsingComboBox;
 	}
 }

@@ -54,6 +54,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 					label_name = sanitizedModelName,
 					label_suffix = CreateTemplateLabelNameSuffix(),
 
+					palette_can_export = !Model.BinaryOutput,
 					palette_is_custom = Model.Palette.Type == PaletteType.Custom,
 					palette_is_next_256 = Model.Palette.Type == PaletteType.Next256,
 					palette_is_next_512 = Model.Palette.Type == PaletteType.Next512,
@@ -145,16 +146,16 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 
 			for (int i = Model.Palette.StartIndex; i < Model.Palette.UsedCount; i++)
 			{
-				var palette = Model.Palette[i];
+				var paletteColour = Model.Palette[i];
 
 				var colour = new TemplateColour
 				{
-					Red = palette.Red,
-					Green = palette.Green,
-					Blue = palette.Blue,
+					Red = paletteColour.Red,
+					Green = paletteColour.Green,
+					Blue = paletteColour.Blue,
 				};
 
-				palette.ToRawBytes(Model.PaletteFormat).ForEach(c =>
+				paletteColour.ToRawBytes(Model.PaletteFormat).ForEach(c =>
 				{
 					colour.Values.Add(new ByteValue(c));
 				});
@@ -389,7 +390,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 
 							if (sprite.GetPaletteOffset(x, y) != 0)
 							{
-								item.Attributes.Value = (byte)sprite.GetPaletteOffset(x, y);
+								item.Attributes.Value = (byte)(sprite.GetPaletteOffset(x, y) << 4);
 							}
 
 							if (sprite.GetFlippedX(x, y) == true)
@@ -462,8 +463,10 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 					for (int x = 0; x < tilemap.Data.Width; x++)
 					{
 						var tile = tilemap.Data.Tiles[y, x];
+
 						var index = (byte)tile.Index;
 						var attributes = tile.ZXNextTileAttributes();
+
 						var templateTile = new TemplateTilemap.Tile(attributes, index);
 						
 						templateRow.Tiles.Add(templateTile);
@@ -679,6 +682,11 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 		public static byte ZXNextTileAttributes(this TilemapData.Tile tile)
 		{
 			byte result = 0;
+
+			if (tile.PaletteBank > 0)
+			{
+				result += (byte)(tile.PaletteBank << 4);
+			}
 
 			if (tile.RotatedClockwise)
 			{

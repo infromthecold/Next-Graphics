@@ -157,6 +157,7 @@
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextSpritesAsImageExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextTilesInfoExporter.cs" />
     <Compile Include="Exporting\ExportPathProvider.cs" />
+    <Compile Include="Exporting\PaletteMapping\PaletteMapper.cs" />
     <Compile Include="Exporting\Remapping\Remapper.cs" />
     <Compile Include="Models\BlockInfo.cs" />
     <Compile Include="Models\Colour.cs" />

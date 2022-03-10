@@ -132,9 +132,14 @@ namespace NextGraphics.Exporting.Remapping
 									ref Data.Sprites[outBlock]);
 							}
 
-							if (Data.Model.SpritesFourBit || Data.Model.OutputType == OutputType.Tiles)
+							if (Data.Model.IsFourBitData)
 							{
-								Data.Blocks[outBlock].RemapTo4Bit(Data.Model.Palette, Data.Model.GridWidth, Data.Model.GridHeight, objectSize);
+								Data.Blocks[outBlock].RemapTo4Bit(
+									Data.Model.Palette,
+									Data.Model.FourBitParsingMethod,
+									Data.Model.GridWidth,
+									Data.Model.GridHeight,
+									objectSize);
 							}
 
 							if (Data.Blocks[outBlock].IsTransparent(Data.Model.Palette.TransparentIndex))
@@ -152,9 +157,18 @@ namespace NextGraphics.Exporting.Remapping
 							{
 								for (int xChar = 0; xChar < objectsPerGridX; xChar++)
 								{
-									if (Data.Model.SpritesFourBit || Data.Model.OutputType == OutputType.Tiles)
+									if (Data.Model.IsFourBitData)
 									{
-										paletteOffset = Data.Blocks[outBlock].GetPixel(xChar * objectSize, yChar * objectSize) & 0x0f0;
+										switch (Data.Model.FourBitParsingMethod)
+										{
+											case FourBitParsingMethod.Manual:
+												paletteOffset = Data.Blocks[outBlock].GetPixel(xChar * objectSize, yChar * objectSize) & 0x0f0;
+												break;
+
+											case FourBitParsingMethod.DetectPaletteBanks:
+												paletteOffset = Data.Blocks[outBlock].PaletteBank;
+												break;
+										}
 									}
 
 									PrepareSpriteData(xChar, yChar);
@@ -182,6 +196,20 @@ namespace NextGraphics.Exporting.Remapping
 
 						Callbacks?.OnRemapDebug(Environment.NewLine);
 						Callbacks?.OnRemapUpdated();
+					}
+
+					// After we establish all blocks, we should update tiles in previously parsed tilemaps so that palette banks will match. This is only needed when auto-banking is enabled.
+					if (Data.Model.IsFourBitData && Data.Model.FourBitParsingMethod == FourBitParsingMethod.DetectPaletteBanks)
+					{
+						Model.ForEachSourceTilemap((tilemap, index) => {
+							for (int y = 0; y < tilemap.Data.Height; y++)
+							{
+								for (int x = 0; x < tilemap.Data.Width; x++)
+								{
+									tilemap.Data.Tiles[y, x].UpdatePaletteBank(Data);
+								}
+							}
+						});
 					}
 				});
 

@@ -141,6 +141,13 @@ namespace UnitTests
 		}
 
 		[TestMethod]
+		public void SettingsFourBitMethodSaved()
+		{
+			SettingsRunner.Setup(model => model.FourBitParsingMethod = FourBitParsingMethod.Manual).Verify("0", "FourBitParsing");
+			SettingsRunner.Setup(model => model.FourBitParsingMethod = FourBitParsingMethod.DetectPaletteBanks).Verify("1", "FourBitParsing");
+		}
+
+		[TestMethod]
 		public void SettingsCenterPositionSaved()
 		{
 			SettingsRunner.Setup(model => model.CenterPosition = 0).Verify("0", "center");

@@ -118,5 +118,17 @@ namespace NextGraphics.Properties {
                 this["ExportSpriteAttributesFileExtension"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int PaletteFormExportFilterIndex {
+            get {
+                return ((int)(this["PaletteFormExportFilterIndex"]));
+            }
+            set {
+                this["PaletteFormExportFilterIndex"] = value;
+            }
+        }
     }
 }

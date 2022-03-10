@@ -15,11 +15,11 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 
 		protected override void OnExport()
 		{
-			byte paletOffset = 0;
+			byte paletteOffset =	byte.MaxValue;	// Any value above 16 is invalid, we use MaxValue to detect whether we should ask user.
 
-			if (Parameters.ExportCallbacks != null)
+			if (Parameters.ExportCallbacks != null && Model.FourBitParsingMethod == Models.FourBitParsingMethod.Manual)
 			{
-				paletOffset = Parameters.ExportCallbacks.OnExportPaletteOffsetMapper(paletOffset);
+				paletteOffset = Parameters.ExportCallbacks.OnExportPaletteOffsetMapper(0);
 			}
 
 			using (var mapFile = new BinaryWriter(Parameters.TileAttributesStream()))
@@ -36,7 +36,22 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 						{
 							outInt = ExportData.SortIndexes[ExportData.Sprites[b].GetId(x, y)];
 							mapFile.Write((byte)outInt);
-							outInt = paletOffset;
+
+							// If manual banks handling is desired, use given palette offset, otherwise get the offset from previously parsed data.
+							outInt = 0;
+							if (paletteOffset != byte.MaxValue)
+							{
+								outInt = paletteOffset;
+							}
+							else
+							{
+								var block = ExportData.Blocks[b];
+								if (block.IsAutoBankingSupported)
+								{
+									outInt = block.PaletteBank;
+								}
+							}
+							outInt <<= 4;	// palette index is on bits 7-4
 
 							if (ExportData.Sprites[b].GetFlippedX(x, y))
 							{

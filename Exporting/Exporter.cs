@@ -2,6 +2,7 @@
 using NextGraphics.Exporting.Exporters;
 using NextGraphics.Exporting.Exporters.Base;
 using NextGraphics.Exporting.Exporters.ZXNext;
+using NextGraphics.Exporting.PaletteMapping;
 using NextGraphics.Exporting.Remapping;
 using NextGraphics.Models;
 
@@ -83,7 +84,6 @@ namespace NextGraphics.Exporting
 			{
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.
 				exporters.Add(new ZXNextBinaryDataExporter());
-				exporters.Add(new ZXNextBinaryTileAttributesExporter());
 				exporters.Add(new ZXNextBinaryTilemapsExporter());
 				exporters.Add(new ZXNextBinaryPaletteExporter());
 				exporters.Add(new ZXNextAssemblerExporter());
@@ -134,7 +134,24 @@ namespace NextGraphics.Exporting
 		#region Preparing data
 
 		/// <summary>
-		/// Prepares all the data needed for export by cutting and remaping images.
+		/// Prepares the palette from the given bitmap.
+		/// </summary>
+		public PaletteMapper.Palette MapPalette(Bitmap bitmap)
+		{
+			return new PaletteMapper(Data).Map(bitmap);
+		}
+
+		/// <summary>
+		/// Loads palette from the given source palette file.
+		/// </summary>
+		/// <param name="filename"></param>
+		public PaletteMapper.Palette LoadPalette(string filename)
+		{
+			return new PaletteMapper(Data).Load(filename);
+		}
+
+		/// <summary>
+		/// Prepares all the data needed for export by cutting and remaping images. This method expects palette is already set.
 		/// </summary>
 		/// <remarks>
 		/// Note: for the moment being this need to be called manually before <see cref="Export"/>, but ideally it should be called automatically as part of export - an idea for the future improvement.

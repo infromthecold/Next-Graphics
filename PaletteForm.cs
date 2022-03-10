@@ -5,6 +5,9 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using NextGraphics.Models;
+using NextGraphics.Exporting;
+using NextGraphics.Utils;
+using System.Linq;
 
 namespace NextGraphics
 {
@@ -18,6 +21,17 @@ namespace NextGraphics
 			}
 		}
 		private MainModel _model;
+
+		public Exporter Exporter
+		{
+			get => _exporter;
+			set
+			{
+				_exporter = value;
+				imageSelectForm.Exporter = value;
+			}
+		}
+		private Exporter _exporter;
 
 		private Palette Palette { get => Model.Palette; } // a shortcut instead of having to write Model.Palette
 
@@ -162,11 +176,11 @@ namespace NextGraphics
 
 			if (Palette.Type == PaletteType.Custom)
 			{
-				colorDialog1.Color = colourClicked.BackColor;
-				if (colorDialog1.ShowDialog() == DialogResult.OK)
+				colorDialog.Color = colourClicked.BackColor;
+				if (colorDialog.ShowDialog() == DialogResult.OK)
 				{
 					colourIndex = int.Parse(colourClicked.Name);
-					colourClicked.BackColor = colorDialog1.Color;
+					colourClicked.BackColor = colorDialog.Color;
 					Palette[colourIndex].Red = colourClicked.BackColor.R;
 					Palette[colourIndex].Green = colourClicked.BackColor.G;
 					Palette[colourIndex].Blue = colourClicked.BackColor.B;
@@ -237,7 +251,6 @@ namespace NextGraphics
 
 		private void selectPaletteButton_Click(object sender, EventArgs e)
 		{
-			// select	
 			imageSelectForm.IsUsingModel = true;
 			imageSelectForm.StartPosition = FormStartPosition.CenterParent;
 			imageSelectForm.FillFilenamesFromModel();
@@ -251,9 +264,9 @@ namespace NextGraphics
 					var toIndex = imageSelectForm.ToIndex + c;
 					var fromIndex = imageSelectForm.FromIndex + c;
 
-					Palette[toIndex].Red = imageSelectForm.LoadedPalette[fromIndex, 0];
-					Palette[toIndex].Green = imageSelectForm.LoadedPalette[fromIndex, 1];
-					Palette[toIndex].Blue = imageSelectForm.LoadedPalette[fromIndex, 2];
+					Palette[toIndex].Red = imageSelectForm.LoadedPalette[fromIndex].R;
+					Palette[toIndex].Green = imageSelectForm.LoadedPalette[fromIndex].G;
+					Palette[toIndex].Blue = imageSelectForm.LoadedPalette[fromIndex].B;
 
 					colourButtons[toIndex].BackColor = Palette[toIndex].ToColor();
 				}
@@ -282,29 +295,34 @@ namespace NextGraphics
 
 				if (imageSelectForm.DialogResult == DialogResult.OK)
 				{
-					// open the palette import panel
 					for (int c = 0; c < imageSelectForm.ColoursCount; c++)
 					{
 						var toIndex = imageSelectForm.ToIndex + c;
 						var fromIndex = imageSelectForm.FromIndex + c;
-						Palette[toIndex].Red = imageSelectForm.LoadedPalette[fromIndex, 0];
-						Palette[toIndex].Green = imageSelectForm.LoadedPalette[fromIndex, 1];
-						Palette[toIndex].Blue = imageSelectForm.LoadedPalette[fromIndex, 2];
+
+						Palette[toIndex].Red = imageSelectForm.LoadedPalette[fromIndex].R;
+						Palette[toIndex].Green = imageSelectForm.LoadedPalette[fromIndex].G;
+						Palette[toIndex].Blue = imageSelectForm.LoadedPalette[fromIndex].B;
+
 						colourButtons[toIndex].BackColor = Palette[toIndex].ToColor();
 					}
+
 					customTypeRadioButton.Checked = true;
 					messageLabel.Visible = false;
 
 					Palette.Type = PaletteType.Custom;
-					for (int c = 0; c < 256; c++)
+
+					for (int c = 0; c < colourButtons.Length; c++)
 					{
 						colourButtons[c].BackColor = Palette[c].ToColor();
 						colourButtons[c].FlatAppearance.BorderColor = SystemColors.ControlDark;
 					}
+
 					for (int c = 0; c < Palette.UsedCount; c++)
 					{
 						colourButtons[c].FlatAppearance.BorderColor = selectedColor;
 					}
+					
 					SetTransparentColour(ref colourButtons[Palette.TransparentIndex]);
 				}
 			}
@@ -314,91 +332,25 @@ namespace NextGraphics
 		{
 			int lineNumber = 1000;
 			int lineStep = 10;
+
+			var filterBuilder = new DialogFilterBuilder();
+			filterBuilder.Add("Palette Files", "*.act", ExportAsPaletteFile);
+			filterBuilder.Add("Mac Palette Files", "*.8bct", ExportAsMacPaletteFile);
+			filterBuilder.Add("Spectrum Next Assembler", $"*.{Model.ExportAssemblerFileExtension}", ExportAsSpectrumNextAssemblerFile);
+			filterBuilder.Add("Spectrum Next Basic", "*.bas", ExportAsSpectrumNextBasicFile);
+			filterBuilder.Add("Spectrum Next Binary Palette", "*.pal", ExportAsSpectrumNextBinaryPaletteFile);
+
 			SaveFileDialog savePaletteDialog = new SaveFileDialog();
-			//savePaletteDialog.InitialDirectory		=	Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+			savePaletteDialog.Filter = filterBuilder.Filters;
+			savePaletteDialog.FilterIndex = Properties.Settings.Default.PaletteFormExportFilterIndex;
 			savePaletteDialog.RestoreDirectory = true;
-			savePaletteDialog.Filter = $"Palette Files (*.act)|*.act|Mac Palette Files (*.8bct)|*.8bct|Spectrum Next (*.{Model.ExportAssemblerFileExtension})|*.{Model.ExportAssemblerFileExtension}|Spectrum Next (*.bas)|*.asm|All Files (*.*)|*.*";
-			savePaletteDialog.FilterIndex = 1;
+
 			if (savePaletteDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				if (savePaletteDialog.FilterIndex == 3 || savePaletteDialog.FilterIndex == 4)
-				{
-					using (StreamWriter outputFile = new StreamWriter(savePaletteDialog.FileName))
-					{
-						if (savePaletteDialog.FilterIndex == 4)
-						{
-							outputFile.WriteLine(lineNumber.ToString() + "\tREM");
-							lineNumber += lineStep;
-							outputFile.WriteLine(lineNumber.ToString() + "\tREM\tExported Palette starts here");
-							lineNumber += lineStep;
-							outputFile.WriteLine(lineNumber.ToString() + "\tREM");
-							lineNumber += lineStep;
-							outputFile.Write(lineNumber.ToString() + "\tDATA\t");
-							lineNumber += lineStep;
-						}
-						else
-						{
-							outputFile.WriteLine("ExportedPalette:");
-						}
-						for (int j = 0; j < Palette.UsedCount; j++)
-						{
-							if (savePaletteDialog.FilterIndex == 4)
-							{
-								outputFile.Write(EightbitPalette(Palette[j + Palette.StartIndex, 0], Palette[j + Palette.StartIndex, 1], Palette[j + Palette.StartIndex, 2]).ToString());
-								if (j < Palette.UsedCount - 1)
-								{
-									outputFile.Write(",");
-								}
-								else
-								{
-									outputFile.Write("\r\n");
-								}
-							}
-							else
-							{
-								outputFile.WriteLine(
-									"\t\t\tdb\t%" + ToBinary(EightbitPalette(Palette[j + Palette.StartIndex, 0],
-									Palette[j + Palette.StartIndex, 1],
-									Palette[j + Palette.StartIndex, 2])) +
-									"\t//\t" + Palette[j + Palette.StartIndex, 0].ToString() +
-									"," + Palette[j + Palette.StartIndex, 1].ToString() +
-									"," + Palette[j + Palette.StartIndex, 2].ToString());
-							}
-						}
-					}
-				}
-				else
-				{
-					using (FileStream fsSource = new FileStream(savePaletteDialog.FileName, FileMode.Create, FileAccess.Write))
-					{
-						for (int i = 0; i < 256; i++)
-						{
-							fsSource.WriteByte(Palette[i, 0]);
-							fsSource.WriteByte(Palette[i, 1]);
-							fsSource.WriteByte(Palette[i, 2]);
-						}
-						if (isLittleEndian)
-						{
-							fsSource.WriteByte((byte)(Palette.UsedCount & 255));
-							fsSource.WriteByte((byte)(Palette.UsedCount >> 8));
-						}
-						else
-						{
-							fsSource.WriteByte((byte)(Palette.UsedCount >> 8));
-							fsSource.WriteByte((byte)(Palette.UsedCount & 255));
-						}
-						if (isLittleEndian)
-						{
-							fsSource.WriteByte((byte)(Palette.TransparentIndex & 255));
-							fsSource.WriteByte((byte)(Palette.TransparentIndex >> 8));
-						}
-						else
-						{
-							fsSource.WriteByte((byte)(Palette.TransparentIndex >> 8));
-							fsSource.WriteByte((byte)(Palette.TransparentIndex & 255));
-						}
-					}
-				}
+				Properties.Settings.Default.PaletteFormExportFilterIndex = savePaletteDialog.FilterIndex;
+				Properties.Settings.Default.Save();
+
+				filterBuilder.Handle(savePaletteDialog.FilterIndex - 1, savePaletteDialog.FileName);
 			}
 		}
 
@@ -412,18 +364,21 @@ namespace NextGraphics
 				tempPalette[c, 1] = Palette[c, 1];
 				tempPalette[c, 2] = Palette[c, 2];
 			}
+
 			for (int c = 0; c < 256 - 16; c++)
 			{
 				Palette[c][0] = Palette[c + 16, 0];
 				Palette[c][1] = Palette[c + 16, 1];
 				Palette[c][2] = Palette[c + 16, 2];
 			}
+
 			for (int c = 0; c < 16; c++)
 			{
 				Palette[c + (256 - 16)][0] = tempPalette[c, 0];
 				Palette[c + (256 - 16)][1] = tempPalette[c, 1];
 				Palette[c + (256 - 16)][2] = tempPalette[c, 2];
 			}
+
 			for (int c = 0; c < 256; c++)
 			{
 				colourButtons[c].BackColor = Palette[c].ToColor();
@@ -440,18 +395,21 @@ namespace NextGraphics
 				tempPalette[c, 1] = Palette[c + (256 - 16), 1];
 				tempPalette[c, 2] = Palette[c + (256 - 16), 2];
 			}
+
 			for (int c = 255 - 16; c >= 0; c--)
 			{
 				Palette[c + 16][0] = Palette[c, 0];
 				Palette[c + 16][1] = Palette[c, 1];
 				Palette[c + 16][2] = Palette[c, 2];
 			}
+
 			for (int c = 0; c < 16; c++)
 			{
 				Palette[c][0] = tempPalette[c, 0];
 				Palette[c][1] = tempPalette[c, 1];
 				Palette[c][2] = tempPalette[c, 2];
 			}
+
 			for (int c = 0; c < 256; c++)
 			{
 				colourButtons[c].BackColor = Palette[c].ToColor();
@@ -524,6 +482,120 @@ namespace NextGraphics
 		private void hexValueToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			hexColourTextBox.Text = "#" + colourClicked.BackColor.R.ToString("X2") + colourClicked.BackColor.G.ToString("X2") + colourClicked.BackColor.B.ToString("X2");
+		}
+
+		#endregion
+
+		#region Exporting
+
+		private void ExportAsPaletteFile(string filename)
+		{
+			using (FileStream output = new FileStream(filename, FileMode.Create, FileAccess.Write))
+			{
+				void WriteInt(int value)
+				{
+					if (isLittleEndian)
+					{
+						output.WriteByte((byte)(value & 0xFF));
+						output.WriteByte((byte)(value >> 8));
+					}
+					else
+					{
+						output.WriteByte((byte)(value >> 8));
+						output.WriteByte((byte)(value & 0xFF));
+					}
+				}
+
+				for (int i = 0; i < colourButtons.Length; i++)
+				{
+					output.WriteByte(Palette[i].Red);
+					output.WriteByte(Palette[i].Green);
+					output.WriteByte(Palette[i].Blue);
+				}
+
+				WriteInt(Palette.UsedCount);
+				WriteInt(Palette.TransparentIndex);
+			}
+		}
+
+		private void ExportAsMacPaletteFile(string filename)
+		{
+			// We share the output, but keep separate method.
+			ExportAsPaletteFile(filename);
+		}
+
+		private void ExportAsSpectrumNextAssemblerFile(string filename)
+		{
+			using (StreamWriter outputFile = new StreamWriter(filename))
+			{
+				outputFile.WriteLine("ExportedPalette:");
+
+				for (int i = 0; i < Palette.UsedCount; i++)
+				{
+					var colour = Palette[i + Palette.StartIndex];
+					var bytes = colour.ToRawBytes(Model.PaletteFormat);
+					var binaries = bytes.Select(x => $"%{x.ToBinaryString()}");
+
+					outputFile.Write("\t\t\tdb\t");
+					outputFile.WriteLine(string.Join(",", binaries));
+				}
+			}
+		}
+
+		private void ExportAsSpectrumNextBasicFile(string filename)
+		{
+			int lineNumber = 1000;
+			int lineStep = 10;
+
+			using (StreamWriter outputFile = new StreamWriter(filename))
+			{
+				outputFile.WriteLine(lineNumber.ToString() + "\tREM");
+				lineNumber += lineStep;
+
+				outputFile.WriteLine(lineNumber.ToString() + "\tREM\tExported Palette starts here");
+				lineNumber += lineStep;
+
+				outputFile.WriteLine(lineNumber.ToString() + "\tREM");
+				lineNumber += lineStep;
+
+				outputFile.Write(lineNumber.ToString() + "\tDATA\t");
+				lineNumber += lineStep;
+
+				for (int i = 0; i < Palette.UsedCount; i++)
+				{
+					// Basic always exports as 8-bit colours.
+					var colour = Palette[i + Palette.StartIndex];
+					var colourBytes = colour.ToRawBytes(PaletteFormat.Next8Bit);
+
+					outputFile.Write(string.Join(",", colourBytes));
+
+					if (i < Palette.UsedCount - 1)
+					{
+						outputFile.Write(",");
+					}
+					else
+					{
+						outputFile.WriteLine();
+					}
+				}
+			}
+		}
+
+		private void ExportAsSpectrumNextBinaryPaletteFile(string filename)
+		{
+			using (FileStream output = new FileStream(filename, FileMode.Create, FileAccess.Write))
+			{
+				for (int i = 0; i < Palette.UsedCount; i++)
+				{
+					var colour = Palette[i];
+					var bytes = colour.ToRawBytes(Model.PaletteFormat);
+
+					foreach (var b in bytes)
+					{
+						output.WriteByte(b);
+					}
+				}
+			}
 		}
 
 		#endregion
@@ -622,35 +694,6 @@ namespace NextGraphics
 					colourButtons[c + Palette.StartIndex].FlatAppearance.BorderColor = selectedColor;
 				}
 			}
-		}
-
-		private byte EightbitPalette(decimal red, decimal green, decimal blue)
-		{
-			byte r = (byte)Math.Round(red / (255 / 7));
-			byte g = (byte)Math.Round(green / (255 / 7));
-			byte b = (byte)Math.Round(blue / (255 / 3));
-			return (byte)((r << 5) | (g << 2) | b);
-
-			//return	(red & 0x0E0) | ((green & 0x0E0)>>3) | (((blue & 0x0E0)>>6) | ((blue & 0x020)>>5));
-		}
-
-		private string ToBinary(byte num)
-		{
-			string outString = "";
-			int bits = 0x080;
-			for (int bit = 0; bit < 8; bit++)
-			{
-				if ((num & bits) == bits)
-				{
-					outString += "1";
-				}
-				else
-				{
-					outString += "0";
-				}
-				bits = bits >> 1;
-			}
-			return outString;
 		}
 
 		#endregion

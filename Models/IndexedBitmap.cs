@@ -29,6 +29,16 @@ namespace NextGraphics.Models
 		/// </summary>
 		public bool Transparent { get; set; }
 
+		/// <summary>
+		/// The index of 16-colour palette bank. Only used for 4-bit data and when auto banks are selected. If auto-banking is not enabled, or for 8-bit data, this value will be -1.
+		/// </summary>
+		public int PaletteBank { get; set; } = -1;
+
+		/// <summary>
+		/// Specifies whether <see cref="PaletteBank"/> is set and therefore we can automatically select 16	colour bank.
+		/// </summary>
+		public bool IsAutoBankingSupported { get => PaletteBank >= 0; }
+
 		private short[] Colours { get; set; }
 
 		#region Initialization & disposal
@@ -122,34 +132,77 @@ namespace NextGraphics.Models
 		/// <summary>
 		/// Remaps all colour indexes for 4-bit palette.
 		/// </summary>
-		public void RemapTo4Bit(Palette palette, int width, int height, int objectSize)
+		public void RemapTo4Bit(Palette palette, FourBitParsingMethod parsingMethod, int width, int height, int objectSize)
 		{
-			int averagingIndex = 0;
-
-			for (int yCuts = 0; yCuts < height / objectSize; yCuts++)
+			int Map(int xCuts, int yCuts, int averagingIndex)
 			{
-				for (int xCuts = 0; xCuts < width / objectSize; xCuts++)
-				{
-					for (int y = 0; y < objectSize; y++)
-					{
-						for (int x = 0; x < objectSize; x++)
-						{
-							averagingIndex += GetPixel(x + (xCuts * objectSize), y + (yCuts * objectSize));
-						}
-					}
-					averagingIndex = (averagingIndex / (objectSize * objectSize)) & 0x0f0;
+				// If averaging index is less than 0, then exact colours are matched without remapping.
+				var lowestNonTransparentIndex = int.MaxValue;
 
-					for (int y = 0; y < objectSize; y++)
+				for (int y = 0; y < objectSize; y++)
+				{
+					for (int x = 0; x < objectSize; x++)
 					{
-						for (int x = 0; x < objectSize; x++)
+						var pixel = GetPixel(x + (xCuts * objectSize), y + (yCuts * objectSize));
+						var pixelColor = palette[pixel].ToColor();
+						var colourIndex = palette.ClosestColor(pixelColor, (short)averagingIndex, 0);
+
+						if (colourIndex != palette.TransparentIndex && colourIndex < lowestNonTransparentIndex)
 						{
-							var pixel = GetPixel(x + (xCuts * objectSize), y + (yCuts * objectSize));
-							var pixelColor = palette[pixel].ToColor();
-							var colourIndex = palette.ClosestColor(pixelColor, (short)averagingIndex, 0);
-							SetPixel(x + (xCuts * objectSize), y + (yCuts * objectSize), colourIndex);
+							lowestNonTransparentIndex = colourIndex;
 						}
+
+						SetPixel(x + (xCuts * objectSize), y + (yCuts * objectSize), colourIndex);
 					}
 				}
+
+				// For all-transparent pixels we simply return transparent colour index. Otherwise the index of the first colour.
+				return lowestNonTransparentIndex == int.MaxValue ? palette.TransparentIndex : lowestNonTransparentIndex;
+			}
+
+			void MapDefault()
+			{
+				int averagingIndex = 0;
+
+				for (int yCuts = 0; yCuts < height / objectSize; yCuts++)
+				{
+					for (int xCuts = 0; xCuts < width / objectSize; xCuts++)
+					{
+						for (int y = 0; y < objectSize; y++)
+						{
+							for (int x = 0; x < objectSize; x++)
+							{
+								averagingIndex += GetPixel(x + (xCuts * objectSize), y + (yCuts * objectSize));
+							}
+						}
+						averagingIndex = (averagingIndex / (objectSize * objectSize)) & 0x0f0;
+
+						Map(xCuts, yCuts, averagingIndex);
+
+						// We don't support auto-banking in this mode.
+						PaletteBank = -1;
+					}
+				}
+			}
+
+			void MapBanks()
+			{
+				// This method assumes palette is setup so that 16-colour banks are possible for objects. It will select the first bank for first non-transparent pixel.
+				var firstColourIndex = Map(0, 0, -1);
+
+				// We must assign palette bank in this mode.
+				PaletteBank = firstColourIndex / 16;
+			}
+
+			switch (parsingMethod)
+			{
+				case FourBitParsingMethod.Manual:
+					MapDefault();
+					break;
+
+				case FourBitParsingMethod.DetectPaletteBanks:
+					MapBanks();
+					break;
 			}
 		}
 

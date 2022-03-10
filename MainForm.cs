@@ -1099,6 +1099,7 @@ namespace NextGraphics
 
 			paletteForm.StartPosition = FormStartPosition.CenterParent;
 			paletteForm.Model = Model;
+			paletteForm.Exporter = Exporter;
 			paletteForm.ShowDialog();
 
 			if (paletteForm.DialogResult == DialogResult.OK)
