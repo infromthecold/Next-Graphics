@@ -48,7 +48,7 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.colourCountTextBox = new System.Windows.Forms.TextBox();
 			this.colorDialog = new System.Windows.Forms.ColorDialog();
-			this.tColourIndex1 = new System.Windows.Forms.Label();
+			this.transparentColourIndexLabel = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
 			this.hexColourTextBox = new System.Windows.Forms.TextBox();
 			this.label6 = new System.Windows.Forms.Label();
@@ -57,9 +57,7 @@
 			this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.selectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openMixerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.hexValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.paletteRowUpButton = new System.Windows.Forms.Button();
 			this.paletteRowDownButton = new System.Windows.Forms.Button();
 			this.startIndexTextBox = new System.Windows.Forms.TextBox();
@@ -263,17 +261,15 @@
 			this.colourCountTextBox.TextChanged += new System.EventHandler(this.colourCountTextBox_TextChanged);
 			this.colourCountTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.colourCountTextBox_KeyUp);
 			// 
-			// tColourIndex1
+			// transparentColourIndexLabel
 			// 
-			this.tColourIndex1.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.tColourIndex1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.tColourIndex1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F);
-			this.tColourIndex1.Location = new System.Drawing.Point(20, 304);
-			this.tColourIndex1.Name = "tColourIndex1";
-			this.tColourIndex1.Size = new System.Drawing.Size(41, 20);
-			this.tColourIndex1.TabIndex = 15;
-			this.tColourIndex1.Text = "0";
-			this.tColourIndex1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.transparentColourIndexLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.transparentColourIndexLabel.Location = new System.Drawing.Point(20, 304);
+			this.transparentColourIndexLabel.Name = "transparentColourIndexLabel";
+			this.transparentColourIndexLabel.Size = new System.Drawing.Size(41, 20);
+			this.transparentColourIndexLabel.TabIndex = 15;
+			this.transparentColourIndexLabel.Text = "0";
+			this.transparentColourIndexLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// label9
 			// 
@@ -319,11 +315,9 @@
             this.cutToolStripMenuItem,
             this.copyToolStripMenuItem,
             this.pasteToolStripMenuItem,
-            this.selectToolStripMenuItem,
-            this.openMixerToolStripMenuItem,
-            this.hexValueToolStripMenuItem});
+            this.openMixerToolStripMenuItem});
 			this.copyMenu.Name = "copyMenu";
-			this.copyMenu.Size = new System.Drawing.Size(137, 136);
+			this.copyMenu.Size = new System.Drawing.Size(181, 114);
 			// 
 			// cutToolStripMenuItem
 			// 
@@ -346,25 +340,12 @@
 			this.pasteToolStripMenuItem.Text = "Paste";
 			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
 			// 
-			// selectToolStripMenuItem
-			// 
-			this.selectToolStripMenuItem.Name = "selectToolStripMenuItem";
-			this.selectToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-			this.selectToolStripMenuItem.Text = "Select";
-			// 
 			// openMixerToolStripMenuItem
 			// 
 			this.openMixerToolStripMenuItem.Name = "openMixerToolStripMenuItem";
 			this.openMixerToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
 			this.openMixerToolStripMenuItem.Text = "Open Mixer";
-			this.openMixerToolStripMenuItem.Click += new System.EventHandler(this.ColourToolStripMenuItemOpenMixer);
-			// 
-			// hexValueToolStripMenuItem
-			// 
-			this.hexValueToolStripMenuItem.Name = "hexValueToolStripMenuItem";
-			this.hexValueToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-			this.hexValueToolStripMenuItem.Text = "Hex Value";
-			this.hexValueToolStripMenuItem.Click += new System.EventHandler(this.hexValueToolStripMenuItem_Click);
+			this.openMixerToolStripMenuItem.Click += new System.EventHandler(this.openMixerToolStripMenuItem_Click);
 			// 
 			// paletteRowUpButton
 			// 
@@ -411,7 +392,7 @@
 			this.Controls.Add(this.selectFromImageButton);
 			this.Controls.Add(this.hexColourTextBox);
 			this.Controls.Add(this.label9);
-			this.Controls.Add(this.tColourIndex1);
+			this.Controls.Add(this.transparentColourIndexLabel);
 			this.Controls.Add(this.colourCountTextBox);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label8);
@@ -457,7 +438,7 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.TextBox colourCountTextBox;
 		private System.Windows.Forms.ColorDialog colorDialog;
-		private System.Windows.Forms.Label tColourIndex1;
+		private System.Windows.Forms.Label transparentColourIndexLabel;
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.TextBox hexColourTextBox;
 		private System.Windows.Forms.Label label6;
@@ -467,8 +448,6 @@
 		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem openMixerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem selectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem hexValueToolStripMenuItem;
         private System.Windows.Forms.Button paletteRowUpButton;
         private System.Windows.Forms.Button paletteRowDownButton;
         private System.Windows.Forms.TextBox startIndexTextBox;
