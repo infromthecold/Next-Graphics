@@ -315,7 +315,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 
 							if (sprite.GetPaletteOffset(x, y) != 0)
 							{
-								item.Attributes.Value = (byte)sprite.GetPaletteOffset(x, y);
+								item.Attributes.Value = (byte)(sprite.GetPaletteOffset(x, y) << 4);
 							}
 
 							if (sprite.GetFlippedX(x, y) == true)
