@@ -34,7 +34,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 						}
 					}
 
-					writer.Write(spriteCount);
+					writer.Write((byte)spriteCount);
 
 					for (int y = 0; y < ExportData.Sprites[s].Height; y++)
 					{
@@ -42,29 +42,29 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 						{
 							if (ExportData.Sprites[s].GetTransparent(x, y)) continue;
 
-							writer.Write(ExportData.Sprites[s].OffsetX + (ExportData.ImageOffset.X + (ExportData.Sprites[s].GetXPos(x, y) * ExportData.ObjectSize)));
-							writer.Write(ExportData.Sprites[s].OffsetY + (ExportData.ImageOffset.Y + (ExportData.Sprites[s].GetYpos(x, y) * ExportData.ObjectSize)));
+							writer.Write((byte)(ExportData.Sprites[s].OffsetX + (ExportData.ImageOffset.X + (ExportData.Sprites[s].GetXPos(x, y) * ExportData.ObjectSize))));
+							writer.Write((byte)(ExportData.Sprites[s].OffsetY + (ExportData.ImageOffset.Y + (ExportData.Sprites[s].GetYpos(x, y) * ExportData.ObjectSize))));
 
 							byte writeByte = 0;
 
 							if (ExportData.Sprites[s].GetPaletteOffset(x, y) != 0)
 							{
-								writeByte = (byte)ExportData.Sprites[s].GetPaletteOffset(x, y);
+								writeByte = (byte)(ExportData.Sprites[s].GetPaletteOffset(x, y) << 4);
 							}
 
 							if (ExportData.Sprites[s].GetFlippedX(x, y) == true)
 							{
-								writeByte = (byte)(writeByte | 8);
+								writeByte |= 1 << 3;
 							}
 
 							if (ExportData.Sprites[s].GetFlippedY(x, y) == true)
 							{
-								writeByte = (byte)(writeByte | 4);
+								writeByte |= 1 << 2;
 							}
 
 							if (ExportData.Sprites[s].GetRotated(x, y) == true)
 							{
-								writeByte = (byte)(writeByte | 2);
+								writeByte |= 1 << 1;
 							}
 
 							writer.Write(writeByte);
@@ -78,12 +78,12 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 									writeByte = (byte)(writeByte | 64);
 								}
 								writer.Write(writeByte);
-								writer.Write((ExportData.Sprites[s].GetId(x, y) - IdReduction) / 2);
+								writer.Write((byte)((ExportData.Sprites[s].GetId(x, y) - IdReduction) / 2));
 							}
 							else
 							{
 								writer.Write(writeByte);
-								writer.Write(ExportData.Sprites[s].GetId(x, y));
+								writer.Write((byte)ExportData.Sprites[s].GetId(x, y));
 							}
 						}
 					}
