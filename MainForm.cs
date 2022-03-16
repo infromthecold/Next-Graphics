@@ -21,12 +21,6 @@ namespace NextGraphics
 {
 	public partial class MainForm : Form, RemapCallbacks, ExportCallbacks
 	{
-		//-------------------------------------------------------------------------------------------------------------------
-		//
-		// variables
-		//
-		//-------------------------------------------------------------------------------------------------------------------
-
 		private MainModel Model { get; set; }
 		private Exporter Exporter { get; set; }
 		private ExportPathProvider ExportPaths { get; set; }
@@ -54,8 +48,6 @@ namespace NextGraphics
 		private string parentDirectory = "f:/";
 		private string projectPath = string.Empty;
 		private bool isPaletteSet = false;
-
-		private readonly NumberFormatInfo numberFormatInfo = new NumberFormatInfo();
 
 #if DEBUG_WINDOW
 		public DebugForm debugForm;
@@ -595,10 +587,11 @@ namespace NextGraphics
 		private void settingsButton_Click(object sender, EventArgs e)
 		{
 			// Note: settings form is non-modal so it will automatically get disposed upon closing.
-			SettingsForm settingsForm = new SettingsForm();
-			settingsForm.StartPosition = FormStartPosition.CenterParent;
-			settingsForm.Model = Model;
-			settingsForm.Show(this);
+			FormHelpers.ShowOrCreateNewModelessInstance<SettingsForm>(form =>
+			{
+				form.StartPosition = FormStartPosition.CenterParent;
+				form.Model = Model;
+			});
 		}
 
 		private void exportAsBlocksRadioButton_CheckedChanged(object sender, EventArgs e)

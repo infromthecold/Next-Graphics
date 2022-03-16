@@ -231,6 +231,7 @@
     </Compile>
     <Compile Include="Utils\CommonExtensions.cs" />
     <Compile Include="Utils\DialogFilterBuilder.cs" />
+    <Compile Include="Utils\FormHelpers.cs" />
     <EmbeddedResource Include="AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
