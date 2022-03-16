@@ -33,6 +33,14 @@ namespace NextGraphics.Utils
 		}
 
 		/// <summary>
+		/// Clears the given <see cref="Graphics"/> with magenta.
+		/// </summary>
+		public static void Clear(this Graphics graphics)
+		{
+			graphics.Clear(Color.Magenta);
+		}
+
+		/// <summary>
 		/// Returns either black or white <see cref="Color"/> so it will be visible on the given color.
 		/// </summary>
 		public static Color FittingBlackOrWhite(this Color color)
@@ -75,7 +83,7 @@ namespace NextGraphics.Utils
 		/// <summary>
 		/// Renders a grid into the given <see cref="Image"/>.
 		/// </summary>
-		public static void Render(
+		public static void RenderGrid(
 			this Image image,
 			Graphics g,
 			int gridX,

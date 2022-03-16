@@ -46,7 +46,7 @@ namespace NextGraphics
 
 		private void debugPictureBox_Paint(object sender, PaintEventArgs e)
 		{
-			debugPictureBox.Image.Render(e.Graphics, 8, 8, windowScale, windowScale);
+			debugPictureBox.Image.RenderGrid(e.Graphics, 8, 8, windowScale, windowScale);
 		}
 	}
 }
