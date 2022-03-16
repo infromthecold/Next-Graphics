@@ -82,33 +82,35 @@
 			this.reloadImagesToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.projectListBox = new System.Windows.Forms.ListBox();
 			this.charsPictureBox = new System.Windows.Forms.PictureBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
-			this.tilesPanel = new System.Windows.Forms.Panel();
+			this.charactersLabel = new System.Windows.Forms.Label();
+			this.blocksLabel = new System.Windows.Forms.Label();
+			this.blocksPanel = new System.Windows.Forms.Panel();
 			this.blocksPictureBox = new System.Windows.Forms.PictureBox();
 			this.colorDialog1 = new System.Windows.Forms.ColorDialog();
 			this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
-			this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+			this.statusToolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.settingsButton = new System.Windows.Forms.Button();
 			this.resultsPanel = new System.Windows.Forms.Panel();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.SpritesLable = new System.Windows.Forms.Label();
-			this.BlocksLable = new System.Windows.Forms.Label();
+			this.charactersPanel = new System.Windows.Forms.Panel();
+			this.statusSpritesLabel = new System.Windows.Forms.Label();
+			this.statusBlocksLabel = new System.Windows.Forms.Label();
+			this.rightControlsPanel = new System.Windows.Forms.Panel();
 			this.menuStrip.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			this.filesPanel.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.charsPictureBox)).BeginInit();
-			this.tilesPanel.SuspendLayout();
+			this.blocksPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.blocksPictureBox)).BeginInit();
 			this.statusStrip.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.resultsPanel.SuspendLayout();
-			this.panel1.SuspendLayout();
+			this.charactersPanel.SuspendLayout();
+			this.rightControlsPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip
@@ -122,7 +124,7 @@
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.MdiWindowListItem = this.windowsMenu;
 			this.menuStrip.Name = "menuStrip";
-			this.menuStrip.Size = new System.Drawing.Size(1040, 24);
+			this.menuStrip.Size = new System.Drawing.Size(1036, 24);
 			this.menuStrip.TabIndex = 0;
 			this.menuStrip.Text = "MenuStrip";
 			// 
@@ -346,6 +348,7 @@
 			// toolStrip
 			// 
 			this.toolStrip.AutoSize = false;
+			this.toolStrip.BackColor = System.Drawing.SystemColors.ButtonFace;
 			this.toolStrip.Font = new System.Drawing.Font("Segoe UI", 12F);
 			this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -361,7 +364,7 @@
             this.infoToolStripButton});
 			this.toolStrip.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip.Name = "toolStrip";
-			this.toolStrip.Size = new System.Drawing.Size(1040, 55);
+			this.toolStrip.Size = new System.Drawing.Size(1036, 55);
 			this.toolStrip.TabIndex = 1;
 			this.toolStrip.Text = "ToolStrip";
 			// 
@@ -532,16 +535,15 @@
 			// 
 			// filesPanel
 			// 
-			this.filesPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.filesPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.filesPanel.Controls.Add(this.toolStrip1);
 			this.filesPanel.Controls.Add(this.projectListBox);
-			this.filesPanel.Location = new System.Drawing.Point(865, 79);
+			this.filesPanel.Dock = System.Windows.Forms.DockStyle.Right;
+			this.filesPanel.Location = new System.Drawing.Point(181, 0);
 			this.filesPanel.Margin = new System.Windows.Forms.Padding(0);
 			this.filesPanel.Name = "filesPanel";
 			this.filesPanel.Padding = new System.Windows.Forms.Padding(10);
-			this.filesPanel.Size = new System.Drawing.Size(175, 555);
+			this.filesPanel.Size = new System.Drawing.Size(175, 585);
 			this.filesPanel.TabIndex = 4;
 			// 
 			// toolStrip1
@@ -628,7 +630,7 @@
 			this.projectListBox.Margin = new System.Windows.Forms.Padding(10);
 			this.projectListBox.Name = "projectListBox";
 			this.projectListBox.ScrollAlwaysVisible = true;
-			this.projectListBox.Size = new System.Drawing.Size(151, 498);
+			this.projectListBox.Size = new System.Drawing.Size(151, 530);
 			this.projectListBox.TabIndex = 0;
 			this.projectListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.projectListBox_MouseDoubleClick);
 			// 
@@ -642,41 +644,44 @@
 			this.charsPictureBox.Click += new System.EventHandler(this.charsPictureBox_Click);
 			this.charsPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.charsPictureBox_Paint);
 			// 
-			// label2
+			// charactersLabel
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(6, 6);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(126, 13);
-			this.label2.TabIndex = 9;
-			this.label2.Text = "Characters/Sprites (click)";
+			this.charactersLabel.AutoSize = true;
+			this.charactersLabel.Location = new System.Drawing.Point(6, 6);
+			this.charactersLabel.Name = "charactersLabel";
+			this.charactersLabel.Size = new System.Drawing.Size(126, 13);
+			this.charactersLabel.TabIndex = 9;
+			this.charactersLabel.Text = "Characters/Sprites (click)";
 			// 
-			// label1
+			// blocksLabel
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(6, 156);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(111, 13);
-			this.label1.TabIndex = 8;
-			this.label1.Text = "Blocks/Objects (click)";
+			this.blocksLabel.AutoSize = true;
+			this.blocksLabel.Location = new System.Drawing.Point(6, 156);
+			this.blocksLabel.Name = "blocksLabel";
+			this.blocksLabel.Size = new System.Drawing.Size(111, 13);
+			this.blocksLabel.TabIndex = 8;
+			this.blocksLabel.Text = "Blocks/Objects (click)";
 			// 
-			// tilesPanel
+			// blocksPanel
 			// 
-			this.tilesPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.blocksPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.tilesPanel.AutoScroll = true;
-			this.tilesPanel.AutoScrollMargin = new System.Drawing.Size(0, 8);
-			this.tilesPanel.Controls.Add(this.blocksPictureBox);
-			this.tilesPanel.Location = new System.Drawing.Point(8, 171);
-			this.tilesPanel.Name = "tilesPanel";
-			this.tilesPanel.Size = new System.Drawing.Size(154, 373);
-			this.tilesPanel.TabIndex = 0;
+			this.blocksPanel.AutoScroll = true;
+			this.blocksPanel.AutoScrollMargin = new System.Drawing.Size(0, 8);
+			this.blocksPanel.Controls.Add(this.blocksPictureBox);
+			this.blocksPanel.Location = new System.Drawing.Point(8, 171);
+			this.blocksPanel.Name = "blocksPanel";
+			this.blocksPanel.Size = new System.Drawing.Size(154, 403);
+			this.blocksPanel.TabIndex = 0;
 			// 
 			// blocksPictureBox
 			// 
+			this.blocksPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.blocksPictureBox.Location = new System.Drawing.Point(3, 3);
 			this.blocksPictureBox.Name = "blocksPictureBox";
-			this.blocksPictureBox.Size = new System.Drawing.Size(128, 367);
+			this.blocksPictureBox.Size = new System.Drawing.Size(148, 397);
 			this.blocksPictureBox.TabIndex = 0;
 			this.blocksPictureBox.TabStop = false;
 			this.blocksPictureBox.Click += new System.EventHandler(this.blocksPictureBox_Click);
@@ -697,19 +702,19 @@
 			// 
 			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel,
-            this.toolStripProgressBar1});
-			this.statusStrip.Location = new System.Drawing.Point(0, 634);
+            this.statusToolStripProgressBar});
+			this.statusStrip.Location = new System.Drawing.Point(0, 664);
 			this.statusStrip.Name = "statusStrip";
-			this.statusStrip.Size = new System.Drawing.Size(1040, 22);
+			this.statusStrip.Size = new System.Drawing.Size(1036, 22);
 			this.statusStrip.TabIndex = 2;
 			this.statusStrip.Text = "StatusStrip";
 			// 
-			// toolStripProgressBar1
+			// statusToolStripProgressBar
 			// 
-			this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-			this.toolStripProgressBar1.Size = new System.Drawing.Size(300, 16);
-			this.toolStripProgressBar1.Step = 1;
-			this.toolStripProgressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+			this.statusToolStripProgressBar.Name = "statusToolStripProgressBar";
+			this.statusToolStripProgressBar.Size = new System.Drawing.Size(300, 16);
+			this.statusToolStripProgressBar.Step = 1;
+			this.statusToolStripProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
 			// 
 			// label3
 			// 
@@ -757,61 +762,69 @@
 			// 
 			// resultsPanel
 			// 
-			this.resultsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.resultsPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.resultsPanel.Controls.Add(this.panel1);
-			this.resultsPanel.Controls.Add(this.label2);
-			this.resultsPanel.Controls.Add(this.label1);
-			this.resultsPanel.Controls.Add(this.tilesPanel);
-			this.resultsPanel.Location = new System.Drawing.Point(694, 79);
+			this.resultsPanel.Controls.Add(this.charactersPanel);
+			this.resultsPanel.Controls.Add(this.charactersLabel);
+			this.resultsPanel.Controls.Add(this.blocksLabel);
+			this.resultsPanel.Controls.Add(this.blocksPanel);
+			this.resultsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.resultsPanel.Location = new System.Drawing.Point(0, 0);
 			this.resultsPanel.Name = "resultsPanel";
-			this.resultsPanel.Size = new System.Drawing.Size(171, 552);
+			this.resultsPanel.Size = new System.Drawing.Size(181, 585);
 			this.resultsPanel.TabIndex = 6;
 			// 
-			// panel1
+			// charactersPanel
 			// 
-			this.panel1.AutoScroll = true;
-			this.panel1.AutoScrollMargin = new System.Drawing.Size(0, 8);
-			this.panel1.Controls.Add(this.charsPictureBox);
-			this.panel1.Location = new System.Drawing.Point(8, 22);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(154, 131);
-			this.panel1.TabIndex = 21;
+			this.charactersPanel.AutoScroll = true;
+			this.charactersPanel.AutoScrollMargin = new System.Drawing.Size(0, 8);
+			this.charactersPanel.Controls.Add(this.charsPictureBox);
+			this.charactersPanel.Location = new System.Drawing.Point(8, 22);
+			this.charactersPanel.Name = "charactersPanel";
+			this.charactersPanel.Size = new System.Drawing.Size(154, 131);
+			this.charactersPanel.TabIndex = 21;
 			// 
-			// SpritesLable
+			// statusSpritesLabel
 			// 
-			this.SpritesLable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.SpritesLable.AutoSize = true;
-			this.SpritesLable.Location = new System.Drawing.Point(470, 640);
-			this.SpritesLable.Name = "SpritesLable";
-			this.SpritesLable.Size = new System.Drawing.Size(95, 13);
-			this.SpritesLable.TabIndex = 18;
-			this.SpritesLable.Text = "Characters/Sprites";
+			this.statusSpritesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.statusSpritesLabel.AutoSize = true;
+			this.statusSpritesLabel.Location = new System.Drawing.Point(470, 670);
+			this.statusSpritesLabel.Name = "statusSpritesLabel";
+			this.statusSpritesLabel.Size = new System.Drawing.Size(95, 13);
+			this.statusSpritesLabel.TabIndex = 18;
+			this.statusSpritesLabel.Text = "Characters/Sprites";
 			// 
-			// BlocksLable
+			// statusBlocksLabel
 			// 
-			this.BlocksLable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.BlocksLable.AutoSize = true;
-			this.BlocksLable.Location = new System.Drawing.Point(350, 640);
-			this.BlocksLable.Name = "BlocksLable";
-			this.BlocksLable.Size = new System.Drawing.Size(80, 13);
-			this.BlocksLable.TabIndex = 19;
-			this.BlocksLable.Text = "Blocks/Objects";
+			this.statusBlocksLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.statusBlocksLabel.AutoSize = true;
+			this.statusBlocksLabel.Location = new System.Drawing.Point(350, 670);
+			this.statusBlocksLabel.Name = "statusBlocksLabel";
+			this.statusBlocksLabel.Size = new System.Drawing.Size(80, 13);
+			this.statusBlocksLabel.TabIndex = 19;
+			this.statusBlocksLabel.Text = "Blocks/Objects";
+			// 
+			// rightControlsPanel
+			// 
+			this.rightControlsPanel.Controls.Add(this.resultsPanel);
+			this.rightControlsPanel.Controls.Add(this.filesPanel);
+			this.rightControlsPanel.Dock = System.Windows.Forms.DockStyle.Right;
+			this.rightControlsPanel.Location = new System.Drawing.Point(680, 79);
+			this.rightControlsPanel.Name = "rightControlsPanel";
+			this.rightControlsPanel.Size = new System.Drawing.Size(356, 585);
+			this.rightControlsPanel.TabIndex = 21;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1040, 656);
-			this.Controls.Add(this.BlocksLable);
-			this.Controls.Add(this.SpritesLable);
+			this.ClientSize = new System.Drawing.Size(1036, 686);
+			this.Controls.Add(this.rightControlsPanel);
+			this.Controls.Add(this.statusBlocksLabel);
+			this.Controls.Add(this.statusSpritesLabel);
 			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.resultsPanel);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.toolStrip);
 			this.Controls.Add(this.menuStrip);
-			this.Controls.Add(this.filesPanel);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.IsMdiContainer = true;
 			this.MainMenuStrip = this.menuStrip;
@@ -825,7 +838,7 @@
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.charsPictureBox)).EndInit();
-			this.tilesPanel.ResumeLayout(false);
+			this.blocksPanel.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.blocksPictureBox)).EndInit();
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
@@ -833,7 +846,8 @@
 			this.groupBox1.PerformLayout();
 			this.resultsPanel.ResumeLayout(false);
 			this.resultsPanel.PerformLayout();
-			this.panel1.ResumeLayout(false);
+			this.charactersPanel.ResumeLayout(false);
+			this.rightControlsPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -877,16 +891,16 @@
 		private System.Windows.Forms.ToolStripButton paletteToolStripButton;
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
 		private System.Windows.Forms.StatusStrip statusStrip;
-		private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
+		private System.Windows.Forms.ToolStripProgressBar statusToolStripProgressBar;
 		private System.Windows.Forms.ToolStrip toolStrip1;
 		private System.Windows.Forms.ToolStripButton moveUpImageToolStripButton;
 		private System.Windows.Forms.ToolStripButton moveDownImageToolStripButton;
 		private System.Windows.Forms.ToolStripButton removeImageToolStripButton;
 		private System.Windows.Forms.PictureBox blocksPictureBox;
 		private System.Windows.Forms.PictureBox charsPictureBox;
-		private System.Windows.Forms.Panel tilesPanel;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Panel blocksPanel;
+		private System.Windows.Forms.Label blocksLabel;
+		private System.Windows.Forms.Label charactersLabel;
 		private System.Windows.Forms.TextBox blockHeightTextBox;
 		private System.Windows.Forms.RadioButton exportAsBlocksRadioButton;
 		private System.Windows.Forms.Label label3;
@@ -900,15 +914,16 @@
 		private System.Windows.Forms.ToolStripButton reloadImagesToolStripButton;
 		private System.Windows.Forms.ToolStripMenuItem processMapToolStripMenuItem;
 		private System.Windows.Forms.Panel resultsPanel;
-		private System.Windows.Forms.Label SpritesLable;
-		private System.Windows.Forms.Label BlocksLable;
+		private System.Windows.Forms.Label statusSpritesLabel;
+		private System.Windows.Forms.Label statusBlocksLabel;
 		private System.Windows.Forms.ToolStripMenuItem createParallaxToolStripMenuItem;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel charactersPanel;
 		private System.Windows.Forms.ToolStripMenuItem batchProcessProjectsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem WAVToRAWToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton infoToolStripButton;
 		private System.Windows.Forms.ToolStripButton addImagesToolStripButton;
 		private System.Windows.Forms.ToolStripMenuItem addTilemapsToolStripMenuItem;
+		private System.Windows.Forms.Panel rightControlsPanel;
 	}
 }
 

@@ -40,6 +40,17 @@ namespace NextGraphics.Utils
 	public static class FormExtensions
 	{
 		/// <summary>
+		/// Checks if a form of given type is already opened as MDI child of the given form. If so, it brings the form to front and returns the instance. Otherwise creates a new instance and returns it. This is just a shortcut with simpler
+		/// </summary>
+		/// <remarks>
+		/// Note: only parameter-less constructors are supported!
+		/// </remarks>
+		public static T ShowOrCreateNewMdiChildInstance<T>(this Form mdiParent, Action<T> beforeShow = null) where T : Form
+		{
+			return ShowOrCreateNewMdiChildInstance<T>(mdiParent, null, beforeShow);
+		}
+
+		/// <summary>
 		/// Checks if a form of given type conforming the given conditions is already opened as MDI child of the given form. If so, it brings the form to front and returns the instance. Otherwise creates a new instance and returns it. If conditions closure is not provided, only type is checked
 		/// </summary>
 		/// <remarks>

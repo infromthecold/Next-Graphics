@@ -8,14 +8,12 @@ using System.Windows.Forms;
 using System.IO;
 using System.Xml;
 using System.Drawing.Imaging;
-using System.Globalization;
 using NextGraphics.Models;
 using NextGraphics.Exporting;
 using NextGraphics.Exporting.Common;
 using NextGraphics.Main;
 using NextGraphics.Utils;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace NextGraphics
 {
@@ -31,8 +29,6 @@ namespace NextGraphics
 #endif
 		private InfoForm infoForm = new InfoForm();
 
-		private ImageForm blocksForm = null;
-		private ImageForm charsForm = null;
 		private ImageForm rebuildTilesForm = null;
 
 		private readonly PaletteForm paletteForm = new PaletteForm();
@@ -77,16 +73,11 @@ namespace NextGraphics
 
 			InitializeComponent();
 
-#if DEBUG_WINDOW
-			debugForm = new DebugForm();
-			debugForm.Show();
-#endif
-			toolStripProgressBar1.Minimum = 0;
-			toolStripProgressBar1.Maximum = 0;
-
-			ClearData();	// Clearing data will also take care of linking UI to fresh model data.
+			UpdateStatusProgress(false);
+			ClearData();
 			SetForm();
 
+			// Prepare image dialog filters.
 			var imageFiltersBuilder = new DialogFilterBuilder();
 			ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
 			foreach (var c in codecs)
@@ -97,6 +88,7 @@ namespace NextGraphics
 			imageFiltersBuilder.Add("All Files", "*.*");
 			addImagesDialog.Filter = imageFiltersBuilder.Filters;
 
+			// Prepare tilemap dialog filters.
 			var tilemapFiltersBuilder = new DialogFilterBuilder();
 			tilemapFiltersBuilder.Add("GBA Tile Map", "*.map");
 			tilemapFiltersBuilder.Add("STM Tile Map", "*.stm");
@@ -104,11 +96,17 @@ namespace NextGraphics
 			tilemapFiltersBuilder.Add("All Files", "*.*");
 			addTilemapsDialog.Filter = tilemapFiltersBuilder.Filters;
 
+			// Prepare project dialogs filters.
 			var projectFiltersBuilder = new DialogFilterBuilder();
 			projectFiltersBuilder.Add("Project Files", "*.xml");
 			projectFiltersBuilder.Add("All Files", "*.*");
 			projectOpenDialog.Filter = projectFiltersBuilder.Filters;
 			projectSaveDialog.Filter = projectFiltersBuilder.Filters;
+
+#if DEBUG_WINDOW
+			debugForm = new DebugForm();
+			debugForm.Show();
+#endif
 
 #if PROPRIETARY
 			parallaxWindow.thePalette = thePalette;
@@ -145,8 +143,7 @@ namespace NextGraphics
 				charsPictureBox.Invalidate(true);
 				charsPictureBox.Update();
 
-				toolStripProgressBar1.Minimum = 0;
-				toolStripProgressBar1.Maximum = 10000;
+				UpdateStatusProgress(true);
 			}));
 		}
 
@@ -156,6 +153,9 @@ namespace NextGraphics
 			{
 				blocksPictureBox.Invalidate(true);
 				blocksPictureBox.Update();
+
+				charsPictureBox.Invalidate(true);
+				charsPictureBox.Update();
 			}));
 		}
 
@@ -163,14 +163,22 @@ namespace NextGraphics
 		{
 			Invoke(new Action(() =>
 			{
+				foreach (Form child in MdiChildren)
+				{
+					if (child is ImageForm)
+					{
+						child.Invalidate(true);
+						child.Update();
+					}
+				}
+
 				charsPictureBox.Invalidate(true);
 				charsPictureBox.Update();
 
 				blocksPictureBox.Invalidate(true);
 				blocksPictureBox.Update();
 
-				toolStripProgressBar1.Minimum = 0;
-				toolStripProgressBar1.Maximum = 0;
+				UpdateStatusProgress(false);
 
 #if DEBUG_WINDOW
 				debugForm.Invalidate(true);
@@ -204,11 +212,11 @@ namespace NextGraphics
 			{
 				if (Model.OutputType == OutputType.Tiles)
 				{
-					SpritesLable.Text = $"Characters ({count}), Transparent ({transparentCount})";
+					statusSpritesLabel.Text = $"Characters ({count}), Transparent ({transparentCount})";
 				}
 				else
 				{
-					SpritesLable.Text = $"Sprites ({count})";
+					statusSpritesLabel.Text = $"Sprites ({count})";
 				}
 			}));
 		}
@@ -219,11 +227,11 @@ namespace NextGraphics
 			{
 				if (Model.OutputType == OutputType.Tiles)
 				{
-					BlocksLable.Text = $"Blocks ({count})";
+					statusBlocksLabel.Text = $"Blocks ({count})";
 				}
 				else
 				{
-					BlocksLable.Text = $"Objects ({count})";
+					statusBlocksLabel.Text = $"Objects ({count})";
 				}
 			}));
 		}
@@ -631,45 +639,52 @@ namespace NextGraphics
 			var gridWidth = Model.DefaultItemWidth();
 			var gridHeight = Model.DefaultItemHeight();
 
-			charsPictureBox.Image.Render(e.Graphics, gridWidth, gridHeight);
+			charsPictureBox.Image.RenderGrid(e.Graphics, gridWidth, gridHeight);
 		}
 
 		private void charsPictureBox_Click(object sender, EventArgs e)
 		{
-			if (charsForm == null || !charsForm.Visible)
-			{
-				charsForm = new ImageForm
+			var title = "Characters";
+
+			this.ShowOrCreateNewMdiChildInstance<ImageForm>(
+				form => form.Text == title,	// we have multiple child `ImageForm`s, so title identifies the exact instance
+				form =>
 				{
-					Text = "Characters",
-					MdiParent = this
-				};
-			}
+					form.Text = title;
 
-			// Note: atm sprite/tile size is hard code and suits ZX Spectrum Next, it would be better to move this elsewhere - `MainModel` for example...
-			charsForm.CopyImage(Model.CharsBitmap, Model.DefaultItemWidth(), Model.DefaultItemHeight(), 1f);
+					form.CopyImage(Model.CharsBitmap, new ImageForm.Parameters
+					{
+						GridWidth = () => Model.DefaultItemWidth(),
+						GridHeight = () => Model.DefaultItemHeight()
+					});
 
-			MoveResizeAsMdiChild(charsForm, show: true);
+					MoveResizeAsMdiChild(form);
+				});
 		}
 
 		private void blocksPictureBox_Paint(object sender, PaintEventArgs e)
 		{
-			blocksPictureBox.Image.Render(e.Graphics, Model.GridWidth, Model.GridHeight);
+			blocksPictureBox.Image.RenderGrid(e.Graphics, Model.GridWidth, Model.GridHeight);
 		}
 
 		private void blocksPictureBox_Click(object sender, EventArgs e)
 		{
-			if (blocksForm == null || !blocksForm.Visible)
-			{
-				blocksForm = new ImageForm
+			var title = "Blocks";
+
+			this.ShowOrCreateNewMdiChildInstance<ImageForm>(
+				form => form.Text == title, // we have multiple child `ImageForm`s, so title identifies the exact instance
+				form =>
 				{
-					Text = "Blocks",
-					MdiParent = this
-				};
-			}
+					form.Text = title;
 
-			blocksForm.CopyImage(Model.BlocksBitmap, Model.GridWidth, Model.GridHeight, 0.15f);
+					form.CopyImage(Model.BlocksBitmap, new ImageForm.Parameters
+					{
+						GridWidth = () => Model.GridWidth,
+						GridHeight = () => Model.GridHeight
+					});
 
-			MoveResizeAsMdiChild(blocksForm, show: true);
+					MoveResizeAsMdiChild(form);
+				});
 		}
 
 		#endregion
@@ -678,7 +693,6 @@ namespace NextGraphics
 
 		private void moveDownImageToolStripButton_Click(object sender, EventArgs e)
 		{
-			// move down
 			int thisIndex = projectListBox.SelectedIndex;
 			if (thisIndex <= Model.Sources.Count - 1 && thisIndex > 0)
 			{
@@ -693,7 +707,6 @@ namespace NextGraphics
 
 		private void moveUpImageToolStripButton_Click(object sender, EventArgs e)
 		{
-			//Move up
 			int thisIndex = projectListBox.SelectedIndex;
 			if (thisIndex > 1 && thisIndex > 0)
 			{
@@ -1288,19 +1301,6 @@ namespace NextGraphics
 		}
 
 		/// <summary>
-		/// Disposes all image windows.
-		/// </summary>
-		private void DisposeImageWindows()
-		{
-			foreach (ImageForm form in imageForms)
-			{
-				form.Dispose();
-			}
-
-			imageForms.Clear();
-		}
-
-		/// <summary>
 		///  Moves and resizes given MDI child form, then refreshes it.
 		/// </summary>
 		private void MoveResizeAsMdiChild(Form form, int left = 20, int top = 20, bool show = false)
@@ -1317,6 +1317,25 @@ namespace NextGraphics
 			form.Height = Height - top - (toolStrip.Height + 200);
 
 			form.Refresh();
+		}
+
+		private void UpdateStatusProgress(bool active)
+		{
+			statusToolStripProgressBar.Minimum = 0;
+			statusToolStripProgressBar.Maximum = active ? 10000 : 0;
+		}
+
+		/// <summary>
+		/// Disposes all image windows.
+		/// </summary>
+		private void DisposeImageWindows()
+		{
+			foreach (ImageForm form in imageForms)
+			{
+				form.Dispose();
+			}
+
+			imageForms.Clear();
 		}
 
 		/// <summary>
