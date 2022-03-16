@@ -44,6 +44,7 @@ namespace NextGraphics
 		private string parentDirectory = "f:/";
 		private string projectPath = string.Empty;
 		private bool isPaletteSet = false;
+		private bool isDataReloaded = false;
 
 #if DEBUG_WINDOW
 		public DebugForm debugForm;
@@ -1097,6 +1098,8 @@ namespace NextGraphics
 		/// </summary>
 		private void SelectPalette(Action completed = null) 
 		{
+			ReloadModelSourcesIfNeeded();
+
 			if (completed != null && isPaletteSet)
 			{
 				completed();
@@ -1124,6 +1127,9 @@ namespace NextGraphics
 		/// </summary>
 		private void RemapData(Action completed = null)
 		{
+			// Note: after remapping, we want to reset the flags so next time remap is required, we will reload model sources again.
+			ReloadModelSourcesIfNeeded(requestReloadNextTime: true);
+
 			UpdateBlockWidth();
 			UpdateBlockHeight();
 
@@ -1142,6 +1148,8 @@ namespace NextGraphics
 		/// </summary>
 		private void ExportData(string sourceFilename = null)
 		{
+			// Note: we don't have to reload sources before exporting. If they were changed, we'd have to remap anyway since sources affect the outcome. Additionally, most often than not, remapping is performed as batch operation just before exporting.
+
 			if (sourceFilename == null)
 			{
 				outputFilesDialog.FileName = Model.Name.ToLower();
@@ -1319,6 +1327,9 @@ namespace NextGraphics
 			form.Refresh();
 		}
 
+		/// <summary>
+		/// Hides or shows progress status controls.
+		/// </summary>
 		private void UpdateStatusProgress(bool active)
 		{
 			statusToolStripProgressBar.Minimum = 0;
@@ -1336,6 +1347,24 @@ namespace NextGraphics
 			}
 
 			imageForms.Clear();
+		}
+
+		/// <summary>
+		/// Reloads all model sources and manages reload-needed flag.
+		/// </summary>
+		private void ReloadModelSourcesIfNeeded(bool requestReloadNextTime = false)
+		{
+			if (!isDataReloaded)
+			{
+				Model.ReloadSources();
+
+				isDataReloaded = true;
+			}
+
+			if (requestReloadNextTime)
+			{
+				isDataReloaded = false;
+			}
 		}
 
 		/// <summary>

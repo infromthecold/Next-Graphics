@@ -538,6 +538,17 @@ namespace NextGraphics.Models
 		}
 
 		/// <summary>
+		/// Reloads all sources from their files.
+		/// </summary>
+		public void ReloadSources()
+		{
+			foreach (var source in Sources)
+			{
+				source.Reload();
+			}
+		}
+
+		/// <summary>
 		/// Disposes all allocated resources and clears the data.
 		/// </summary>
 		public void Clear()
