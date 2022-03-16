@@ -19,13 +19,13 @@
 			this.sourcePictureBox = new System.Windows.Forms.PictureBox();
 			this.scaleLabel = new System.Windows.Forms.Label();
 			this.controlsPanel = new System.Windows.Forms.Panel();
-			this.scaleTrackBar = new System.Windows.Forms.TrackBar();
 			this.scaleNumericUpDown = new System.Windows.Forms.NumericUpDown();
+			this.scaleTrackBar = new System.Windows.Forms.TrackBar();
 			this.sourceImagePanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.sourcePictureBox)).BeginInit();
 			this.controlsPanel.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.scaleTrackBar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.scaleNumericUpDown)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.scaleTrackBar)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// sourceImagePanel
@@ -38,7 +38,7 @@
 			this.sourceImagePanel.Controls.Add(this.sourcePictureBox);
 			this.sourceImagePanel.Location = new System.Drawing.Point(6, 6);
 			this.sourceImagePanel.Name = "sourceImagePanel";
-			this.sourceImagePanel.Size = new System.Drawing.Size(851, 584);
+			this.sourceImagePanel.Size = new System.Drawing.Size(855, 584);
 			this.sourceImagePanel.TabIndex = 1;
 			this.sourceImagePanel.Resize += new System.EventHandler(this.sourceImagePanel_Resize);
 			// 
@@ -77,23 +77,6 @@
 			this.controlsPanel.Size = new System.Drawing.Size(851, 20);
 			this.controlsPanel.TabIndex = 4;
 			// 
-			// scaleTrackBar
-			// 
-			this.scaleTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.scaleTrackBar.AutoSize = false;
-			this.scaleTrackBar.LargeChange = 10;
-			this.scaleTrackBar.Location = new System.Drawing.Point(80, 0);
-			this.scaleTrackBar.Maximum = 100;
-			this.scaleTrackBar.Minimum = 5;
-			this.scaleTrackBar.Name = "scaleTrackBar";
-			this.scaleTrackBar.Size = new System.Drawing.Size(771, 20);
-			this.scaleTrackBar.TabIndex = 4;
-			this.scaleTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
-			this.scaleTrackBar.Value = 10;
-			this.scaleTrackBar.ValueChanged += new System.EventHandler(this.scaleTrackBar_ValueChanged);
-			// 
 			// scaleNumericUpDown
 			// 
 			this.scaleNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -128,6 +111,23 @@
             0});
 			this.scaleNumericUpDown.ValueChanged += new System.EventHandler(this.scaleNumericUpDown_ValueChanged);
 			// 
+			// scaleTrackBar
+			// 
+			this.scaleTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.scaleTrackBar.AutoSize = false;
+			this.scaleTrackBar.LargeChange = 10;
+			this.scaleTrackBar.Location = new System.Drawing.Point(80, 0);
+			this.scaleTrackBar.Maximum = 100;
+			this.scaleTrackBar.Minimum = 5;
+			this.scaleTrackBar.Name = "scaleTrackBar";
+			this.scaleTrackBar.Size = new System.Drawing.Size(771, 20);
+			this.scaleTrackBar.TabIndex = 4;
+			this.scaleTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
+			this.scaleTrackBar.Value = 10;
+			this.scaleTrackBar.ValueChanged += new System.EventHandler(this.scaleTrackBar_ValueChanged);
+			// 
 			// ImageForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -143,8 +143,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.sourcePictureBox)).EndInit();
 			this.controlsPanel.ResumeLayout(false);
 			this.controlsPanel.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.scaleTrackBar)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.scaleNumericUpDown)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.scaleTrackBar)).EndInit();
 			this.ResumeLayout(false);
 
 		}

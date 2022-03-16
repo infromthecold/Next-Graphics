@@ -84,7 +84,6 @@
 			this.charsPictureBox = new System.Windows.Forms.PictureBox();
 			this.charactersLabel = new System.Windows.Forms.Label();
 			this.blocksLabel = new System.Windows.Forms.Label();
-			this.blocksPanel = new System.Windows.Forms.Panel();
 			this.blocksPictureBox = new System.Windows.Forms.PictureBox();
 			this.colorDialog1 = new System.Windows.Forms.ColorDialog();
 			this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -95,21 +94,24 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.settingsButton = new System.Windows.Forms.Button();
 			this.resultsPanel = new System.Windows.Forms.Panel();
-			this.charactersPanel = new System.Windows.Forms.Panel();
+			this.outputImagesSplitContainer = new System.Windows.Forms.SplitContainer();
 			this.statusSpritesLabel = new System.Windows.Forms.Label();
 			this.statusBlocksLabel = new System.Windows.Forms.Label();
 			this.rightControlsPanel = new System.Windows.Forms.Panel();
+			this.mainMdiSplitter = new System.Windows.Forms.Splitter();
 			this.menuStrip.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			this.filesPanel.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.charsPictureBox)).BeginInit();
-			this.blocksPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.blocksPictureBox)).BeginInit();
 			this.statusStrip.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.resultsPanel.SuspendLayout();
-			this.charactersPanel.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.outputImagesSplitContainer)).BeginInit();
+			this.outputImagesSplitContainer.Panel1.SuspendLayout();
+			this.outputImagesSplitContainer.Panel2.SuspendLayout();
+			this.outputImagesSplitContainer.SuspendLayout();
 			this.rightControlsPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -636,9 +638,10 @@
 			// 
 			// charsPictureBox
 			// 
-			this.charsPictureBox.Location = new System.Drawing.Point(3, 3);
+			this.charsPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.charsPictureBox.Location = new System.Drawing.Point(0, 13);
 			this.charsPictureBox.Name = "charsPictureBox";
-			this.charsPictureBox.Size = new System.Drawing.Size(128, 128);
+			this.charsPictureBox.Size = new System.Drawing.Size(171, 268);
 			this.charsPictureBox.TabIndex = 1;
 			this.charsPictureBox.TabStop = false;
 			this.charsPictureBox.Click += new System.EventHandler(this.charsPictureBox_Click);
@@ -647,7 +650,8 @@
 			// charactersLabel
 			// 
 			this.charactersLabel.AutoSize = true;
-			this.charactersLabel.Location = new System.Drawing.Point(6, 6);
+			this.charactersLabel.Dock = System.Windows.Forms.DockStyle.Top;
+			this.charactersLabel.Location = new System.Drawing.Point(0, 0);
 			this.charactersLabel.Name = "charactersLabel";
 			this.charactersLabel.Size = new System.Drawing.Size(126, 13);
 			this.charactersLabel.TabIndex = 9;
@@ -656,32 +660,20 @@
 			// blocksLabel
 			// 
 			this.blocksLabel.AutoSize = true;
-			this.blocksLabel.Location = new System.Drawing.Point(6, 156);
+			this.blocksLabel.Dock = System.Windows.Forms.DockStyle.Top;
+			this.blocksLabel.Location = new System.Drawing.Point(0, 3);
+			this.blocksLabel.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
 			this.blocksLabel.Name = "blocksLabel";
 			this.blocksLabel.Size = new System.Drawing.Size(111, 13);
 			this.blocksLabel.TabIndex = 8;
 			this.blocksLabel.Text = "Blocks/Objects (click)";
 			// 
-			// blocksPanel
-			// 
-			this.blocksPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-			this.blocksPanel.AutoScroll = true;
-			this.blocksPanel.AutoScrollMargin = new System.Drawing.Size(0, 8);
-			this.blocksPanel.Controls.Add(this.blocksPictureBox);
-			this.blocksPanel.Location = new System.Drawing.Point(8, 171);
-			this.blocksPanel.Name = "blocksPanel";
-			this.blocksPanel.Size = new System.Drawing.Size(154, 403);
-			this.blocksPanel.TabIndex = 0;
-			// 
 			// blocksPictureBox
 			// 
-			this.blocksPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.blocksPictureBox.Location = new System.Drawing.Point(3, 3);
+			this.blocksPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.blocksPictureBox.Location = new System.Drawing.Point(0, 16);
 			this.blocksPictureBox.Name = "blocksPictureBox";
-			this.blocksPictureBox.Size = new System.Drawing.Size(148, 397);
+			this.blocksPictureBox.Size = new System.Drawing.Size(171, 264);
 			this.blocksPictureBox.TabIndex = 0;
 			this.blocksPictureBox.TabStop = false;
 			this.blocksPictureBox.Click += new System.EventHandler(this.blocksPictureBox_Click);
@@ -763,25 +755,36 @@
 			// resultsPanel
 			// 
 			this.resultsPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.resultsPanel.Controls.Add(this.charactersPanel);
-			this.resultsPanel.Controls.Add(this.charactersLabel);
-			this.resultsPanel.Controls.Add(this.blocksLabel);
-			this.resultsPanel.Controls.Add(this.blocksPanel);
+			this.resultsPanel.Controls.Add(this.outputImagesSplitContainer);
 			this.resultsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.resultsPanel.Location = new System.Drawing.Point(0, 0);
 			this.resultsPanel.Name = "resultsPanel";
 			this.resultsPanel.Size = new System.Drawing.Size(181, 585);
 			this.resultsPanel.TabIndex = 6;
 			// 
-			// charactersPanel
+			// outputImagesSplitContainer
 			// 
-			this.charactersPanel.AutoScroll = true;
-			this.charactersPanel.AutoScrollMargin = new System.Drawing.Size(0, 8);
-			this.charactersPanel.Controls.Add(this.charsPictureBox);
-			this.charactersPanel.Location = new System.Drawing.Point(8, 22);
-			this.charactersPanel.Name = "charactersPanel";
-			this.charactersPanel.Size = new System.Drawing.Size(154, 131);
-			this.charactersPanel.TabIndex = 21;
+			this.outputImagesSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.outputImagesSplitContainer.Location = new System.Drawing.Point(3, 10);
+			this.outputImagesSplitContainer.Name = "outputImagesSplitContainer";
+			this.outputImagesSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// outputImagesSplitContainer.Panel1
+			// 
+			this.outputImagesSplitContainer.Panel1.Controls.Add(this.charsPictureBox);
+			this.outputImagesSplitContainer.Panel1.Controls.Add(this.charactersLabel);
+			this.outputImagesSplitContainer.Panel1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
+			// 
+			// outputImagesSplitContainer.Panel2
+			// 
+			this.outputImagesSplitContainer.Panel2.Controls.Add(this.blocksPictureBox);
+			this.outputImagesSplitContainer.Panel2.Controls.Add(this.blocksLabel);
+			this.outputImagesSplitContainer.Panel2.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
+			this.outputImagesSplitContainer.Size = new System.Drawing.Size(171, 568);
+			this.outputImagesSplitContainer.SplitterDistance = 284;
+			this.outputImagesSplitContainer.TabIndex = 22;
 			// 
 			// statusSpritesLabel
 			// 
@@ -813,11 +816,23 @@
 			this.rightControlsPanel.Size = new System.Drawing.Size(356, 585);
 			this.rightControlsPanel.TabIndex = 21;
 			// 
+			// mainMdiSplitter
+			// 
+			this.mainMdiSplitter.Dock = System.Windows.Forms.DockStyle.Right;
+			this.mainMdiSplitter.Location = new System.Drawing.Point(677, 79);
+			this.mainMdiSplitter.MinExtra = 175;
+			this.mainMdiSplitter.MinSize = 175;
+			this.mainMdiSplitter.Name = "mainMdiSplitter";
+			this.mainMdiSplitter.Size = new System.Drawing.Size(3, 585);
+			this.mainMdiSplitter.TabIndex = 23;
+			this.mainMdiSplitter.TabStop = false;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1036, 686);
+			this.Controls.Add(this.mainMdiSplitter);
 			this.Controls.Add(this.rightControlsPanel);
 			this.Controls.Add(this.statusBlocksLabel);
 			this.Controls.Add(this.statusSpritesLabel);
@@ -828,6 +843,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.IsMdiContainer = true;
 			this.MainMenuStrip = this.menuStrip;
+			this.MinimumSize = new System.Drawing.Size(500, 250);
 			this.Name = "MainForm";
 			this.Text = "Next Graphics";
 			this.menuStrip.ResumeLayout(false);
@@ -838,15 +854,18 @@
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.charsPictureBox)).EndInit();
-			this.blocksPanel.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.blocksPictureBox)).EndInit();
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.resultsPanel.ResumeLayout(false);
-			this.resultsPanel.PerformLayout();
-			this.charactersPanel.ResumeLayout(false);
+			this.outputImagesSplitContainer.Panel1.ResumeLayout(false);
+			this.outputImagesSplitContainer.Panel1.PerformLayout();
+			this.outputImagesSplitContainer.Panel2.ResumeLayout(false);
+			this.outputImagesSplitContainer.Panel2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.outputImagesSplitContainer)).EndInit();
+			this.outputImagesSplitContainer.ResumeLayout(false);
 			this.rightControlsPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -898,7 +917,6 @@
 		private System.Windows.Forms.ToolStripButton removeImageToolStripButton;
 		private System.Windows.Forms.PictureBox blocksPictureBox;
 		private System.Windows.Forms.PictureBox charsPictureBox;
-		private System.Windows.Forms.Panel blocksPanel;
 		private System.Windows.Forms.Label blocksLabel;
 		private System.Windows.Forms.Label charactersLabel;
 		private System.Windows.Forms.TextBox blockHeightTextBox;
@@ -917,13 +935,14 @@
 		private System.Windows.Forms.Label statusSpritesLabel;
 		private System.Windows.Forms.Label statusBlocksLabel;
 		private System.Windows.Forms.ToolStripMenuItem createParallaxToolStripMenuItem;
-        private System.Windows.Forms.Panel charactersPanel;
 		private System.Windows.Forms.ToolStripMenuItem batchProcessProjectsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem WAVToRAWToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton infoToolStripButton;
 		private System.Windows.Forms.ToolStripButton addImagesToolStripButton;
 		private System.Windows.Forms.ToolStripMenuItem addTilemapsToolStripMenuItem;
 		private System.Windows.Forms.Panel rightControlsPanel;
+		private System.Windows.Forms.SplitContainer outputImagesSplitContainer;
+		private System.Windows.Forms.Splitter mainMdiSplitter;
 	}
 }
 
