@@ -359,7 +359,7 @@ namespace UnitTests
 
 			// execute & verify
 			model.Load(TestDocument());
-			Assert.AreEqual(FourBitParsingMethod.DetectPaletteBanks, model.FourBitParsingMethod);
+			Assert.AreEqual(PaletteParsingMethod.ByObjects, model.PaletteParsingMethod);
 		}
 
 		[TestMethod]

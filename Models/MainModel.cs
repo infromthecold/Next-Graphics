@@ -116,12 +116,12 @@ namespace NextGraphics.Models
 		}
 		private int _blocksAcross = 1;
 
-		public FourBitParsingMethod FourBitParsingMethod
+		public PaletteParsingMethod PaletteParsingMethod
 		{
 			get => _fourBitParsingMethod;
 			set => RaiseRemapRequired(value, ref _fourBitParsingMethod);
 		}
-		private FourBitParsingMethod _fourBitParsingMethod = FourBitParsingMethod.Manual;
+		private PaletteParsingMethod _fourBitParsingMethod = PaletteParsingMethod.ByPixels;
 
 		public bool IgnoreCopies
 		{
@@ -343,7 +343,7 @@ namespace NextGraphics.Models
 				node.WithAttribute("TilemapExport", value => TilemapExportType = (TilemapExportType)int.Parse(value));
 				node.WithAttribute("textFlips", value => SpritesAttributesAsText = bool.Parse(value));
 				node.WithAttribute("reduce", value => SpritesReduced = bool.Parse(value));
-				node.WithAttribute("FourBitParsing", value => FourBitParsingMethod = (FourBitParsingMethod)int.Parse(value));
+				node.WithAttribute("FourBitParsing", value => PaletteParsingMethod = (PaletteParsingMethod)int.Parse(value));
 			});
 
 			// Export extensions
@@ -461,7 +461,7 @@ namespace NextGraphics.Models
 			settingsNode.AddAttribute("TilemapExport", (int)TilemapExportType);
 			settingsNode.AddAttribute("textFlips", SpritesAttributesAsText);
 			settingsNode.AddAttribute("reduce", SpritesReduced);
-			settingsNode.AddAttribute("FourBitParsing", (int)FourBitParsingMethod);
+			settingsNode.AddAttribute("FourBitParsing", (int)PaletteParsingMethod);
 
 			// Export extensions
 			var exportExtensionsNode = projectNode.AddNode("ExportExtensions");

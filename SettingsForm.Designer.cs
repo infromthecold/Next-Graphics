@@ -477,17 +477,17 @@
 			this.optionsPaletteParsingLabel.AutoSize = true;
 			this.optionsPaletteParsingLabel.Location = new System.Drawing.Point(6, 136);
 			this.optionsPaletteParsingLabel.Name = "optionsPaletteParsingLabel";
-			this.optionsPaletteParsingLabel.Size = new System.Drawing.Size(96, 13);
+			this.optionsPaletteParsingLabel.Size = new System.Drawing.Size(78, 13);
 			this.optionsPaletteParsingLabel.TabIndex = 51;
-			this.optionsPaletteParsingLabel.Text = "4-bit Palette Banks";
+			this.optionsPaletteParsingLabel.Text = "Palette Parsing";
 			// 
 			// optionsPaletteParsingComboBox
 			// 
 			this.optionsPaletteParsingComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.optionsPaletteParsingComboBox.FormattingEnabled = true;
 			this.optionsPaletteParsingComboBox.Items.AddRange(new object[] {
-            "Manual",
-            "Detect 16-Colour Banks"});
+            "Order by pixels in source",
+            "Group object colours"});
 			this.optionsPaletteParsingComboBox.Location = new System.Drawing.Point(9, 152);
 			this.optionsPaletteParsingComboBox.Name = "optionsPaletteParsingComboBox";
 			this.optionsPaletteParsingComboBox.Size = new System.Drawing.Size(137, 21);

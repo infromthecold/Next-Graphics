@@ -67,18 +67,18 @@ namespace UnitTests.Data
 			DateTime time, 
 			CommentType comments, 
 			PaletteFormat paletteFormat,
-			FourBitParsingMethod parsingMethod)
+			PaletteParsingMethod parsingMethod)
 		{
 			var results = new[]
 			{
-				new { comment = CommentType.Full, palette = PaletteFormat.Next8Bit, parsing = FourBitParsingMethod.Manual,				result = Properties.Resources.export_tiles_asm_fullcomments_8bit_manual },
-				new { comment = CommentType.Full, palette = PaletteFormat.Next8Bit, parsing = FourBitParsingMethod.DetectPaletteBanks,	result = Properties.Resources.export_tiles_asm_fullcomments_8bit_detect },
-				new { comment = CommentType.Full, palette = PaletteFormat.Next9Bit, parsing = FourBitParsingMethod.Manual,				result = Properties.Resources.export_tiles_asm_fullcomments_9bit_manual },
-				new { comment = CommentType.Full, palette = PaletteFormat.Next9Bit, parsing = FourBitParsingMethod.DetectPaletteBanks,	result = Properties.Resources.export_tiles_asm_fullcomments_9bit_detect },
-				new { comment = CommentType.None, palette = PaletteFormat.Next8Bit, parsing = FourBitParsingMethod.Manual,				result = Properties.Resources.export_tiles_asm_nocomments_8bit_manual },
-				new { comment = CommentType.None, palette = PaletteFormat.Next8Bit, parsing = FourBitParsingMethod.DetectPaletteBanks,	result = Properties.Resources.export_tiles_asm_nocomments_8bit_detect },
-				new { comment = CommentType.None, palette = PaletteFormat.Next9Bit, parsing = FourBitParsingMethod.Manual,				result = Properties.Resources.export_tiles_asm_nocomments_9bit_manual },
-				new { comment = CommentType.None, palette = PaletteFormat.Next9Bit, parsing = FourBitParsingMethod.DetectPaletteBanks,	result = Properties.Resources.export_tiles_asm_nocomments_9bit_detect },
+				new { comment = CommentType.Full, palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_tiles_asm_fullcomments_8bit_manual },
+				new { comment = CommentType.Full, palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_tiles_asm_fullcomments_8bit_detect },
+				new { comment = CommentType.Full, palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_tiles_asm_fullcomments_9bit_manual },
+				new { comment = CommentType.Full, palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_tiles_asm_fullcomments_9bit_detect },
+				new { comment = CommentType.None, palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_tiles_asm_nocomments_8bit_manual },
+				new { comment = CommentType.None, palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_tiles_asm_nocomments_8bit_detect },
+				new { comment = CommentType.None, palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_tiles_asm_nocomments_9bit_manual },
+				new { comment = CommentType.None, palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_tiles_asm_nocomments_9bit_detect },
 			};
 
 			foreach (var option in results)
@@ -89,20 +89,20 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export export assembler associated with {comments} {paletteFormat} {parsingMethod}");
+			throw new ArgumentException($"No export assembler associated with {comments} {paletteFormat} {parsingMethod}");
 		}
 
 		public static string AssemblerTilesBinary(
 			DateTime time,
 			CommentType comments,
-			FourBitParsingMethod parsingMethod)
+			PaletteParsingMethod parsingMethod)
 		{
 			var results = new[]
 			{
-				new { comment = CommentType.Full, parsing = FourBitParsingMethod.Manual,				result = Properties.Resources.export_tiles_asmbinary_fullcomments_manual },
-				new { comment = CommentType.Full, parsing = FourBitParsingMethod.DetectPaletteBanks,	result = Properties.Resources.export_tiles_asmbinary_fullcomments_detect },
-				new { comment = CommentType.None, parsing = FourBitParsingMethod.Manual,				result = Properties.Resources.export_tiles_asmbinary_nocomments_manual },
-				new { comment = CommentType.None, parsing = FourBitParsingMethod.DetectPaletteBanks,	result = Properties.Resources.export_tiles_asmbinary_nocomments_detect }
+				new { comment = CommentType.Full, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_tiles_asmbinary_fullcomments_manual },
+				new { comment = CommentType.Full, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_tiles_asmbinary_fullcomments_detect },
+				new { comment = CommentType.None, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_tiles_asmbinary_nocomments_manual },
+				new { comment = CommentType.None, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_tiles_asmbinary_nocomments_detect }
 			};
 
 			foreach (var option in results)
@@ -119,14 +119,14 @@ namespace UnitTests.Data
 		public static string AssemblerTilesBinaryAttributes(
 			DateTime time,
 			CommentType comments,
-			FourBitParsingMethod parsingMethod)
+			PaletteParsingMethod parsingMethod)
 		{
 			var results = new[]
 			{
-				new { comment = CommentType.Full, parsing = FourBitParsingMethod.Manual,				result = Properties.Resources.export_tiles_asmbinaryattrs_fullcomments_manual },
-				new { comment = CommentType.Full, parsing = FourBitParsingMethod.DetectPaletteBanks,	result = Properties.Resources.export_tiles_asmbinaryattrs_fullcomments_detect },
-				new { comment = CommentType.None, parsing = FourBitParsingMethod.Manual,				result = Properties.Resources.export_tiles_asmbinaryattrs_nocomments_manual },
-				new { comment = CommentType.None, parsing = FourBitParsingMethod.DetectPaletteBanks,	result = Properties.Resources.export_tiles_asmbinaryattrs_nocomments_detect }
+				new { comment = CommentType.Full, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_tiles_asmbinaryattrs_fullcomments_manual },
+				new { comment = CommentType.Full, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_tiles_asmbinaryattrs_fullcomments_detect },
+				new { comment = CommentType.None, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_tiles_asmbinaryattrs_nocomments_manual },
+				new { comment = CommentType.None, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_tiles_asmbinaryattrs_nocomments_detect }
 			};
 
 			foreach (var option in results)
@@ -147,25 +147,30 @@ namespace UnitTests.Data
 		public static string AssemblerSprites(
 			DateTime time,
 			CommentType comments,
-			PaletteFormat paletteFormat)
+			PaletteFormat paletteFormat,
+			PaletteParsingMethod parsingMethod)
 		{
 			var results = new[]
 			{
-				new { comment = CommentType.Full, palette = PaletteFormat.Next8Bit, result = Properties.Resources.export_sprites_asm_fullcomments_8bit },
-				new { comment = CommentType.Full, palette = PaletteFormat.Next9Bit, result = Properties.Resources.export_sprites_asm_fullcomments_9bit },
-				new { comment = CommentType.None, palette = PaletteFormat.Next8Bit, result = Properties.Resources.export_sprites_asm_nocomments_8bit },
-				new { comment = CommentType.None, palette = PaletteFormat.Next9Bit, result = Properties.Resources.export_sprites_asm_nocomments_9bit }
+				new { comment = CommentType.Full, palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_sprites_asm_fullcomments_8bit_manual },
+				new { comment = CommentType.Full, palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_sprites_asm_fullcomments_8bit_detect },
+				new { comment = CommentType.Full, palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_sprites_asm_fullcomments_9bit_manual },
+				new { comment = CommentType.Full, palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_sprites_asm_fullcomments_9bit_detect },
+				new { comment = CommentType.None, palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_sprites_asm_nocomments_8bit_manual },
+				new { comment = CommentType.None, palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_sprites_asm_nocomments_8bit_detect },
+				new { comment = CommentType.None, palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_sprites_asm_nocomments_9bit_manual },
+				new { comment = CommentType.None, palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_sprites_asm_nocomments_9bit_detect }
 			};
 
 			foreach (var option in results)
 			{
-				if (option.comment == comments && option.palette == paletteFormat)
+				if (option.comment == comments && option.palette == paletteFormat && option.parsing == parsingMethod)
 				{
 					return FormattedAssembler(option.result, time);
 				}
 			}
 
-			throw new ArgumentException($"No export export assembler associated with {comments} {paletteFormat}");
+			throw new ArgumentException($"No export assembler associated with {comments} {paletteFormat}");
 		}
 
 		public static string AssemblerSpritesBinary(
@@ -186,7 +191,7 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export export assembler associated with {comments}");
+			throw new ArgumentException($"No export assembler associated with {comments}");
 		}
 
 		public static string AssemblerSpritesBinaryAttributes(
@@ -207,20 +212,20 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export export assembler associated with {comments}");
+			throw new ArgumentException($"No export assembler associated with {comments}");
 		}
 
 		public static string AssemblerSprites4Bit(
 			DateTime time,
 			PaletteFormat paletteFormat,
-			FourBitParsingMethod parsingMethod)
+			PaletteParsingMethod parsingMethod)
 		{
 			var results = new[]
 			{
-				new { palette = PaletteFormat.Next8Bit, parsing = FourBitParsingMethod.Manual,				result = Properties.Resources.export_sprites_asm4bit_8bit_manual },
-				new { palette = PaletteFormat.Next8Bit, parsing = FourBitParsingMethod.DetectPaletteBanks,	result = Properties.Resources.export_sprites_asm4bit_8bit_detect },
-				new { palette = PaletteFormat.Next9Bit, parsing = FourBitParsingMethod.Manual,				result = Properties.Resources.export_sprites_asm4bit_9bit_manual },
-				new { palette = PaletteFormat.Next9Bit, parsing = FourBitParsingMethod.DetectPaletteBanks,	result = Properties.Resources.export_sprites_asm4bit_9bit_detect },
+				new { palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_sprites_asm4bit_8bit_manual },
+				new { palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_sprites_asm4bit_8bit_detect },
+				new { palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_sprites_asm4bit_9bit_manual },
+				new { palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_sprites_asm4bit_9bit_detect },
 			};
 
 			foreach (var option in results)
@@ -231,7 +236,7 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export export assembler associated with {parsingMethod}");
+			throw new ArgumentException($"No export assembler associated with {parsingMethod}");
 		}
 
 		#endregion
@@ -257,7 +262,7 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export export assembler associated with {tilemapExportType}");
+			throw new ArgumentException($"No export assembler associated with {tilemapExportType}");
 		}
 
 		public static string AssemblerTilemapsBinary(
@@ -280,7 +285,7 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export export assembler associated with {tilemapExportType}");
+			throw new ArgumentException($"No export assembler associated with {tilemapExportType}");
 
 		}
 
@@ -288,14 +293,14 @@ namespace UnitTests.Data
 
 		#region Binary Tiles
 
-		public static byte[] TilesPalette(PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		public static byte[] TilesPalette(PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			var options = new[]
 			{
-				new { palette = PaletteFormat.Next8Bit, parsing = FourBitParsingMethod.Manual, result = Properties.Resources.export_tiles_palette_8bit_manual },
-				new { palette = PaletteFormat.Next8Bit, parsing = FourBitParsingMethod.DetectPaletteBanks, result = Properties.Resources.export_tiles_palette_8bit_detect },
-				new { palette = PaletteFormat.Next9Bit, parsing = FourBitParsingMethod.Manual, result = Properties.Resources.export_tiles_palette_9bit_manual },
-				new { palette = PaletteFormat.Next9Bit, parsing = FourBitParsingMethod.DetectPaletteBanks, result = Properties.Resources.export_tiles_palette_9bit_detect }
+				new { palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_tiles_palette_8bit_manual },
+				new { palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_tiles_palette_8bit_detect },
+				new { palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_tiles_palette_9bit_manual },
+				new { palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_tiles_palette_9bit_detect }
 			};
 
 			foreach (var option in options)
@@ -309,39 +314,39 @@ namespace UnitTests.Data
 			throw new ArgumentException($"No export tiles palette associated with {paletteFormat} {parsingMethod}");
 		}
 
-		public static byte[] TilesBinary(FourBitParsingMethod parsingMethod)
+		public static byte[] TilesBinary(PaletteParsingMethod parsingMethod)
 		{
 			switch (parsingMethod)
 			{
-				case FourBitParsingMethod.DetectPaletteBanks:
+				case PaletteParsingMethod.ByObjects:
 					return Properties.Resources.export_tiles_binary_detect;
 				default:
 					return Properties.Resources.export_tiles_binary_manual;
 			}
 		}
 
-		public static byte[] TilesAttributes(FourBitParsingMethod parsingMethod)
+		public static byte[] TilesAttributes(PaletteParsingMethod parsingMethod)
 		{
 			switch (parsingMethod)
 			{
-				case FourBitParsingMethod.DetectPaletteBanks:
+				case PaletteParsingMethod.ByObjects:
 					return Properties.Resources.export_tiles_attributes_detect;
 				default:
 					return Properties.Resources.export_tiles_attributes_manual;
 			}
 		}
 
-		public static byte[] TilesInfo(FourBitParsingMethod parsingMethod)
+		public static byte[] TilesInfo(PaletteParsingMethod parsingMethod)
 		{
 			switch (parsingMethod) {
-				case FourBitParsingMethod.DetectPaletteBanks:
+				case PaletteParsingMethod.ByObjects:
 					return Properties.Resources.export_tiles_info_detect;
 				default:
 					return Properties.Resources.export_tiles_info_manual;
 			}
 		}
 
-		public static byte[] TilesImage(FourBitParsingMethod parsingMethod)
+		public static byte[] TilesImage(PaletteParsingMethod parsingMethod)
 		{
 			using (var stream = new MemoryStream())
 			{
@@ -349,7 +354,7 @@ namespace UnitTests.Data
 
 				switch (parsingMethod)
 				{
-					case FourBitParsingMethod.DetectPaletteBanks:
+					case PaletteParsingMethod.ByObjects:
 						bitmap = Properties.Resources.export_tiles_image_detect;
 						break;
 					default:
@@ -368,7 +373,7 @@ namespace UnitTests.Data
 			var result = "";
 
 			// We read the value from blk resource itself so tests will always pass, even if the data changes.
-			var data = TilesInfo(FourBitParsingMethod.Manual);
+			var data = TilesInfo(PaletteParsingMethod.ByPixels);
 			var stringLength = data[0];
 			for (int i = 1; i <= stringLength; i++)
 			{
@@ -382,18 +387,46 @@ namespace UnitTests.Data
 
 		#region Binary Sprites
 
-		public static byte[] SpritesPalette(PaletteFormat paletteFormat)
+		public static byte[] SpritesPalette(
+			PaletteFormat paletteFormat,
+			PaletteParsingMethod parsingMethod)
 		{
-			switch (paletteFormat)
+			var results = new[]
 			{
-				case PaletteFormat.Next9Bit: return Properties.Resources.export_sprites_palette_9bit;
-				default: return Properties.Resources.export_sprites_palette_8bit;
-			}
-	}
+				new { palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_sprites_palette_8bit_manual },
+				new { palette = PaletteFormat.Next8Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_sprites_palette_8bit_detect },
+				new { palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_sprites_palette_9bit_manual },
+				new { palette = PaletteFormat.Next9Bit, parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_sprites_palette_9bit_detect },
+			};
 
-		public static byte[] SpritesBinary()
+			foreach (var option in results)
+			{
+				if (option.palette == paletteFormat && option.parsing == parsingMethod)
+				{
+					return option.result;
+				}
+			}
+
+			throw new ArgumentException($"No sprite palette associated with {paletteFormat} {parsingMethod}");
+		}
+
+		public static byte[] SpritesBinary(PaletteParsingMethod parsingMethod)
 		{
-			return Properties.Resources.export_sprites_binary;
+			var results = new[]
+			{
+				new { parsing = PaletteParsingMethod.ByPixels, result = Properties.Resources.export_sprites_binary_manual },
+				new { parsing = PaletteParsingMethod.ByObjects, result = Properties.Resources.export_sprites_binary_detect },
+			};
+
+			foreach (var option in results)
+			{
+				if (option.parsing == parsingMethod)
+				{
+					return option.result;
+				}
+			}
+
+			throw new ArgumentException($"No export sprite binary file associated with {parsingMethod}");
 		}
 
 		public static byte[] SpritesAttributes()
@@ -471,7 +504,7 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export export assembler associated with {tilemapExportType}");
+			throw new ArgumentException($"No export assembler associated with {tilemapExportType}");
 		}
 
 		#endregion

@@ -136,7 +136,7 @@ namespace NextGraphics.Exporting.Remapping
 							{
 								Data.Blocks[outBlock].RemapTo4Bit(
 									Data.Model.Palette,
-									Data.Model.FourBitParsingMethod,
+									Data.Model.PaletteParsingMethod,
 									Data.Model.GridWidth,
 									Data.Model.GridHeight,
 									objectSize);
@@ -159,13 +159,13 @@ namespace NextGraphics.Exporting.Remapping
 								{
 									if (Data.Model.IsFourBitData)
 									{
-										switch (Data.Model.FourBitParsingMethod)
+										switch (Data.Model.PaletteParsingMethod)
 										{
-											case FourBitParsingMethod.Manual:
+											case PaletteParsingMethod.ByPixels:
 												paletteOffset = Data.Blocks[outBlock].GetPixel(xChar * objectSize, yChar * objectSize) & 0x0f0;
 												break;
 
-											case FourBitParsingMethod.DetectPaletteBanks:
+											case PaletteParsingMethod.ByObjects:
 												paletteOffset = Data.Blocks[outBlock].PaletteBank;
 												break;
 										}
@@ -199,7 +199,7 @@ namespace NextGraphics.Exporting.Remapping
 					}
 
 					// After we establish all blocks, we should update tiles in previously parsed tilemaps so that palette banks will match. This is only needed when auto-banking is enabled.
-					if (Data.Model.IsFourBitData && Data.Model.FourBitParsingMethod == FourBitParsingMethod.DetectPaletteBanks)
+					if (Data.Model.IsFourBitData && Data.Model.PaletteParsingMethod == PaletteParsingMethod.ByObjects)
 					{
 						Model.ForEachSourceTilemap((tilemap, index) => {
 							for (int y = 0; y < tilemap.Data.Height; y++)

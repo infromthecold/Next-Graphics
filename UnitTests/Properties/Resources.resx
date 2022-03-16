@@ -217,18 +217,6 @@
   <data name="export_tiles_palette_9bit_manual" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\export-tiles-palette-9bit-manual.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="export_sprites_asm_fullcomments_8bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\export-sprites-asm-fullcomments-8bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="export_sprites_asm_fullcomments_9bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\export-sprites-asm-fullcomments-9bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="export_sprites_asm_nocomments_8bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\export-sprites-asm-nocomments-8bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="export_sprites_asm_nocomments_9bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\export-sprites-asm-nocomments-9bit.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
   <data name="export_sprites_image" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\export-sprites-image.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -283,15 +271,6 @@
   <data name="export_sprites_attributes" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\export-sprites-attributes.sattr;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="export_sprites_binary" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\export-sprites-binary.spr;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="export_sprites_palette_8bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\export-sprites-palette-8bit.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="export_sprites_palette_9bit" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\export-sprites-palette-9bit.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="export_sprites_asm4bit_8bit_detect" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\export-sprites-asm4bit-8bit-detect.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
@@ -327,5 +306,47 @@
   </data>
   <data name="export_tilemaps_palette" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\export-tilemaps-palette.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="export_sprites_asm_fullcomments_8bit_detect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-asm-fullcomments-8bit-detect.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="export_sprites_asm_fullcomments_8bit_manual" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-asm-fullcomments-8bit-manual.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="export_sprites_asm_fullcomments_9bit_detect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-asm-fullcomments-9bit-detect.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="export_sprites_asm_fullcomments_9bit_manual" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-asm-fullcomments-9bit-manual.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="export_sprites_asm_nocomments_8bit_detect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-asm-nocomments-8bit-detect.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="export_sprites_asm_nocomments_8bit_manual" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-asm-nocomments-8bit-manual.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="export_sprites_asm_nocomments_9bit_detect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-asm-nocomments-9bit-detect.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="export_sprites_asm_nocomments_9bit_manual" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-asm-nocomments-9bit-manual.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="export_sprites_binary_detect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-binary-detect.spr;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="export_sprites_binary_manual" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-binary-manual.spr;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="export_sprites_palette_8bit_detect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-palette-8bit-detect.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="export_sprites_palette_8bit_manual" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-palette-8bit-manual.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="export_sprites_palette_9bit_detect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-palette-9bit-detect.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="export_sprites_palette_9bit_manual" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-sprites-palette-9bit-manual.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

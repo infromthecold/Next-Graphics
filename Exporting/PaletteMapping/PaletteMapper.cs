@@ -36,17 +36,17 @@ namespace NextGraphics.Exporting.PaletteMapping
 		{
 			var result = new Palette();
 
-			Palette NewBank()
-			{
-				return new Palette
-				{
-					MaxCount = 16
-				};
-			}
-
-			void MapAutoBanks()
+			void Map4BitColoursToBanks()
 			{
 				// Mapping 4 bit colours is quite complex operation composed of several steps. In a nutshell: we need to parse inteligently attempting to fit all objects into 16-colour banks. One of the 16 colours must be transparent colour.
+
+				Palette NewBank()
+				{
+					return new Palette
+					{
+						MaxCount = 16
+					};
+				}
 
 				// The first step is to scan the source bitmap object by object and remember all distinct colours for each object.
 				List<Palette> ParsePaletteForObjects()
@@ -287,9 +287,33 @@ namespace NextGraphics.Exporting.PaletteMapping
 				FillPaletteFromBanks(paletteBanks);
 			}
 
-			void MapManualBanks()
+			void MapColoursByObjects()
 			{
-				// With 8-bit colours we can scan the bitmap pixel line by line.
+				int blockY = 0;
+				while (blockY < bitmap.Height)
+				{
+					int blockX = 0;
+					while (blockX < bitmap.Width)
+					{
+						for (int y = 0; y < Model.GridHeight; y++)
+						{
+							for (int x = 0; x < Model.GridWidth; x++)
+							{
+								var color = bitmap.GetPixel(x + blockX, y + blockY);
+
+								result.AddIfDistinct(color);
+							}
+						}
+
+						blockX += Model.GridWidth;
+					}
+
+					blockY += Model.GridHeight;
+				}
+			}
+
+			void MapColoursByPixelOrder()
+			{
 				for (int y = 0; y < bitmap.Height; y++)
 				{
 					for (int x = 0; x < bitmap.Width; x++)
@@ -301,14 +325,20 @@ namespace NextGraphics.Exporting.PaletteMapping
 				}
 			}
 
-			// We only use automated palette banks parsing for 4-bit data and if explicitly enabled in settings. Otherwise 8-bit mapping will work for both cases.
-			if ((Model.OutputType == OutputType.Tiles || Model.SpritesFourBit) && (Model.FourBitParsingMethod == FourBitParsingMethod.DetectPaletteBanks))
+			if (Model.IsFourBitData && Model.PaletteParsingMethod == PaletteParsingMethod.ByObjects)
 			{
-				MapAutoBanks();
+				// With 4-bit palette, we also attempt to auto map all palette banks to automate multiple objects palettes as much as possible.
+				Map4BitColoursToBanks();
+			}
+			else if (Model.PaletteParsingMethod == PaletteParsingMethod.ByObjects)
+			{
+				// When 8-bit palette and object grouped colour mapping is selected, group colours by objects but without having to think of mapping colour banks.
+				MapColoursByObjects();
 			}
 			else
 			{
-				MapManualBanks();
+				// Otherwise 8-bit mapping will be used for all cases. If this is 4-bit palette, then user will need to select the bank manually.
+				MapColoursByPixelOrder();
 			}
 
 			return result;

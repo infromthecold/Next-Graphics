@@ -37,7 +37,7 @@ namespace NextGraphics
 
 		private bool IsFourBitMode
 		{
-			get => Model.IsFourBitData && Model.FourBitParsingMethod == FourBitParsingMethod.DetectPaletteBanks;
+			get => Model.IsFourBitData && Model.PaletteParsingMethod == PaletteParsingMethod.ByObjects;
 		}
 
 		private int ValidatedTransparentIndex
@@ -694,7 +694,7 @@ namespace NextGraphics
 				}
 			}
 
-			if (Model.IsFourBitData && Model.FourBitParsingMethod == FourBitParsingMethod.DetectPaletteBanks)
+			if (Model.IsFourBitData && Model.PaletteParsingMethod == PaletteParsingMethod.ByObjects)
 			{
 				// For 4-bit palette, we must indicate transparency in each bank. But only if auto-banking is set. Note we should already have transparent index trimmed within 16-colours, but let's be proactive just in case (maybe the index is invalid after loading the data for example).
 				for (int y = 0; y < 16; y++)

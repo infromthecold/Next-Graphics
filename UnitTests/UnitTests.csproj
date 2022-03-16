@@ -66,9 +66,12 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\export-sprites-attributes.sattr" />
-    <None Include="Resources\export-sprites-binary.spr" />
-    <None Include="Resources\export-sprites-palette-8bit.pal" />
-    <None Include="Resources\export-sprites-palette-9bit.pal" />
+    <None Include="Resources\export-sprites-binary-detect.spr" />
+    <None Include="Resources\export-sprites-binary-manual.spr" />
+    <None Include="Resources\export-sprites-palette-8bit-detect.pal" />
+    <None Include="Resources\export-sprites-palette-8bit-manual.pal" />
+    <None Include="Resources\export-sprites-palette-9bit-detect.pal" />
+    <None Include="Resources\export-sprites-palette-9bit-manual.pal" />
     <None Include="Resources\export-tilemaps-binary-index.tilemap" />
     <None Include="Resources\export-tilemaps-binary-word.tilemap" />
     <None Include="Resources\export-tilemaps-palette.pal" />
@@ -124,18 +127,6 @@
     <None Include="Resources\export-tiles-asm-nocomments-9bit-detect.asm" />
     <None Include="Resources\export-tiles-asm-nocomments-8bit-manual.asm" />
     <None Include="Resources\export-tiles-asm-nocomments-8bit-detect.asm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\export-sprites-asm-fullcomments-8bit.asm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\export-sprites-asm-fullcomments-9bit.asm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\export-sprites-asm-nocomments-8bit.asm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\export-sprites-asm-nocomments-9bit.asm" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Project-Sprites-Image.bmp" />
@@ -214,6 +205,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\export-tilemaps-asmbinary-word.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-fullcomments-8bit-detect.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-fullcomments-8bit-manual.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-fullcomments-9bit-detect.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-fullcomments-9bit-manual.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-nocomments-8bit-detect.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-nocomments-8bit-manual.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-nocomments-9bit-detect.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-nocomments-9bit-manual.asm" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

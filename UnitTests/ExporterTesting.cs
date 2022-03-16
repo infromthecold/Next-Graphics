@@ -30,15 +30,15 @@ namespace UnitTests
 		#region Assembler
 
 		[DataTestMethod]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		public void Sprites_Assembler(CommentType commentType, PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestSprites((model, parameters, exporter) =>
 			{
@@ -46,7 +46,7 @@ namespace UnitTests
 				model.OutputType = OutputType.Sprites;
 				model.CommentType = commentType;
 				model.PaletteFormat = paletteFormat;
-				model.FourBitParsingMethod = parsingMethod;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = false;
 				model.BinaryFramesAttributesOutput = false;
 				model.SpritesFourBit = false;
@@ -65,20 +65,20 @@ namespace UnitTests
 				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
 				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "sprite attributes");
 				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "sprites image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, commentType, paletteFormat));
+				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, commentType, paletteFormat, parsingMethod));
 			});
 		}
 
 		[DataTestMethod]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		public void Sprites_Assembler_SpritesAsImages(CommentType commentType, PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler_SpritesAsImages(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestSprites((model, parameters, exporter) =>
 			{
@@ -86,7 +86,7 @@ namespace UnitTests
 				model.OutputType = OutputType.Sprites;
 				model.CommentType = commentType;
 				model.PaletteFormat = paletteFormat;
-				model.FourBitParsingMethod = parsingMethod;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = false;
 				model.BinaryFramesAttributesOutput = false;
 				model.SpritesFourBit = false;
@@ -106,7 +106,7 @@ namespace UnitTests
 				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "sprite attributes");
 				VerifyBinary(parameters.SpritesImageStream, DataCreator.SpritesImage(), "sprites image");
 				VerifyBinaryArray(10, (i) => DataCreator.SpritesSpriteImage(i), parameters.SpriteImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, commentType, paletteFormat));
+				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, commentType, paletteFormat, parsingMethod));
 			});
 		}
 
@@ -115,15 +115,15 @@ namespace UnitTests
 		#region Assembler+Binary
 
 		[DataTestMethod]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		public void Sprites_Assembler_Binary(CommentType commentType, PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler_Binary(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestSprites((model, parameters, exporter) =>
 			{
@@ -131,7 +131,7 @@ namespace UnitTests
 				model.OutputType = OutputType.Sprites;
 				model.CommentType = commentType;
 				model.PaletteFormat = paletteFormat;
-				model.FourBitParsingMethod = parsingMethod;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = true;
 				model.BinaryFramesAttributesOutput = false;
 				model.SpritesFourBit = false;
@@ -143,8 +143,8 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPalette(paletteFormat), "palette");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBinary(), "binary data");
+				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPalette(paletteFormat, parsingMethod), "palette");
+				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBinary(parsingMethod), "binary data");
 				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
 				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
@@ -155,15 +155,15 @@ namespace UnitTests
 		}
 
 		[DataTestMethod]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		public void Sprites_Assembler_Binary_SpritesAsImages(CommentType commentType, PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler_Binary_SpritesAsImages(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestSprites((model, parameters, exporter) =>
 			{
@@ -171,7 +171,7 @@ namespace UnitTests
 				model.OutputType = OutputType.Sprites;
 				model.CommentType = commentType;
 				model.PaletteFormat = paletteFormat;
-				model.FourBitParsingMethod = parsingMethod;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = true;
 				model.BinaryFramesAttributesOutput = false;
 				model.SpritesFourBit = false;
@@ -183,8 +183,8 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPalette(paletteFormat), "palette");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBinary(), "binary data");
+				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPalette(paletteFormat, parsingMethod), "palette");
+				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBinary(parsingMethod), "binary data");
 				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
 				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
@@ -200,15 +200,15 @@ namespace UnitTests
 		#region Assembler+Binary+Attributes
 
 		[DataTestMethod]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		public void Sprites_Assembler_BinaryAttributes(CommentType commentType, PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler_BinaryAttributes(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestSprites((model, parameters, exporter) =>
 			{
@@ -216,7 +216,7 @@ namespace UnitTests
 				model.OutputType = OutputType.Sprites;
 				model.CommentType = commentType;
 				model.PaletteFormat = paletteFormat;
-				model.FourBitParsingMethod = parsingMethod;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = true;
 				model.BinaryFramesAttributesOutput = true;
 				model.SpritesFourBit = false;
@@ -228,8 +228,8 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPalette(paletteFormat), "palette");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBinary(), "binary data");
+				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPalette(paletteFormat, parsingMethod), "palette");
+				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBinary(parsingMethod), "binary data");
 				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
 				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
@@ -240,15 +240,15 @@ namespace UnitTests
 		}
 
 		[DataTestMethod]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		public void Sprites_Assembler_BinaryAttributes_SpritesAsImages(CommentType commentType, PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler_BinaryAttributes_SpritesAsImages(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestSprites((model, parameters, exporter) =>
 			{
@@ -256,7 +256,7 @@ namespace UnitTests
 				model.OutputType = OutputType.Sprites;
 				model.CommentType = commentType;
 				model.PaletteFormat = paletteFormat;
-				model.FourBitParsingMethod = parsingMethod;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = true;
 				model.BinaryFramesAttributesOutput = true;
 				model.SpritesFourBit = false;
@@ -268,8 +268,8 @@ namespace UnitTests
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPalette(paletteFormat), "palette");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBinary(), "binary data");
+				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPalette(paletteFormat, parsingMethod), "palette");
+				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBinary(parsingMethod), "binary data");
 				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
 				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
 				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
@@ -288,11 +288,11 @@ namespace UnitTests
 		// note: expected exports were created with full comments option
 
 		[DataTestMethod]
-		[DataRow(PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		public void Sprites_Assembler_4bit(PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		[DataRow(PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler_4bit(PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestSprites((model, parameters, exporter) =>
 			{
@@ -300,7 +300,7 @@ namespace UnitTests
 				model.OutputType = OutputType.Sprites;
 				model.CommentType = CommentType.Full;
 				model.PaletteFormat = paletteFormat;
-				model.FourBitParsingMethod = parsingMethod;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = false;
 				model.BinaryFramesAttributesOutput = false;
 				model.SpritesFourBit = true;
@@ -332,15 +332,15 @@ namespace UnitTests
 		#region Assembler
 
 		[DataTestMethod]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		public void Tiles_Assembler(CommentType commentType, PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Tiles_Assembler(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestTiles((model, parameters, exporter) =>
 			{
@@ -348,7 +348,7 @@ namespace UnitTests
 				model.OutputType = OutputType.Tiles;
 				model.CommentType = commentType;
 				model.PaletteFormat = paletteFormat;
-				model.FourBitParsingMethod = parsingMethod;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = false;
 				model.BinaryFramesAttributesOutput = false;
 				model.TilesExportAsImage = false;
@@ -371,15 +371,15 @@ namespace UnitTests
 		}
 
 		[DataTestMethod]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		public void Tiles_Assembler_TilesAsImage(CommentType commentType, PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Tiles_Assembler_TilesAsImage(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestTiles((model, parameters, exporter) =>
 			{
@@ -387,7 +387,7 @@ namespace UnitTests
 				model.OutputType = OutputType.Tiles;
 				model.CommentType = commentType;
 				model.PaletteFormat = paletteFormat;
-				model.FourBitParsingMethod = parsingMethod;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = false;
 				model.BinaryFramesAttributesOutput = false;
 				model.TilesExportAsImage = true;
@@ -414,15 +414,15 @@ namespace UnitTests
 		#region Assembler+Binary
 
 		[DataTestMethod]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		public void Tiles_Assembler_Binary(CommentType commentType, PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Tiles_Assembler_Binary(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestTiles((model, parameters, exporter) =>
 			{
@@ -430,7 +430,7 @@ namespace UnitTests
 				model.OutputType = OutputType.Tiles;
 				model.CommentType = commentType;
 				model.PaletteFormat = paletteFormat;
-				model.FourBitParsingMethod = parsingMethod;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = true;
 				model.BinaryFramesAttributesOutput = false;
 				model.TilesExportAsImage = false;
@@ -453,15 +453,15 @@ namespace UnitTests
 		}
 
 		[DataTestMethod]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		public void Tiles_Assembler_Binary_TilesAsImage(CommentType commentType, PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Tiles_Assembler_Binary_TilesAsImage(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestTiles((model, parameters, exporter) =>
 			{
@@ -469,7 +469,7 @@ namespace UnitTests
 				model.OutputType = OutputType.Tiles;
 				model.CommentType = commentType;
 				model.PaletteFormat = paletteFormat;
-				model.FourBitParsingMethod = parsingMethod;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = true;
 				model.BinaryFramesAttributesOutput = false;
 				model.TilesExportAsImage = true;
@@ -496,15 +496,15 @@ namespace UnitTests
 		#region Assembler+Binary+Attributes
 
 		[DataTestMethod]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		public void Tiles_Assembler_BinaryAttributes(CommentType commentType, PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Tiles_Assembler_BinaryAttributes(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestTiles((model, parameters, exporter) =>
 			{
@@ -512,7 +512,7 @@ namespace UnitTests
 				model.OutputType = OutputType.Tiles;
 				model.CommentType = commentType;
 				model.PaletteFormat = paletteFormat;
-				model.FourBitParsingMethod = parsingMethod;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = true;
 				model.BinaryFramesAttributesOutput = true;
 				model.TilesExportAsImage = false;
@@ -535,15 +535,15 @@ namespace UnitTests
 		}
 
 		[DataTestMethod]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next8Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.Manual)]
-		[DataRow(CommentType.None, PaletteFormat.Next9Bit, FourBitParsingMethod.DetectPaletteBanks)]
-		public void Tiles_Assembler_BinaryAttributes_TilesAsImage(CommentType commentType, PaletteFormat paletteFormat, FourBitParsingMethod parsingMethod)
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Tiles_Assembler_BinaryAttributes_TilesAsImage(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestTiles((model, parameters, exporter) =>
 			{
@@ -551,7 +551,7 @@ namespace UnitTests
 				model.OutputType = OutputType.Tiles;
 				model.CommentType = commentType;
 				model.PaletteFormat = paletteFormat;
-				model.FourBitParsingMethod = parsingMethod;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = true;
 				model.BinaryFramesAttributesOutput = true;
 				model.TilesExportAsImage = true;

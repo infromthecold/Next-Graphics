@@ -143,8 +143,8 @@ namespace UnitTests
 		[TestMethod]
 		public void SettingsFourBitMethodSaved()
 		{
-			SettingsRunner.Setup(model => model.FourBitParsingMethod = FourBitParsingMethod.Manual).Verify("0", "FourBitParsing");
-			SettingsRunner.Setup(model => model.FourBitParsingMethod = FourBitParsingMethod.DetectPaletteBanks).Verify("1", "FourBitParsing");
+			SettingsRunner.Setup(model => model.PaletteParsingMethod = PaletteParsingMethod.ByPixels).Verify("0", "FourBitParsing");
+			SettingsRunner.Setup(model => model.PaletteParsingMethod = PaletteParsingMethod.ByObjects).Verify("1", "FourBitParsing");
 		}
 
 		[TestMethod]

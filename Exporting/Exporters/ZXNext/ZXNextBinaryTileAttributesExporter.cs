@@ -17,7 +17,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 		{
 			byte paletteOffset =	byte.MaxValue;	// Any value above 16 is invalid, we use MaxValue to detect whether we should ask user.
 
-			if (Parameters.ExportCallbacks != null && Model.FourBitParsingMethod == Models.FourBitParsingMethod.Manual)
+			if (Parameters.ExportCallbacks != null && Model.PaletteParsingMethod == Models.PaletteParsingMethod.ByPixels)
 			{
 				paletteOffset = Parameters.ExportCallbacks.OnExportPaletteOffsetMapper(0);
 			}

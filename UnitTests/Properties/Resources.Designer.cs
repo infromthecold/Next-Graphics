@@ -62,6 +62,33 @@ namespace UnitTests.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 16 March 2022 10:20:29 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	39
+        ///
+        ///TestPalette:
+        ///			db	%11000111	//	235,51,255
+        ///			db	%00000000	//	0,0,0
+        ///			db	%11111101	//	255,238,51
+        ///			db	%01111000	//	109,235,0
+        ///			db	%10010111	//	163,192,255
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11111111	//	237,237,237
+        ///			db	%11011011	//	219,219,219
+        ///			db	%10110110	//	200,200,200
+        ///			db	%10110110	//	182,182,182
+        ///			db	%10110110	//	164,164,164
+        ///			d [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm_fullcomments_8bit_detect {
+            get {
+                return ResourceManager.GetString("export_sprites_asm_fullcomments_8bit_detect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
         ///// Created on 15 March 2022 10:58:30 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
@@ -81,9 +108,33 @@ namespace UnitTests.Properties {
         ///			db	%00001010	//	0,63,199
         ///			db	%00 [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string export_sprites_asm_fullcomments_8bit {
+        public static string export_sprites_asm_fullcomments_8bit_manual {
             get {
-                return ResourceManager.GetString("export_sprites_asm_fullcomments_8bit", resourceCulture);
+                return ResourceManager.GetString("export_sprites_asm_fullcomments_8bit_manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 16 March 2022 10:20:29 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	39
+        ///
+        ///TestPalette:
+        ///			db	%11000111,%00000001	//	235,51,255
+        ///			db	%00000000,%00000000	//	0,0,0
+        ///			db	%11111100,%00000001	//	255,238,51
+        ///			db	%01111000,%00000000	//	109,235,0
+        ///			db	%10010111,%00000001	//	163,192,255
+        ///			db	%11111111,%00000001	//	255,255,255
+        ///			db	%11111111,%00000001	//	237,237,237
+        ///			db	%11011011,%00000000	//	219,219,219
+        ///			db	%10110110,%000 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm_fullcomments_9bit_detect {
+            get {
+                return ResourceManager.GetString("export_sprites_asm_fullcomments_9bit_detect", resourceCulture);
             }
         }
         
@@ -105,9 +156,45 @@ namespace UnitTests.Properties {
         ///			db	%11111111,%00000001	//	237,237,237
         ///			db	%11110010,%000 [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string export_sprites_asm_fullcomments_9bit {
+        public static string export_sprites_asm_fullcomments_9bit_manual {
             get {
-                return ResourceManager.GetString("export_sprites_asm_fullcomments_9bit", resourceCulture);
+                return ResourceManager.GetString("export_sprites_asm_fullcomments_9bit_manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 16 March 2022 10:20:29 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	39
+        ///
+        ///TestPalette:
+        ///			db	%11000111
+        ///			db	%00000000
+        ///			db	%11111101
+        ///			db	%01111000
+        ///			db	%10010111
+        ///			db	%11111111
+        ///			db	%11111111
+        ///			db	%11011011
+        ///			db	%10110110
+        ///			db	%10110110
+        ///			db	%10110110
+        ///			db	%10010010
+        ///			db	%10010010
+        ///			db	%01101101
+        ///			db	%01001001
+        ///			db	%01001001
+        ///			db	%01001001
+        ///			db	%00100100
+        ///			db	%11111010
+        ///			db	%11110010
+        ///			db	 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm_nocomments_8bit_detect {
+            get {
+                return ResourceManager.GetString("export_sprites_asm_nocomments_8bit_detect", resourceCulture);
             }
         }
         
@@ -141,9 +228,37 @@ namespace UnitTests.Properties {
         ///			db	%10110110
         ///			db	 [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string export_sprites_asm_nocomments_8bit {
+        public static string export_sprites_asm_nocomments_8bit_manual {
             get {
-                return ResourceManager.GetString("export_sprites_asm_nocomments_8bit", resourceCulture);
+                return ResourceManager.GetString("export_sprites_asm_nocomments_8bit_manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 16 March 2022 10:20:29 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	39
+        ///
+        ///TestPalette:
+        ///			db	%11000111,%00000001
+        ///			db	%00000000,%00000000
+        ///			db	%11111100,%00000001
+        ///			db	%01111000,%00000000
+        ///			db	%10010111,%00000001
+        ///			db	%11111111,%00000001
+        ///			db	%11111111,%00000001
+        ///			db	%11011011,%00000000
+        ///			db	%10110110,%00000001
+        ///			db	%10110110,%00000001
+        ///			db	%10110110,%00000001
+        ///			db	%10010010,%00000000
+        ///			db	%10010010,%00000 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm_nocomments_9bit_detect {
+            get {
+                return ResourceManager.GetString("export_sprites_asm_nocomments_9bit_detect", resourceCulture);
             }
         }
         
@@ -169,15 +284,15 @@ namespace UnitTests.Properties {
         ///			db	%00000101,%00000001
         ///			db	%11011011,%00000 [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string export_sprites_asm_nocomments_9bit {
+        public static string export_sprites_asm_nocomments_9bit_manual {
             get {
-                return ResourceManager.GetString("export_sprites_asm_nocomments_9bit", resourceCulture);
+                return ResourceManager.GetString("export_sprites_asm_nocomments_9bit_manual", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to // Test.asm
-        ///// Created on 15 March 2022 11:32:14 by the NextGraphics tool from
+        ///// Created on 15 March 2022 13:53:22 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
         ///TEST_COLOURS:		equ	48
@@ -231,7 +346,7 @@ namespace UnitTests.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to // Test.asm
-        ///// Created on 15 March 2022 11:32:14 by the NextGraphics tool from
+        ///// Created on 15 March 2022 13:53:22 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
         ///TEST_COLOURS:		equ	48
@@ -410,9 +525,19 @@ namespace UnitTests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] export_sprites_binary {
+        public static byte[] export_sprites_binary_detect {
             get {
-                object obj = ResourceManager.GetObject("export_sprites_binary", resourceCulture);
+                object obj = ResourceManager.GetObject("export_sprites_binary_detect", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_sprites_binary_manual {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_binary_manual", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -540,9 +665,9 @@ namespace UnitTests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] export_sprites_palette_8bit {
+        public static byte[] export_sprites_palette_8bit_detect {
             get {
-                object obj = ResourceManager.GetObject("export_sprites_palette_8bit", resourceCulture);
+                object obj = ResourceManager.GetObject("export_sprites_palette_8bit_detect", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -550,9 +675,29 @@ namespace UnitTests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] export_sprites_palette_9bit {
+        public static byte[] export_sprites_palette_8bit_manual {
             get {
-                object obj = ResourceManager.GetObject("export_sprites_palette_9bit", resourceCulture);
+                object obj = ResourceManager.GetObject("export_sprites_palette_8bit_manual", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_sprites_palette_9bit_detect {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_palette_9bit_detect", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_sprites_palette_9bit_manual {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_palette_9bit_manual", resourceCulture);
                 return ((byte[])(obj));
             }
         }

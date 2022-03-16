@@ -132,7 +132,7 @@ namespace NextGraphics.Models
 		/// <summary>
 		/// Remaps all colour indexes for 4-bit palette.
 		/// </summary>
-		public void RemapTo4Bit(Palette palette, FourBitParsingMethod parsingMethod, int width, int height, int objectSize)
+		public void RemapTo4Bit(Palette palette, PaletteParsingMethod parsingMethod, int width, int height, int objectSize)
 		{
 			int Map(int xCuts, int yCuts, int averagingIndex)
 			{
@@ -196,11 +196,11 @@ namespace NextGraphics.Models
 
 			switch (parsingMethod)
 			{
-				case FourBitParsingMethod.Manual:
+				case PaletteParsingMethod.ByPixels:
 					MapDefault();
 					break;
 
-				case FourBitParsingMethod.DetectPaletteBanks:
+				case PaletteParsingMethod.ByObjects:
 					MapBanks();
 					break;
 			}
