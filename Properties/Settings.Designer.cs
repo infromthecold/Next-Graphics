@@ -130,5 +130,17 @@ namespace NextGraphics.Properties {
                 this["PaletteFormExportFilterIndex"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool TilemapRenderTileIndex {
+            get {
+                return ((bool)(this["TilemapRenderTileIndex"]));
+            }
+            set {
+                this["TilemapRenderTileIndex"] = value;
+            }
+        }
     }
 }

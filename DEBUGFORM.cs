@@ -32,9 +32,9 @@ namespace NextGraphics
 			debugImage.Clear();
 		}
 
-		public void CopyImage(Palette palette, Rectangle frame, IndexedBitmap source)
+		public void CopyImage(Palette palette, Point position, IndexedBitmap source)
 		{
-			source.CopyTo(palette, frame, debugImage);
+			source.CopyTo(debugImage, palette, position);
 		}
 
 		public void SetScale(int scale)
@@ -46,7 +46,7 @@ namespace NextGraphics
 
 		private void debugPictureBox_Paint(object sender, PaintEventArgs e)
 		{
-			debugPictureBox.Image.RenderGrid(e.Graphics, 8, 8, windowScale, windowScale);
+			e.Graphics.DrawGrid(debugPictureBox.Image, 8, 8, windowScale, windowScale);
 		}
 	}
 }

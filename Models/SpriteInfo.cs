@@ -86,6 +86,9 @@ namespace NextGraphics.Models
 			Infos[index].Transparent = transparent;
 			Infos[index].PaletteOffset = paletteOffset;
 			Infos[index].HasTransparent = hasTran;
+			Infos[index].OriginalID = originalId;
+			Infos[index].Position = new Point(x, y);
+
 			if ((originalId & 1) == 0)
 			{
 				Infos[index].SecondHalf = false;
@@ -94,8 +97,6 @@ namespace NextGraphics.Models
 			{
 				Infos[index].SecondHalf = true;
 			}
-			Infos[index].OriginalID = originalId;
-			Infos[index].Position = new Point(x, y);
 		}
 
 		public bool GetRepeated(int x, int y)

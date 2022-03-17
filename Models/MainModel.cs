@@ -41,8 +41,11 @@ namespace NextGraphics.Models
 
 		#region Not saved properties
 
-		public Bitmap BlocksBitmap { get; private set; } = null;
 		public Bitmap CharsBitmap { get; private set; } = null;
+		public Bitmap BlocksBitmap { get; private set; } = null;
+
+		public int SourceImagesCount { get => SourceImages().Count(); }
+		public int SourceTilemapsCount { get => SourceTilemaps().Count(); }
 
 		public bool IsFourBitData { get => SpritesFourBit || OutputType == OutputType.Tiles; }
 

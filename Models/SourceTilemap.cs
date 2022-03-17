@@ -1,6 +1,10 @@
-﻿using NextGraphics.Exporting.Common;
+﻿using NextGraphics.Exporting;
+using NextGraphics.Exporting.Common;
+using NextGraphics.Utils;
 
 using System;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 
 namespace NextGraphics.Models
@@ -33,6 +37,101 @@ namespace NextGraphics.Models
 				case ".txm": return new SourceTilemapText(filename);
 				case ".txt": return new SourceTilemapText(filename);
 				default: return null;
+			}
+		}
+
+		/// <summary>
+		/// Creates a new bitmap with current data and tiles from the given <see cref="Exporter"/>. Model should be mapped otherwise tiles won't match. If data is missing, an empty image will be returned.
+		/// </summary>
+		public Bitmap CreateBitmap(Exporter exporter, RenderingOptions options = null)
+		{
+			if (!IsDataValid) return new Bitmap(50, 50).Clear();
+
+			var model = exporter.Data.Model;
+			var export = exporter.Data;
+
+			// We ignore scale when rendering images.
+			var outputSize = new Size(Data.Width * model.GridWidth, Data.Height * model.GridHeight);
+
+			var result = new Bitmap(outputSize.Width, outputSize.Height);
+			var errorPen = new Pen(Color.Yellow);
+
+			result.Clear();
+
+			using (var g = Graphics.FromImage(result))
+			{
+				g.InterpolationMode = InterpolationMode.NearestNeighbor;
+
+				for (var y = 0; y < Data.Height; y++)
+				{
+					for (var x = 0; x < Data.Width; x++)
+					{
+						var tile = Data.Tiles[y, x];
+
+						var rect = new Rectangle(x * model.GridWidth, y * model.GridHeight, model.GridWidth, model.GridHeight);
+
+						if (tile.Index >= export.Chars.Length || export.Chars[tile.Index] == null)
+						{
+							g.DrawLine(errorPen, rect.Left, rect.Top, rect.Right, rect.Bottom);
+							g.DrawLine(errorPen, rect.Left, rect.Bottom, rect.Right, rect.Top);
+						}
+						else
+						{
+							var tileSource = export.Chars[tile.Index];
+
+							tileSource.CopyTo(
+								result,
+								model.Palette,
+								rect.Location,
+								tile.FlippedX,
+								tile.FlippedY,
+								tile.RotatedClockwise);
+						}
+					}
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Renders overlay on top of existing image. It is expected that the image was rendered using <see cref="CreateBitmap"/> and correctly scaled according to `scaleFactor` parameter.
+		/// </summary>
+		public void RenderOverlay(Graphics g, Size size, double scaleFactor, Exporter exporter, RenderingOptions options = null)
+		{
+			if (!IsDataValid) return;
+			if (scaleFactor < 1) return;
+			if (options == null || !options.RenderTileIndex) return;
+
+			var fontSize = 6 * scaleFactor * 0.4;
+			if (fontSize < 5) fontSize = 5;
+			if (fontSize > 10) fontSize = 10;
+
+			var model = exporter.Data.Model;
+			var indexFont = new Font(FontFamily.GenericMonospace, (int)fontSize);
+			var indexBrush = new SolidBrush(Color.Black);
+
+			var intrinsicRect = new Rectangle(0, 0, model.GridWidth, model.GridHeight);
+			var scaledRect = new RectangleF(0, 0, intrinsicRect.Width * (float)scaleFactor, intrinsicRect.Height * (float)scaleFactor);
+
+			for (var y = 0; y < Data.Height; y++)
+			{
+				for (var x = 0; x < Data.Width; x++)
+				{
+					var tile = Data.Tiles[y, x];
+
+					intrinsicRect.X = x * model.GridWidth;
+					intrinsicRect.Y = y * model.GridHeight;
+
+					scaledRect.X = intrinsicRect.X * (float)scaleFactor;
+					scaledRect.Y = intrinsicRect.Y * (float)scaleFactor;
+
+					g.DrawString(
+						tile.Index.ToString(),
+						indexFont,
+						indexBrush,
+						scaledRect);
+				}
 			}
 		}
 
@@ -94,9 +193,14 @@ namespace NextGraphics.Models
 			{
 				// If auto-banking is not supported, we use 0.
 				var tile = data.Blocks[Index];
-				PaletteBank = tile.IsAutoBankingSupported ? data.Blocks[Index].PaletteBank : 0;
+				PaletteBank = tile.IsAutoBankingSupported ? tile.PaletteBank : 0;
 			}
 		}
+	}
+
+	public class RenderingOptions
+	{
+		public bool RenderTileIndex { get; set; } = false;
 	}
 
 	#endregion

@@ -24,9 +24,7 @@ namespace NextGraphics
 		private ExportPathProvider ExportPaths { get; set; }
 
 		private List<ImageForm> imageForms = new List<ImageForm>();
-#if PROPRIETARY
-		public	parallaxTool		parallaxWindow		=	new	parallaxTool();
-#endif
+		private List<ImageForm> tilemapForms = new List<ImageForm>();
 		private InfoForm infoForm = new InfoForm();
 
 		private ImageForm rebuildTilesForm = null;
@@ -48,6 +46,10 @@ namespace NextGraphics
 
 #if DEBUG_WINDOW
 		public DebugForm debugForm;
+#endif
+
+#if PROPRIETARY
+		public	parallaxTool		parallaxWindow		=	new	parallaxTool();
 #endif
 
 		#region Initialization & Disposal
@@ -77,6 +79,12 @@ namespace NextGraphics
 			UpdateStatusProgress(false);
 			ClearData();
 			SetForm();
+
+			Properties.Settings.Default.PropertyChanged += (o, e) =>
+			{
+				Invalidate(true);
+				Refresh();
+			}; 
 
 			// Prepare image dialog filters.
 			var imageFiltersBuilder = new DialogFilterBuilder();
@@ -188,22 +196,22 @@ namespace NextGraphics
 			}));
 		}
 
-		public void OnRemapDisplayChar(Rectangle frame, IndexedBitmap bitmap)
+		public void OnRemapDisplayChar(Point position, IndexedBitmap bitmap)
 		{
 			Invoke(new Action(() =>
 			{
-				bitmap.CopyTo(Model.Palette, frame, Model.CharsBitmap);
+				bitmap.CopyTo(Model.CharsBitmap, Model.Palette, position);
 #if DEBUG_WINDOW
-				debugForm.CopyImage(Model.Palette, frame, bitmap);
+				debugForm.CopyImage(Model.Palette, position, bitmap);
 #endif
 			}));
 		}
 
-		public void OnRemapDisplayBlock(Rectangle frame, IndexedBitmap bitmap)
+		public void OnRemapDisplayBlock(Point position, IndexedBitmap bitmap)
 		{
 			Invoke(new Action(() =>
 			{
-				bitmap.CopyTo(Model.Palette, frame, Model.BlocksBitmap);
+				bitmap.CopyTo(Model.BlocksBitmap, Model.Palette, position);
 			}));
 		}
 
@@ -640,7 +648,7 @@ namespace NextGraphics
 			var gridWidth = Model.DefaultItemWidth();
 			var gridHeight = Model.DefaultItemHeight();
 
-			charsPictureBox.Image.RenderGrid(e.Graphics, gridWidth, gridHeight);
+			e.Graphics.DrawGrid(charsPictureBox.Image, gridWidth, gridHeight);
 		}
 
 		private void charsPictureBox_Click(object sender, EventArgs e)
@@ -665,7 +673,7 @@ namespace NextGraphics
 
 		private void blocksPictureBox_Paint(object sender, PaintEventArgs e)
 		{
-			blocksPictureBox.Image.RenderGrid(e.Graphics, Model.GridWidth, Model.GridHeight);
+			e.Graphics.DrawGrid(blocksPictureBox.Image, Model.GridWidth, Model.GridHeight);
 		}
 
 		private void blocksPictureBox_Click(object sender, EventArgs e)
@@ -741,12 +749,18 @@ namespace NextGraphics
 
 		private void reloadImagesToolStripButton_Click(object sender, EventArgs e)
 		{
-			DisposeImageWindows();
+			DisposeSourceImageForms();
 
 			Model.ForEachSourceImage((image, idx) =>
 			{
 				image.Reload();
 				imageForms.Add(new ImageForm { MdiParent = this });
+			});
+
+			Model.ForEachSourceTilemap((tilemap, idx) =>
+			{
+				tilemap.Reload();
+				tilemapForms.Add(new ImageForm { MdiParent = this });
 			});
 		}
 
@@ -755,30 +769,69 @@ namespace NextGraphics
 			int index = projectListBox.IndexFromPoint(e.Location);
 			if (index == ListBox.NoMatches) return;
 
+			var sourceIndex = index - 1;
+			var imageFormIndex = sourceIndex;
+			var tilemapFormIndex = sourceIndex - Model.SourceImagesCount;	// this is used to access 0-bound `tilemapForma` list
+
 			if (index == 0)
 			{
+				// Project name.
 				if (ShowProjectNameDialog())
 				{
 					projectListBox.Items[0] = Model.Name.ToProjectItemTitle();
 				}
 			}
-			else
+			else if (Model.Sources[sourceIndex] is SourceImage image)
 			{
-				if (Model.Sources[index - 1] is SourceImage image)
+				// Source images.
+				if (imageForms[imageFormIndex] == null || !imageForms[imageFormIndex].Visible)
 				{
-					if (imageForms[index - 1] == null || !imageForms[index - 1].Visible)
-					{
-						imageForms[index - 1] = new ImageForm
-						{
-							Text = Path.GetFileName(image.Filename),
-							MdiParent = this
-						};
-					}
-
-					imageForms[index - 1].LoadImage(image.Filename, Model.GridWidth, Model.GridHeight);
-
-					MoveResizeAsMdiChild(imageForms[index - 1], show: true);
+					imageForms[imageFormIndex] = CreateImageFormForSource(image);
 				}
+
+				imageForms[imageFormIndex].LoadImage(image.Filename, Model.GridWidth, Model.GridHeight);
+				imageForms[imageFormIndex].BringToFront();
+
+				MoveResizeAsMdiChild(imageForms[imageFormIndex], show: true);
+			}
+			else if (Model.Sources[sourceIndex] is SourceTilemap tilemap)
+			{
+				// Source tilemaps. Note how source index is different from tilemap form index. Also since tilemap images need to be reloaded after mapping, we add parameters.
+				if (tilemapForms[tilemapFormIndex] == null || !tilemapForms[tilemapFormIndex].Visible)
+				{
+					tilemapForms[tilemapFormIndex] = CreateImageFormForSource(tilemap);
+				}
+
+				RenderingOptions CreateOptions()
+				{
+					return new RenderingOptions
+					{
+						RenderTileIndex = Properties.Settings.Default.TilemapRenderTileIndex
+					};
+				}
+
+				Bitmap TilemapImage(double scale)
+				{
+					return tilemap.CreateBitmap(Exporter, CreateOptions());
+				};
+
+				void TilemapOverlay(Graphics g, Size size, double scale)
+				{
+					tilemap.RenderOverlay(g, size, scale, Exporter, CreateOptions());
+				}
+
+				// Note: with initial image we establish desired image form size.
+				tilemapForms[tilemapFormIndex].SetImage(TilemapImage(1.0), new ImageForm.Parameters
+				{
+					GridWidth = () => Model.GridWidth,
+					GridHeight = () => Model.GridHeight,
+					ImageProvider = TilemapImage,
+					OverlayProvider = TilemapOverlay,
+				});
+
+				tilemapForms[tilemapFormIndex].BringToFront();
+
+				MoveResizeAsMdiChild(tilemapForms[tilemapFormIndex], show: true);
 			}
 		}
 
@@ -864,7 +917,7 @@ namespace NextGraphics
 
 			ClearData();
 			SetForm();
-			DisposeImageWindows();
+			DisposeSourceImageForms();
 		}
 
 		/// <summary>
@@ -1227,7 +1280,7 @@ namespace NextGraphics
 			projectListBox.Items.Clear();
 			projectListBox.Items.Add(Model.Name.ToProjectItemTitle());
 
-			DisposeImageWindows();
+			DisposeSourceImageForms();
 
 			var removeNames = new List<string>();
 
@@ -1243,11 +1296,11 @@ namespace NextGraphics
 
 				if (source is SourceImage)
 				{
-					imageForms.Add(new ImageForm
-					{
-						Text = Path.GetFileName(source.Filename),
-						MdiParent = this
-					});
+					imageForms.Add(CreateImageFormForSource(source));
+				}
+				else if (source is SourceTilemap)
+				{
+					tilemapForms.Add(CreateImageFormForSource(source));
 				}
 			}
 
@@ -1336,10 +1389,16 @@ namespace NextGraphics
 			statusToolStripProgressBar.Maximum = active ? 10000 : 0;
 		}
 
-		/// <summary>
-		/// Disposes all image windows.
-		/// </summary>
-		private void DisposeImageWindows()
+		ImageForm CreateImageFormForSource(ISourceFile source)
+		{
+			return new ImageForm
+			{
+				Text = Path.GetFileName(source.Filename),
+				MdiParent = this,
+			};
+		}
+
+		private void DisposeSourceImageForms()
 		{
 			foreach (ImageForm form in imageForms)
 			{
@@ -1347,6 +1406,13 @@ namespace NextGraphics
 			}
 
 			imageForms.Clear();
+
+			foreach (ImageForm form in tilemapForms)
+			{
+				form.Dispose();
+			}
+
+			tilemapForms.Clear();
 		}
 
 		/// <summary>

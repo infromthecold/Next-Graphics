@@ -328,9 +328,6 @@ namespace NextGraphics
 
 		private void savePaletteButton_Click(object sender, EventArgs e)
 		{
-			int lineNumber = 1000;
-			int lineStep = 10;
-
 			var filterBuilder = new DialogFilterBuilder();
 			filterBuilder.Add("Palette Files", "*.act", ExportAsPaletteFile);
 			filterBuilder.Add("Mac Palette Files", "*.8bct", ExportAsMacPaletteFile);

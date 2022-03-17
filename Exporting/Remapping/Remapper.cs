@@ -460,7 +460,7 @@ namespace NextGraphics.Exporting.Remapping
 					}
 				}
 
-				Callbacks?.OnRemapDisplayBlock(new Rectangle(0, 0, Data.Model.GridWidth, Data.Model.GridHeight), Data.Blocks[0]);
+				Callbacks?.OnRemapDisplayBlock(new Point(0, 0), Data.Blocks[0]);
 			}
 
 			outXBlock = 1;
@@ -650,15 +650,13 @@ namespace NextGraphics.Exporting.Remapping
 
 		private void RequestCharacterDisplay(int index)
 		{
-			var frame = new Rectangle
+			var position = new Point
 			{
 				X = objectGridX * objectSize,
 				Y = objectGridY * objectSize,
-				Width = objectSize,
-				Height = objectSize
 			};
 
-			Callbacks?.OnRemapDisplayChar(frame, Data.Chars[index]);
+			Callbacks?.OnRemapDisplayChar(position, Data.Chars[index]);
 
 			int width = Model.CharsBitmap.Width;
 

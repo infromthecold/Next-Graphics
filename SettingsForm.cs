@@ -29,6 +29,7 @@ namespace NextGraphics
 					MapModelToTilemapControl();
 					MapModelToSpriteControls();
 					MapModelToFileExtensionControls();
+					MapApplicationSettingsControls();
 				}
 			}
 		}
@@ -242,6 +243,15 @@ namespace NextGraphics
 			extensionsSpritesAttributesTextBox.MapTextTo(() => Model.ExportSpriteAttributesFileExtension, (name, value) => Properties.Settings.Default.SetAndSave(name, value));
 		}
 
+		private void MapApplicationSettingsControls()
+		{
+			applicationRenderTileIndexesCheckBox.MapCheckedTo(Properties.Settings.Default.TilemapRenderTileIndex, value =>
+			{
+				Properties.Settings.Default.TilemapRenderTileIndex = value;
+				Properties.Settings.Default.Save();
+			});
+		}
+
 		#endregion
 	}
 
@@ -354,6 +364,19 @@ namespace NextGraphics
 						customAction(memberName, value);
 					}
 				};
+			}
+
+			public static void MapCheckedTo(
+				this CheckBox checkBox,
+				bool currentValue,
+				Action<bool> changed)
+			{
+				checkBox.Checked = currentValue;
+
+				checkBox.CheckedChanged += (o, e) =>
+				{
+					changed(checkBox.Checked);
+				}; 
 			}
 
 			private static object GetRootObject<T>(this Expression<Func<T>> expression)

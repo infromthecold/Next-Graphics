@@ -113,18 +113,48 @@ namespace NextGraphics.Models
 		/// <summary>
 		/// Copies a portion of this bitmap into the given frame of the destination bitmap.
 		/// </summary>
-		/// <param name="palette">Palette that defines colours for this bitmap.</param>
-		/// <param name="rectangle">Rectangle that defines: width and height for this (source) bitmap and destination (position and size) of the given destination bitmap.</param>
 		/// <param name="destination">Destination bitmap to copy to.</param>
-		public void CopyTo(Palette palette, Rectangle rectangle, Bitmap destination)
+		/// <param name="palette">Palette that defines colours for this bitmap.</param>
+		/// <param name="position">The position into destination to copy to.</param>
+		public void CopyTo(Bitmap destination, Palette palette, Point position, bool flippedX = false, bool flippedY = false, bool rotated = false)
 		{
-			for (int y = 0; y < rectangle.Height; y++)
+			Point Translated(int x, int y)
 			{
-				for (int x = 0; x < rectangle.Width; x++)
+				// (x,y) is expected to be a coordinate within this bitmap (0..width-1, 0..height-1)
+				var result = new Point(x, y);
+
+				if (rotated)
+				{
+					var temp = result.X;
+					result.X = Width - result.Y - 1;
+					result.Y = temp;
+				}
+
+				if (flippedX)
+				{
+					result.X = Width - result.X - 1;
+				}
+
+				if (flippedY)
+				{
+					result.Y = Height - result.Y - 1;
+				}
+
+				return result;
+			}
+
+			for (int y = 0; y < Height; y++)
+			{
+				for (int x = 0; x < Width; x++)
 				{
 					var colourIndex = GetPixel(x, y);
 					var color = palette[colourIndex].ToColor();
-					destination.SetPixel(rectangle.X + x, rectangle.Y + y, color);
+
+					var translated = Translated(x, y);
+					var tx = position.X + translated.X;
+					var ty = position.Y + translated.Y;
+
+					destination.SetPixel(tx, ty, color);
 				}
 			}
 		}
@@ -290,9 +320,6 @@ namespace NextGraphics.Models
 		/// </param>
 		public void PixelIterator(int xOffset, int yOffset, int size, Func<int, int, short, bool> handler)
 		{
-			var width = size > 0 ? size : (Width - xOffset);
-			var height = size > 0 ? size : (Height - yOffset);
-
 			for (int y = 0; y < Width; y++)
 			{
 				for (int x = 0; x < Height; x++)

@@ -112,6 +112,8 @@
 			this.extensionsBinaryDataTextBox = new System.Windows.Forms.TextBox();
 			this.extensionsTilemapInfoTextBox = new System.Windows.Forms.TextBox();
 			this.extensionsTilemapInfoLabel = new System.Windows.Forms.Label();
+			this.applicationTabPage = new System.Windows.Forms.TabPage();
+			this.applicationRenderTileIndexesCheckBox = new System.Windows.Forms.CheckBox();
 			this.settingsTabControl.SuspendLayout();
 			this.commonTabPage.SuspendLayout();
 			this.commonIgnoreRepeatsTableLayoutPanel.SuspendLayout();
@@ -121,6 +123,7 @@
 			this.spriteCenterTableLayoutPanel.SuspendLayout();
 			this.fileExtensionsTabPage.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
+			this.applicationTabPage.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// spriteCenterBRRadioButton
@@ -220,6 +223,7 @@
 			this.settingsTabControl.Controls.Add(this.tilemapTabPage);
 			this.settingsTabControl.Controls.Add(this.spritesTabPage);
 			this.settingsTabControl.Controls.Add(this.fileExtensionsTabPage);
+			this.settingsTabControl.Controls.Add(this.applicationTabPage);
 			this.settingsTabControl.Location = new System.Drawing.Point(12, 12);
 			this.settingsTabControl.Name = "settingsTabControl";
 			this.settingsTabControl.SelectedIndex = 0;
@@ -1057,6 +1061,26 @@
 			this.extensionsTilemapInfoLabel.Text = "Tile info";
 			this.extensionsTilemapInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
+			// applicationTabPage
+			// 
+			this.applicationTabPage.Controls.Add(this.applicationRenderTileIndexesCheckBox);
+			this.applicationTabPage.Location = new System.Drawing.Point(4, 22);
+			this.applicationTabPage.Name = "applicationTabPage";
+			this.applicationTabPage.Padding = new System.Windows.Forms.Padding(3);
+			this.applicationTabPage.Size = new System.Drawing.Size(422, 182);
+			this.applicationTabPage.TabIndex = 6;
+			this.applicationTabPage.Text = "Application";
+			// 
+			// applicationRenderTileIndexesCheckBox
+			// 
+			this.applicationRenderTileIndexesCheckBox.AutoSize = true;
+			this.applicationRenderTileIndexesCheckBox.Location = new System.Drawing.Point(6, 11);
+			this.applicationRenderTileIndexesCheckBox.Name = "applicationRenderTileIndexesCheckBox";
+			this.applicationRenderTileIndexesCheckBox.Size = new System.Drawing.Size(116, 17);
+			this.applicationRenderTileIndexesCheckBox.TabIndex = 0;
+			this.applicationRenderTileIndexesCheckBox.Text = "Render tile indexes";
+			this.applicationRenderTileIndexesCheckBox.UseVisualStyleBackColor = true;
+			// 
 			// SettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1082,6 +1106,8 @@
 			this.fileExtensionsTabPage.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
+			this.applicationTabPage.ResumeLayout(false);
+			this.applicationTabPage.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -1171,5 +1197,7 @@
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.Label optionsPaletteParsingLabel;
 		private System.Windows.Forms.ComboBox optionsPaletteParsingComboBox;
+		private System.Windows.Forms.TabPage applicationTabPage;
+		private System.Windows.Forms.CheckBox applicationRenderTileIndexesCheckBox;
 	}
 }

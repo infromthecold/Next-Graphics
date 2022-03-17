@@ -10,11 +10,10 @@ namespace NextGraphics
 	public partial class ImageForm : Form
 	{
 		private static double ScaleFactor = 10.0;
-
-		private Bitmap inputImage;
-		private Parameters parameters;
-
 		private double ImageScaleFactor { get => scaleTrackBar.Value / ScaleFactor; }
+
+		private Bitmap image;
+		private Parameters parameters;
 
 		#region Initialization & Disposal
 
@@ -38,10 +37,10 @@ namespace NextGraphics
 				components.Dispose();
 			}
 
-			if (disposing && inputImage != null)
+			if (disposing && image != null)
 			{
-				inputImage.Dispose();
-				inputImage = null;
+				image.Dispose();
+				image = null;
 			}
 
 			base.Dispose(disposing);
@@ -58,23 +57,39 @@ namespace NextGraphics
 			g.InterpolationMode = InterpolationMode.NearestNeighbor;
 			g.Clear();
 
+			var scaleFactor = ImageScaleFactor;
+
+			// If we have dynamic image provider set, update the image. Ask for size that would fit our current view (but we will stretch the image if different size is returned).
+			if (parameters != null && parameters.ImageProvider != null)
+			{
+				if (image != null) image.Dispose();
+
+				image = parameters.ImageProvider(scaleFactor);
+			}
+
 			// Render the image. Since we always constrain picture box aspect ratio to our image, we simply stretch the image into the whole control. Note how we dynamically setup top-left coordinate based on scale. This ensures the image is aligned with the grid.
-			if (inputImage != null)
+			if (image != null)
 			{
 				var topLeft = (int)(ImageScaleFactor / 2.0);
 
-				g.DrawImage(inputImage,
+				g.DrawImage(image,
 					new Rectangle(topLeft, topLeft, sourcePictureBox.Width, sourcePictureBox.Height),
-					new Rectangle(0, 0, inputImage.Width, inputImage.Height),
+					new Rectangle(0, 0, image.Width, image.Height),
 					GraphicsUnit.Pixel);
 			}
 
-			// Render grid if required.
-			if (parameters != null)
+			// Render overlay if needed.
+			if (parameters != null && parameters.OverlayProvider != null)
 			{
-				var gridWidth = parameters.GridWidth != null ? parameters.GridWidth() : 32;
-				var gridHeight = parameters.GridHeight != null ? parameters.GridHeight() : 32;
-				sourcePictureBox.Image.RenderGrid(e.Graphics, gridWidth, gridHeight, ImageScaleFactor, ImageScaleFactor);
+				parameters.OverlayProvider(g, sourcePictureBox.Size, scaleFactor);
+			}
+
+			// Render grid if required.
+			if (parameters != null && parameters.GridWidth != null && parameters.GridHeight != null && ImageScaleFactor >= 1)
+			{
+				double gridWidth = parameters.GridWidth();
+				double gridHeight = parameters.GridHeight();
+				g.DrawGrid(image, gridWidth, gridHeight, scaleFactor, scaleFactor);
 			}
 		}
 
@@ -114,30 +129,35 @@ namespace NextGraphics
 				};
 
 				AssignImage(new Bitmap(stream));
+				UpdateScale();
 			}
 
 			Invalidate(true);
 			Update();
 		}
 
-		public void CopyImage(Bitmap image, Parameters parameters)
+		public void CopyImage(Bitmap image, Parameters parameters = null)
 		{
 			this.parameters = parameters;
 
 			AssignImage(image);
+			UpdateScale();
 
 			Invalidate(true);
 			Update();
 		}
 
-		public void SetImage(Bitmap image)
+		public void SetImage(Bitmap image, Parameters parameters = null)
 		{
+			this.parameters = parameters;
+
 			AssignImage(image);
+			UpdateScale();
 		}
 
 		public void SetPixel(int x, int y, Color color)
 		{
-			inputImage.SetPixel(x, y, color);
+			image.SetPixel(x, y, color);
 		}
 
 		#endregion
@@ -146,22 +166,20 @@ namespace NextGraphics
 
 		private void AssignImage(Bitmap image)
 		{
-			inputImage = image;
+			this.image = image;
 
-			sourcePictureBox.Image = image;
 			sourcePictureBox.Width = image.Width;
 			sourcePictureBox.Height = image.Height;
-
-			UpdateScale();
 		}
 
 		private void UpdateScale()
 		{
-			var scaledWidth = (int)(inputImage.Width * ImageScaleFactor);
-			var scaledHeight = (int)(inputImage.Height * ImageScaleFactor);
+			var scaledWidth = (int)(image.Width * ImageScaleFactor);
+			var scaledHeight = (int)(image.Height * ImageScaleFactor);
 
 			sourcePictureBox.Width = scaledWidth;
 			sourcePictureBox.Height = scaledHeight;
+
 			sourcePictureBox.Invalidate();
 			sourcePictureBox.Update();
 		}
@@ -174,6 +192,16 @@ namespace NextGraphics
 		{
 			public Func<int> GridWidth { get; set; } = null;
 			public Func<int> GridHeight { get; set; } = null;
+
+			/// <summary>
+			/// Optional, if non-null, it will be called on every reload to dynamically update the image. The parameter is current scale factor in case implementor want to do scale-sensitive drawing.
+			/// </summary>
+			public Func<double, Bitmap> ImageProvider { get; set; } = null;
+
+			/// <summary>
+			/// Optional, if non-null, the image is first rendered and scaled, then this method is called passing it the scaling factor, size of the rendered image (taking into account scaling factor) and <see cref="Graphics"/> that can be used to render additional data. After this call completes, the grid is rendered on top.
+			/// </summary>
+			public Action<Graphics, Size, double> OverlayProvider { get; set; } = null;
 		}
 
 		#endregion
