@@ -73,7 +73,8 @@ namespace NextGraphics.Models
 					var x = 0;
 					foreach (var column in row)
 					{
-						result.Tiles[y, x++] = new TilemapData.Tile(column);
+						result.SetTile(x, y, new TilemapData.Tile(column));
+						x++;
 					}
 
 					y++;

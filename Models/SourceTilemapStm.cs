@@ -64,11 +64,11 @@ namespace NextGraphics.Models
 								var flippedX = reader.ReadByte() == 1;
 								var flippedY = reader.ReadByte() == 1;
 
-								result.Tiles[y, x] = new TilemapData.Tile(
+								result.SetTile(x, y, new TilemapData.Tile(
 									index,
 									flippedX,
 									flippedY,
-									false);
+									false));
 							}
 						}
 

@@ -3,9 +3,12 @@ using NextGraphics.Exporting.Common;
 using NextGraphics.Utils;
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
+using System.Linq;
 
 namespace NextGraphics.Models
 {
@@ -66,7 +69,7 @@ namespace NextGraphics.Models
 				{
 					for (var x = 0; x < Data.Width; x++)
 					{
-						var tile = Data.Tiles[y, x];
+						var tile = Data.GetTile(x, y);
 
 						var rect = new Rectangle(x * model.GridWidth, y * model.GridHeight, model.GridWidth, model.GridHeight);
 
@@ -118,7 +121,7 @@ namespace NextGraphics.Models
 			{
 				for (var x = 0; x < Data.Width; x++)
 				{
-					var tile = Data.Tiles[y, x];
+					var tile = Data.GetTile(x, y);
 
 					intrinsicRect.X = x * model.GridWidth;
 					intrinsicRect.Y = y * model.GridHeight;
@@ -152,21 +155,45 @@ namespace NextGraphics.Models
 		/// </summary>
 		public int Height { get; private set; }
 
-		/// <summary>
-		/// Two dimensional array of all tiles; first index represents row, second column within the row.
-		/// </summary>
-		public Tile[,] Tiles { get; set; }
+		public IOrderedEnumerable<Tile> DistinctTiles { get => distinctTilesList.OrderBy(t => t.Index); }
+
+		private Tile[,] tiles;
+		private readonly List<Tile> distinctTilesList = new List<Tile>();
 
 		public TilemapData(int width, int height)
 		{
 			Width = width;
 			Height = height;
-			Tiles = new Tile[Height, Width];
+			tiles = new Tile[Height, Width];
 		}
 
 		public void Dispose()
 		{
-			Tiles = null;
+			tiles = null;
+		}
+
+		public void Clear()
+		{
+			distinctTilesList.Clear();
+		}
+
+		public Tile GetTile(int x, int y)
+		{
+			// The main reason for preferring this method instead of accessing data in array directly is to reduce the chance for bugs where y and x coordinates would be swapped accidentally. Also VisualStudio tends to offer x before y while typing, so using this order further reduces the chance of error. And of course moves the "complexity" from multiple to one place.
+			return tiles[y, x];
+		}
+
+		public void SetTile(int x, int y, Tile tile)
+		{
+			// Same reason as `GetTile` but also ensures distinct tiles are created.
+			tiles[y, x] = tile;
+
+			// If this tile is not yet present in distinct list, add it.
+			foreach (var existing in distinctTilesList)
+			{
+				if (existing.Index == tile.Index) return;
+			}
+			distinctTilesList.Add(tile);
 		}
 
 		public class Tile

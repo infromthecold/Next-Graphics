@@ -231,50 +231,115 @@ namespace NextGraphics.Exporting
 		/// <remarks>
 		/// This function should be called after <see cref="Remap"/> since it uses data generated there.
 		/// </remarks>
-		public void GenerateInfoString(Action<Color, String> appender)
+		public void GenerateInfoString(Action<Color, string> appender)
 		{
-			if (!Data.IsRemapped || Data.ObjectSize == 0) return;
-
-			var count = (Data.Model.GridWidth / Data.ObjectSize) * (Data.Model.GridHeight / Data.ObjectSize);
-
-			for (int b = 0; b < Data.BlocksCount; b++)
+			void append(string text = "", Color? color = null)
 			{
-				appender(Color.Black, $"{b}\t");
+				appender(color ?? Color.Black, text);
+			}
 
-				for (int chr = 0; chr < count; chr++)
+			void appendLine(string text = "", Color? color = null)
+			{
+				append(text, color);
+				append(Environment.NewLine, color);
+			}
+
+			if (Data.IsRemapped && Data.ObjectSize > 0)
+			{
+				var count = (Data.Model.GridWidth / Data.ObjectSize) * (Data.Model.GridHeight / Data.ObjectSize);
+
+				appendLine("BLOCKS");
+
+				for (int b = 0; b < Data.BlocksCount; b++)
 				{
-					appender(Color.Black, "\t");
+					append($"{b}\t");
 
-					var color = Data.Sprites[b].Infos[chr].HasTransparent ? Color.Red : Color.Black;
-					appender(color, $"{Data.SortIndexes[Data.Sprites[b].Infos[chr].OriginalID]},");
+					for (int chr = 0; chr < count; chr++)
+					{
+						append("\t");
+
+						var color = Data.Sprites[b].Infos[chr].HasTransparent ? Color.Red : Color.Black;
+						var text = $"{Data.SortIndexes[Data.Sprites[b].Infos[chr].OriginalID]},";
+						append(text, color);
+					}
+
+					appendLine();
 				}
 
-				appender(Color.Black, Environment.NewLine);
-			}
+				appendLine();
+				appendLine("COUNTS");
 
-			appender(Color.Black, Environment.NewLine);
-			appender(Color.Black, "COUNTS");
-			appender(Color.Black, Environment.NewLine);
-
-			int[] counts = new int[ExportData.MAX_BLOCKS];
-			for (int c = 0; c < counts.Length; c++)
-			{
-				counts[c] = 0;
-			}
-
-			for (int b = 0; b < Data.BlocksCount; b++)
-			{
-				appender(Color.Black, $"{b}\t");
-
-				for (int chr = 0; chr < count; chr++)
+				int[] counts = new int[ExportData.MAX_BLOCKS];
+				for (int c = 0; c < counts.Length; c++)
 				{
-					counts[Data.SortIndexes[Data.Sprites[b].Infos[chr].OriginalID]]++;
+					counts[c] = 0;
+				}
+
+				for (int b = 0; b < Data.BlocksCount; b++)
+				{
+					append($"{b}\t");
+
+					for (int chr = 0; chr < count; chr++)
+					{
+						var id = Data.Sprites[b].Infos[chr].OriginalID;
+						counts[Data.SortIndexes[id]]++;
+					}
+				}
+
+				for (int c = 0; c < counts.Length; c++)
+				{
+					appendLine($"{c}\t{counts[c]}");
 				}
 			}
 
-			for (int c = 0; c < counts.Length; c++)
+			var tilemaps = Data.Model.SourceTilemaps().ToList();
+			if (tilemaps.Count > 0)
 			{
-				appender(Color.Black, $"{c}\t{counts[c]}{Environment.NewLine}");
+				appendLine();
+				appendLine("TILEMAPS");
+
+				foreach (var tilemap in tilemaps)
+				{
+					appendLine();
+					appendLine($"{tilemap.Filename}");
+
+					if (tilemap.IsDataValid)
+					{
+						appendLine($"{tilemap.Data.Width}x{tilemap.Data.Height} tiles");
+						appendLine();
+
+						foreach (var tile in tilemap.Data.DistinctTiles)
+						{
+							append($"tile {tile.Index} ");
+							appendLine($"palette bank {tile.PaletteBank}", Color.Gray);
+						}
+						appendLine();
+
+						for (int y = 0; y < tilemap.Data.Height; y++)
+						{
+							append($"{y}: ");
+
+							for (int x = 0; x < tilemap.Data.Width; x++)
+							{
+								var tile = tilemap.Data.GetTile(x, y);
+
+								var flippedX = tile.FlippedX ? "x" : " ";
+								var flippedY = tile.FlippedY ? "y" : " ";
+								var rotated = tile.RotatedClockwise ? "r" : " ";
+								
+								append($"{tile.Index}");
+								append($"{flippedX}{flippedY}{rotated}", Color.Gray);
+								if (x < tilemap.Data.Width - 1) append(", ");
+							}
+
+							appendLine();
+						}
+					}
+					else
+					{
+						appendLine("No data available");
+					}
+				}
 			}
 		}
 

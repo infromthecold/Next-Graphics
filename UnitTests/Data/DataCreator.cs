@@ -551,7 +551,7 @@ namespace UnitTests.Data
 					var flippedX = (attributes & 0b00000100) > 0;
 					var flippedY = (attributes & 0b00001000) > 0;
 
-					 result.Tiles[y, x] = new TilemapData.Tile(index, flippedX, flippedY, false);
+					 result.SetTile(x, y, new TilemapData.Tile(index, flippedX, flippedY, false));
 				}
 			}
 

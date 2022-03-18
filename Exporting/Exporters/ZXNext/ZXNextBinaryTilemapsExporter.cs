@@ -30,7 +30,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 					{
 						for (int x = 0; x < tilemap.Data.Width; x++)
 						{
-							var tile = tilemap.Data.Tiles[y, x];
+							var tile = tilemap.Data.GetTile(x, y);
 							var index = (byte)tile.Index;
 							var attributes = tile.ZXNextTileAttributes();
 

@@ -206,7 +206,7 @@ namespace NextGraphics.Exporting.Remapping
 							{
 								for (int x = 0; x < tilemap.Data.Width; x++)
 								{
-									tilemap.Data.Tiles[y, x].UpdatePaletteBank(Data);
+									tilemap.Data.GetTile(x, y).UpdatePaletteBank(Data);
 								}
 							}
 						});
