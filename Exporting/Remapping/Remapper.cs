@@ -2,12 +2,8 @@
 using NextGraphics.Models;
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NextGraphics.Exporting.Remapping
 {
@@ -55,7 +51,6 @@ namespace NextGraphics.Exporting.Remapping
 				Callbacks?.OnRemapDebug($"Starting remap{Environment.NewLine}");
 
 				Data.Clear();
-				Data.ObjectSize = Math.Max(Data.Model.DefaultItemWidth(), Math.Max(Data.Model.GridWidth, Data.Model.GridHeight));	// Note: this only works as long as item width is the same as height...
 				Data.BlockSize = CalculateBlockSize();
 				Data.ImageOffset = CalculateImageOffset();
 
@@ -289,11 +284,6 @@ namespace NextGraphics.Exporting.Remapping
 			}
 		}
 
-		/// <summary>
-		/// Prepares characters list by looping through all characters with callbacks called at specific points while handling each character.
-		/// </summary>
-		/// <param name="indexProvider">Called at the start of each iteration. Caller must return the index into which the character data should be created. Parameters are: loop index, true if temp data at loop index is transparent, false otherwise.</param>
-		/// <param name="afterCharHandler">Called at the end of each iteration, caller can update its variables as neeeded.</param>
 		private void PrepareCharacters(Func<int, bool, int> indexProvider, Action afterCharHandler)
 		{
 			for (int i = 0; i < outChar; i++)
@@ -687,24 +677,6 @@ namespace NextGraphics.Exporting.Remapping
 			return false;
 		}
 
-		private int CountSamePixels(int xOffset, int yOffset, ref IndexedBitmap source, ref IndexedBitmap other, Func<IndexedBitmap, int, int, short> otherPixelProvider)
-		{
-			int result = objectSize * objectSize;
-			var unreferencedOther = other;  // can't use ref inside closure
-
-			source.PixelIterator(xOffset, yOffset, objectSize, (x, y, colour) =>
-			{
-				if (colour != otherPixelProvider(unreferencedOther, x, y))
-				{
-					result--;
-				}
-
-				return true;
-			});
-
-			return result;
-		}
-
 		private int CalculateBlockSize()
 		{
 			if (Data.Model.OutputType == OutputType.Sprites)
@@ -781,136 +753,9 @@ namespace NextGraphics.Exporting.Remapping
 
 		private BlockType RepeatedCharType(int character, int xOffset, int yOffset)
 		{
-			int samePixels = objectSize * objectSize;
-			float accuracy = (float)Data.Model.Accuracy / 100f;
-			float pixelClose = samePixels * accuracy;
-			bool hasTransparentPixels = false;
-
-			IndexedBitmap currentBlock = Data.Blocks[outBlock];
-			IndexedBitmap rotateData = new IndexedBitmap(objectSize, objectSize);
-
-			short identicalPixelProvider(IndexedBitmap bitmap, int x, int y) => bitmap.GetPixel(x, y);
-			short flippedXPixelProvider(IndexedBitmap bitmap, int x, int y) => bitmap.GetPixel((objectSize - 1) - x, y);
-			short flippedYPixelProvider(IndexedBitmap bitmap, int x, int y) => bitmap.GetPixel(x, (objectSize - 1) - y);
-			short flippedXYPixelProvider(IndexedBitmap bitmap, int x, int y) => bitmap.GetPixel((objectSize - 1) - x, (objectSize - 1) - y);
-
-			// does it have any transparent pixels?
-			if (Data.Model.TransparentFirst || Data.Model.OutputType == OutputType.Sprites)
-			{
-				hasTransparentPixels = Data.Blocks[outBlock].HasTransparentPixels(Data.Model.Palette.TransparentIndex, xOffset, yOffset, objectSize);
-			}
-
-			// do we ignore all repeats?
-			if (Data.Model.IgnoreCopies)
-			{
-				return BlockType.Original;
-			}
-
-			// check to see if fully transparent
-			if (!Data.Model.IgnoreTransparentPixels && hasTransparentPixels)
-			{
-				if (Data.Blocks[outBlock].IsTransparent(Data.Model.Palette.TransparentIndex, xOffset, yOffset, objectSize))
-				{
-					return BlockType.Transparent;
-				}
-			}
-
-			// see how close to the original block it is
-			if (Data.Blocks[outBlock].IsColourBlock(xOffset, yOffset, objectSize))
-			{
-				pixelClose = objectSize * objectSize;
-			}
-
-			samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref Data.TempData[character], identicalPixelProvider);
-			if (Data.Model.IgnoreTransparentPixels && hasTransparentPixels)
-			{
-				return samePixels == objectSize * objectSize ? BlockType.Repeated : BlockType.Original;
-			}
-
-			// if its close to original % and not containing transparent!
-			if (samePixels >= pixelClose && (hasTransparentPixels == false || Data.Model.OutputType == OutputType.Sprites))
-			{
-				return BlockType.Repeated;
-			}
-
-			samePixels = objectSize * objectSize;
-			if (!Data.Model.IgnoreMirroredX)
-			{
-				samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref Data.TempData[character], flippedXPixelProvider);
-				if (samePixels >= pixelClose)
-				{
-					return BlockType.FlippedX;
-				}
-			}
-
-			samePixels = objectSize * objectSize;
-			if (!Data.Model.IgnoreMirroredY)
-			{
-				samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref Data.TempData[character], flippedYPixelProvider);
-				if (samePixels >= pixelClose)
-				{
-					return BlockType.FlippedY;
-				}
-			}
-
-			samePixels = objectSize * objectSize;
-			if (!Data.Model.IgnoreMirroredX && !Data.Model.IgnoreMirroredY)
-			{
-				samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref Data.TempData[character], flippedXYPixelProvider);
-				if (samePixels >= pixelClose)
-				{
-					return BlockType.FlippedXY;
-				}
-			}
-
-			for (int y = 0; y < objectSize; y++)
-			{
-				for (int x = 0; x < objectSize; x++)
-				{
-					rotateData.SetPixel((objectSize - 1) - y, x, Data.TempData[character].GetPixel(x, y));
-				}
-			}
-
-			samePixels = objectSize * objectSize;
-			if (!Data.Model.IgnoreRotated)
-			{
-				samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref rotateData, identicalPixelProvider);
-				if (samePixels >= pixelClose)
-				{
-					return BlockType.Rotated;
-				}
-
-				samePixels = objectSize * objectSize;
-				if (Data.Model.IgnoreMirroredX)
-				{
-					samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref rotateData, flippedXPixelProvider);
-					if (samePixels >= pixelClose)
-					{
-						return BlockType.FlippedXRotated;
-					}
-				}
-
-				samePixels = objectSize * objectSize;
-				if (!Data.Model.IgnoreMirroredY)
-				{
-					samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref rotateData, flippedYPixelProvider);
-					if (samePixels >= pixelClose)
-					{
-						return BlockType.FlippedYRotated;
-					}
-				}
-
-				samePixels = objectSize * objectSize;
-				if (!Data.Model.IgnoreMirroredX && !Data.Model.IgnoreMirroredY)
-				{
-					samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref rotateData, flippedXYPixelProvider);
-					if (samePixels >= pixelClose)
-					{
-						return BlockType.FlippedXYRotated;
-					}
-				}
-			}
-			return BlockType.Original;
+			var compareBlock = Data.Blocks[outBlock];
+			var comparedCharacter = Data.TempData[character];
+			return compareBlock.RepeatedBlockType(Data.Model, comparedCharacter, xOffset, yOffset);
 		}
 
 		#endregion

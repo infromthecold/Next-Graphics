@@ -47,6 +47,14 @@ namespace NextGraphics.Models
 		public int SourceImagesCount { get => SourceImages().Count(); }
 		public int SourceTilemapsCount { get => SourceTilemaps().Count(); }
 
+		/// <summary>
+		/// Either width or height of each object. Note: this is somewhat duplicated, but it's leftover from original code, so I'm leaving it in.
+		/// </summary>
+		public int ObjectSize { get => Math.Max(DefaultItemWidth(), Math.Max(GridWidth, GridHeight)); }
+
+		/// <summary>
+		/// Convenience for simpler comparison on whether we should generate 4-bit output.
+		/// </summary>
 		public bool IsFourBitData { get => SpritesFourBit || OutputType == OutputType.Tiles; }
 
 		#endregion

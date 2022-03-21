@@ -62,7 +62,7 @@ namespace NextGraphics.Models
 
 		#endregion
 
-		#region Helpers
+		#region Pixel access
 
 		/// <summary>
 		/// Indexer access to underlying pixels, same as <see cref="GetPixel(int, int)"/> and <see cref="SetPixel(int, int, short)"/>
@@ -94,6 +94,36 @@ namespace NextGraphics.Models
 			}
 			return Colours[index];
 		}
+
+		/// <summary>
+		/// Iterates gixen subset of pixels from this bitmap.
+		/// </summary>
+		/// <param name="xOffset">Optional x offset.</param>
+		/// <param name="yOffset">Optional y offset.</param>
+		/// <param name="handler">Called for each pixel, parameters are:
+		/// - x (0 to width)
+		/// - y (0 to height)
+		/// - colour index
+		/// Result is true to continue iterating, false otherwise.
+		/// </param>
+		public void PixelIterator(int xOffset, int yOffset, Func<int, int, short, bool> handler)
+		{
+			for (int y = 0; y < Width; y++)
+			{
+				for (int x = 0; x < Height; x++)
+				{
+					var pixel = GetPixel(x + xOffset, y + yOffset);
+					if (!handler(x, y, pixel))
+					{
+						return;
+					}
+				}
+			}
+		}
+
+		#endregion
+
+		#region Pixel manipulation
 
 		/// <summary>
 		/// Copies data from given source image. No size checking is currently performed, so make sure source image is large enough!
@@ -236,37 +266,183 @@ namespace NextGraphics.Models
 			}
 		}
 
-		/// <summary>
-		/// Determines if at least one pixel is transparent and returns true if so. Returns false if no transparent pixel is present.
-		/// </summary>
-		public bool HasTransparentPixels(int transparentColourIndex, int xOffset = 0, int yOffset = 0, int size = 0)
-		{
-			var result = false;
+		#endregion
 
-			PixelIterator(xOffset, yOffset, size, (x, y, colour) =>
+		#region Helpers
+
+		private int Size { get => Math.Min(Width, Height); }
+		private short IdenticalPixelProvider(IndexedBitmap bitmap, int x, int y) => bitmap.GetPixel(x, y);
+		private short FlippedXPixelProvider(IndexedBitmap bitmap, int x, int y) => bitmap.GetPixel((Size - 1) - x, y);
+		private short FlippedYPixelProvider(IndexedBitmap bitmap, int x, int y) => bitmap.GetPixel(x, (Size - 1) - y);
+		private short FlippedXYPixelProvider(IndexedBitmap bitmap, int x, int y) => bitmap.GetPixel((Size - 1) - x, (Size - 1) - y);
+
+		/// <summary>
+		/// Compares this bitmap to the given one and returns the comparison result taking into account current model settings.
+		/// </summary>
+		/// <param name="model">The <see cref="MainModel"/> that defines parameters for comparison.</param>
+		/// <param name="compareTo"><see cref="IndexedBitmap"/> to compare to</param>
+		/// <param name="xOffset">Optional x offset to start comparing from.</param>
+		/// <param name="yOffset">Optional y offset to start comparing from.</param>
+		/// <returns>Returns the comparison result in form of <see cref="BlockType"/>.</returns>
+		public BlockType RepeatedBlockType(MainModel model, IndexedBitmap compareTo, int xOffset = 0, int yOffset = 0)
+		{
+			// Do we ignore all repeats?
+			if (model.IgnoreCopies)
 			{
-				if (colour == (short)transparentColourIndex)
+				return BlockType.Original;
+			}
+
+			bool IsColourBlock()
+			{
+				bool result = true;
+				short firstPixel = GetPixel(xOffset, yOffset);
+
+				PixelIterator(xOffset, yOffset, (x, y, colour) =>
 				{
-					// As soon as we find transparent colour, we know the result...
-					result = true;
-					return false;
+					if (colour != firstPixel)
+					{
+						// As soon as we find first pixel that's different from first, we can stop.
+						result = false;
+						return false;
+					}
+
+					// Continue iterating otherwise.
+					return true;
+				});
+
+				return result;
+			}
+
+			bool HasSomeTransparentPixels()
+			{
+				var result = false;
+
+				if (model.TransparentFirst || model.OutputType == OutputType.Sprites)
+				{
+					PixelIterator(xOffset, yOffset, (x, y, colour) =>
+					{
+						if (colour == (short)model.Palette.TransparentIndex)
+						{
+							// As soon as we find transparent colour, we know the result...
+							result = true;
+							return false;
+						}
+
+						// Continue iterating otherwise.
+						return true;
+					});
+
+					return result;
 				}
 
-				// Continue iterating otherwise.
-				return true;
-			});
+				return result;
+			}
 
-			return result;
+			float DeterminePixelComparisonCountBase()
+			{
+				float result = Size * Size;
+
+				// Determine same pixel "ratio" we'll compare with. If this bitmap is single colour block, the whole size, otherwise we use approximation with current accuracy setting.
+				if (!IsColourBlock())
+				{
+					result *= (model.Accuracy / 100f);
+				}
+
+				return result;
+			}
+
+			var objectByteSize = Size * Size;
+			var hasTransparentPixels = HasSomeTransparentPixels();
+			var pixelComparisonBase = DeterminePixelComparisonCountBase();
+			var bitmapToCompareTo = compareTo;
+
+			IndexedBitmap CreateRotated()
+			{
+				var result = new IndexedBitmap(Size, Size);
+
+				for (int y = 0; y < Size; y++)
+				{
+					for (int x = 0; x < Size; x++)
+					{
+						result.SetPixel((Size - 1) - y, x, compareTo.GetPixel(x, y));
+					}
+				}
+
+				return result;
+			}
+
+			int DetermineSamePixelsCount(Func<IndexedBitmap, int, int, short> comparer)
+			{
+				int result = Size * Size;
+
+				PixelIterator(xOffset, yOffset, (x, y, colour) =>
+				{
+					if (colour != comparer(bitmapToCompareTo, x, y))
+					{
+						result--;
+					}
+
+					return true;
+				});
+
+				return result;
+			}
+
+			bool IsMatch(Func<IndexedBitmap, int, int, short> comparer)
+			{
+				var matchedPixelsCount = DetermineSamePixelsCount(comparer);
+				return matchedPixelsCount >= pixelComparisonBase;
+			}
+
+			// If fully transparent, take the block as such.
+			if (!model.IgnoreTransparentPixels && hasTransparentPixels && IsTransparent(model.Palette.TransparentIndex, xOffset, yOffset))
+			{
+				return BlockType.Transparent;
+			}
+
+			// See how close to the original block it is. If it's not match, we need to continue searching.
+			var identicalPixelsCount = DetermineSamePixelsCount(IdenticalPixelProvider);
+
+			// If transparent pixels should be ignored and there are some present, take the block as either repeated or original.
+			if (model.IgnoreTransparentPixels && hasTransparentPixels)
+			{
+				return identicalPixelsCount == objectByteSize ? BlockType.Repeated : BlockType.Original;
+			}
+
+			// If it's close to original % and not containing transparent, it's repeated block!
+			if (identicalPixelsCount >= pixelComparisonBase && (!hasTransparentPixels || model.OutputType == OutputType.Sprites))
+			{
+				return BlockType.Repeated;
+			}
+
+			// Compare with all flipped variants.
+			if (!model.IgnoreMirroredX && IsMatch(FlippedXPixelProvider)) return BlockType.FlippedX;
+			if (!model.IgnoreMirroredY && IsMatch(FlippedYPixelProvider)) return BlockType.FlippedY;
+			if (!model.IgnoreMirroredX && !model.IgnoreMirroredY && IsMatch(FlippedXYPixelProvider)) return BlockType.FlippedXY;
+
+			// Compare with all rotated variants. Note how we switch bitmap we're comparing against with rotated variant. Also note rotated variants don't include repeated check from above.
+			if (!model.IgnoreRotated)
+			{
+				bitmapToCompareTo = CreateRotated();
+
+				if (IsMatch(IdenticalPixelProvider)) return BlockType.Rotated;
+				if (!model.IgnoreMirroredX && IsMatch(FlippedXPixelProvider)) return BlockType.FlippedXRotated;
+				if (!model.IgnoreMirroredY && IsMatch(FlippedYPixelProvider)) return BlockType.FlippedYRotated;
+				if (!model.IgnoreMirroredX && !model.IgnoreMirroredY && IsMatch(FlippedXYPixelProvider)) return BlockType.FlippedXYRotated;
+			}
+
+			// If we didn't find any match, assume this is original block.
+			return BlockType.Original;
 		}
 
 		/// <summary>
 		/// Determines if this image is transparent (aka all pixels are indexes to given transparent colour).
 		/// </summary>
-		public bool IsTransparent(int transparentColourIndex, int xOffset = 0, int yOffset = 0, int size = 0)
+		public bool IsTransparent(int transparentColourIndex, int xOffset = 0, int yOffset = 0)
 		{
 			bool result = true;
 
-			PixelIterator(xOffset, yOffset, size, (x, y, colour) =>
+			PixelIterator(xOffset, yOffset, (x, y, colour) =>
 			{
 				// As soon as we find non-transparent colour, the image is not transparent either.
 				if (colour != (short)transparentColourIndex)
@@ -280,57 +456,6 @@ namespace NextGraphics.Models
 			});
 
 			return result;
-		}
-
-		/// <summary>
-		/// Determines if all pixels are the same (note this is also true if all pixels are transparent).
-		/// </summary>
-		public bool IsColourBlock(int xOffset = 0, int yOffset = 0, int size = 0)
-		{
-			bool result = true;
-			short firstPixel = GetPixel(xOffset, yOffset);
-
-			PixelIterator(xOffset, yOffset, size, (x, y, colour) =>
-			{
-				if (colour != firstPixel)
-				{
-					// As soon as we find first pixel that's different from first, we can stop.
-					result = false;
-					return false;
-				}
-
-				// Continue iterating otherwise.
-				return true;
-			});
-
-			return result;
-		}
-
-		/// <summary>
-		/// Iterates gixen subset of pixels from this bitmap.
-		/// </summary>
-		/// <param name="xOffset">Optional x offset.</param>
-		/// <param name="yOffset">Optional y offset.</param>
-		/// <param name="size">Optiona size, if 0, then <see cref="Width"/> and <see cref="Height"/> are used (taking into account both offsets).</param>
-		/// <param name="handler">Called for each pixel, parameters are:
-		/// - x (0 to width)
-		/// - y (0 to height)
-		/// - colour index
-		/// Result is true to continue iterating, false otherwise.
-		/// </param>
-		public void PixelIterator(int xOffset, int yOffset, int size, Func<int, int, short, bool> handler)
-		{
-			for (int y = 0; y < Width; y++)
-			{
-				for (int x = 0; x < Height; x++)
-				{
-					var pixel = GetPixel(x + xOffset, y + yOffset);
-					if (!handler(x, y, pixel))
-					{
-						return;
-					}
-				}
-			}
 		}
 
 		#endregion
