@@ -168,6 +168,7 @@
     <Compile Include="Models\SourceFile.cs" />
     <Compile Include="Models\SourceImage.cs" />
     <Compile Include="Models\SourceTilemap.cs" />
+    <Compile Include="Models\SourceTilemapImage.cs" />
     <Compile Include="Models\SourceTilemapMap.cs" />
     <Compile Include="Models\SourceTilemapStm.cs" />
     <Compile Include="Models\SourceTilemapText.cs" />

@@ -79,8 +79,6 @@ namespace NextGraphics.Exporting.Common
 
 		public void Clear()
 		{
-			IsRemapped = false;
-
 			for (int b = 0; b < MAX_BLOCKS; b++)
 			{
 				if (Blocks[b] != null)
@@ -104,6 +102,10 @@ namespace NextGraphics.Exporting.Common
 					TempData[c] = null;
 				}
 			}
+
+			BlocksCount = 0;
+			CharactersCount = 0;
+			IsRemapped = false;
 		}
 
 		#endregion

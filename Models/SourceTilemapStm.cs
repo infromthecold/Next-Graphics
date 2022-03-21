@@ -6,7 +6,7 @@ using System.IO;
 namespace NextGraphics.Models
 {
 	/// <summary>
-	/// Support for STMP .stm files. Supports flipped tiles (X and Y), but no rotations (well, maybe the format supports rotations, but Pro Motion NG creates a new tilemap in such case, so can't verify).
+	/// Support for STMP .stm files. Doesn't respect <see cref="MainModel"/> settings but supports flipped tiles (X and Y), but no rotations (well, maybe the format supports rotations, but Pro Motion NG creates a new tilemap in such case, so can't verify).
 	/// 
 	/// Requires tiles image from preferred bitmap editor exactly in the order the tiles will be exported from Next Graphics (ideally that image is attached to the project as source image).
 	/// 
@@ -29,11 +29,11 @@ namespace NextGraphics.Models
 	{
 		#region Initialization & Disposal
 
-		public SourceTilemapStm(string filename) : base(filename)
+		public SourceTilemapStm(string filename, MainModel model) : base(filename, model)
 		{
 		}
 
-		public SourceTilemapStm(string filename, TilemapData data) : base(filename, data)
+		public SourceTilemapStm(string filename, MainModel model, TilemapData data) : base(filename, model, data)
 		{
 		}
 
@@ -41,7 +41,7 @@ namespace NextGraphics.Models
 
 		#region Overrides
 
-		protected override TilemapData OnLoadDataFromFile(string filename)
+		protected override TilemapData OnLoadDataFromFile(string filename, MainModel model)
 		{
 			try
 			{
@@ -64,11 +64,12 @@ namespace NextGraphics.Models
 								var flippedX = reader.ReadByte() == 1;
 								var flippedY = reader.ReadByte() == 1;
 
-								result.SetTile(x, y, new TilemapData.Tile(
-									index,
-									flippedX,
-									flippedY,
-									false));
+								result.SetTile(x, y, new TilemapData.Tile
+								{
+									Index = index,
+									FlippedX = flippedX,
+									FlippedY = flippedY
+								});
 							}
 						}
 

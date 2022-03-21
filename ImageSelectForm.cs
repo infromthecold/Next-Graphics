@@ -26,12 +26,11 @@ namespace NextGraphics
 		public int ColoursCount { get; set; } = 0;
 		public Color CopiedColour { get; set; }
 
-		private Colour thatColour = new Colour();
-		private Colour thisColour = new Colour();
 		private Button[] colourButtons = new Button[256];
 		private Button clickedColourButton;
 
 		private readonly List<string> fullNames = new List<string>();
+		private readonly List<(string Filename, Bitmap Bitmap)> sources = new List<(string, Bitmap)>();
 
 		#region Initialization & Disposal
 
@@ -137,7 +136,14 @@ namespace NextGraphics
 
 		public void FillFilenamesFromModel()
 		{
-			FillFilenames(Model.SourceImages().Select(image => $" {image.Filename}"));
+			// We add all source images as well as tilemaps that are loaded from images. In later case, we can just as well setup palette from those images.
+			sources.Clear();
+			sources.AddRange(Model.SourceImages().Select(s => (s.Filename, s.Data)));
+			sources.AddRange(Model.SourceTilemaps().Where(s => s.IsSourceImage).Select(s => (s.Filename, s.SourceBitmap)));
+
+			// Convert sources list to list of filenames as that's expected by the `FillFilenames` method.
+			var files = sources.Select(s => s.Filename);
+			FillFilenames(files);
 		}
 
 		public void FillFilenames(IEnumerable<string> filenames)
@@ -197,8 +203,8 @@ namespace NextGraphics
 		{
 			UpdatePalette(() =>
 			{
-				var images = Model.SourceImages().ToList();
-				var source = (Bitmap)images[imagesListBox.SelectedIndex].Data.Clone();
+				// When loading from model, we have both, list of filenames and sources.
+				var source = (Bitmap)sources[imagesListBox.SelectedIndex].Bitmap.Clone();
 
 				return Exporter.MapPalette(source);
 			});

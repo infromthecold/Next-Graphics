@@ -4,42 +4,97 @@ using NextGraphics.Utils;
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace NextGraphics.Models
 {
 	public abstract class SourceTilemap : SourceFile<TilemapData>
 	{
+		private MainModel Model { get; set; }
+
+		public Bitmap SourceBitmap { get; private set; } = null;
+
+		public bool IsSourceImage { get => SourceBitmap != null; }
+
 		#region Initialization & Disposal
 
-		public SourceTilemap(string filename) : base(filename)
+		public SourceTilemap(string filename, MainModel model) : base(filename, autoLoad: false)
 		{
+			// Since we need to first assign the model before loading, we set autoLoad to false when calling base class constructor (which would otherwise load the data), then load manually after we're ready. We must also reset the autoload flag before loading otherwise reload will be ignored.
+			Model = model;
+			AutoLoad = true;
+			Reload();
 		}
 
-		public SourceTilemap(string filename, TilemapData data) : base(filename, data)
+		public SourceTilemap(string filename, MainModel model, TilemapData data) : base(filename, data)
 		{
+			// Note in this case we don't have to change auto loading in base class - loading is skipped when providing data manually.
+			Model = model;
 		}
-
-		#endregion
-
-		#region Creation
 
 		/// <summary>
 		/// Creates a new <see cref="SourceTilemap"/> based on the type (which is the same as <see cref="MainModel.AddTilemapsFilterIndex"/>). If type is unknown, null is returned!
 		/// </summary>
-		public static SourceTilemap Create(string filename)
+		public static SourceTilemap Create(string filename, MainModel model)
 		{
 			switch (Path.GetExtension(filename).ToLower())
 			{
-				case ".map": return new SourceTilemapMap(filename);
-				case ".stm": return new SourceTilemapStm(filename);
-				case ".txm": return new SourceTilemapText(filename);
-				case ".txt": return new SourceTilemapText(filename);
+				case ".map": return new SourceTilemapMap(filename, model);
+				case ".stm": return new SourceTilemapStm(filename, model);
+				case ".txm": return new SourceTilemapText(filename, model);
+				case ".txt": return new SourceTilemapText(filename, model);
+				case ".bmp": return new SourceTilemapImage(filename, model);
+				case ".png": return new SourceTilemapImage(filename, model);
 				default: return null;
+			}
+		}
+
+		#endregion
+
+		#region Overrides
+
+		protected sealed override TilemapData OnLoadDataFromFile(string filename)
+		{
+			// We prevent subclasses from overriding the default method and we instead divert to the variant with MainModel. Subclasses should support settings from the model as much as possible.
+			return OnLoadDataFromFile(filename, Model);
+		}
+
+		#endregion
+
+		#region Subclass
+
+		/// <summary>
+		/// Called when data needs to be loaded from the given file.
+		/// </summary>
+		protected abstract TilemapData OnLoadDataFromFile(string filename, MainModel model);
+
+		/// <summary>
+		/// Subclasses that are loaded from a bitmap, should register it with this method.
+		/// </summary>
+		protected void AssignSourceBitmap(Bitmap bitmap)
+		{
+			SourceBitmap = bitmap;
+		}
+
+		#endregion
+
+		#region Helpers
+
+		/// <summary>
+		/// Updates tile banks and other information from the given mapped data.
+		/// </summary>
+		public void UpdateTiles(ExportData data)
+		{
+			for (int y = 0; y < Data.Height; y++)
+			{
+				for (int x = 0; x < Data.Width; x++)
+				{
+					Data.GetTile(x, y).UpdatePaletteBank(data);
+				}
 			}
 		}
 
@@ -104,7 +159,7 @@ namespace NextGraphics.Models
 		{
 			if (!IsDataValid) return;
 			if (scaleFactor < 1) return;
-			if (options == null || !options.RenderTileIndex) return;
+			if (options == null) return;
 
 			var fontSize = 6 * scaleFactor * 0.4;
 			if (fontSize < 5) fontSize = 5;
@@ -129,11 +184,50 @@ namespace NextGraphics.Models
 					scaledRect.X = intrinsicRect.X * (float)scaleFactor;
 					scaledRect.Y = intrinsicRect.Y * (float)scaleFactor;
 
-					g.DrawString(
-						tile.Index.ToString(),
-						indexFont,
-						indexBrush,
-						scaledRect);
+					if (options.RenderTileIndex)
+					{
+						g.DrawString(
+							tile.Index.ToString(),
+							indexFont,
+							indexBrush,
+							scaledRect);
+					}
+
+					if (options.RenderTileAttributes && scaleFactor >= 2)
+					{
+						var rect = new RectangleF(
+							scaledRect.X,
+							scaledRect.Bottom - indexFont.Height,
+							scaledRect.Width,
+							scaledRect.Height - indexFont.Height);
+
+						// Render palette bank in bottom left.
+						g.DrawString(
+							tile.PaletteBank.ToString(),
+							indexFont,
+							indexBrush,
+							rect);
+
+						// Render attributes in bottom right.
+						var debug = new StringBuilder();
+						if (tile.FlippedX) debug.Append("X");
+						if (tile.FlippedY) debug.Append("Y");
+						if (tile.RotatedClockwise) debug.Append("R");
+
+						if (debug.Length > 0) {
+							var format = new StringFormat
+							{
+								Alignment = StringAlignment.Far
+							};
+
+							g.DrawString(
+								debug.ToString(),
+								indexFont,
+								indexBrush,
+								rect,
+								format);
+						}
+					}
 				}
 			}
 		}
@@ -160,6 +254,8 @@ namespace NextGraphics.Models
 		private Tile[,] tiles;
 		private readonly List<Tile> distinctTilesList = new List<Tile>();
 
+		#region Initialization & Disposal
+
 		public TilemapData(int width, int height)
 		{
 			Width = width;
@@ -172,10 +268,9 @@ namespace NextGraphics.Models
 			tiles = null;
 		}
 
-		public void Clear()
-		{
-			distinctTilesList.Clear();
-		}
+		#endregion
+
+		#region Helpers
 
 		public Tile GetTile(int x, int y)
 		{
@@ -196,6 +291,10 @@ namespace NextGraphics.Models
 			distinctTilesList.Add(tile);
 		}
 
+		#endregion
+
+		#region Declarations
+
 		public class Tile
 		{
 			public int Index { get; set; } = 0;
@@ -204,16 +303,8 @@ namespace NextGraphics.Models
 			public bool FlippedY { get; set; } = false;
 			public bool RotatedClockwise { get; set; } = false;
 
-			public Tile(
-				int index, 
-				bool flippedX = false, 
-				bool flippedY = false, 
-				bool rotatedClockwise = false)
+			public Tile()
 			{
-				Index = index;
-				FlippedX = flippedX;
-				FlippedY = flippedY;
-				RotatedClockwise = rotatedClockwise;
 			}
 
 			public void UpdatePaletteBank(ExportData data)
@@ -223,11 +314,14 @@ namespace NextGraphics.Models
 				PaletteBank = tile.IsAutoBankingSupported ? tile.PaletteBank : 0;
 			}
 		}
+
+		#endregion
 	}
 
 	public class RenderingOptions
 	{
 		public bool RenderTileIndex { get; set; } = false;
+		public bool RenderTileAttributes { get; set; } = false;
 	}
 
 	#endregion

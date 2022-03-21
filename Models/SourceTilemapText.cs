@@ -8,7 +8,7 @@ using System.Linq;
 namespace NextGraphics.Models
 {
 	/// <summary>
-	/// Support for text based tilemaps. Doesn't support any tile attributes (flipping or rotation).
+	/// Support for text based tilemaps. Doesn't respect <see cref="MainModel"/> settings nor supports any tile attributes (flipping or rotation).
 	/// 
 	/// Requires tiles image from preferred bitmap editor exactly in the order the tiles will be exported from Next Graphics (ideally that image is attached to the project as source image).
 	/// 
@@ -22,11 +22,11 @@ namespace NextGraphics.Models
 	{
 		#region Initialization & Disposal
 
-		public SourceTilemapText(string filename) : base(filename)
+		public SourceTilemapText(string filename, MainModel model) : base(filename, model)
 		{
 		}
 
-		public SourceTilemapText(string filename, TilemapData data) : base(filename, data)
+		public SourceTilemapText(string filename, MainModel model, TilemapData data) : base(filename, model, data)
 		{
 		}
 
@@ -34,7 +34,7 @@ namespace NextGraphics.Models
 
 		#region Overrides
 
-		protected override TilemapData OnLoadDataFromFile(string filename)
+		protected override TilemapData OnLoadDataFromFile(string filename, MainModel model)
 		{
 			try
 			{
@@ -73,7 +73,10 @@ namespace NextGraphics.Models
 					var x = 0;
 					foreach (var column in row)
 					{
-						result.SetTile(x, y, new TilemapData.Tile(column));
+						result.SetTile(x, y, new TilemapData.Tile
+						{
+							Index = column
+						});
 						x++;
 					}
 

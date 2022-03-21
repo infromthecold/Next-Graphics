@@ -250,6 +250,12 @@ namespace NextGraphics
 				Properties.Settings.Default.TilemapRenderTileIndex = value;
 				Properties.Settings.Default.Save();
 			});
+
+			applicationRenderTileAttributesCheckBox.MapCheckedTo(Properties.Settings.Default.TilemapRenderTileAttributes, value =>
+			{
+				Properties.Settings.Default.TilemapRenderTileAttributes = value;
+				Properties.Settings.Default.Save();
+			});
 		}
 
 		#endregion

@@ -114,6 +114,7 @@
 			this.extensionsTilemapInfoLabel = new System.Windows.Forms.Label();
 			this.applicationTabPage = new System.Windows.Forms.TabPage();
 			this.applicationRenderTileIndexesCheckBox = new System.Windows.Forms.CheckBox();
+			this.applicationRenderTileAttributesCheckBox = new System.Windows.Forms.CheckBox();
 			this.settingsTabControl.SuspendLayout();
 			this.commonTabPage.SuspendLayout();
 			this.commonIgnoreRepeatsTableLayoutPanel.SuspendLayout();
@@ -1063,6 +1064,7 @@
 			// 
 			// applicationTabPage
 			// 
+			this.applicationTabPage.Controls.Add(this.applicationRenderTileAttributesCheckBox);
 			this.applicationTabPage.Controls.Add(this.applicationRenderTileIndexesCheckBox);
 			this.applicationTabPage.Location = new System.Drawing.Point(4, 22);
 			this.applicationTabPage.Name = "applicationTabPage";
@@ -1080,6 +1082,16 @@
 			this.applicationRenderTileIndexesCheckBox.TabIndex = 0;
 			this.applicationRenderTileIndexesCheckBox.Text = "Render tile indexes";
 			this.applicationRenderTileIndexesCheckBox.UseVisualStyleBackColor = true;
+			// 
+			// applicationRenderTileAttributesCheckBox
+			// 
+			this.applicationRenderTileAttributesCheckBox.AutoSize = true;
+			this.applicationRenderTileAttributesCheckBox.Location = new System.Drawing.Point(7, 35);
+			this.applicationRenderTileAttributesCheckBox.Name = "applicationRenderTileAttributesCheckBox";
+			this.applicationRenderTileAttributesCheckBox.Size = new System.Drawing.Size(123, 17);
+			this.applicationRenderTileAttributesCheckBox.TabIndex = 1;
+			this.applicationRenderTileAttributesCheckBox.Text = "Render tile attributes";
+			this.applicationRenderTileAttributesCheckBox.UseVisualStyleBackColor = true;
 			// 
 			// SettingsForm
 			// 
@@ -1199,5 +1211,6 @@
 		private System.Windows.Forms.ComboBox optionsPaletteParsingComboBox;
 		private System.Windows.Forms.TabPage applicationTabPage;
 		private System.Windows.Forms.CheckBox applicationRenderTileIndexesCheckBox;
+		private System.Windows.Forms.CheckBox applicationRenderTileAttributesCheckBox;
 	}
 }

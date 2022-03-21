@@ -142,5 +142,17 @@ namespace NextGraphics.Properties {
                 this["TilemapRenderTileIndex"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool TilemapRenderTileAttributes {
+            get {
+                return ((bool)(this["TilemapRenderTileAttributes"]));
+            }
+            set {
+                this["TilemapRenderTileAttributes"] = value;
+            }
+        }
     }
 }

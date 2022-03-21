@@ -42,7 +42,6 @@ namespace NextGraphics
 		private string parentDirectory = "f:/";
 		private string projectPath = string.Empty;
 		private bool isPaletteSet = false;
-		private bool isDataReloaded = false;
 
 #if DEBUG_WINDOW
 		public DebugForm debugForm;
@@ -56,23 +55,26 @@ namespace NextGraphics
 
 		public MainForm()
 		{
-			var exportParameters = new ExportParameters();
-			exportParameters.RemapCallbacks = this;
-			exportParameters.ExportCallbacks = this;
+			var exportParameters = new ExportParameters
+			{
+				RemapCallbacks = this,
+				ExportCallbacks = this
+			};
 
 			Model = new MainModel
 			{
 				Name = Properties.Resources.NewProjectTitle
 			};
 
+			Exporter = new Exporter(Model, exportParameters);
+
+			Model.ExportData = Exporter.Data;
 			Model.BlocksAcrossWidthProvider = () => blocksPictureBox.Width;
 
 			Model.OutputTypeChanged += Model_OutputTypeChanged;
 			Model.GridWidthChanged += Model_GridWidthChanged;
 			Model.GridHeightChanged += Model_GridHeightChanged;
 			Model.RemapRequired += Model_RemapRequired;
-
-			Exporter = new Exporter(Model, exportParameters);
 
 			InitializeComponent();
 
@@ -102,6 +104,7 @@ namespace NextGraphics
 			tilemapFiltersBuilder.Add("GBA Tile Map", "*.map");
 			tilemapFiltersBuilder.Add("STM Tile Map", "*.stm");
 			tilemapFiltersBuilder.Add("Text Tile Map", "*.txm;*.txt");
+			tilemapFiltersBuilder.Add("Tilemap Image", "*.bmp;*.png");
 			tilemapFiltersBuilder.Add("All Files", "*.*");
 			addTilemapsDialog.Filter = tilemapFiltersBuilder.Filters;
 
@@ -138,8 +141,6 @@ namespace NextGraphics
 
 		public void OnRemapStarted()
 		{
-			Model.BlocksBitmap.Clear();
-			Model.CharsBitmap.Clear();
 #if DEBUG_WINDOW
 			debugForm.ClearImage();
 #endif
@@ -255,7 +256,10 @@ namespace NextGraphics
 
 		public void OnRemapDebug(string message)
 		{
-			//Console.Write(message);
+			Invoke(new Action(() =>
+			{
+				infoForm.Append(Color.Gray, message);
+			}));
 		}
 
 		#endregion
@@ -806,7 +810,8 @@ namespace NextGraphics
 				{
 					return new RenderingOptions
 					{
-						RenderTileIndex = Properties.Settings.Default.TilemapRenderTileIndex
+						RenderTileIndex = Properties.Settings.Default.TilemapRenderTileIndex,
+						RenderTileAttributes = Properties.Settings.Default.TilemapRenderTileAttributes,
 					};
 				}
 
@@ -1093,7 +1098,7 @@ namespace NextGraphics
 			Model.AddTilemapsFilterIndex = addTilemapsDialog.FilterIndex;
 			SaveProject();
 
-			AddNewSources(addTilemapsDialog.FileNames, file => SourceTilemap.Create(file));
+			AddNewSources(addTilemapsDialog.FileNames, file => SourceTilemap.Create(file, Model));
 		}
 
 		private void AddNewSources(string[] filenames, Func<string, ISourceFile> handler)
@@ -1151,7 +1156,7 @@ namespace NextGraphics
 		/// </summary>
 		private void SelectPalette(Action completed = null) 
 		{
-			ReloadModelSourcesIfNeeded();
+			Model.ReloadSources();
 
 			if (completed != null && isPaletteSet)
 			{
@@ -1180,14 +1185,14 @@ namespace NextGraphics
 		/// </summary>
 		private void RemapData(Action completed = null)
 		{
-			// Note: after remapping, we want to reset the flags so next time remap is required, we will reload model sources again.
-			ReloadModelSourcesIfNeeded(requestReloadNextTime: true);
-
 			UpdateBlockWidth();
 			UpdateBlockHeight();
 
 			RunLongOperation(() => {
 				Exporter.Remap();
+
+				// After we remap data, we also assume palette is set (this covers the use case where we asked user if they want to set palette and they declined; we don't want to continue asking for palette on each successive remap).
+				isPaletteSet = true;
 
 				if (completed != null)
 				{
@@ -1416,24 +1421,6 @@ namespace NextGraphics
 		}
 
 		/// <summary>
-		/// Reloads all model sources and manages reload-needed flag.
-		/// </summary>
-		private void ReloadModelSourcesIfNeeded(bool requestReloadNextTime = false)
-		{
-			if (!isDataReloaded)
-			{
-				Model.ReloadSources();
-
-				isDataReloaded = true;
-			}
-
-			if (requestReloadNextTime)
-			{
-				isDataReloaded = false;
-			}
-		}
-
-		/// <summary>
 		/// Disables all actions, runs the operation implemented as given action on background thread and enables all actions when complete.
 		/// </summary>
 		/// <remarks>
@@ -1446,6 +1433,7 @@ namespace NextGraphics
 				newToolStripButton.Enabled = enable;
 				openProjectButton.Enabled = enable;
 				saveToolStripButton.Enabled = enable;
+				addImagesToolStripButton.Enabled = enable;
 				addTilemapsToolStripButton.Enabled = enable;
 				paletteToolStripButton.Enabled = enable;
 				makeBlocksToolStripButton.Enabled = enable;

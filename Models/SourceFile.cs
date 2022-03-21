@@ -21,6 +21,11 @@ namespace NextGraphics.Models
 		/// </summary>
 		public T Data { get; private set; }
 
+		/// <summary>
+		/// Determines whether data should be auto-loaded or not. This affects loading when assigning <see cref="Filename"/> and <see cref="Reload"/>, if the flag is false, then nothing will happen in there.
+		/// </summary>
+		public bool AutoLoad { get; set; } = true;
+
 		#region ISourceFile
 		
 		/// <summary>
@@ -33,7 +38,10 @@ namespace NextGraphics.Models
 			{
 				if (value == _filename) return;
 				_filename = value;
-				Reload();
+				if (AutoLoad)
+				{
+					Reload();
+				}
 			}
 		}
 		private string _filename;
@@ -48,11 +56,14 @@ namespace NextGraphics.Models
 		/// </summary>
 		public void Reload()
 		{
-			Dispose();
-
-			if (Filename != null)
+			if (AutoLoad)
 			{
-				Data = OnLoadDataFromFile(Filename);
+				Dispose();
+
+				if (Filename != null)
+				{
+					Data = OnLoadDataFromFile(Filename);
+				}
 			}
 		}
 
@@ -71,22 +82,18 @@ namespace NextGraphics.Models
 
 		public SourceFile(string filename, T data)
 		{
-			// In this case we should not assign to property since caller is also providing the data. Assigning to property triggers data loading.
-			_filename = filename;
+			// When manually assigning data, we set auto load to false by default - we don't want subsequent reloads destroying the data. This is mostly used for unit testing where we use mock data which cannot be reloaded.
+			AutoLoad = false;
 
-			// Data property doesn't use side-effects, so we can assign directly (we don't have explicit underlying field anyway).
+			Filename = filename;
 			Data = data;
 		}
 
-		public SourceFile(string filename)
+		public SourceFile(string filename, bool autoLoad = true)
 		{
 			// Assigning filename to property will trigger data loading as well in the setter.
+			AutoLoad = autoLoad;
 			Filename = filename;
-		}
-
-		public SourceFile()
-		{
-			// Default constructor for cases where we don't have filename ready from get go.
 		}
 
 		~SourceFile()
@@ -104,11 +111,11 @@ namespace NextGraphics.Models
 		protected virtual T OnLoadDataFromFile(string filename)
 		{
 			// We don't deal with any data by default, so we simply return default value.
-			return default(T);
+			return default;
 		}
 
 		/// <summary>
-		/// Called during disposal. Default implementation disposes <see cref="Data"/>, if it implements <see cref="IDisposable"/>. Subclass that needs to release additional resources can do it here.
+		/// Called during disposal. Default implementation disposes <see cref="Data"/>, if it's <see cref="IDisposable"/>. This should be sufficient for most use cases, but subclass that needs to dispose additional resources can override and handle it manually. It's important to call super implementation in such case to ensure disposal of underlying data.
 		/// </summary>
 		protected virtual void OnDispose()
 		{
@@ -119,7 +126,7 @@ namespace NextGraphics.Models
 			}
 
 			// Reset data to default value.
-			Data = default(T);
+			Data = default;
 		}
 
 		#endregion

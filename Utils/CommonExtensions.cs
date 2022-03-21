@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NextGraphics.Models;
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -66,6 +68,104 @@ namespace NextGraphics.Utils
 		public static Color FittingBlackOrWhite(this Color color)
 		{
 			return color.GetBrightness() > 0.4f ? Color.Black : Color.White;
+		}
+
+		#endregion
+
+		#region Bitmaps
+
+		public static void CopyRegionIntoBlock(
+			this Bitmap bitmap,
+			MainModel model,
+			Rectangle region,
+			IndexedBitmap destBlock,
+			SpriteInfo destSpriteInfo = null)
+		{
+			var palette = model.Palette;
+
+			var spriteWidth = Math.Max(1, model.GridWidth / model.ObjectSize);
+			var spriteHeight = Math.Max(1, model.GridHeight / model.ObjectSize);
+
+			var spriteInfo = destSpriteInfo ?? new SpriteInfo(spriteWidth, spriteHeight);
+
+			// Clip because images may not be in blocks size 
+			if (region.Y + region.Height > bitmap.Height)
+			{
+				region.Height = bitmap.Height - region.Y;
+			}
+
+			if (region.X + region.Width > bitmap.Width)
+			{
+				region.Width = bitmap.Width - region.X;
+			}
+
+			if (model.SpritesReduced && model.OutputType == OutputType.Sprites)
+			{
+				// so we make the output block all transparent
+				for (int y = 0; y < region.Height; y++)
+				{
+					for (int x = 0; x < region.Width; x++)
+					{
+						destBlock.SetPixel(x, y, (short)palette.TransparentIndex);
+					}
+				}
+
+				for (int y = 0; y < region.Height; y++)
+				{
+					for (int x = 0; x < region.Width; x++)
+					{
+						var pixel = bitmap.GetPixel(region.X + x, region.Y + y);
+						var colour = palette.ClosestColor(pixel, -1, palette.StartIndex);
+
+						if (colour != (short)palette.TransparentIndex)
+						{
+							spriteInfo.OffsetY = (short)y;
+							goto checkLeft;
+						}
+					}
+				}
+
+			checkLeft:
+				for (int x = 0; x < region.Width; x++)
+				{
+					for (int y = 0; y < region.Height; y++)
+					{
+						var pixel = bitmap.GetPixel(region.X + x, region.Y + y);
+						var colour = palette.ClosestColor(pixel, -1, palette.StartIndex);
+
+						if (colour != (short)palette.TransparentIndex)
+						{
+							spriteInfo.OffsetX = (short)x;
+							goto xYDone;
+						}
+					}
+				}
+
+			xYDone:
+				for (int y = spriteInfo.OffsetY; y < region.Height; y++)
+				{
+					for (int x = spriteInfo.OffsetX; x < region.Width; x++)
+					{
+						var pixel = bitmap.GetPixel(region.X + x, region.Y + y);
+						var colour = palette.ClosestColor(pixel, -1, palette.StartIndex);
+						destBlock.SetPixel(x - spriteInfo.OffsetX, y - spriteInfo.OffsetY, colour);
+					}
+				}
+			}
+			else
+			{
+				spriteInfo.ClearOffset();
+
+				for (int y = 0; y < region.Height; y++)
+				{
+					for (int x = 0; x < region.Width; x++)
+					{
+						var pixel = bitmap.GetPixel(region.X + x, region.Y + y);
+						var colour = palette.ClosestColor(pixel, -1, palette.StartIndex);
+						destBlock.SetPixel(x, y, colour);
+					}
+				}
+			}
 		}
 
 		#endregion

@@ -742,7 +742,7 @@ namespace UnitTests
 
 				if (sourceTilemap != null)
 				{
-					model.AddSource(new SourceTilemapMap("tilemap1", sourceTilemap));
+					model.AddSource(new SourceTilemapMap("tilemap1", model, sourceTilemap));
 				}
 
 				// Prepare exporter.

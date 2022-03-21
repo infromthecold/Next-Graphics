@@ -1,4 +1,7 @@
-﻿using NextGraphics.Models.Model;
+﻿using NextGraphics.Exporting.Common;
+using NextGraphics.Models.Model;
+using NextGraphics.Utils;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -40,6 +43,8 @@ namespace NextGraphics.Models
 		public string ExportSpriteAttributesFileExtension { get; set; } = "til";
 
 		#region Not saved properties
+
+		public ExportData ExportData { get; set; } = null;
 
 		public Bitmap CharsBitmap { get; private set; } = null;
 		public Bitmap BlocksBitmap { get; private set; } = null;
@@ -258,7 +263,9 @@ namespace NextGraphics.Models
 
 		public MainModel()
 		{
-			CreateBitmaps();
+			// We only create bitmaps once so that any UI control that uses them will automatically get updated.
+			BlocksBitmap = new Bitmap(256, 512, PixelFormat.Format24bppRgb);
+			CharsBitmap = new Bitmap(256, 256 * 16, PixelFormat.Format24bppRgb);
 
 			// The idea with loading the values from settings is to allow across projects changes. These are the types of values that user is likely to change in every project, so we make it simpler. User can still change on per-project basis (though last change will be persisted in settings). Loading from settings works on the fact that settings keys are exactly the same as our properties.
 			ExportAssemblerFileExtension = Properties.Settings.Default[nameof(ExportAssemblerFileExtension)].ToString();
@@ -283,7 +290,8 @@ namespace NextGraphics.Models
 			XmlDocument document = new XmlDocument();
 			document.Load(filename);
 
-			// Load the data.
+			// Clear any existing data to avoid artifacts, then load data from XML.
+			Clear();
 			Load(document);
 
 			// If all is fine, assign the filename.
@@ -299,27 +307,6 @@ namespace NextGraphics.Models
 			document.WithNode("//Project/Name", node =>
 			{
 				node.WithAttribute("Projectname", value => Name = value);
-			});
-
-			// Files
-			document.WithNodes("//Project/File", nodes =>
-			{
-				Sources = new List<ISourceFile>();
-				foreach (XmlNode node in nodes)
-				{
-					var path = node.Attributes["Path"].Value;
-					var type = node.Attribute("Type", "");
-
-					switch (type)
-					{
-						case "Tilemap":
-							AddSource(SourceTilemap.Create(path));
-							break;
-						default:
-							AddSource(new SourceImage(path));
-							break;
-					}
-				}
 			});
 
 			// Settings
@@ -357,27 +344,6 @@ namespace NextGraphics.Models
 				node.WithAttribute("FourBitParsing", value => PaletteParsingMethod = (PaletteParsingMethod)int.Parse(value));
 			});
 
-			// Export extensions
-
-			document.WithNode("//Project/ExportExtensions", node =>
-			{
-				node.WithAttribute("Assembler", value => { ExportAssemblerFileExtension = value; });
-				node.WithAttribute("Palette", value => { ExportBinaryPaletteFileExtension = value; });
-				node.WithAttribute("Data", value => { ExportBinaryDataFileExtension = value; });
-				node.WithAttribute("TilesInfo", value => { ExportBinaryTilesInfoFileExtension = value; });
-				node.WithAttribute("TileAttributes", value => { ExportBinaryTileAttributesFileExtension = value; });
-				node.WithAttribute("Tilemap", value => { ExportBinaryTilemapFileExtension = value; });
-				node.WithAttribute("SpriteAttributes", value => { ExportSpriteAttributesFileExtension = value; });
-			});
-
-			// Dialogs
-			document.WithNode("//Project/Dialogs", node =>
-			{
-				node.WithAttribute("OutputIndex", value => { OutputFilesFilterIndex = int.Parse(value); });
-				node.WithAttribute("ImageIndex", value => { AddImagesFilterIndex = int.Parse(value); });
-				node.WithAttribute("TilemapIndex", value => { AddTilemapsFilterIndex = int.Parse(value); });
-			});
-
 			// Palette
 			document.WithNode("//Project/Palette", node =>
 			{
@@ -405,9 +371,50 @@ namespace NextGraphics.Models
 					colourNode.WithAttribute("Red", value => Palette[colourIndex].Red = byte.Parse(value));
 					colourNode.WithAttribute("Green", value => Palette[colourIndex].Green = byte.Parse(value));
 					colourNode.WithAttribute("Blue", value => Palette[colourIndex].Blue = byte.Parse(value));
-					
+
 					colourIndex++;
-				}));
+				})) ;
+			});
+
+			// Export extensions
+			document.WithNode("//Project/ExportExtensions", node =>
+			{
+				node.WithAttribute("Assembler", value => { ExportAssemblerFileExtension = value; });
+				node.WithAttribute("Palette", value => { ExportBinaryPaletteFileExtension = value; });
+				node.WithAttribute("Data", value => { ExportBinaryDataFileExtension = value; });
+				node.WithAttribute("TilesInfo", value => { ExportBinaryTilesInfoFileExtension = value; });
+				node.WithAttribute("TileAttributes", value => { ExportBinaryTileAttributesFileExtension = value; });
+				node.WithAttribute("Tilemap", value => { ExportBinaryTilemapFileExtension = value; });
+				node.WithAttribute("SpriteAttributes", value => { ExportSpriteAttributesFileExtension = value; });
+			});
+
+			// Dialogs
+			document.WithNode("//Project/Dialogs", node =>
+			{
+				node.WithAttribute("OutputIndex", value => { OutputFilesFilterIndex = int.Parse(value); });
+				node.WithAttribute("ImageIndex", value => { AddImagesFilterIndex = int.Parse(value); });
+				node.WithAttribute("TilemapIndex", value => { AddTilemapsFilterIndex = int.Parse(value); });
+			});
+
+			// Files (must be loaded last as some sources require settings and other options to be set)
+			document.WithNodes("//Project/File", nodes =>
+			{
+				Sources = new List<ISourceFile>();
+				foreach (XmlNode node in nodes)
+				{
+					var path = node.Attributes["Path"].Value;
+					var type = node.Attribute("Type", "");
+
+					switch (type)
+					{
+						case "Tilemap":
+							AddSource(SourceTilemap.Create(path, this));
+							break;
+						default:
+							AddSource(new SourceImage(path));
+							break;
+					}
+				}
 			});
 		}
 
@@ -564,6 +571,11 @@ namespace NextGraphics.Models
 		/// </summary>
 		public void Clear()
 		{
+			if (ExportData != null)
+			{
+				ExportData.Clear();
+			}
+
 			Sources.ForEach(source =>
 			{
 				source.Dispose();
@@ -572,7 +584,9 @@ namespace NextGraphics.Models
 			Sources.Clear();
 			Palette.Clear();
 
-			CreateBitmaps();
+			BlocksBitmap.Clear();
+			CharsBitmap.Clear();
+
 			RaiseRemapRequired();
 		}
 
@@ -741,12 +755,6 @@ namespace NextGraphics.Models
 		#endregion
 
 		#region Helpers
-
-		private void CreateBitmaps()
-		{
-			BlocksBitmap = new Bitmap(256, 512, PixelFormat.Format24bppRgb);
-			CharsBitmap = new Bitmap(256, 256 * 16, PixelFormat.Format24bppRgb);
-		}
 
 		/// <summary>
 		/// Unconditionally raises <see cref="RemapRequired"/> event.

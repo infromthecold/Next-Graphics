@@ -269,7 +269,7 @@ namespace NextGraphics.Exporting
 				appendLine();
 				appendLine("COUNTS");
 
-				int[] counts = new int[ExportData.MAX_BLOCKS];
+				int[] counts = new int[Data.BlocksCount];
 				for (int c = 0; c < counts.Length; c++)
 				{
 					counts[c] = 0;

@@ -317,23 +317,18 @@ namespace NextGraphics.Models
 			{
 				var result = false;
 
-				if (model.TransparentFirst || model.OutputType == OutputType.Sprites)
+				PixelIterator(xOffset, yOffset, (x, y, colour) =>
 				{
-					PixelIterator(xOffset, yOffset, (x, y, colour) =>
+					if (colour == (short)model.Palette.TransparentIndex)
 					{
-						if (colour == (short)model.Palette.TransparentIndex)
-						{
-							// As soon as we find transparent colour, we know the result...
-							result = true;
-							return false;
-						}
+						// As soon as we find transparent colour, we know the result so we can stop iterating...
+						result = true;
+						return false;
+					}
 
-						// Continue iterating otherwise.
-						return true;
-					});
-
-					return result;
-				}
+					// Continue iterating otherwise.
+					return true;
+				});
 
 				return result;
 			}
@@ -354,7 +349,7 @@ namespace NextGraphics.Models
 			var objectByteSize = Size * Size;
 			var hasTransparentPixels = HasSomeTransparentPixels();
 			var pixelComparisonBase = DeterminePixelComparisonCountBase();
-			var bitmapToCompareTo = compareTo;
+			var bitmapToCompareTo = compareTo;	// this is used in `IsMatch`, we later re-assign to rotated bitmap
 
 			IndexedBitmap CreateRotated()
 			{
@@ -410,7 +405,7 @@ namespace NextGraphics.Models
 			}
 
 			// If it's close to original % and not containing transparent, it's repeated block!
-			if (identicalPixelsCount >= pixelComparisonBase && (!hasTransparentPixels || model.OutputType == OutputType.Sprites))
+			if (identicalPixelsCount >= pixelComparisonBase)
 			{
 				return BlockType.Repeated;
 			}
