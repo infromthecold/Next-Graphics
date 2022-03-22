@@ -154,5 +154,17 @@ namespace NextGraphics.Properties {
                 this["TilemapRenderTileAttributes"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InfoPrintTilemap {
+            get {
+                return ((bool)(this["InfoPrintTilemap"]));
+            }
+            set {
+                this["InfoPrintTilemap"] = value;
+            }
+        }
     }
 }

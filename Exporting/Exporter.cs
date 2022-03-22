@@ -293,7 +293,7 @@ namespace NextGraphics.Exporting
 			}
 
 			var tilemaps = Data.Model.SourceTilemaps().ToList();
-			if (tilemaps.Count > 0)
+			if (tilemaps.Count > 0 && Properties.Settings.Default.InfoPrintTilemap)
 			{
 				appendLine();
 				appendLine("TILEMAPS");

@@ -113,8 +113,12 @@
 			this.extensionsTilemapInfoTextBox = new System.Windows.Forms.TextBox();
 			this.extensionsTilemapInfoLabel = new System.Windows.Forms.Label();
 			this.applicationTabPage = new System.Windows.Forms.TabPage();
-			this.applicationRenderTileIndexesCheckBox = new System.Windows.Forms.CheckBox();
+			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+			this.applicationBehaviorLabel = new System.Windows.Forms.Label();
+			this.applicationRenderingLabel = new System.Windows.Forms.Label();
 			this.applicationRenderTileAttributesCheckBox = new System.Windows.Forms.CheckBox();
+			this.applicationRenderTileIndexesCheckBox = new System.Windows.Forms.CheckBox();
+			this.applicationBehaviorPrintTilemapInfoCheckBox = new System.Windows.Forms.CheckBox();
 			this.settingsTabControl.SuspendLayout();
 			this.commonTabPage.SuspendLayout();
 			this.commonIgnoreRepeatsTableLayoutPanel.SuspendLayout();
@@ -125,6 +129,7 @@
 			this.fileExtensionsTabPage.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.applicationTabPage.SuspendLayout();
+			this.tableLayoutPanel2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// spriteCenterBRRadioButton
@@ -1064,8 +1069,7 @@
 			// 
 			// applicationTabPage
 			// 
-			this.applicationTabPage.Controls.Add(this.applicationRenderTileAttributesCheckBox);
-			this.applicationTabPage.Controls.Add(this.applicationRenderTileIndexesCheckBox);
+			this.applicationTabPage.Controls.Add(this.tableLayoutPanel2);
 			this.applicationTabPage.Location = new System.Drawing.Point(4, 22);
 			this.applicationTabPage.Name = "applicationTabPage";
 			this.applicationTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -1073,25 +1077,74 @@
 			this.applicationTabPage.TabIndex = 6;
 			this.applicationTabPage.Text = "Application";
 			// 
+			// tableLayoutPanel2
+			// 
+			this.tableLayoutPanel2.ColumnCount = 2;
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel2.Controls.Add(this.applicationBehaviorLabel, 1, 0);
+			this.tableLayoutPanel2.Controls.Add(this.applicationRenderingLabel, 0, 0);
+			this.tableLayoutPanel2.Controls.Add(this.applicationRenderTileAttributesCheckBox, 0, 2);
+			this.tableLayoutPanel2.Controls.Add(this.applicationRenderTileIndexesCheckBox, 0, 1);
+			this.tableLayoutPanel2.Controls.Add(this.applicationBehaviorPrintTilemapInfoCheckBox, 1, 1);
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 9);
+			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+			this.tableLayoutPanel2.RowCount = 3;
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.tableLayoutPanel2.Size = new System.Drawing.Size(410, 77);
+			this.tableLayoutPanel2.TabIndex = 2;
+			// 
+			// applicationBehaviorLabel
+			// 
+			this.applicationBehaviorLabel.AutoSize = true;
+			this.applicationBehaviorLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.applicationBehaviorLabel.Location = new System.Drawing.Point(208, 0);
+			this.applicationBehaviorLabel.Name = "applicationBehaviorLabel";
+			this.applicationBehaviorLabel.Size = new System.Drawing.Size(61, 13);
+			this.applicationBehaviorLabel.TabIndex = 46;
+			this.applicationBehaviorLabel.Text = "Behavior:";
+			// 
+			// applicationRenderingLabel
+			// 
+			this.applicationRenderingLabel.AutoSize = true;
+			this.applicationRenderingLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.applicationRenderingLabel.Location = new System.Drawing.Point(3, 0);
+			this.applicationRenderingLabel.Name = "applicationRenderingLabel";
+			this.applicationRenderingLabel.Size = new System.Drawing.Size(69, 13);
+			this.applicationRenderingLabel.TabIndex = 45;
+			this.applicationRenderingLabel.Text = "Rendering:";
+			// 
+			// applicationRenderTileAttributesCheckBox
+			// 
+			this.applicationRenderTileAttributesCheckBox.AutoSize = true;
+			this.applicationRenderTileAttributesCheckBox.Location = new System.Drawing.Point(3, 51);
+			this.applicationRenderTileAttributesCheckBox.Name = "applicationRenderTileAttributesCheckBox";
+			this.applicationRenderTileAttributesCheckBox.Size = new System.Drawing.Size(123, 17);
+			this.applicationRenderTileAttributesCheckBox.TabIndex = 1;
+			this.applicationRenderTileAttributesCheckBox.Text = "Render tile attributes";
+			this.applicationRenderTileAttributesCheckBox.UseVisualStyleBackColor = true;
+			// 
 			// applicationRenderTileIndexesCheckBox
 			// 
 			this.applicationRenderTileIndexesCheckBox.AutoSize = true;
-			this.applicationRenderTileIndexesCheckBox.Location = new System.Drawing.Point(6, 11);
+			this.applicationRenderTileIndexesCheckBox.Location = new System.Drawing.Point(3, 23);
 			this.applicationRenderTileIndexesCheckBox.Name = "applicationRenderTileIndexesCheckBox";
 			this.applicationRenderTileIndexesCheckBox.Size = new System.Drawing.Size(116, 17);
 			this.applicationRenderTileIndexesCheckBox.TabIndex = 0;
 			this.applicationRenderTileIndexesCheckBox.Text = "Render tile indexes";
 			this.applicationRenderTileIndexesCheckBox.UseVisualStyleBackColor = true;
 			// 
-			// applicationRenderTileAttributesCheckBox
+			// applicationBehaviorPrintTilemapInfoCheckBox
 			// 
-			this.applicationRenderTileAttributesCheckBox.AutoSize = true;
-			this.applicationRenderTileAttributesCheckBox.Location = new System.Drawing.Point(7, 35);
-			this.applicationRenderTileAttributesCheckBox.Name = "applicationRenderTileAttributesCheckBox";
-			this.applicationRenderTileAttributesCheckBox.Size = new System.Drawing.Size(123, 17);
-			this.applicationRenderTileAttributesCheckBox.TabIndex = 1;
-			this.applicationRenderTileAttributesCheckBox.Text = "Render tile attributes";
-			this.applicationRenderTileAttributesCheckBox.UseVisualStyleBackColor = true;
+			this.applicationBehaviorPrintTilemapInfoCheckBox.AutoSize = true;
+			this.applicationBehaviorPrintTilemapInfoCheckBox.Location = new System.Drawing.Point(208, 23);
+			this.applicationBehaviorPrintTilemapInfoCheckBox.Name = "applicationBehaviorPrintTilemapInfoCheckBox";
+			this.applicationBehaviorPrintTilemapInfoCheckBox.Size = new System.Drawing.Size(133, 17);
+			this.applicationBehaviorPrintTilemapInfoCheckBox.TabIndex = 47;
+			this.applicationBehaviorPrintTilemapInfoCheckBox.Text = "Print tilemap info (slow)";
+			this.applicationBehaviorPrintTilemapInfoCheckBox.UseVisualStyleBackColor = true;
 			// 
 			// SettingsForm
 			// 
@@ -1119,7 +1172,8 @@
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
 			this.applicationTabPage.ResumeLayout(false);
-			this.applicationTabPage.PerformLayout();
+			this.tableLayoutPanel2.ResumeLayout(false);
+			this.tableLayoutPanel2.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -1212,5 +1266,9 @@
 		private System.Windows.Forms.TabPage applicationTabPage;
 		private System.Windows.Forms.CheckBox applicationRenderTileIndexesCheckBox;
 		private System.Windows.Forms.CheckBox applicationRenderTileAttributesCheckBox;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+		private System.Windows.Forms.Label applicationRenderingLabel;
+		private System.Windows.Forms.Label applicationBehaviorLabel;
+		private System.Windows.Forms.CheckBox applicationBehaviorPrintTilemapInfoCheckBox;
 	}
 }

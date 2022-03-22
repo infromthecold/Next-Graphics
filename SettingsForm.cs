@@ -256,6 +256,12 @@ namespace NextGraphics
 				Properties.Settings.Default.TilemapRenderTileAttributes = value;
 				Properties.Settings.Default.Save();
 			});
+
+			applicationBehaviorPrintTilemapInfoCheckBox.MapCheckedTo(Properties.Settings.Default.InfoPrintTilemap, value =>
+			{
+				Properties.Settings.Default.InfoPrintTilemap = value;
+				Properties.Settings.Default.Save();
+			});
 		}
 
 		#endregion
