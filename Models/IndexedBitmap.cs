@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NextGraphics.Exporting.PaletteMapping;
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -194,74 +196,208 @@ namespace NextGraphics.Models
 		/// </summary>
 		public void RemapTo4Bit(Palette palette, PaletteParsingMethod parsingMethod, int width, int height, int objectSize)
 		{
-			int Map(int xCuts, int yCuts, int averagingIndex)
+			void IterateCuts(Action<int, int> handler)
 			{
-				// If averaging index is less than 0, then exact colours are matched without remapping.
-				var lowestNonTransparentIndex = int.MaxValue;
+				var ycuts = height / objectSize;
+				var xcuts = width / objectSize;
 
+				for (int yc = 0; yc < ycuts; yc++)
+				{
+					for (int xc = 0; xc < xcuts; xc++)
+					{
+						handler(xc, yc);
+					}
+				}
+			}
+
+			void IteratePixels(int xCut, int yCut, Action<int, int, short> handler)
+			{
 				for (int y = 0; y < objectSize; y++)
 				{
 					for (int x = 0; x < objectSize; x++)
 					{
-						var pixel = GetPixel(x + (xCuts * objectSize), y + (yCuts * objectSize));
+						var xPixel = x + (xCut * objectSize);
+						var yPixel = y + (yCut * objectSize);
+
+						var pixel = GetPixel(xPixel, yPixel);
+
+						handler(xPixel, yPixel, pixel);
+					}
+				}
+			}
+
+			void MapManualBanks()
+			{
+				int CalculateAveragingIndex(int xCut, int yCut)
+				{
+					int averagingIndex = 0;
+
+					IteratePixels(xCut, yCut, (x, y, pixel) =>
+					{
+						averagingIndex += pixel;
+					});
+
+					return (averagingIndex / (objectSize * objectSize)) & 0x0f0;
+				}
+
+				void CopyPixels(int xCut, int yCut, int averagingIndex)
+				{
+					IteratePixels(xCut, yCut, (x, y, pixel) =>
+					{
 						var pixelColor = palette[pixel].ToColor();
 						var colourIndex = palette.ClosestColor(pixelColor, (short)averagingIndex, 0);
 
-						if (colourIndex != palette.TransparentIndex && colourIndex < lowestNonTransparentIndex)
-						{
-							lowestNonTransparentIndex = colourIndex;
-						}
-
-						SetPixel(x + (xCuts * objectSize), y + (yCuts * objectSize), colourIndex);
-					}
+						SetPixel(x, y, colourIndex);
+					}); ;
 				}
 
-				// For all-transparent pixels we simply return transparent colour index. Otherwise the index of the first colour.
-				return lowestNonTransparentIndex == int.MaxValue ? palette.TransparentIndex : lowestNonTransparentIndex;
+				IterateCuts((xc, yc) =>
+				{
+					// Averaging index is used to determine palette bank when copying pixels.
+					var averagingIndex = CalculateAveragingIndex(xc, yc);
+
+					CopyPixels(xc, yc, averagingIndex);
+
+					// We don't support auto-banking in this mode, we'll ask user for the actual bank during exporting.
+					PaletteBank = -1;
+				});
 			}
 
-			void MapDefault()
+			void MapAutoBanks()
 			{
-				int averagingIndex = 0;
+				// This method assumes palette is setup so that 16-colour banks are possible for objects. It will determine the best matching bank and use that as result. Note we calculate palette for all cuts combined.
 
-				for (int yCuts = 0; yCuts < height / objectSize; yCuts++)
+				// The key is first (lowest) matched colour index, the value is a set of all possible matches, including the lowest one (so there's always at least 1 entry that matches the key).
+				var colourIndexVariants = new Dictionary<int, SortedSet<int>>();
+				var bestMatchedColours = new Dictionary<int, int>();
+
+				void UpdateColourIndexes()
 				{
-					for (int xCuts = 0; xCuts < width / objectSize; xCuts++)
+					// Updates `colourIndexVariants` for all cuts.
+					IterateCuts((xCut, yCut) =>
 					{
-						for (int y = 0; y < objectSize; y++)
+						IteratePixels(xCut, yCut, (x, y, pixel) =>
 						{
-							for (int x = 0; x < objectSize; x++)
+							var pixelColor = palette[pixel].ToColor();
+
+							// Prepare hash of all matched colour indexes, including transparent.
+							var matches = new SortedSet<int>();
+							var startIndex = 0;
+							while (startIndex < PaletteMapper.MaxColours)
 							{
-								averagingIndex += GetPixel(x + (xCuts * objectSize), y + (yCuts * objectSize));
+								// We only need to handle distinct pixels.
+								var colourIndex = palette.ClosestColor(pixelColor, -1, startIndex, true);
+								if (colourIndexVariants.ContainsKey(colourIndex)) break;
+
+								// If there's no more match, exit.
+								if (colourIndex < 0) break;
+
+								// Otherwise add the colour index to the set of matches.
+								matches.Add(colourIndex);
+
+								// Continue with first colour of the next bank. We always take the first colour of any bank as our result. This is particularly important for magenta since we are inserting it as template colour at the end of the palette banks to fill in unused slots.
+								var nextColour = (colourIndex + PaletteMapper.BankSize) / PaletteMapper.BankSize * PaletteMapper.BankSize;
+								startIndex += nextColour;
+							}
+
+							// If this is distinct colour, add it to the dictionary.
+							if (matches.Count > 0)
+							{
+								colourIndexVariants[matches.First()] = matches;
+							}
+						});
+					});
+				}
+
+				void DetermineBestMatches()
+				{
+					// This method uses `colourIndexVariants` we prepared earlier to determine the best matching bank, then updates the dictionary to only include best matches.
+
+					void EnumerateIndexes(Func<int, int, int, bool> handler)
+					{
+						foreach (var entry in colourIndexVariants)
+						{
+							var firstColourIndex = entry.Value.First();
+
+							foreach (var entryColourIndex in entry.Value)
+							{
+								var bank = entryColourIndex / PaletteMapper.BankSize;
+
+								if (!handler(bank, firstColourIndex, entryColourIndex)) return;
 							}
 						}
-						averagingIndex = (averagingIndex / (objectSize * objectSize)) & 0x0f0;
-
-						Map(xCuts, yCuts, averagingIndex);
-
-						// We don't support auto-banking in this mode.
-						PaletteBank = -1;
 					}
+
+					// We compare all possible variants until we find the best one. We may exit early if we find a variant that's supports all colours.
+					EnumerateIndexes((bank, firstColourIndex, colourIndex) =>
+					{
+						var colours = new Dictionary<int, int>();
+
+						// Compare against all other entries, including current one (this one will always match, but that's fine since it is part of the total count).
+						EnumerateIndexes((compareBank, compareFirstColourIndex, compareColourIndex) =>
+						{
+							// If banks are different, continue with next one.
+							if (compareBank != bank) return true;
+
+							// If bank matches, add colour to the list and increment the count.
+							colours[compareFirstColourIndex] = compareColourIndex;
+
+							// If all colours match, we've found our solution so we can stop counting.
+							return colours.Count < colourIndexVariants.Count;
+						});
+
+						// If we found a better match than before, take it.
+						if (colours.Count > bestMatchedColours.Count)
+						{
+							bestMatchedColours = new Dictionary<int, int>(colours);
+						}
+
+						// If we found a match in all distinct colours, we can stop iterating, otherwise try with next variant.
+						return bestMatchedColours.Count < colourIndexVariants.Count;
+					});
 				}
-			}
 
-			void MapBanks()
-			{
-				// This method assumes palette is setup so that 16-colour banks are possible for objects. It will select the first bank for first non-transparent pixel.
-				var firstColourIndex = Map(0, 0, -1);
+				void ApplyBestMatches()
+				{
+					IterateCuts((xCut, yCut) =>
+					{
+						IteratePixels(xCut, yCut, (x, y, pixel) =>
+						{
+							var pixelColor = palette[pixel].ToColor();
+							var colourIndex = palette.ClosestColor(pixelColor, -1, 0, true);
 
-				// We must assign palette bank in this mode.
-				PaletteBank = firstColourIndex / 16;
+							// We should have the colour index in our best matched colours, but just in case fall down to the first index where multiple are available.
+							var mappedIndex = bestMatchedColours.ContainsKey(colourIndex) ? bestMatchedColours[colourIndex] : colourIndexVariants[colourIndex].First();
+
+							SetPixel(x, y, (short)mappedIndex);
+						});
+					});
+				}
+
+				void ApplyBestBank()
+				{
+					// We always calculate the bank from the first colour, they should all match ideally. We do fall down to first variant otherwise.
+					var colourIndex = bestMatchedColours.Count > 0 ?
+						bestMatchedColours.First().Value :
+						colourIndexVariants.First().Value.First();
+
+					PaletteBank = colourIndex / PaletteMapper.BankSize;
+				}
+
+				UpdateColourIndexes();
+				DetermineBestMatches();
+				ApplyBestMatches();
+				ApplyBestBank();
 			}
 
 			switch (parsingMethod)
 			{
 				case PaletteParsingMethod.ByPixels:
-					MapDefault();
+					MapManualBanks();
 					break;
 
 				case PaletteParsingMethod.ByObjects:
-					MapBanks();
+					MapAutoBanks();
 					break;
 			}
 		}

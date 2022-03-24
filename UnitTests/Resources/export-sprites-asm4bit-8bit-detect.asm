@@ -1,5 +1,5 @@
 // Test.asm
-// Created on 15 March 2022 13:53:22 by the NextGraphics tool from
+// Created on 24 March 2022 12:18:36 by the NextGraphics tool from
 // patricia curtis at luckyredfish dot com
 
 TEST_COLOURS:		equ	48
@@ -141,7 +141,7 @@ TestSprite4:
 				.db	$12,$34,$55,$55,$55,$5b,$43,$21
 				.db	$12,$34,$44,$44,$44,$44,$c3,$21
 				.db	$12,$33,$33,$33,$33,$33,$3d,$21
-				.db	$12,$22,$22,$22,$22,$22,$22,$11
+				.db	$12,$22,$22,$22,$22,$22,$22,$e1
 				.db	$11,$11,$11,$11,$11,$11,$11,$11
 TestSprite5:
 				.db	$01,$11,$11,$11,$11,$11,$11,$10
@@ -213,7 +213,7 @@ TestFrame5:		.db	1,	0,0,	TEST_OFFSET+12,	192,0
 TestFrame6:		.db	1,	0,0,	TEST_OFFSET+2,	192,0
 TestFrame7:		.db	1,	0,0,	TEST_OFFSET+8,	192,0
 TestFrame8:		.db	1,	0,0,	TEST_OFFSET+12,	192,0
-TestFrame9:		.db	1,	0,0,	TEST_OFFSET+0,	128,2
+TestFrame9:		.db	1,	0,0,	TEST_OFFSET+16,	128,2
 TestFrame10:		.db	1,	0,0,	TEST_OFFSET+32,	192,2
 TestFrame11:		.db	1,	0,0,	TEST_OFFSET+0,	128,3
 

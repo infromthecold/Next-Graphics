@@ -120,10 +120,11 @@ namespace NextGraphics.Models
 					var tileX = 0;
 					while (x < image.Width)
 					{
-						// Prepare the tile and copy data from source image.
+						// Prepare the tile and copy data from source image. Note we must also remap it to 4-bit colours otherwise we won't be able to match.
 						var tile = new IndexedBitmap(model.GridWidth, model.GridHeight);
 						var rect = new Rectangle(x, y, tile.Width, tile.Height);
 						image.CopyRegionIntoBlock(model, rect, tile);
+						tile.RemapTo4Bit(model.Palette, model.PaletteParsingMethod, tile.Width, tile.Height, model.ObjectSize);
 
 						// Check if we already have the same tile represented (possibly in another variant, flipped or rotated).
 						var (tileIndex, tileType) = MatchingTile(tile);

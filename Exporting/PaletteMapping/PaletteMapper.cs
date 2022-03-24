@@ -15,6 +15,10 @@ namespace NextGraphics.Exporting.PaletteMapping
 	/// </summary>
 	public class PaletteMapper
 	{
+		public static readonly int BankSize = 16;
+		public static readonly int MaxBanks = 16;
+		public static readonly int MaxColours = MaxBanks * BankSize;
+
 		private ExportData Data { get; }
 		private MainModel Model { get => Data.Model; }
 
@@ -44,7 +48,7 @@ namespace NextGraphics.Exporting.PaletteMapping
 				{
 					return new Palette
 					{
-						MaxCount = 16
+						MaxCount = BankSize
 					};
 				}
 
@@ -93,7 +97,7 @@ namespace NextGraphics.Exporting.PaletteMapping
 					return coloursPerObject;
 				}
 
-				// Then we generate 16-colour banks from object palettes. This method tries to find the best fit for each object. It will attempt to reuse a bank if possible. But algorithm is not perfect, it may result in unused gaps or duplicated colours. Or in worse case, for very complex images with lots of objects and colours, it will outright not be able to fit all objects. In such case, palette should be exported from image editor and loaded manually, provided the image editor is able to maintain 16-colour banks. If not, then the only way is to simplify the image...
+				// Then we generate 16-colour banks from object palettes. This method tries to find the best fit for each object. It will attempt to reuse a bank if possible. But algorithm is not perfect, it may result in unused gaps or duplicated colours (though this should be fine since different objects may use the same colour and in this case it must be represented in all banks). Or in worse case, for very complex images with lots of objects and colours, it will outright not be able to fit all objects. In such case, palette should be exported from image editor and loaded manually, provided the image editor is able to maintain 16-colour banks. If not, then the only way is to simplify the image...
 				List<Palette> ParseObjectPalettesIntoBanks(List<Palette> objectPalettes)
 				{
 					var banks = new List<Palette>();
@@ -130,7 +134,7 @@ namespace NextGraphics.Exporting.PaletteMapping
 						}
 
 						// If we didn't find a bank, we need to create a new one. However if this means we'll create more banks than can fit 256 colour palette, that's an error and we throw exception.
-						if (banks.Count == 16)
+						if (banks.Count == MaxBanks)
 						{
 							throw new InvalidOperationException("Unable to fit all objects within 4-bit pallette. Try to import palette from your image editor.");
 						}
@@ -224,7 +228,7 @@ namespace NextGraphics.Exporting.PaletteMapping
 					}
 
 					// Regardless of where the data will lead us, transparent colour for 4-bit palettes must be contained within 16 colours.
-					Model.Palette.TransparentIndex %= 16;
+					Model.Palette.TransparentIndex %= BankSize;
 
 					// If there is just a single bank, assume the index from palette is the one to use.
 					if (banks.Count == 1) return;

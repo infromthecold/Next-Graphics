@@ -92,10 +92,29 @@ namespace NextGraphics.Models
 			Colours.Swap(index1, index2);
 		}
 
-		public short ClosestColor(Color color, short reMap, int startColour)
+		public short ClosestColor(Color color, short reMap, int startColour, bool exactMatch = false)
 		{
 			short result = -1;
-			int biggestDifference = 1000;
+			double biggestDifference = double.MaxValue;
+
+			double Difference(byte r, byte g, byte b)
+			{
+				return Math.Sqrt(
+					Math.Pow(color.R - r, 2) + 
+					Math.Pow(color.G - g, 2) + 
+					Math.Pow(color.B - b, 2));
+			}
+
+			bool IsPerfectMatch(double difference)
+			{
+				return difference == 0;
+			}
+
+			bool IsMatch(double difference)
+			{
+				return exactMatch ? IsPerfectMatch(difference) : difference < biggestDifference;
+			}
+
 			if (reMap < 0)
 			{
 				switch (Type)
@@ -103,30 +122,35 @@ namespace NextGraphics.Models
 					case PaletteType.Next256:
 						for (short i = 0; i < 256; i++)
 						{
-							var difference = Math.Sqrt(Math.Pow(color.R - SpecNext256[i, 0], 2) + Math.Pow(color.G - SpecNext256[i, 1], 2) + Math.Pow(color.B - SpecNext256[i, 2], 2));
-							if (difference < biggestDifference)
+							var difference = Difference(SpecNext256[i, 0], SpecNext256[i, 1], SpecNext256[i, 2]);
+							if (IsPerfectMatch(difference)) return i;
+							if (IsMatch(difference))
 							{
 								result = i;
 								biggestDifference = (int)difference;
 							}
 						}
 						break;
+
 					case PaletteType.Next512:
 						for (short i = 0; i < 512; i++)
 						{
-							var difference = Math.Sqrt(Math.Pow(color.R - SpecNext512[i, 0], 2) + Math.Pow(color.G - SpecNext512[i, 1], 2) + Math.Pow(color.B - SpecNext512[i, 2], 2));
-							if (difference < biggestDifference)
+							var difference = Difference(SpecNext512[i, 0], SpecNext512[i, 1], SpecNext512[i, 2]);
+							if (IsPerfectMatch(difference)) return i;
+							if (IsMatch(difference))
 							{
 								result = i;
 								biggestDifference = (int)difference;
 							}
 						}
 						break;
+
 					case PaletteType.Custom:
-						for (short i = 0; i < UsedCount; i++)
+						for (short i = 0; i < UsedCount - startColour; i++)
 						{
-							var difference = Math.Sqrt(Math.Pow(color.R - this[startColour + i, 0], 2) + Math.Pow(color.G - this[startColour + i, 1], 2) + Math.Pow(color.B - this[startColour + i, 2], 2));
-							if (difference < biggestDifference)
+							var difference = Difference(this[startColour + i, 0], this[startColour + i, 1], this[startColour + i, 2]);
+							if (IsPerfectMatch(difference)) return (short)(i + startColour);
+							if (IsMatch(difference))
 							{
 								result = (short)(i + startColour);
 								biggestDifference = (int)difference;
@@ -139,8 +163,9 @@ namespace NextGraphics.Models
 			{
 				for (short i = reMap; i < reMap + 16; i++)
 				{
-					var difference = Math.Sqrt(Math.Pow(color.R - this[startColour + i, 0], 2) + Math.Pow(color.G - this[startColour + i, 1], 2) + Math.Pow(color.B - this[startColour + i, 2], 2));
-					if (difference < biggestDifference)
+					var difference = Difference(this[startColour + i, 0], this[startColour + i, 1], this[startColour + i, 2]);
+					if (IsPerfectMatch(difference)) return (short)(i + startColour);
+					if (IsMatch(difference))
 					{
 						result = (short)(i + startColour);
 						biggestDifference = (int)difference;
