@@ -146,6 +146,7 @@
     <Compile Include="Exporting\Common\RemapCallbacks.cs" />
     <Compile Include="Exporting\Exporter.cs" />
     <Compile Include="Exporting\Exporters\Base\BaseExporter.cs" />
+    <Compile Include="Exporting\Exporters\Common\PaletteBankSetupExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryPaletteExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilemapsExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryDataExporter.cs" />

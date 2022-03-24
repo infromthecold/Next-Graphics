@@ -305,7 +305,7 @@ namespace NextGraphics.Exporting.Remapping
 			}
 
 			// After we establish all blocks, we should update tiles in previously parsed tilemaps so that palette banks will match. This is only needed when auto-banking is enabled.
-			if (Data.Model.IsFourBitData && Data.Model.PaletteParsingMethod == PaletteParsingMethod.ByObjects)
+			if (Data.Model.IsFourBitPaletteAutoBankingEnabled)
 			{
 				Model.ForEachSourceTilemap((tilemap, index) =>
 				{

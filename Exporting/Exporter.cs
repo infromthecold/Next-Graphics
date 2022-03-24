@@ -1,6 +1,7 @@
 ﻿using NextGraphics.Exporting.Common;
 using NextGraphics.Exporting.Exporters;
 using NextGraphics.Exporting.Exporters.Base;
+using NextGraphics.Exporting.Exporters.Common;
 using NextGraphics.Exporting.Exporters.ZXNext;
 using NextGraphics.Exporting.PaletteMapping;
 using NextGraphics.Exporting.Remapping;
@@ -71,6 +72,8 @@ namespace NextGraphics.Exporting
 
 		private void RegisterTilesExporters(List<BaseExporter> exporters)
 		{
+			exporters.Add(new PaletteBankSetupExporter());
+
 			if (Data.Model.BinaryOutput && Data.Model.BinaryFramesAttributesOutput)
 			{
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.
@@ -102,6 +105,8 @@ namespace NextGraphics.Exporting
 
 		private void RegisterSpriteExporters(List<BaseExporter> exporters)
 		{
+			exporters.Add(new PaletteBankSetupExporter());
+
 			if (Data.Model.BinaryOutput && Data.Model.BinaryFramesAttributesOutput)
 			{
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.

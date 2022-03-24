@@ -62,6 +62,11 @@ namespace NextGraphics.Models
 		/// </summary>
 		public bool IsFourBitData { get => SpritesFourBit || OutputType == OutputType.Tiles; }
 
+		/// <summary>
+		/// Convenience for simpler checks on whether auto bank offsets handling is enabled or not.
+		/// </summary>
+		public bool IsFourBitPaletteAutoBankingEnabled { get => IsFourBitData && PaletteParsingMethod == PaletteParsingMethod.ByObjects; }
+
 		#endregion
 
 		#region Properties raising events

@@ -75,6 +75,12 @@ namespace NextGraphics.Exporting.Common
 
 		#endregion
 
+		#region Data setup during export
+
+		public byte DefaultPaletteBank { get; set; } = 0;
+
+		#endregion
+
 		#region Helpers
 
 		public void Clear()

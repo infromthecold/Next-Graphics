@@ -197,7 +197,7 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 							column.Values.SetupListItems();
 						}
 
-						if (Model.SpritesFourBit || Model.OutputType == OutputType.Tiles)
+						if (Model.IsFourBitData)
 						{
 							if ((x & 1) == 0)
 							{
