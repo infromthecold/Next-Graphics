@@ -666,7 +666,18 @@ namespace NextGraphics.Models
 
 		#endregion
 
-		#region Default sizes
+		#region Defaults
+
+		public void ResetFileExtensionsToDefaults()
+		{
+			ExportAssemblerFileExtension = "asm";
+			ExportBinaryDataFileExtension = "bin";
+			ExportBinaryPaletteFileExtension = "pal";
+			ExportBinaryTilesInfoFileExtension = "blk";
+			ExportBinaryTileAttributesFileExtension = "map";
+			ExportBinaryTilemapFileExtension = "tilemap";
+			ExportSpriteAttributesFileExtension = "til";
+		}
 
 		/// <summary>
 		/// Constraints the given proposed width to be within acceptable range based on project parameters.

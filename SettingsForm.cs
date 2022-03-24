@@ -76,6 +76,28 @@ namespace NextGraphics
 			optionsTilesAcrossTextBox.Text = e.Size.ToString();
 		}
 
+		private void extensionsDefaultsButton_Click(object sender, EventArgs e)
+		{
+			Model.ResetFileExtensionsToDefaults();
+
+			UpdateExtensionControls();
+		}
+
+		private void extensionsLastUsedButton_Click(object sender, EventArgs e)
+		{
+			Model.ExportAssemblerFileExtension = Properties.Settings.Default.ExportAssemblerFileExtension;
+			Model.ExportBinaryDataFileExtension = Properties.Settings.Default.ExportBinaryDataFileExtension;
+			Model.ExportBinaryPaletteFileExtension = Properties.Settings.Default.ExportBinaryPaletteFileExtension;
+
+			Model.ExportBinaryTilesInfoFileExtension = Properties.Settings.Default.ExportBinaryTilesInfoFileExtension;
+			Model.ExportBinaryTileAttributesFileExtension = Properties.Settings.Default.ExportBinaryTileAttributesFileExtension;
+			Model.ExportBinaryTilemapFileExtension = Properties.Settings.Default.ExportBinaryTilemapFileExtension;
+
+			Model.ExportSpriteAttributesFileExtension = Properties.Settings.Default.ExportSpriteAttributesFileExtension;
+
+			UpdateExtensionControls();
+		}
+
 		#endregion
 
 		#region Helpers
@@ -232,7 +254,7 @@ namespace NextGraphics
 		private void MapModelToFileExtensionControls()
 		{
 			// Settings changes work on the fact that model properties are called exactly like the settings keys.
-			extensionsAssemblerTtextBox.MapTextTo(() => Model.ExportAssemblerFileExtension, (name, value) => Properties.Settings.Default.SetAndSave(name, value));
+			extensionsAssemblerTextBox.MapTextTo(() => Model.ExportAssemblerFileExtension, (name, value) => Properties.Settings.Default.SetAndSave(name, value));
 			extensionsBinaryDataTextBox.MapTextTo(() => Model.ExportBinaryDataFileExtension, (name, value) => Properties.Settings.Default.SetAndSave(name, value));
 			extensionsPaletteTextBox.MapTextTo(() => Model.ExportBinaryPaletteFileExtension, (name, value) => Properties.Settings.Default.SetAndSave(name, value));
 			
@@ -262,6 +284,19 @@ namespace NextGraphics
 				Properties.Settings.Default.InfoPrintTilemap = value;
 				Properties.Settings.Default.Save();
 			});
+		}
+
+		private void UpdateExtensionControls()
+		{
+			extensionsAssemblerTextBox.Text = Model.ExportAssemblerFileExtension;
+			extensionsBinaryDataTextBox.Text = Model.ExportBinaryDataFileExtension;
+			extensionsPaletteTextBox.Text = Model.ExportBinaryPaletteFileExtension;
+
+			extensionsTilemapInfoTextBox.Text = Model.ExportBinaryTilesInfoFileExtension;
+			extensionsTilemapAttributesTextBox.Text = Model.ExportBinaryTileAttributesFileExtension;
+			extensionsTilemapTextBox.Text = Model.ExportBinaryTilemapFileExtension;
+
+			extensionsSpritesAttributesTextBox.Text = Model.ExportSpriteAttributesFileExtension;
 		}
 
 		#endregion
@@ -371,10 +406,7 @@ namespace NextGraphics
 					memberParent.GetType().GetProperty(memberName).SetValue(memberParent, value);
 
 					// Inform the caller.
-					if (customAction != null)
-					{
-						customAction(memberName, value);
-					}
+					customAction?.Invoke(memberName, value);
 				};
 			}
 

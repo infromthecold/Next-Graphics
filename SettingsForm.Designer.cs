@@ -107,7 +107,7 @@
 			this.extensionsPaletteLabel = new System.Windows.Forms.Label();
 			this.extensionsPaletteTextBox = new System.Windows.Forms.TextBox();
 			this.extensionsAssemblerLabel = new System.Windows.Forms.Label();
-			this.extensionsAssemblerTtextBox = new System.Windows.Forms.TextBox();
+			this.extensionsAssemblerTextBox = new System.Windows.Forms.TextBox();
 			this.extensionsBinaryDataLabel = new System.Windows.Forms.Label();
 			this.extensionsBinaryDataTextBox = new System.Windows.Forms.TextBox();
 			this.extensionsTilemapInfoTextBox = new System.Windows.Forms.TextBox();
@@ -119,6 +119,8 @@
 			this.applicationRenderTileAttributesCheckBox = new System.Windows.Forms.CheckBox();
 			this.applicationRenderTileIndexesCheckBox = new System.Windows.Forms.CheckBox();
 			this.applicationBehaviorPrintTilemapInfoCheckBox = new System.Windows.Forms.CheckBox();
+			this.extensionsDefaultsButton = new System.Windows.Forms.Button();
+			this.extensionsLastUsedButton = new System.Windows.Forms.Button();
 			this.settingsTabControl.SuspendLayout();
 			this.commonTabPage.SuspendLayout();
 			this.commonIgnoreRepeatsTableLayoutPanel.SuspendLayout();
@@ -857,6 +859,8 @@
 			// 
 			// fileExtensionsTabPage
 			// 
+			this.fileExtensionsTabPage.Controls.Add(this.extensionsLastUsedButton);
+			this.fileExtensionsTabPage.Controls.Add(this.extensionsDefaultsButton);
 			this.fileExtensionsTabPage.Controls.Add(this.tableLayoutPanel1);
 			this.fileExtensionsTabPage.Location = new System.Drawing.Point(4, 22);
 			this.fileExtensionsTabPage.Name = "fileExtensionsTabPage";
@@ -886,7 +890,7 @@
 			this.tableLayoutPanel1.Controls.Add(this.extensionsPaletteLabel, 0, 3);
 			this.tableLayoutPanel1.Controls.Add(this.extensionsPaletteTextBox, 1, 3);
 			this.tableLayoutPanel1.Controls.Add(this.extensionsAssemblerLabel, 0, 1);
-			this.tableLayoutPanel1.Controls.Add(this.extensionsAssemblerTtextBox, 1, 1);
+			this.tableLayoutPanel1.Controls.Add(this.extensionsAssemblerTextBox, 1, 1);
 			this.tableLayoutPanel1.Controls.Add(this.extensionsBinaryDataLabel, 0, 2);
 			this.tableLayoutPanel1.Controls.Add(this.extensionsBinaryDataTextBox, 1, 2);
 			this.tableLayoutPanel1.Controls.Add(this.extensionsTilemapInfoTextBox, 3, 1);
@@ -1023,11 +1027,11 @@
 			// 
 			// extensionsAssemblerTtextBox
 			// 
-			this.extensionsAssemblerTtextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-			this.extensionsAssemblerTtextBox.Location = new System.Drawing.Point(69, 32);
-			this.extensionsAssemblerTtextBox.Name = "extensionsAssemblerTtextBox";
-			this.extensionsAssemblerTtextBox.Size = new System.Drawing.Size(64, 20);
-			this.extensionsAssemblerTtextBox.TabIndex = 46;
+			this.extensionsAssemblerTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+			this.extensionsAssemblerTextBox.Location = new System.Drawing.Point(69, 32);
+			this.extensionsAssemblerTextBox.Name = "extensionsAssemblerTtextBox";
+			this.extensionsAssemblerTextBox.Size = new System.Drawing.Size(64, 20);
+			this.extensionsAssemblerTextBox.TabIndex = 46;
 			// 
 			// extensionsBinaryDataLabel
 			// 
@@ -1146,6 +1150,26 @@
 			this.applicationBehaviorPrintTilemapInfoCheckBox.Text = "Print tilemap info (slow)";
 			this.applicationBehaviorPrintTilemapInfoCheckBox.UseVisualStyleBackColor = true;
 			// 
+			// extensionsDefaultsButton
+			// 
+			this.extensionsDefaultsButton.Location = new System.Drawing.Point(7, 139);
+			this.extensionsDefaultsButton.Name = "extensionsDefaultsButton";
+			this.extensionsDefaultsButton.Size = new System.Drawing.Size(75, 23);
+			this.extensionsDefaultsButton.TabIndex = 62;
+			this.extensionsDefaultsButton.Text = "Defaults";
+			this.extensionsDefaultsButton.UseVisualStyleBackColor = true;
+			this.extensionsDefaultsButton.Click += new System.EventHandler(this.extensionsDefaultsButton_Click);
+			// 
+			// extensionsLastUsedButton
+			// 
+			this.extensionsLastUsedButton.Location = new System.Drawing.Point(89, 139);
+			this.extensionsLastUsedButton.Name = "extensionsLastUsedButton";
+			this.extensionsLastUsedButton.Size = new System.Drawing.Size(75, 23);
+			this.extensionsLastUsedButton.TabIndex = 63;
+			this.extensionsLastUsedButton.Text = "Last Used";
+			this.extensionsLastUsedButton.UseVisualStyleBackColor = true;
+			this.extensionsLastUsedButton.Click += new System.EventHandler(this.extensionsLastUsedButton_Click);
+			// 
 			// SettingsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1244,7 +1268,7 @@
 		private System.Windows.Forms.ComboBox tilemapExportTypeComboBox;
 		private System.Windows.Forms.TabPage fileExtensionsTabPage;
 		private System.Windows.Forms.Label extensionsGeneralTitleLabel;
-		private System.Windows.Forms.TextBox extensionsAssemblerTtextBox;
+		private System.Windows.Forms.TextBox extensionsAssemblerTextBox;
 		private System.Windows.Forms.Label extensionsAssemblerLabel;
 		private System.Windows.Forms.TextBox extensionsBinaryDataTextBox;
 		private System.Windows.Forms.Label extensionsBinaryDataLabel;
@@ -1270,5 +1294,7 @@
 		private System.Windows.Forms.Label applicationRenderingLabel;
 		private System.Windows.Forms.Label applicationBehaviorLabel;
 		private System.Windows.Forms.CheckBox applicationBehaviorPrintTilemapInfoCheckBox;
+		private System.Windows.Forms.Button extensionsLastUsedButton;
+		private System.Windows.Forms.Button extensionsDefaultsButton;
 	}
 }
