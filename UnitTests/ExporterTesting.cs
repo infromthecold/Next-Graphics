@@ -579,6 +579,8 @@ namespace UnitTests
 
 		#region Tilemaps
 
+		#region Map
+
 		// note: we only test different tile formats here, repeated for assembler and binary output. Also: we don't include an image, therefore we don't have to map colours, we simply take the ones loaded from project file.
 
 		[TestMethod]
@@ -641,6 +643,44 @@ namespace UnitTests
 
 		#endregion
 
+		#region Images
+
+		// images mode is tested separately since it's slightly more involved than other modes and we should ensure it doesn't break with future updates
+
+		[TestMethod]
+		[DataRow(TilemapExportType.AttributesIndexAsWord)]
+		[DataRow(TilemapExportType.AttributesIndexAsTwoBytes)]
+		[DataRow(TilemapExportType.IndexOnly)]
+		public void Tilemap_Images_Assembler(TilemapExportType tilemapType)
+		{
+			TestImageTilemaps((model, parameters, exporter) =>
+			{
+				// setup
+				model.TilemapExportType = tilemapType;
+				model.BinaryOutput = false;
+
+				// execute
+				exporter.MapPaletteFromFirstImage();
+				exporter.Remap();
+				exporter.Export();
+
+				// verify
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(10, parameters.TilemapsStream, "tilemaps");
+				VerifyAssembler(parameters, DataCreator.AssemblerImageTilemaps(parameters.Time, tilemapType));
+			});
+		}
+
+		#endregion
+
+		#endregion
+
 		#region Creating
 
 		private void TestTilemaps(Action<MainModel, ExportParameters, Exporter> tester)
@@ -655,6 +695,37 @@ namespace UnitTests
 					model.OutputType = OutputType.Tiles;
 					model.CommentType = CommentType.Full;
 					model.PaletteFormat = PaletteFormat.Next8Bit;
+
+					// After common values are set, we can call out to tester to further setup or run the test.
+					tester(model, parameters, exporter);
+				});
+		}
+
+		private void TestImageTilemaps(Action<MainModel, ExportParameters, Exporter> tester)
+		{
+			Test(
+				DataCreator.XmlDocumentTiles(), // we can reuse tiles document
+				(model) =>
+				{
+					var image = DataCreator.ProjectTilemapImage();
+					var tilemapData = SourceTilemapImage.TilemapDataFromImage(image, model);
+
+					// We must assign source bitmap in order for palette mapping to pick it up.
+					var tilemapSource = new SourceTilemapImage("tilemap1", model, tilemapData);
+					tilemapSource.AssignSourceBitmap(image);
+
+					model.AddSource(tilemapSource);
+				},
+				(model, parameters, exporter) =>
+				{
+					// For tilemaps we only test a subset since the rest of the export is exactly like tiles/sprites. So we can setup common values here.
+					model.OutputType = OutputType.Tiles;
+					model.CommentType = CommentType.Full;
+					model.PaletteFormat = PaletteFormat.Next8Bit;
+
+					// The following parameters are important since these options were used to create expected files.
+					model.PaletteParsingMethod = PaletteParsingMethod.ByObjects;
+					model.TransparentFirst = true;
 
 					// After common values are set, we can call out to tester to further setup or run the test.
 					tester(model, parameters, exporter);
@@ -683,6 +754,28 @@ namespace UnitTests
 			XmlDocument sourceDocument, 
 			Bitmap sourceBitmap, 
 			TilemapData sourceTilemap,
+			Action<MainModel, ExportParameters, Exporter> tester)
+		{
+			Test(
+				sourceDocument,
+				(model) =>
+				{
+					if (sourceBitmap != null)
+					{
+						model.AddSource(new SourceImage("image1", sourceBitmap));
+					}
+
+					if (sourceTilemap != null)
+					{
+						model.AddSource(new SourceTilemapMap("tilemap1", model, sourceTilemap));
+					}
+				},
+				tester);
+		}
+
+		private void Test(
+			XmlDocument sourceDocument,
+			Action<MainModel> configurator,
 			Action<MainModel, ExportParameters, Exporter> tester)
 		{
 			// We use memory streams so that we can later on examine the results without writing out files - faster and more predictable. 
@@ -735,18 +828,12 @@ namespace UnitTests
 				// We load default data and rely on each test to set it up as needed. This sets up model with default parameters, but we can later change them as needed in each specific test.
 				var model = DataCreator.LoadModel(sourceDocument);
 
-				if (sourceBitmap != null)
-				{
-					model.AddSource(new SourceImage("image1", sourceBitmap));
-				}
+				// Ask configurator to setup the model as needed for given unit test.
+				configurator(model);
 
-				if (sourceTilemap != null)
-				{
-					model.AddSource(new SourceTilemapMap("tilemap1", model, sourceTilemap));
-				}
-
-				// Prepare exporter.
+				// Prepare exporter and make its data available to model.
 				var exporter = new Exporter(model, parameters);
+				model.ExportData = exporter.Data;
 
 				// Call out tester closure to actually perform the test.
 				tester(model, parameters, exporter);
@@ -759,7 +846,7 @@ namespace UnitTests
 					}
 				}
 			}
-		}
+		} 
 
 		#endregion
 
@@ -885,11 +972,35 @@ namespace UnitTests
 			public static void MapPaletteFromFirstImage(this Exporter exporter)
 			{
 				var model = exporter.Data.Model;
-				var image = model.SourceImages().First();
 
-				var palette = exporter.MapPalette(image.Data);
+				void Map(Bitmap bitmap)
+				{
+					var palette = exporter.MapPalette(bitmap);
 
-				palette.CopyTo(model.Palette);
+					palette.CopyTo(model.Palette);
+				}
+
+				var images = model.SourceImages();
+				if (images.Count() > 0)
+				{
+					var image = model.SourceImages().First();
+					Map(image.Data);
+					return;
+				}
+
+				var tilemaps = model.SourceTilemaps();
+				if (tilemaps.Count() > 0)
+				{
+					foreach (var tilemap in tilemaps)
+					{
+						if (tilemap.IsSourceImage)
+						{
+							var image = tilemap.SourceBitmap;
+							Map(image);
+							return;
+						}
+					}
+				}
 			}
 		}
 	}

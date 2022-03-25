@@ -230,6 +230,18 @@
   <ItemGroup>
     <None Include="Resources\export-sprites-asm-nocomments-9bit-manual.asm" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Project-Tilemap-Image.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-tilemapsimages-asm-bytes.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-tilemapsimages-asm-index.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-tilemapsimages-asm-words.asm" />
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

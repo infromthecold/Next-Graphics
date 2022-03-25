@@ -89,7 +89,7 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export assembler associated with {comments} {paletteFormat} {parsingMethod}");
+			throw new ArgumentException($"No tile export assembler associated with {comments} {paletteFormat} {parsingMethod}");
 		}
 
 		public static string AssemblerTilesBinary(
@@ -113,7 +113,7 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export tiles assembler+binary associated with {comments} {parsingMethod}");
+			throw new ArgumentException($"No binary tile export tiles assembler+binary associated with {comments} {parsingMethod}");
 		}
 
 		public static string AssemblerTilesBinaryAttributes(
@@ -137,7 +137,7 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export tiles assembler+binary associated with {comments} {parsingMethod}");
+			throw new ArgumentException($"No binary+attributes tile export tiles assembler+binary associated with {comments} {parsingMethod}");
 		}
 
 		#endregion
@@ -170,7 +170,7 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export assembler associated with {comments} {paletteFormat}");
+			throw new ArgumentException($"No sprite export assembler associated with {comments} {paletteFormat}");
 		}
 
 		public static string AssemblerSpritesBinary(
@@ -191,7 +191,7 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export assembler associated with {comments}");
+			throw new ArgumentException($"No binary sprite export assembler associated with {comments}");
 		}
 
 		public static string AssemblerSpritesBinaryAttributes(
@@ -212,7 +212,7 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export assembler associated with {comments}");
+			throw new ArgumentException($"No binary+attributes sprite export assembler associated with {comments}");
 		}
 
 		public static string AssemblerSprites4Bit(
@@ -236,7 +236,7 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export assembler associated with {parsingMethod}");
+			throw new ArgumentException($"No 4-bit sprite export assembler associated with {parsingMethod}");
 		}
 
 		#endregion
@@ -262,7 +262,7 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export assembler associated with {tilemapExportType}");
+			throw new ArgumentException($"No tilemap export assembler associated with {tilemapExportType}");
 		}
 
 		public static string AssemblerTilemapsBinary(
@@ -285,7 +285,29 @@ namespace UnitTests.Data
 				}
 			}
 
-			throw new ArgumentException($"No export assembler associated with {tilemapExportType}");
+			throw new ArgumentException($"No binary tilamp export assembler associated with {tilemapExportType}");
+		}
+
+		public static string AssemblerImageTilemaps(
+			DateTime time,
+			TilemapExportType tilemapExportType)
+		{
+			var results = new[]
+{
+				new { type = TilemapExportType.AttributesIndexAsWord,		result = Properties.Resources.export_tilemapsimages_asm_words },
+				new { type = TilemapExportType.AttributesIndexAsTwoBytes,	result = Properties.Resources.export_tilemapsimages_asm_bytes },
+				new { type = TilemapExportType.IndexOnly,					result = Properties.Resources.export_tilemapsimages_asm_index }
+			};
+
+			foreach (var option in results)
+			{
+				if (option.type == tilemapExportType)
+				{
+					return FormattedAssembler(option.result, time);
+				}
+			}
+
+			throw new ArgumentException($"No image tilemap export assembler associated with {tilemapExportType}");
 
 		}
 
@@ -561,6 +583,11 @@ namespace UnitTests.Data
 			}
 
 			return result;
+		}
+
+		public static Bitmap ProjectTilemapImage()
+		{
+			return Properties.Resources.Project_Tilemap_Image;
 		}
 
 		#endregion

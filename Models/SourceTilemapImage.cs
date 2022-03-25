@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 
 namespace NextGraphics.Models
 {
@@ -29,12 +30,39 @@ namespace NextGraphics.Models
 		{
 			try
 			{
-				Bitmap image = new Bitmap(filename);
+				// Image based tilemap can reload itself even if filename is not provided - in such case it uses previously assigned bitmap. However if that's also not available, no reload occurs.
+				if (Filename != null && File.Exists(Filename))
+				{
+					Bitmap image = new Bitmap(filename);
+					AssignSourceBitmap(image);
+					return TilemapDataFromImage(image, model);
+				}
 
+				if (SourceBitmap != null)
+				{
+					return TilemapDataFromImage(SourceBitmap, model);
+				}
+
+				return null;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		#endregion
+
+		#region Helpers
+
+		public static TilemapData TilemapDataFromImage(Bitmap image, MainModel model)
+		{
+			try
+			{
 				var tiles = new List<IndexedBitmap>();
 
 				var result = new TilemapData(
-					image.Width / model.GridWidth, 
+					image.Width / model.GridWidth,
 					image.Height / model.GridHeight);
 
 				(int Index, BlockType Type) MatchingTile(IndexedBitmap tile)
@@ -158,8 +186,6 @@ namespace NextGraphics.Models
 					y += model.GridHeight;
 					tileY++;
 				}
-
-				AssignSourceBitmap(image);
 
 				return result;
 			}

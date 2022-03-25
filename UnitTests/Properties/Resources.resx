@@ -349,4 +349,16 @@
   <data name="export_sprites_palette_9bit_manual" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\export-sprites-palette-9bit-manual.pal;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="export_tilemapsimages_asm_bytes" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-tilemapsimages-asm-bytes.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="export_tilemapsimages_asm_index" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-tilemapsimages-asm-index.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="export_tilemapsimages_asm_words" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\export-tilemapsimages-asm-words.asm;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
+  <data name="Project_Tilemap_Image" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Project-Tilemap-Image.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

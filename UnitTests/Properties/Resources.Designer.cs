@@ -292,7 +292,7 @@ namespace UnitTests.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to // Test.asm
-        ///// Created on 15 March 2022 13:53:22 by the NextGraphics tool from
+        ///// Created on 24 March 2022 12:18:36 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
         ///TEST_COLOURS:		equ	48
@@ -346,7 +346,7 @@ namespace UnitTests.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to // Test.asm
-        ///// Created on 15 March 2022 13:53:22 by the NextGraphics tool from
+        ///// Created on 24 March 2022 12:18:36 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
         ///TEST_COLOURS:		equ	48
@@ -878,6 +878,78 @@ namespace UnitTests.Properties {
             get {
                 object obj = ResourceManager.GetObject("export_tilemaps_palette", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 25 March 2022 10:57:08 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	24
+        ///
+        ///TestPalette:
+        ///			db	%11100011,%00000001	//	255,0,255
+        ///			db	%10110110,%00000001	//	182,182,182
+        ///			db	%10010010,%00000000	//	145,145,145
+        ///			db	%01101101,%00000001	//	109,109,109
+        ///			db	%01001001,%00000000	//	72,72,72
+        ///			db	%11111111,%00000001	//	255,255,255
+        ///			db	%11011011,%00000000	//	218,218,218
+        ///			db	%00100100,%00000001	//	36,36,36
+        ///			db	%00000000,%0 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tilemapsimages_asm_bytes {
+            get {
+                return ResourceManager.GetString("export_tilemapsimages_asm_bytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 25 March 2022 10:57:08 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	24
+        ///
+        ///TestPalette:
+        ///			db	%11100011,%00000001	//	255,0,255
+        ///			db	%10110110,%00000001	//	182,182,182
+        ///			db	%10010010,%00000000	//	145,145,145
+        ///			db	%01101101,%00000001	//	109,109,109
+        ///			db	%01001001,%00000000	//	72,72,72
+        ///			db	%11111111,%00000001	//	255,255,255
+        ///			db	%11011011,%00000000	//	218,218,218
+        ///			db	%00100100,%00000001	//	36,36,36
+        ///			db	%00000000,%0 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tilemapsimages_asm_index {
+            get {
+                return ResourceManager.GetString("export_tilemapsimages_asm_index", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 25 March 2022 10:57:08 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	24
+        ///
+        ///TestPalette:
+        ///			db	%11100011,%00000001	//	255,0,255
+        ///			db	%10110110,%00000001	//	182,182,182
+        ///			db	%10010010,%00000000	//	145,145,145
+        ///			db	%01101101,%00000001	//	109,109,109
+        ///			db	%01001001,%00000000	//	72,72,72
+        ///			db	%11111111,%00000001	//	255,255,255
+        ///			db	%11011011,%00000000	//	218,218,218
+        ///			db	%00100100,%00000001	//	36,36,36
+        ///			db	%00000000,%0 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tilemapsimages_asm_words {
+            get {
+                return ResourceManager.GetString("export_tilemapsimages_asm_words", resourceCulture);
             }
         }
         
@@ -1504,6 +1576,16 @@ namespace UnitTests.Properties {
             get {
                 object obj = ResourceManager.GetObject("Project_Tilemap_2x2", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Project_Tilemap_Image {
+            get {
+                object obj = ResourceManager.GetObject("Project_Tilemap_Image", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

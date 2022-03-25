@@ -75,8 +75,11 @@ namespace NextGraphics.Models
 		/// <summary>
 		/// Subclasses that are loaded from a bitmap, should register it with this method.
 		/// </summary>
-		protected void AssignSourceBitmap(Bitmap bitmap)
+		public void AssignSourceBitmap(Bitmap bitmap)
 		{
+			// If we have a bitmap assigned, we can always reload data, even if filename is otherwise not provided.
+			AutoLoad = bitmap != null;
+
 			SourceBitmap = bitmap;
 		}
 
