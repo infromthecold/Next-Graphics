@@ -541,14 +541,10 @@ namespace NextGraphics
 		{
 			if (!isPaletteSet)
 			{
-				var result = MessageBox.Show("Do you want to set the palette mapping first?", "Palette mapping", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-				if (result == DialogResult.Yes)
-				{
-					SelectPalette(() => {
-						RemapData();
-					});
-					return;
-				}
+				SelectPalette(() => {
+					RemapData();
+				});
+				return;
 			}
 
 			RemapData();
