@@ -11,6 +11,9 @@ namespace NextGraphics.Exporting.Remapping
 	/// <summary>
 	/// Remaps blocks to make the data ready for export.
 	/// </summary>
+	/// <remarks>
+	/// Note: this class is designed so that a new instance is created for each run. Calling <see cref="Remap"/> on previous instances will result in wrong results or even crashes. Such implementation is simpler and more DRY since we don't have to reset properties and fields to defaults - instead, default value is assigned at the place of definition which is again simpler and quicker than adding a property in one place and then searching for "reset" method where the default value is set.
+	/// </remarks>
 	public class Remapper
 	{
 		private ExportData Data { get; }
@@ -336,14 +339,7 @@ namespace NextGraphics.Exporting.Remapping
 				};
 
 				Data.Chars[indexForLoop] = charBitmap;
-
-				for (int y = 0; y < tempData.Height; y++)
-				{
-					for (int x = 0; x < tempData.Width; x++)
-					{
-						Data.Chars[indexForLoop].SetPixel(x, y, tempData.GetPixel(x, y));
-					}
-				}
+				Data.Chars[indexForLoop].CopyFrom(tempData, 0, 0);
 
 				Data.SortIndexes[i] = indexForLoop;
 				RequestCharacterDisplay(indexForLoop);
@@ -503,7 +499,6 @@ namespace NextGraphics.Exporting.Remapping
 				}
 			}
 
-			objectGridX = 1;
 			outChar = 1;
 		}
 
