@@ -44,7 +44,7 @@
 			this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openMixerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+			this.colorDialog = new System.Windows.Forms.ColorDialog();
 			this.copyMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -184,10 +184,12 @@
 			// 
 			// ImageSelectForm
 			// 
+			this.AcceptButton = this.importButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
 			this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
+			this.CancelButton = this.cancelButton;
 			this.ClientSize = new System.Drawing.Size(513, 405);
 			this.Controls.Add(this.toLabel);
 			this.Controls.Add(this.toTextBox);
@@ -225,7 +227,7 @@
 		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem openMixerToolStripMenuItem;
-		private System.Windows.Forms.ColorDialog colorDialog1;
+		private System.Windows.Forms.ColorDialog colorDialog;
 		private System.Windows.Forms.TextBox fromTextBox;
 		private System.Windows.Forms.TextBox countTextBox;
 		private System.Windows.Forms.TextBox toTextBox;

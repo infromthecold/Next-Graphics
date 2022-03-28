@@ -52,14 +52,14 @@ namespace NextGraphics.Exporting.Common
 		public Func<Stream> BinaryStream { get; set; }
 
 		/// <summary>
-		/// Stream into which map data will be generated (only if configuration requires this). If property is null, this is not generated.
+		/// Stream into which each tile attributes and index will be generated (only if configuration requires this). If property is null, this is not generated.
 		/// </summary>
-		public Func<Stream> MapStream { get; set; }
+		public Func<Stream> TileAttributesStream { get; set; }
 
 		/// <summary>
 		/// Stream into which tiles data will be generated (only if configuration requires this). If property is null, this is not generated.
 		/// </summary>
-		public Func<Stream> TilesStream { get; set; }
+		public Func<Stream> SpriteAttributesStream { get; set; }
 
 		/// <summary>
 		/// Stream into which tiles info data will be generated (only if configuration requires this). If property is null, this is not generated.
@@ -69,17 +69,22 @@ namespace NextGraphics.Exporting.Common
 		/// <summary>
 		/// Stream into which tiles image will be generated (only if configuration requires this). If property is null, this is not generated.
 		/// </summary>
-		public Func<Stream> TilesImageStream { get; set; }
+		public Func<Stream> SpritesImageStream { get; set; }
+
+		/// <summary>
+		/// Stream into which each individual tilemap will be generated (only if configuration requires this). Called for each individual tilemap with tilemap index passed in as parameter. If property is null, this is not generated.
+		/// </summary>
+		public Func<int, Stream> TilemapsStream { get; set; }
 
 		/// <summary>
 		/// Stream into which blocks image will be generated (only if configuration requires this). If property is null, this is not generated.
 		/// </summary>
-		public Func<Stream> BlocksImageStream { get; set; }
+		public Func<Stream> TilesImageStream { get; set; }
 
 		/// <summary>
 		/// Stream into which individual block images will be generated (only if configuration requires this). Called for each individual block, which index is passed in as parameter. If property is null, this is not generated.
 		/// </summary>
-		public Func<int, Stream> BlockImageStream { get; set; }
+		public Func<int, Stream> SpriteImageStream { get; set; }
 
 		#endregion
 

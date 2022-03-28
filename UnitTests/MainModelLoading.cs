@@ -41,10 +41,53 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(3, model.Images.Count);
-			Assert.AreEqual(@"C:\tiles.bmp", model.Images[0].Filename);
-			Assert.AreEqual(@"/a/file/with/slashes", model.Images[1].Filename);
-			Assert.AreEqual(@"\the\file\with\backslashes", model.Images[2].Filename);
+			Assert.AreEqual(3, model.Sources.Count);
+			Assert.AreEqual(@"C:\tiles.bmp", model.Sources[0].Filename);
+			Assert.AreEqual(@"/a/file/with/slashes", model.Sources[1].Filename);
+			Assert.AreEqual(@"\the\file\with\backslashes", model.Sources[2].Filename);
+		}
+
+		#endregion
+
+		#region Dialogs
+
+		[TestMethod]
+		public void DialogsOutputIndexLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual(1, model.OutputFilesFilterIndex);
+		}
+
+		[TestMethod]
+		public void DialogsImageIndexLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual(2, model.AddImagesFilterIndex);
+		}
+
+		[TestMethod]
+		public void DialogsTilemapIndexLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual(3, model.AddTilemapsFilterIndex);
 		}
 
 		#endregion
@@ -152,9 +195,9 @@ namespace UnitTests
 			// execute
 			model.Load(TestDocument());
 
-			// verify
-			Assert.AreEqual(9, model.GridWidth);
-			Assert.AreEqual(10, model.GridHeight);
+			// verify: note that grid is always adjusted into multiple of default size.
+			Assert.AreEqual(8, model.GridWidth);
+			Assert.AreEqual(16, model.GridHeight);
 		}
 
 		[TestMethod]
@@ -180,7 +223,7 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(true, model.FourBit);
+			Assert.AreEqual(true, model.SpritesFourBit);
 		}
 
 		[TestMethod]
@@ -193,7 +236,7 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(true, model.Reduced);
+			Assert.AreEqual(true, model.SpritesReduced);
 		}
 
 		[TestMethod]
@@ -206,7 +249,7 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(true, model.AttributesAsText);
+			Assert.AreEqual(true, model.SpritesAttributesAsText);
 		}
 
 		[TestMethod]
@@ -232,7 +275,7 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(true, model.BinaryBlocksOutput);
+			Assert.AreEqual(true, model.BinaryFramesAttributesOutput);
 		}
 
 		[TestMethod]
@@ -245,8 +288,8 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(false, model.BlocksAsImage);
-			Assert.AreEqual(true, model.TilesAsImage);
+			Assert.AreEqual(false, model.TilesExportAsImage);
+			Assert.AreEqual(true, model.SpritesExportAsImages);
 		}
 
 		[TestMethod]
@@ -259,8 +302,8 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(true, model.TransparentBlocks);
-			Assert.AreEqual(false, model.TransparentTiles);
+			Assert.AreEqual(true, model.TilesExportAsImageTransparent);
+			Assert.AreEqual(false, model.SpritesExportAsImageTransparent);
 		}
 
 		[TestMethod]
@@ -273,7 +316,7 @@ namespace UnitTests
 			model.Load(TestDocument());
 
 			// verify
-			Assert.AreEqual(5, model.BlocsAcross);
+			Assert.AreEqual(5, model.BlocksAcross);
 		}
 
 		[TestMethod]
@@ -309,6 +352,28 @@ namespace UnitTests
 		}
 
 		[TestMethod]
+		public void SettingsFourBitParsingLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute & verify
+			model.Load(TestDocument());
+			Assert.AreEqual(PaletteParsingMethod.ByObjects, model.PaletteParsingMethod);
+		}
+
+		[TestMethod]
+		public void SettingsTilemapExportTypeLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute & verify
+			model.Load(TestDocument());
+			Assert.AreEqual(TilemapExportType.AttributesIndexAsTwoBytes, model.TilemapExportType);
+		}
+
+		[TestMethod]
 		public void SettingsPaletteFormatLoaded()
 		{
 			// setup
@@ -321,6 +386,101 @@ namespace UnitTests
 			// execute & verify
 			model.Load(TestDocument(paletteFormat: "1"));
 			Assert.AreEqual(PaletteFormat.Next9Bit, model.PaletteFormat);
+		}
+
+		#endregion
+
+		#region Export extensions
+
+		[TestMethod]
+		public void ExportExtensionAssemblerLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex1", model.ExportAssemblerFileExtension);
+		}
+
+		[TestMethod]
+		public void ExportExtensionPaletteLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex2", model.ExportBinaryPaletteFileExtension);
+		}
+
+		[TestMethod]
+		public void ExportExtensionDataLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex3", model.ExportBinaryDataFileExtension);
+		}
+
+		[TestMethod]
+		public void ExportExtensionTilesInfoLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex4", model.ExportBinaryTilesInfoFileExtension);
+		}
+
+		[TestMethod]
+		public void ExportExtensionTileAttributesLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex5", model.ExportBinaryTileAttributesFileExtension);
+		}
+
+		[TestMethod]
+		public void ExportExtensionTilemapLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex6", model.ExportBinaryTilemapFileExtension);
+		}
+
+		[TestMethod]
+		public void ExportExtensionSpriteAttributesLoaded()
+		{
+			// setup
+			var model = new MainModel();
+
+			// execute
+			model.Load(TestDocument());
+
+			// verify
+			Assert.AreEqual("ex7", model.ExportSpriteAttributesFileExtension);
 		}
 
 		#endregion

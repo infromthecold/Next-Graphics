@@ -1,7 +1,9 @@
 ﻿using NextGraphics.Exporting.Common;
 using NextGraphics.Exporting.Exporters;
 using NextGraphics.Exporting.Exporters.Base;
+using NextGraphics.Exporting.Exporters.Common;
 using NextGraphics.Exporting.Exporters.ZXNext;
+using NextGraphics.Exporting.PaletteMapping;
 using NextGraphics.Exporting.Remapping;
 using NextGraphics.Models;
 
@@ -70,20 +72,22 @@ namespace NextGraphics.Exporting
 
 		private void RegisterTilesExporters(List<BaseExporter> exporters)
 		{
-			if (Data.Model.BinaryOutput && Data.Model.BinaryBlocksOutput)
+			exporters.Add(new PaletteBankSetupExporter());
+
+			if (Data.Model.BinaryOutput && Data.Model.BinaryFramesAttributesOutput)
 			{
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.
-				exporters.Add(new ZXNextBinaryTilesDataExporter());
-				exporters.Add(new ZXNextBinaryTilesMapExporter());
-				exporters.Add(new ZXNextBinaryTilesExporter());
+				exporters.Add(new ZXNextBinaryDataExporter());
+				exporters.Add(new ZXNextBinaryTileAttributesExporter());
+				exporters.Add(new ZXNextBinaryTilemapsExporter());
 				exporters.Add(new ZXNextBinaryPaletteExporter());
 				exporters.Add(new ZXNextAssemblerExporter());
 			}
 			else if (Data.Model.BinaryOutput)
 			{
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.
-				exporters.Add(new ZXNextBinaryTilesDataExporter());
-				exporters.Add(new ZXNextBinaryTilesMapExporter());
+				exporters.Add(new ZXNextBinaryDataExporter());
+				exporters.Add(new ZXNextBinaryTilemapsExporter());
 				exporters.Add(new ZXNextBinaryPaletteExporter());
 				exporters.Add(new ZXNextAssemblerExporter());
 			}
@@ -92,12 +96,7 @@ namespace NextGraphics.Exporting
 				exporters.Add(new ZXNextAssemblerExporter());
 			}
 
-			if (Data.Model.BlocksAsImage)
-			{
-				exporters.Add(new ZXNextBlocksAsImageExporter());
-			}
-
-			if (Data.Model.TilesAsImage)
+			if (Data.Model.TilesExportAsImage)
 			{
 				exporters.Add(new ZXNextTilesAsImageExporter());
 				exporters.Add(new ZXNextTilesInfoExporter());
@@ -106,18 +105,20 @@ namespace NextGraphics.Exporting
 
 		private void RegisterSpriteExporters(List<BaseExporter> exporters)
 		{
-			if (Data.Model.BinaryOutput && Data.Model.BinaryBlocksOutput)
+			exporters.Add(new PaletteBankSetupExporter());
+
+			if (Data.Model.BinaryOutput && Data.Model.BinaryFramesAttributesOutput)
 			{
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.
-				exporters.Add(new ZXNextBinaryTilesDataExporter());
-				exporters.Add(new ZXNextBinaryTilesExporter());
+				exporters.Add(new ZXNextBinaryDataExporter());
+				exporters.Add(new ZXNextBinarySpriteAttributesExporter());
 				exporters.Add(new ZXNextBinaryPaletteExporter());
 				exporters.Add(new ZXNextAssemblerExporter());
 			}
 			else if (Data.Model.BinaryOutput)
 			{
 				// Note: assembler exporter must be last because it needs data produced by binary exporters.
-				exporters.Add(new ZXNextBinaryTilesDataExporter());
+				exporters.Add(new ZXNextBinaryDataExporter());
 				exporters.Add(new ZXNextBinaryPaletteExporter());
 				exporters.Add(new ZXNextAssemblerExporter());
 			}
@@ -126,11 +127,10 @@ namespace NextGraphics.Exporting
 				exporters.Add(new ZXNextAssemblerExporter());
 			}
 
-			// Note: sprites mode exports each block as its own image, but it's controller by tiles flag (not sure if this is a bug or feature, leaving it as such, it's really simple to change!
-			if (Data.Model.TilesAsImage)
+			if (Data.Model.SpritesExportAsImages)
 			{
-				exporters.Add(new ZXNextSpritesBlocksAsImageExporter());
-				exporters.Add(new ZXNextSpritesTilesAsImageExporter());
+				exporters.Add(new ZXNextSpritesAsImagesExporter());
+				exporters.Add(new ZXNextSpritesAsImageExporter());
 			}
 		}
 
@@ -139,7 +139,24 @@ namespace NextGraphics.Exporting
 		#region Preparing data
 
 		/// <summary>
-		/// Prepares all the data needed for export by cutting and remaping images.
+		/// Prepares the palette from the given bitmap.
+		/// </summary>
+		public PaletteMapper.Palette MapPalette(Bitmap bitmap)
+		{
+			return new PaletteMapper(Data).Map(bitmap);
+		}
+
+		/// <summary>
+		/// Loads palette from the given source palette file.
+		/// </summary>
+		/// <param name="filename"></param>
+		public PaletteMapper.Palette LoadPalette(string filename)
+		{
+			return new PaletteMapper(Data).Load(filename);
+		}
+
+		/// <summary>
+		/// Prepares all the data needed for export by cutting and remaping images. This method expects palette is already set.
 		/// </summary>
 		/// <remarks>
 		/// Note: for the moment being this need to be called manually before <see cref="Export"/>, but ideally it should be called automatically as part of export - an idea for the future improvement.
@@ -219,50 +236,115 @@ namespace NextGraphics.Exporting
 		/// <remarks>
 		/// This function should be called after <see cref="Remap"/> since it uses data generated there.
 		/// </remarks>
-		public void GenerateInfoString(Action<Color, String> appender)
+		public void GenerateInfoString(Action<Color, string> appender)
 		{
-			if (!Data.IsRemapped || Data.ObjectSize == 0) return;
-
-			var count = (Data.Model.GridWidth / Data.ObjectSize) * (Data.Model.GridHeight / Data.ObjectSize);
-
-			for (int b = 0; b < Data.BlocksCount; b++)
+			void append(string text = "", Color? color = null)
 			{
-				appender(Color.Black, $"{b}\t");
+				appender(color ?? Color.Black, text);
+			}
 
-				for (int chr = 0; chr < count; chr++)
+			void appendLine(string text = "", Color? color = null)
+			{
+				append(text, color);
+				append(Environment.NewLine, color);
+			}
+
+			if (Data.IsRemapped && Data.ObjectSize > 0)
+			{
+				var count = (Data.Model.GridWidth / Data.ObjectSize) * (Data.Model.GridHeight / Data.ObjectSize);
+
+				appendLine("BLOCKS");
+
+				for (int b = 0; b < Data.BlocksCount; b++)
 				{
-					appender(Color.Black, "\t");
+					append($"{b}\t");
 
-					var color = Data.Sprites[b].infos[chr].HasTransparent ? Color.Red : Color.Black;
-					appender(color, $"{Data.SortIndexes[Data.Sprites[b].infos[chr].OriginalID]},");
+					for (int chr = 0; chr < count; chr++)
+					{
+						append("\t");
+
+						var color = Data.Sprites[b].Infos[chr].HasTransparent ? Color.Red : Color.Black;
+						var text = $"{Data.SortIndexes[Data.Sprites[b].Infos[chr].OriginalID]},";
+						append(text, color);
+					}
+
+					appendLine();
 				}
 
-				appender(Color.Black, Environment.NewLine);
-			}
+				appendLine();
+				appendLine("COUNTS");
 
-			appender(Color.Black, Environment.NewLine);
-			appender(Color.Black, "COUNTS");
-			appender(Color.Black, Environment.NewLine);
-
-			int[] counts = new int[ExportData.MAX_BLOCKS];
-			for (int c = 0; c < counts.Length; c++)
-			{
-				counts[c] = 0;
-			}
-
-			for (int b = 0; b < Data.BlocksCount; b++)
-			{
-				appender(Color.Black, $"{b}\t");
-
-				for (int chr = 0; chr < count; chr++)
+				int[] counts = new int[Data.BlocksCount];
+				for (int c = 0; c < counts.Length; c++)
 				{
-					counts[Data.SortIndexes[Data.Sprites[b].infos[chr].OriginalID]]++;
+					counts[c] = 0;
+				}
+
+				for (int b = 0; b < Data.BlocksCount; b++)
+				{
+					append($"{b}\t");
+
+					for (int chr = 0; chr < count; chr++)
+					{
+						var id = Data.Sprites[b].Infos[chr].OriginalID;
+						counts[Data.SortIndexes[id]]++;
+					}
+				}
+
+				for (int c = 0; c < counts.Length; c++)
+				{
+					appendLine($"{c}\t{counts[c]}");
 				}
 			}
 
-			for (int c = 0; c < counts.Length; c++)
+			var tilemaps = Data.Model.SourceTilemaps().ToList();
+			if (tilemaps.Count > 0 && Properties.Settings.Default.InfoPrintTilemap)
 			{
-				appender(Color.Black, $"{c}\t{counts[c]}{Environment.NewLine}");
+				appendLine();
+				appendLine("TILEMAPS");
+
+				foreach (var tilemap in tilemaps)
+				{
+					appendLine();
+					appendLine($"{tilemap.Filename}");
+
+					if (tilemap.IsDataValid)
+					{
+						appendLine($"{tilemap.Data.Width}x{tilemap.Data.Height} tiles");
+						appendLine();
+
+						foreach (var tile in tilemap.Data.DistinctTiles)
+						{
+							append($"tile {tile.Index} ");
+							appendLine($"palette bank {tile.PaletteBank}", Color.Gray);
+						}
+						appendLine();
+
+						for (int y = 0; y < tilemap.Data.Height; y++)
+						{
+							append($"{y}: ");
+
+							for (int x = 0; x < tilemap.Data.Width; x++)
+							{
+								var tile = tilemap.Data.GetTile(x, y);
+
+								var flippedX = tile.FlippedX ? "x" : " ";
+								var flippedY = tile.FlippedY ? "y" : " ";
+								var rotated = tile.RotatedClockwise ? "r" : " ";
+								
+								append($"{tile.Index}");
+								append($"{flippedX}{flippedY}{rotated}", Color.Gray);
+								if (x < tilemap.Data.Width - 1) append(", ");
+							}
+
+							appendLine();
+						}
+					}
+					else
+					{
+						appendLine("No data available");
+					}
+				}
 			}
 		}
 

@@ -65,16 +65,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\Export-Sprites-Bin.bin" />
-    <None Include="Resources\Export-Sprites-Pal-PaletteNext9Bit.pal" />
-    <None Include="Resources\Export-Sprites-Pal.pal" />
-    <None Include="Resources\Export-Sprites-Til.til" />
-    <None Include="Resources\Export-Tiles-Bin.bin" />
-    <None Include="Resources\Export-Tiles-Blk.blk" />
-    <None Include="Resources\Export-Tiles-Map.map" />
-    <None Include="Resources\Export-Tiles-Pal-PaletteNext9Bit.pal" />
-    <None Include="Resources\Export-Tiles-Pal.pal" />
-    <None Include="Resources\Export-Tiles-Til.til" />
+    <None Include="Resources\export-sprites-attributes.sattr" />
+    <None Include="Resources\export-sprites-binary-detect.spr" />
+    <None Include="Resources\export-sprites-binary-manual.spr" />
+    <None Include="Resources\export-sprites-palette-8bit-detect.pal" />
+    <None Include="Resources\export-sprites-palette-8bit-manual.pal" />
+    <None Include="Resources\export-sprites-palette-9bit-detect.pal" />
+    <None Include="Resources\export-sprites-palette-9bit-manual.pal" />
+    <None Include="Resources\export-tilemaps-binary-index.tilemap" />
+    <None Include="Resources\export-tilemaps-binary-word.tilemap" />
+    <None Include="Resources\export-tilemaps-palette.pal" />
+    <None Include="Resources\export-tiles-binary-detect.spr" />
+    <None Include="Resources\export-tiles-binary-manual.spr" />
+    <None Include="Resources\export-tiles-info-detect.tinfo" />
+    <None Include="Resources\export-tiles-info-manual.tinfo" />
+    <None Include="Resources\export-tiles-palette-8bit-detect.pal" />
+    <None Include="Resources\export-tiles-palette-8bit-manual.pal" />
+    <None Include="Resources\export-tiles-palette-9bit-detect.pal" />
+    <None Include="Resources\export-tiles-palette-9bit-manual.pal" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NextGraphics.csproj">
@@ -90,122 +98,149 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Tiles-Asm.asm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Export-Tiles-Asm-NoComments.asm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Export-Tiles-Asm-Binary.asm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Export-Tiles-Asm-Binary-NoComments.asm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Export-Tiles-Asm-Binary-PaletteNext9Bit.asm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Export-Tiles-Asm-BinaryBlocks.asm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Export-Tiles-Asm-BinaryBlocks-NoComments.asm" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Export-Tiles-Image-Blocks.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Export-Tiles-Image-Tiles.bmp" />
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="Resources\Project-Tilemap-2x2.map" />
     <None Include="Resources\Project-Tiles-Templated.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Project-Tiles.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Project-Tiles-Image1.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Project-Sprites-Image1.bmp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Project-Sprites.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Asm.asm" />
+    <None Include="Resources\export-tiles-asmbinaryattrs-nocomments-manual.asm" />
+    <None Include="Resources\export-tiles-asmbinaryattrs-nocomments-detect.asm" />
+    <None Include="Resources\export-tiles-asmbinaryattrs-fullcomments-manual.asm" />
+    <None Include="Resources\export-tiles-asmbinaryattrs-fullcomments-detect.asm" />
+    <None Include="Resources\export-tiles-asmbinary-nocomments-manual.asm" />
+    <None Include="Resources\export-tiles-asmbinary-nocomments-detect.asm" />
+    <None Include="Resources\export-tiles-asmbinary-fullcomments-manual.asm" />
+    <None Include="Resources\export-tiles-asmbinary-fullcomments-detect.asm" />
+    <None Include="Resources\export-tiles-image-detect.bmp" />
+    <None Include="Resources\export-tiles-image-manual.bmp" />
+    <None Include="Resources\Project-Tiles-Image.bmp" />
+    <None Include="Resources\export-tiles-asm-fullcomments-8bit-detect.asm" />
+    <None Include="Resources\export-tiles-asm-fullcomments-8bit-manual.asm" />
+    <None Include="Resources\export-tiles-asm-fullcomments-9bit-manual.asm" />
+    <None Include="Resources\export-tiles-asm-fullcomments-9bit-detect.asm" />
+    <None Include="Resources\export-tiles-asm-nocomments-9bit-manual.asm" />
+    <None Include="Resources\export-tiles-asm-nocomments-9bit-detect.asm" />
+    <None Include="Resources\export-tiles-asm-nocomments-8bit-manual.asm" />
+    <None Include="Resources\export-tiles-asm-nocomments-8bit-detect.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Asm-NoComments.asm" />
+    <None Include="Resources\Project-Sprites-Image.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Tiles.bmp" />
+    <None Include="Resources\export-sprites-image.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block0.bmp" />
+    <None Include="Resources\export-sprites-image0.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block1.bmp" />
+    <None Include="Resources\export-sprites-image1.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block2.bmp" />
+    <None Include="Resources\export-sprites-image2.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block3.bmp" />
+    <None Include="Resources\export-sprites-image3.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block4.bmp" />
+    <None Include="Resources\export-sprites-image4.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block5.bmp" />
+    <None Include="Resources\export-sprites-image5.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block6.bmp" />
+    <None Include="Resources\export-sprites-image6.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block7.bmp" />
+    <None Include="Resources\export-sprites-image7.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block8.bmp" />
+    <None Include="Resources\export-sprites-image8.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block9.bmp" />
+    <None Include="Resources\export-sprites-image9.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block10.bmp" />
+    <None Include="Resources\export-sprites-image10.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block11.bmp" />
+    <None Include="Resources\export-sprites-asmbinary-fullcomments.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block12.bmp" />
+    <None Include="Resources\export-sprites-asmbinary-nocomments.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Image-Block13.bmp" />
+    <None Include="Resources\export-sprites-asmbinaryattrs-fullcomments.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Asm-Binary.asm" />
+    <None Include="Resources\export-sprites-asmbinaryattrs-nocomments.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Asm-Binary-NoComments.asm" />
+    <None Include="Resources\export-sprites-asm4bit-8bit-manual.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Asm-BinaryBlocks.asm" />
+    <None Include="Resources\export-sprites-asm4bit-9bit-manual.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Asm-BinaryBlocks-NoComments.asm" />
+    <None Include="Resources\export-sprites-asm4bit-8bit-detect.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Export-Sprites-Asm-BinaryBlocks-NoComments-PaletteNext9Bit.asm" />
-    <None Include="Resources\Export-Sprites-Asm-BinaryBlocks-PaletteNext9Bit.asm" />
-    <None Include="Resources\Export-Sprites-Asm-Binary-NoComments-PaletteNext9Bit.asm" />
-    <None Include="Resources\Export-Sprites-Asm-Binary-PaletteNext9Bit.asm" />
-    <Content Include="Resources\Export-Sprites-Asm-NoComments-PaletteNext9Bit.asm" />
-    <Content Include="Resources\Export-Sprites-Asm-PaletteNext9Bit.asm" />
-    <None Include="Resources\Export-Tiles-Asm-BinaryBlocks-NoComments-PaletteNext9Bit.asm" />
-    <None Include="Resources\Export-Tiles-Asm-BinaryBlocks-PaletteNext9Bit.asm" />
-    <None Include="Resources\Export-Tiles-Asm-Binary-NoComments-PaletteNext9Bit.asm" />
-    <Content Include="Resources\Export-Tiles-Asm-NoComments-PaletteNext9Bit.asm" />
-    <Content Include="Resources\Export-Tiles-Asm-PaletteNext9Bit.asm" />
+    <None Include="Resources\export-sprites-asm4bit-9bit-detect.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-tilemaps-asm-bytes.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-tilemaps-asm-index.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-tilemaps-asm-words.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-tilemaps-asmbinary-index.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-tilemaps-asmbinary-word.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-fullcomments-8bit-detect.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-fullcomments-8bit-manual.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-fullcomments-9bit-detect.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-fullcomments-9bit-manual.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-nocomments-8bit-detect.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-nocomments-8bit-manual.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-nocomments-9bit-detect.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-sprites-asm-nocomments-9bit-manual.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Project-Tilemap-Image.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-tilemapsimages-asm-bytes.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-tilemapsimages-asm-index.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\export-tilemapsimages-asm-words.asm" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -133,11 +133,11 @@
     <Compile Include="AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DEBUGFORM.cs">
+    <Compile Include="DebugForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DEBUGFORM.Designer.cs">
-      <DependentUpon>DEBUGFORM.cs</DependentUpon>
+    <Compile Include="DebugForm.Designer.cs">
+      <DependentUpon>DebugForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Exporting\Common\ExportCallbacks.cs" />
     <Compile Include="Exporting\Common\ExportData.cs" />
@@ -146,18 +146,19 @@
     <Compile Include="Exporting\Common\RemapCallbacks.cs" />
     <Compile Include="Exporting\Exporter.cs" />
     <Compile Include="Exporting\Exporters\Base\BaseExporter.cs" />
+    <Compile Include="Exporting\Exporters\Common\PaletteBankSetupExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryPaletteExporter.cs" />
-    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesDataExporter.cs" />
-    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesExporter.cs" />
-    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilesMapExporter.cs" />
-    <Compile Include="Exporting\Exporters\Base\BaseObjectAsImageExporter.cs" />
-    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBlocksAsImageExporter.cs" />
-    <Compile Include="Exporting\Exporters\ZXNext\ZXNextAssemblerExporter.cs" />
-    <Compile Include="Exporting\Exporters\ZXNext\ZXNextSpritesBlocksAsImageExporter.cs" />
-    <Compile Include="Exporting\Exporters\ZXNext\ZXNextSpritesTilesAsImageExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTilemapsExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryDataExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinarySpriteAttributesExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextBinaryTileAttributesExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextTilesAsImageExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextAssemblerExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextSpritesAsImagesExporter.cs" />
+    <Compile Include="Exporting\Exporters\ZXNext\ZXNextSpritesAsImageExporter.cs" />
     <Compile Include="Exporting\Exporters\ZXNext\ZXNextTilesInfoExporter.cs" />
     <Compile Include="Exporting\ExportPathProvider.cs" />
+    <Compile Include="Exporting\PaletteMapping\PaletteMapper.cs" />
     <Compile Include="Exporting\Remapping\Remapper.cs" />
     <Compile Include="Models\BlockInfo.cs" />
     <Compile Include="Models\Colour.cs" />
@@ -165,7 +166,13 @@
     <Compile Include="Models\IndexedBitmap.cs" />
     <Compile Include="Models\MainModel.cs" />
     <Compile Include="Models\Palette.cs" />
+    <Compile Include="Models\SourceFile.cs" />
     <Compile Include="Models\SourceImage.cs" />
+    <Compile Include="Models\SourceTilemap.cs" />
+    <Compile Include="Models\SourceTilemapImage.cs" />
+    <Compile Include="Models\SourceTilemapMap.cs" />
+    <Compile Include="Models\SourceTilemapStm.cs" />
+    <Compile Include="Models\SourceTilemapText.cs" />
     <Compile Include="Models\SpriteInfo.cs" />
     <Compile Include="Models\Types.cs" />
     <Compile Include="InfoForm.cs">
@@ -224,11 +231,14 @@
     <Compile Include="ImageForm.Designer.cs">
       <DependentUpon>ImageForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\CommonExtensions.cs" />
+    <Compile Include="Utils\DialogFilterBuilder.cs" />
+    <Compile Include="Utils\FormHelpers.cs" />
     <EmbeddedResource Include="AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DEBUGFORM.resx">
-      <DependentUpon>DEBUGFORM.cs</DependentUpon>
+    <EmbeddedResource Include="DebugForm.resx">
+      <DependentUpon>DebugForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>

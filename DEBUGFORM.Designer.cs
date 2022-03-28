@@ -1,6 +1,6 @@
 ﻿namespace NextGraphics
 {
-	partial class DEBUGFORM
+	partial class DebugForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -28,39 +28,39 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.DEBUG_PICTURE = new System.Windows.Forms.PictureBox();
-			((System.ComponentModel.ISupportInitialize)(this.DEBUG_PICTURE)).BeginInit();
+			this.debugPictureBox = new System.Windows.Forms.PictureBox();
+			((System.ComponentModel.ISupportInitialize)(this.debugPictureBox)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// DEBUG_PICTURE
 			// 
-			this.DEBUG_PICTURE.Location = new System.Drawing.Point(3, 1);
-			this.DEBUG_PICTURE.Name = "DEBUG_PICTURE";
-			this.DEBUG_PICTURE.Size = new System.Drawing.Size(504, 360);
-			this.DEBUG_PICTURE.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.DEBUG_PICTURE.TabIndex = 0;
-			this.DEBUG_PICTURE.TabStop = false;
-			this.DEBUG_PICTURE.Paint += new System.Windows.Forms.PaintEventHandler(this.DEBUGDisplay_Paint);
+			this.debugPictureBox.Location = new System.Drawing.Point(3, 1);
+			this.debugPictureBox.Name = "DEBUG_PICTURE";
+			this.debugPictureBox.Size = new System.Drawing.Size(504, 360);
+			this.debugPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.debugPictureBox.TabIndex = 0;
+			this.debugPictureBox.TabStop = false;
+			this.debugPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.debugPictureBox_Paint);
 			// 
 			// DEBUGFORM
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(510, 364);
-			this.Controls.Add(this.DEBUG_PICTURE);
+			this.Controls.Add(this.debugPictureBox);
 			this.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "DEBUGFORM";
 			this.ShowIcon = false;
 			this.Text = "Debug";
-			((System.ComponentModel.ISupportInitialize)(this.DEBUG_PICTURE)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.debugPictureBox)).EndInit();
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.PictureBox DEBUG_PICTURE;
+		private System.Windows.Forms.PictureBox debugPictureBox;
 	}
 }

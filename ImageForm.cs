@@ -1,35 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using NextGraphics.Utils;
+
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NextGraphics
 {
 	public partial class ImageForm : Form
 	{
-		private Bitmap inputImage;
-		private int blockXSize = 32;
-		private int blockYSize = 32;
-		private double pictureWidth;
-		private double pictureHeight;
-		private double pictureRatio;
-		private double imageRatio;
-		private double maginNumber;
-		private double realPictureHeight;
-		private double realPictureWidth;
-		private double windowScale;
-		private double windowScaleX;
-		private double windowScaleY;
-		private double windowLeftOffset;
-		private double windowTopOffset;
-		private float yscaleAdjust = 1.0f;
+		private static double ScaleFactor = 10.0;
+		private double ImageScaleFactor { get => scaleTrackBar.Value / ScaleFactor; }
+
+		private Bitmap image;
+		private Parameters parameters;
 
 		#region Initialization & Disposal
 
@@ -53,10 +37,10 @@ namespace NextGraphics
 				components.Dispose();
 			}
 
-			if (disposing && inputImage != null)
+			if (disposing && image != null)
 			{
-				inputImage.Dispose();
-				inputImage = null;
+				image.Dispose();
+				image = null;
 			}
 
 			base.Dispose(disposing);
@@ -68,175 +52,156 @@ namespace NextGraphics
 
 		private void sourcePictureBox_Paint(object sender, PaintEventArgs e)
 		{
-			// Paints a grid on top of the image.
-			Graphics g = e.Graphics;
+			// Draw pixel perfect images (as much as possible, depending on image scale factor).
+			var g = e.Graphics;
 			g.InterpolationMode = InterpolationMode.NearestNeighbor;
-			float xscale = scaleHScrollBar.Value / 50.0f;
-			float yscale = scaleHScrollBar.Value * yscaleAdjust;
-			sourcePictureBox.Width = (int)((float)sourceImagePanel.Width * xscale) - 32;
-			sourcePictureBox.Height = (int)((float)sourceImagePanel.Height * yscale) - 32;
+			g.Clear();
 
-			g.DrawImage(sourcePictureBox.Image,
-				new Rectangle(0, 0, sourcePictureBox.Width, sourcePictureBox.Height),	// destination rectangle
-				0, 0,								// upper-left corner of source rectangle
-				sourcePictureBox.Image.Width,		// width of source rectangle
-				sourcePictureBox.Image.Height,		// height of source rectangle
-				GraphicsUnit.Pixel);
+			var scaleFactor = ImageScaleFactor;
 
-			Pen pen = new Pen(Color.Black);
-			float[] dashValues = { 4, 2 };
-			pen.DashPattern = dashValues;
-
-			// horizontal lines
-			Point fromLine = new Point();
-			Point tooLine = new Point();
-			int xScale = (int)(blockXSize * windowScaleX);
-			int yScale = (int)(blockYSize * windowScaleY);
-			for (int y = 0; y < sourcePictureBox.Image.Height / blockYSize; ++y)
+			// If we have dynamic image provider set, update the image. Ask for size that would fit our current view (but we will stretch the image if different size is returned).
+			if (parameters != null && parameters.ImageProvider != null)
 			{
-				fromLine.X = 0;
-				fromLine.Y = y * yScale;
-				tooLine.X = sourcePictureBox.Image.Width * xScale;
-				tooLine.Y = y * yScale;
+				if (image != null) image.Dispose();
 
-				g.DrawLine(pen, fromLine.X, fromLine.Y, tooLine.X, tooLine.Y);
+				image = parameters.ImageProvider(scaleFactor);
 			}
 
-			// verticle lines
-			for (int x = 0; x < sourcePictureBox.Image.Width / blockXSize; ++x)
+			// Render the image. Since we always constrain picture box aspect ratio to our image, we simply stretch the image into the whole control. Note how we dynamically setup top-left coordinate based on scale. This ensures the image is aligned with the grid.
+			if (image != null)
 			{
-				fromLine.X = x * xScale;
-				fromLine.Y = 0;
-				tooLine.X = x * xScale;
-				tooLine.Y = sourcePictureBox.Image.Height * yScale;
-				g.DrawLine(pen, fromLine.X, fromLine.Y, tooLine.X, tooLine.Y);
+				var topLeft = (int)(ImageScaleFactor / 2.0);
+
+				g.DrawImage(image,
+					new Rectangle(topLeft, topLeft, sourcePictureBox.Width, sourcePictureBox.Height),
+					new Rectangle(0, 0, image.Width, image.Height),
+					GraphicsUnit.Pixel);
+			}
+
+			// Render overlay if needed.
+			if (parameters != null && parameters.OverlayProvider != null)
+			{
+				parameters.OverlayProvider(g, sourcePictureBox.Size, scaleFactor);
+			}
+
+			// Render grid if required.
+			if (parameters != null && parameters.GridWidth != null && parameters.GridHeight != null && ImageScaleFactor >= 1)
+			{
+				double gridWidth = parameters.GridWidth();
+				double gridHeight = parameters.GridHeight();
+				g.DrawGrid(image, gridWidth, gridHeight, scaleFactor, scaleFactor);
 			}
 		}
 
 		private void sourceImagePanel_Resize(object sender, EventArgs e)
 		{
-			if (Visible)
-			{
-				UpdateVariables();
-			}
-
 			Invalidate();
 			Update();
 			Refresh();
 		}
 
-		private void scaleHScrollBar_Scroll(object sender, ScrollEventArgs e)
+		private void scaleTrackBar_ValueChanged(object sender, EventArgs e)
 		{
-			if (Visible)
-			{
-				UpdateVariables();
-			}
+			UpdateScale();
 
-			Invalidate(true);
-			Update();
-			Refresh();
+			scaleNumericUpDown.ValueChanged -= scaleNumericUpDown_ValueChanged;
+			scaleNumericUpDown.Value = (decimal)ImageScaleFactor;
+			scaleNumericUpDown.ValueChanged += scaleNumericUpDown_ValueChanged;
+		}
+
+		private void scaleNumericUpDown_ValueChanged(object sender, EventArgs e)
+		{
+			scaleTrackBar.Value = (int)((double)scaleNumericUpDown.Value * ScaleFactor);
 		}
 
 		#endregion
 
 		#region Public
 
-		public void LoadImage(string filename, int gridXSize, int gridYSize)
+		public void LoadImage(string filename, int gridWidth, int gridHeight)
 		{
-			using (var fs = new System.IO.FileStream(filename, System.IO.FileMode.Open))
+			using (var stream = new System.IO.FileStream(filename, System.IO.FileMode.Open))
 			{
-				var bmp = new Bitmap(fs);
-				inputImage = new Bitmap(bmp.Width, bmp.Height, PixelFormat.Format24bppRgb);
-				for (int y = 0; y < bmp.Height; y++)
+				parameters = new Parameters
 				{
-					for (int x = 0; x < bmp.Width; x++)
-					{
-						inputImage.SetPixel(x, y, bmp.GetPixel(x, y));
-					}
-				}		
+					GridWidth = () => gridWidth,
+					GridHeight = () => gridHeight,
+				};
+
+				AssignImage(new Bitmap(stream));
+				UpdateScale();
 			}
-
-			Width = inputImage.Width + 50;
-			Height = inputImage.Height + 75;
-
-			sourcePictureBox.Image = inputImage;
-			sourcePictureBox.Width = Math.Max(inputImage.Width - 32, inputImage.Width);
-			sourcePictureBox.Height = Math.Max(inputImage.Height - 32, inputImage.Height);
-
-			yscaleAdjust = 0.03f;
-			blockXSize = gridXSize;
-			blockYSize = gridYSize;
 
 			Invalidate(true);
 			Update();
 		}
 
-		public void CopyImage(Bitmap image, int gridXSize, int gridYSize, float yAdjust = 0f)
+		public void CopyImage(Bitmap image, Parameters parameters = null)
 		{
-			if (yAdjust > 0f)
-			{
-				yscaleAdjust = yAdjust;
-			}
-			else
-			{
-				yscaleAdjust = (float)image.Width / (float)image.Height;
-			}
+			this.parameters = parameters;
 
-			Width = image.Width + 50;
-			Height = image.Height + 75;
-
-			sourcePictureBox.Image = image;
-			sourcePictureBox.Width = image.Width - 32;
-			sourcePictureBox.Height = image.Height - 32;
-
-			blockXSize = gridXSize;
-			blockYSize = gridYSize;
+			AssignImage(image);
+			UpdateScale();
 
 			Invalidate(true);
 			Update();
 		}
 
-		public void SetImage(Bitmap image)
+		public void SetImage(Bitmap image, Parameters parameters = null)
 		{
-			inputImage = image;
-			sourcePictureBox.Image = inputImage;
+			this.parameters = parameters;
+
+			AssignImage(image);
+			UpdateScale();
 		}
 
 		public void SetPixel(int x, int y, Color color)
 		{
-			inputImage.SetPixel(x, y, color);
+			image.SetPixel(x, y, color);
 		}
 
 		#endregion
 
 		#region Helpers
 
-		private void UpdateVariables()
+		private void AssignImage(Bitmap image)
 		{
-			pictureWidth = sourcePictureBox.Width;
-			pictureHeight = sourcePictureBox.Height;
+			this.image = image;
 
-			pictureRatio = (float)pictureWidth / pictureHeight;
-			imageRatio = (float)((float)sourcePictureBox.Image.Width / (float)sourcePictureBox.Image.Height);
-			maginNumber = imageRatio / pictureRatio;
+			sourcePictureBox.Width = image.Width;
+			sourcePictureBox.Height = image.Height;
+		}
 
-			realPictureHeight = sourcePictureBox.Image.Height / maginNumber;
-			realPictureWidth = sourcePictureBox.Image.Width / maginNumber;
+		private void UpdateScale()
+		{
+			var scaledWidth = (int)(image.Width * ImageScaleFactor);
+			var scaledHeight = (int)(image.Height * ImageScaleFactor);
 
-			windowScaleX = (pictureWidth / (float)sourcePictureBox.Image.Width);
-			windowScaleY = (pictureHeight / (float)sourcePictureBox.Image.Height);
+			sourcePictureBox.Width = scaledWidth;
+			sourcePictureBox.Height = scaledHeight;
 
-			if ((pictureHeight / (float)sourcePictureBox.Image.Height) < (pictureWidth / (float)sourcePictureBox.Image.Width))
-			{
-				windowScale = windowScaleX;
-			}
-			else
-			{
-				windowScale = windowScaleY;
-			}
+			sourcePictureBox.Invalidate();
+			sourcePictureBox.Update();
+		}
 
-			windowLeftOffset = (pictureWidth - (sourcePictureBox.Image.Width * windowScale)) * 0.5f;
-			windowTopOffset = (pictureHeight - (sourcePictureBox.Image.Height * windowScale)) * 0.5f;
+		#endregion
+
+		#region Declarations
+
+		public class Parameters
+		{
+			public Func<int> GridWidth { get; set; } = null;
+			public Func<int> GridHeight { get; set; } = null;
+
+			/// <summary>
+			/// Optional, if non-null, it will be called on every reload to dynamically update the image. The parameter is current scale factor in case implementor want to do scale-sensitive drawing.
+			/// </summary>
+			public Func<double, Bitmap> ImageProvider { get; set; } = null;
+
+			/// <summary>
+			/// Optional, if non-null, the image is first rendered and scaled, then this method is called passing it the scaling factor, size of the rendered image (taking into account scaling factor) and <see cref="Graphics"/> that can be used to render additional data. After this call completes, the grid is rendered on top.
+			/// </summary>
+			public Action<Graphics, Size, double> OverlayProvider { get; set; } = null;
 		}
 
 		#endregion

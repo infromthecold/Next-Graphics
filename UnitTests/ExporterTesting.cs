@@ -12,6 +12,7 @@ using UnitTests.Data;
 using NextGraphics.Exporting.Common;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using UnitTests.ExporterTestingExtensions;
 
 namespace UnitTests
 {
@@ -24,864 +25,88 @@ namespace UnitTests
 	[TestClass]
 	public class ExporterTesting
 	{
-		#region Tiles
-
-		#region Assembler
-
-		[TestMethod]
-		public void Tiles_Assembler_FullComments_PaletteNext8Bit()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.Full));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_NoComments_PaletteNext8Bit()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_FullComments_PaletteNext9Bit()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next9Bit;
-				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.Full, PaletteFormat.Next9Bit));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_NoComments_PaletteNext9Bit()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next9Bit;
-				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, PaletteFormat.Next9Bit));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_BlocksImage()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = true;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, withImages: true));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_TilesImage()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = true;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinary(parameters.TilesInfoStream, DataCreator.TilesBlk(), "blk");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageTiles(), "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, withImages: true));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_BlocksTilesImage()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = true;
-				model.TilesAsImage = true;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinary(parameters.TilesInfoStream, DataCreator.TilesBlk(), "blk");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageTiles(), "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, CommentType.None, withImages: true));
-			});
-		}
-
-		#endregion
-
-		#region Assembler+Binary
-
-		[TestMethod]
-
-		public void Tiles_Assembler_Binary_FullComments_PaletteNext8Bit()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.Full));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_Binary_FullComments_PaletteNext9Bit()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next9Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(PaletteFormat.Next9Bit), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.Full, PaletteFormat.Next9Bit));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_Binary_NoComments_PaletteNext8Bit()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.None));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_Binary_NoComments_PaletteNext9Bit()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next9Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(PaletteFormat.Next9Bit), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.None, PaletteFormat.Next9Bit));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_Binary_BlocksImage()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = true;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.Full, withImages: true));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_Binary_TilesImage()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = true;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinary(parameters.TilesInfoStream, DataCreator.TilesBlk(), "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageTiles(), "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.Full, withImages: true));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_Binary_BlocksTilesImage()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = true;
-				model.TilesAsImage = true;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinary(parameters.TilesInfoStream, DataCreator.TilesBlk(), "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageTiles(), "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinary(parameters.Time, CommentType.Full, withImages: true));
-			});
-		}
-
-		#endregion
-
-		#region Assembler+Binary+Blocks
-
-		[TestMethod]
-		public void Tiles_Assembler_BinaryBlocks_FullComments_PaletteNext8Bit()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.Full));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_BinaryBlocks_FullComments_PaletteNext9Bit()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next9Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(PaletteFormat.Next9Bit), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.Full, PaletteFormat.Next9Bit));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_BinaryBlocks_NoComments_PaletteNext8Bit()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.None));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_BinaryBlocks_NoComments_PaletteNext9Bit()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next9Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(PaletteFormat.Next9Bit), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.None, PaletteFormat.Next9Bit));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_BinaryBlocks_BlocksImage()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = true;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
-				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.Full, withImages: true));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_BinaryBlocks_TilesImage()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = true;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
-				VerifyBinary(parameters.TilesInfoStream, DataCreator.TilesBlk(), "blk");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageTiles(), "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.Full, withImages: true));
-			});
-		}
-
-		[TestMethod]
-		public void Tiles_Assembler_BinaryBlocks_BlocksTilesImage()
-		{
-			TestTiles((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Tiles;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = true;
-				model.TilesAsImage = true;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBin(), "bin");
-				VerifyBinary(parameters.TilesInfoStream, DataCreator.TilesBlk(), "blk");
-				VerifyBinary(parameters.TilesStream, DataCreator.TilesTil(), "til");
-				VerifyBinary(parameters.MapStream, DataCreator.TilesMap(), "map");
-				VerifyBinary(parameters.BlocksImageStream, DataCreator.TilesImageBlocks(), "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImageTiles(), "tiles image");
-				VerifyAssembler(parameters, DataCreator.AssemblerTilesAndBinaryAndBlocks(parameters.Time, CommentType.Full, withImages: true));
-			});
-		}
-
-		#endregion
-
-		#endregion
-
 		#region Sprites
 
 		#region Assembler
 
-		[TestMethod]
-		public void Sprites_Assembler_FullComments_PaletteNext8Bit()
+		[DataTestMethod]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestSprites((model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
+				model.CommentType = commentType;
+				model.PaletteFormat = paletteFormat;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
+				model.BinaryFramesAttributesOutput = false;
+				model.SpritesFourBit = false;
+				model.SpritesExportAsImages = false;
 
 				// execute
+				exporter.MapPaletteFromFirstImage();
 				exporter.Remap();
 				exporter.Export();
 
 				// verify
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "palette");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "binary data");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
 				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, CommentType.Full));
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "sprite attributes");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "sprites image");
+				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, commentType, paletteFormat, parsingMethod));
 			});
 		}
 
-		[TestMethod]
-		public void Sprites_Assembler_FullComments_PaletteNext9Bit()
+		[DataTestMethod]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler_SpritesAsImages(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestSprites((model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next9Bit;
+				model.CommentType = commentType;
+				model.PaletteFormat = paletteFormat;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
+				model.BinaryFramesAttributesOutput = false;
+				model.SpritesFourBit = false;
+				model.SpritesExportAsImages = true;
 
 				// execute
+				exporter.MapPaletteFromFirstImage();
 				exporter.Remap();
 				exporter.Export();
 
 				// verify
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "palette");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "binary data");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
 				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, CommentType.Full, PaletteFormat.Next9Bit));
-			});
-		}
-
-		[TestMethod]
-		public void Sprites_Assembler_NoComments_PaletteNext8Bit()
-		{
-			TestSprites((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, CommentType.None));
-			});
-		}
-
-		[TestMethod]
-		public void Sprites_Assembler_NoComments_PaletteNext9Bit()
-		{
-			TestSprites((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next9Bit;
-				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, CommentType.None, PaletteFormat.Next9Bit));
-			});
-		}
-
-		[TestMethod]
-		public void Sprites_Assembler_BlocksImage()
-		{
-			TestSprites((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = true;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify (note no block image is generated for sprites)
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, CommentType.None, withImages: true));
-			});
-		}
-
-		[TestMethod]
-		public void Sprites_Assembler_TilesImage()
-		{
-			TestSprites((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = true;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.SpritesImageTiles(), "tiles image");
-				VerifyBinaryArray(14, (i) => DataCreator.SpritesImageBlock(i), parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, CommentType.None, withImages: true));
-			});
-		}
-
-		[TestMethod]
-		public void Sprites_Assembler_BlocksTilesImage()
-		{
-			TestSprites((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = false;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = true;
-				model.TilesAsImage = true;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify (note no block image is generated for sprites)
-				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
-				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.SpritesImageTiles(), "tiles image");
-				VerifyBinaryArray(14, (i) => DataCreator.SpritesImageBlock(i), parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, CommentType.None, withImages: true));
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "sprite attributes");
+				VerifyBinary(parameters.SpritesImageStream, DataCreator.SpritesImage(), "sprites image");
+				VerifyBinaryArray(10, (i) => DataCreator.SpritesSpriteImage(i), parameters.SpriteImageStream, "block image");
+				VerifyAssembler(parameters, DataCreator.AssemblerSprites(parameters.Time, commentType, paletteFormat, parsingMethod));
 			});
 		}
 
@@ -889,427 +114,566 @@ namespace UnitTests
 
 		#region Assembler+Binary
 
-		[TestMethod]
-		public void Sprites_Assembler_Binary_FullComments_PaletteNext8Bit()
+		[DataTestMethod]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler_Binary(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestSprites((model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
+				model.CommentType = commentType;
+				model.PaletteFormat = paletteFormat;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
+				model.BinaryFramesAttributesOutput = false;
+				model.SpritesFourBit = false;
+				model.SpritesExportAsImages = false;
 
 				// execute
+				exporter.MapPaletteFromFirstImage();
 				exporter.Remap();
 				exporter.Export();
 
 				// verify
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPalette(paletteFormat, parsingMethod), "palette");
+				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBinary(parsingMethod), "binary data");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
 				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinary(parameters.Time, CommentType.Full));
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "sprite attributes");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "sprites image");
+				VerifyAssembler(parameters, DataCreator.AssemblerSpritesBinary(parameters.Time, commentType));
 			});
 		}
 
-		[TestMethod]
-		public void Sprites_Assembler_Binary_FullComments_PaletteNext9Bit()
+		[DataTestMethod]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler_Binary_SpritesAsImages(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestSprites((model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next9Bit;
+				model.CommentType = commentType;
+				model.PaletteFormat = paletteFormat;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
+				model.BinaryFramesAttributesOutput = false;
+				model.SpritesFourBit = false;
+				model.SpritesExportAsImages = true;
 
 				// execute
+				exporter.MapPaletteFromFirstImage();
 				exporter.Remap();
 				exporter.Export();
 
 				// verify
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(PaletteFormat.Next9Bit), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPalette(paletteFormat, parsingMethod), "palette");
+				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBinary(parsingMethod), "binary data");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
 				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinary(parameters.Time, CommentType.Full, PaletteFormat.Next9Bit));
-			});
-		}
-
-		[TestMethod]
-		public void Sprites_Assembler_Binary_NoComments_PaletteNext8Bit()
-		{
-			TestSprites((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinary(parameters.Time, CommentType.None));
-			});
-		}
-
-		[TestMethod]
-		public void Sprites_Assembler_Binary_NoComments_PaletteNext9Bit()
-		{
-			TestSprites((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next9Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(PaletteFormat.Next9Bit), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinary(parameters.Time, CommentType.None, PaletteFormat.Next9Bit));
-			});
-		}
-
-		[TestMethod]
-		public void Sprites_Assembler_Binary_BlocksImage()
-		{
-			TestSprites((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = true;
-				model.TilesAsImage = false;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinary(parameters.Time, CommentType.Full, withImages: true));
-			});
-		}
-
-		[TestMethod]
-		public void Sprites_Assembler_Binary_TilesImage()
-		{
-			TestSprites((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = true;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.SpritesImageTiles(), "tiles image");
-				VerifyBinaryArray(14, (i) => DataCreator.SpritesImageBlock(i), parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinary(parameters.Time, CommentType.Full, withImages: true));
-			});
-		}
-
-		[TestMethod]
-		public void Sprites_Assembler_Binary_BlocksTilesImage()
-		{
-			TestSprites((model, parameters, exporter) =>
-			{
-				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = false;
-				model.BlocksAsImage = true;
-				model.TilesAsImage = true;
-
-				// execute
-				exporter.Remap();
-				exporter.Export();
-
-				// verify
-				VerifyBinaryIsEmpty(parameters.TilesStream, "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.SpritesImageTiles(), "tiles image");
-				VerifyBinaryArray(14, (i) => DataCreator.SpritesImageBlock(i), parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinary(parameters.Time, CommentType.Full, withImages: true));
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "sprite attributes");
+				VerifyBinary(parameters.SpritesImageStream, DataCreator.SpritesImage(), "sprites image");
+				VerifyBinaryArray(10, (i) => DataCreator.SpritesSpriteImage(i), parameters.SpriteImageStream, "block image");
+				VerifyAssembler(parameters, DataCreator.AssemblerSpritesBinary(parameters.Time, commentType));
 			});
 		}
 
 		#endregion
 
-		#region Assembler+Binary+Blocks
+		#region Assembler+Binary+Attributes
 
-		[TestMethod]
-		public void Sprites_Assembler_BinaryBlocks_FullComments_PaletteNext8Bit()
+		[DataTestMethod]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler_BinaryAttributes(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
+		{
+			TestSprites((model, parameters, exporter) =>
+			{
+				// setup
+				model.OutputType = OutputType.Sprites;
+				model.CommentType = commentType;
+				model.PaletteFormat = paletteFormat;
+				model.PaletteParsingMethod = parsingMethod;
+				model.BinaryOutput = true;
+				model.BinaryFramesAttributesOutput = true;
+				model.SpritesFourBit = false;
+				model.SpritesExportAsImages = false;
+
+				// execute
+				exporter.MapPaletteFromFirstImage();
+				exporter.Remap();
+				exporter.Export();
+
+				// verify
+				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPalette(paletteFormat, parsingMethod), "palette");
+				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBinary(parsingMethod), "binary data");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.SpriteAttributesStream, DataCreator.SpritesAttributes(), "sprite attributes");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "sprites image");
+				VerifyAssembler(parameters, DataCreator.AssemblerSpritesBinaryAttributes(parameters.Time, commentType));
+			});
+		}
+
+		[DataTestMethod]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler_BinaryAttributes_SpritesAsImages(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
+		{
+			TestSprites((model, parameters, exporter) =>
+			{
+				// setup
+				model.OutputType = OutputType.Sprites;
+				model.CommentType = commentType;
+				model.PaletteFormat = paletteFormat;
+				model.PaletteParsingMethod = parsingMethod;
+				model.BinaryOutput = true;
+				model.BinaryFramesAttributesOutput = true;
+				model.SpritesFourBit = false;
+				model.SpritesExportAsImages = true;
+
+				// execute
+				exporter.MapPaletteFromFirstImage();
+				exporter.Remap();
+				exporter.Export();
+
+				// verify
+				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPalette(paletteFormat, parsingMethod), "palette");
+				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBinary(parsingMethod), "binary data");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
+				VerifyBinary(parameters.SpriteAttributesStream, DataCreator.SpritesAttributes(), "sprite attributes");
+				VerifyBinary(parameters.SpritesImageStream, DataCreator.SpritesImage(), "sprites image");
+				VerifyBinaryArray(10, (i) => DataCreator.SpritesSpriteImage(i), parameters.SpriteImageStream, "block image");
+				VerifyAssembler(parameters, DataCreator.AssemblerSpritesBinaryAttributes(parameters.Time, commentType));
+			});
+		}
+
+		#endregion
+
+		#region 4-bit
+
+		// note: we don't repeat the whole set of tests here, just run couple variants to ensure the most common scenarios of 4-bit parsing are correctly handled
+		// note: expected exports were created with full comments option
+
+		[DataTestMethod]
+		[DataRow(PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Sprites_Assembler_4bit(PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
 			TestSprites((model, parameters, exporter) =>
 			{
 				// setup
 				model.OutputType = OutputType.Sprites;
 				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
+				model.PaletteFormat = paletteFormat;
+				model.PaletteParsingMethod = parsingMethod;
+				model.BinaryOutput = false;
+				model.BinaryFramesAttributesOutput = false;
+				model.SpritesFourBit = true;
+				model.SpritesExportAsImages = false;
 
 				// execute
+				exporter.MapPaletteFromFirstImage();
 				exporter.Remap();
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.SpritesTil(), "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "palette");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "binary data");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
 				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinaryAndBlocks(parameters.Time, CommentType.Full));
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "sprite attributes");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "sprites image");
+				VerifyAssembler(parameters, DataCreator.AssemblerSprites4Bit(parameters.Time, paletteFormat, parsingMethod));
 			});
 		}
 
-		[TestMethod]
-		public void Sprites_Assembler_BinaryBlocks_FullComments_PaletteNext9Bit()
+		#endregion
+
+		#endregion
+
+		#region Tiles
+
+		#region Assembler
+
+		[DataTestMethod]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Tiles_Assembler(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
-			TestSprites((model, parameters, exporter) =>
+			TestTiles((model, parameters, exporter) =>
 			{
 				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next9Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
+				model.OutputType = OutputType.Tiles;
+				model.CommentType = commentType;
+				model.PaletteFormat = paletteFormat;
+				model.PaletteParsingMethod = parsingMethod;
+				model.BinaryOutput = false;
+				model.BinaryFramesAttributesOutput = false;
+				model.TilesExportAsImage = false;
 
 				// execute
+				exporter.MapPaletteFromFirstImage();
 				exporter.Remap();
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.SpritesTil(), "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(PaletteFormat.Next9Bit), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "palette");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "binary data");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
 				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinaryAndBlocks(parameters.Time, CommentType.Full, PaletteFormat.Next9Bit));
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "sprite attributes");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "sprites image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, commentType, paletteFormat, parsingMethod));
 			});
 		}
 
-		[TestMethod]
-		public void Sprites_Assembler_BinaryBlocks_NoComments_PaletteNext8Bit()
+		[DataTestMethod]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Tiles_Assembler_TilesAsImage(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
-			TestSprites((model, parameters, exporter) =>
+			TestTiles((model, parameters, exporter) =>
 			{
 				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
+				model.OutputType = OutputType.Tiles;
+				model.CommentType = commentType;
+				model.PaletteFormat = paletteFormat;
+				model.PaletteParsingMethod = parsingMethod;
+				model.BinaryOutput = false;
+				model.BinaryFramesAttributesOutput = false;
+				model.TilesExportAsImage = true;
 
 				// execute
+				exporter.MapPaletteFromFirstImage();
 				exporter.Remap();
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.SpritesTil(), "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "palette");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "binary data");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
+				VerifyBinary(parameters.TilesInfoStream, DataCreator.TilesInfo(parsingMethod), "tiles info");
+				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImage(parsingMethod), "tiles image");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "sprite attributes");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "sprites image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTiles(parameters.Time, commentType, paletteFormat, parsingMethod));
+			});
+		}
+
+		#endregion
+
+		#region Assembler+Binary
+
+		[DataTestMethod]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Tiles_Assembler_Binary(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
+		{
+			TestTiles((model, parameters, exporter) =>
+			{
+				// setup
+				model.OutputType = OutputType.Tiles;
+				model.CommentType = commentType;
+				model.PaletteFormat = paletteFormat;
+				model.PaletteParsingMethod = parsingMethod;
+				model.BinaryOutput = true;
+				model.BinaryFramesAttributesOutput = false;
+				model.TilesExportAsImage = false;
+
+				// execute
+				exporter.MapPaletteFromFirstImage();
+				exporter.Remap();
+				exporter.Export();
+
+				// verify
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPalette(paletteFormat, parsingMethod), "palette");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBinary(parsingMethod), "binary data");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
 				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinaryAndBlocks(parameters.Time, CommentType.None));
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "sprite attributes");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "sprites image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesBinary(parameters.Time, commentType, parsingMethod));
 			});
 		}
 
-		[TestMethod]
-		public void Sprites_Assembler_BinaryBlocks_NoComments_PaletteNext9Bit()
+		[DataTestMethod]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Tiles_Assembler_Binary_TilesAsImage(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
-			TestSprites((model, parameters, exporter) =>
+			TestTiles((model, parameters, exporter) =>
 			{
 				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.None;
-				model.PaletteFormat = PaletteFormat.Next9Bit;
+				model.OutputType = OutputType.Tiles;
+				model.CommentType = commentType;
+				model.PaletteFormat = paletteFormat;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = false;
+				model.BinaryFramesAttributesOutput = false;
+				model.TilesExportAsImage = true;
 
 				// execute
+				exporter.MapPaletteFromFirstImage();
 				exporter.Remap();
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.SpritesTil(), "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(PaletteFormat.Next9Bit), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPalette(paletteFormat, parsingMethod), "palette");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBinary(parsingMethod), "binary data");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "tile attributes");
+				VerifyBinary(parameters.TilesInfoStream, DataCreator.TilesInfo(parsingMethod), "tiles info");
+				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImage(parsingMethod), "tiles image");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "sprite attributes");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "sprites image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesBinary(parameters.Time, commentType, parsingMethod));
+			});
+		}
+
+		#endregion
+
+		#region Assembler+Binary+Attributes
+
+		[DataTestMethod]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Tiles_Assembler_BinaryAttributes(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
+		{
+			TestTiles((model, parameters, exporter) =>
+			{
+				// setup
+				model.OutputType = OutputType.Tiles;
+				model.CommentType = commentType;
+				model.PaletteFormat = paletteFormat;
+				model.PaletteParsingMethod = parsingMethod;
+				model.BinaryOutput = true;
+				model.BinaryFramesAttributesOutput = true;
+				model.TilesExportAsImage = false;
+
+				// execute
+				exporter.MapPaletteFromFirstImage();
+				exporter.Remap();
+				exporter.Export();
+
+				// verify
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPalette(paletteFormat, parsingMethod), "palette");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBinary(parsingMethod), "binary data");
+				VerifyBinary(parameters.TileAttributesStream, DataCreator.TilesAttributes(parsingMethod), "tile attributes");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "tiles info");
 				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinaryAndBlocks(parameters.Time, CommentType.None, PaletteFormat.Next9Bit));
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "sprite attributes");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "sprites image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesBinaryAttributes(parameters.Time, commentType, parsingMethod));
 			});
 		}
 
-		[TestMethod]
-		public void Sprites_Assembler_BinaryBlocks_BlocksImage()
+		[DataTestMethod]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.Full, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next8Bit, PaletteParsingMethod.ByObjects)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByPixels)]
+		[DataRow(CommentType.None, PaletteFormat.Next9Bit, PaletteParsingMethod.ByObjects)]
+		public void Tiles_Assembler_BinaryAttributes_TilesAsImage(CommentType commentType, PaletteFormat paletteFormat, PaletteParsingMethod parsingMethod)
 		{
-			TestSprites((model, parameters, exporter) =>
+			TestTiles((model, parameters, exporter) =>
 			{
 				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
+				model.OutputType = OutputType.Tiles;
+				model.CommentType = commentType;
+				model.PaletteFormat = paletteFormat;
+				model.PaletteParsingMethod = parsingMethod;
 				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = true;
-				model.TilesAsImage = false;
+				model.BinaryFramesAttributesOutput = true;
+				model.TilesExportAsImage = true;
+
+				// execute
+				exporter.MapPaletteFromFirstImage();
+				exporter.Remap();
+				exporter.Export();
+
+				// verify
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilesPalette(paletteFormat, parsingMethod), "palette");
+				VerifyBinary(parameters.BinaryStream, DataCreator.TilesBinary(parsingMethod), "binary data");
+				VerifyBinary(parameters.TileAttributesStream, DataCreator.TilesAttributes(parsingMethod), "tile attributes");
+				VerifyBinary(parameters.TilesInfoStream, DataCreator.TilesInfo(parsingMethod), "tiles info");
+				VerifyBinary(parameters.TilesImageStream, DataCreator.TilesImage(parsingMethod), "tiles image");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "sprite attributes");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "sprites image");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilesBinaryAttributes(parameters.Time, commentType, parsingMethod));
+			});
+		}
+
+		#endregion
+
+		#endregion
+
+		#region Tilemaps
+
+		#region Map
+
+		// note: we only test different tile formats here, repeated for assembler and binary output. Also: we don't include an image, therefore we don't have to map colours, we simply take the ones loaded from project file.
+
+		[TestMethod]
+		[DataRow(TilemapExportType.AttributesIndexAsWord)]
+		[DataRow(TilemapExportType.AttributesIndexAsTwoBytes)]
+		[DataRow(TilemapExportType.IndexOnly)]
+		public void Tilemap_Assembler(TilemapExportType tilemapType)
+		{
+			TestTilemaps((model, parameters, exporter) =>
+			{
+				// setup
+				model.TilemapExportType = tilemapType;
+				model.BinaryOutput = false;
 
 				// execute
 				exporter.Remap();
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.SpritesTil(), "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinaryIsEmpty(parameters.TilesImageStream, "tiles image");
-				VerifyBinaryArrayIsEmpty(20, parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinaryAndBlocks(parameters.Time, CommentType.Full, withImages: true));
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(10, parameters.TilemapsStream, "tilemaps");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilemaps(parameters.Time, tilemapType));
 			});
 		}
 
 		[TestMethod]
-		public void Sprites_Assembler_BinaryBlocks_TilesImage()
+		[DataRow(TilemapExportType.AttributesIndexAsWord)]
+		[DataRow(TilemapExportType.AttributesIndexAsTwoBytes)]
+		[DataRow(TilemapExportType.IndexOnly)]
+		public void Tilemap_Assembler_Binary(TilemapExportType tilemapType)
 		{
-			TestSprites((model, parameters, exporter) =>
+			TestTilemaps((model, parameters, exporter) =>
 			{
 				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
+				model.TilemapExportType = tilemapType;
 				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = false;
-				model.TilesAsImage = true;
 
 				// execute
 				exporter.Remap();
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.SpritesTil(), "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.SpritesImageTiles(), "tiles image");
-				VerifyBinaryArray(14, (i) => DataCreator.SpritesImageBlock(i), parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinaryAndBlocks(parameters.Time, CommentType.Full, withImages: true));
+				VerifyBinary(parameters.PaletteStream, DataCreator.TilemapsPalette(), "pal");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryArray(1, (i) => DataCreator.TilemapsBinary(tilemapType), parameters.TilemapsStream, "tilemaps");
+				VerifyAssembler(parameters, DataCreator.AssemblerTilemapsBinary(parameters.Time, tilemapType));
 			});
 		}
 
+		#endregion
+
+		#region Images
+
+		// images mode is tested separately since it's slightly more involved than other modes and we should ensure it doesn't break with future updates
+
 		[TestMethod]
-		public void Sprites_Assembler_BinaryBlocks_BlocksTilesImage()
+		[DataRow(TilemapExportType.AttributesIndexAsWord)]
+		[DataRow(TilemapExportType.AttributesIndexAsTwoBytes)]
+		[DataRow(TilemapExportType.IndexOnly)]
+		public void Tilemap_Images_Assembler(TilemapExportType tilemapType)
 		{
-			TestSprites((model, parameters, exporter) =>
+			TestImageTilemaps((model, parameters, exporter) =>
 			{
 				// setup
-				model.OutputType = OutputType.Sprites;
-				model.CommentType = CommentType.Full;
-				model.PaletteFormat = PaletteFormat.Next8Bit;
-				model.BinaryOutput = true;
-				model.BinaryBlocksOutput = true;
-				model.BlocksAsImage = true;
-				model.TilesAsImage = true;
+				model.TilemapExportType = tilemapType;
+				model.BinaryOutput = false;
 
 				// execute
+				exporter.MapPaletteFromFirstImage();
 				exporter.Remap();
 				exporter.Export();
 
 				// verify
-				VerifyBinary(parameters.TilesStream, DataCreator.SpritesTil(), "til");
-				VerifyBinary(parameters.PaletteStream, DataCreator.SpritesPal(), "pal");
-				VerifyBinary(parameters.BinaryStream, DataCreator.SpritesBin(), "bin");
-				VerifyBinaryIsEmpty(parameters.MapStream, "map");
-				VerifyBinaryIsEmpty(parameters.BlocksImageStream, "blocks image");
-				VerifyBinary(parameters.TilesImageStream, DataCreator.SpritesImageTiles(), "tiles image");
-				VerifyBinaryArray(14, (i) => DataCreator.SpritesImageBlock(i), parameters.BlockImageStream, "block image");
-				VerifyAssembler(parameters, DataCreator.AssemblerSpritesAndBinaryAndBlocks(parameters.Time, CommentType.Full, withImages: true));
+				VerifyBinaryIsEmpty(parameters.PaletteStream, "pal");
+				VerifyBinaryIsEmpty(parameters.BinaryStream, "bin");
+				VerifyBinaryIsEmpty(parameters.TileAttributesStream, "map");
+				VerifyBinaryIsEmpty(parameters.SpriteAttributesStream, "til");
+				VerifyBinaryIsEmpty(parameters.TilesInfoStream, "blk");
+				VerifyBinaryIsEmpty(parameters.TilesImageStream, "blocks image");
+				VerifyBinaryIsEmpty(parameters.SpritesImageStream, "tiles image");
+				VerifyBinaryArrayIsEmpty(10, parameters.TilemapsStream, "tilemaps");
+				VerifyAssembler(parameters, DataCreator.AssemblerImageTilemaps(parameters.Time, tilemapType));
 			});
 		}
 
@@ -1319,11 +683,61 @@ namespace UnitTests
 
 		#region Creating
 
+		private void TestTilemaps(Action<MainModel, ExportParameters, Exporter> tester)
+		{
+			Test(
+				DataCreator.XmlDocumentTiles(),	// we can reuse tiles document
+				null,							// no source image needed
+				DataCreator.ProjectTilemapData2x2(),
+				(model, parameters, exporter) =>
+				{
+					// For tilemaps we only test a subset since the rest of the export is exactly like tiles/sprites. So we can setup common values here.
+					model.OutputType = OutputType.Tiles;
+					model.CommentType = CommentType.Full;
+					model.PaletteFormat = PaletteFormat.Next8Bit;
+
+					// After common values are set, we can call out to tester to further setup or run the test.
+					tester(model, parameters, exporter);
+				});
+		}
+
+		private void TestImageTilemaps(Action<MainModel, ExportParameters, Exporter> tester)
+		{
+			Test(
+				DataCreator.XmlDocumentTiles(), // we can reuse tiles document
+				(model) =>
+				{
+					var image = DataCreator.ProjectTilemapImage();
+					var tilemapData = SourceTilemapImage.TilemapDataFromImage(image, model);
+
+					// We must assign source bitmap in order for palette mapping to pick it up.
+					var tilemapSource = new SourceTilemapImage("tilemap1", model, tilemapData);
+					tilemapSource.AssignSourceBitmap(image);
+
+					model.AddSource(tilemapSource);
+				},
+				(model, parameters, exporter) =>
+				{
+					// For tilemaps we only test a subset since the rest of the export is exactly like tiles/sprites. So we can setup common values here.
+					model.OutputType = OutputType.Tiles;
+					model.CommentType = CommentType.Full;
+					model.PaletteFormat = PaletteFormat.Next8Bit;
+
+					// The following parameters are important since these options were used to create expected files.
+					model.PaletteParsingMethod = PaletteParsingMethod.ByObjects;
+					model.TransparentFirst = true;
+
+					// After common values are set, we can call out to tester to further setup or run the test.
+					tester(model, parameters, exporter);
+				});
+		}
+
 		private void TestTiles(Action<MainModel, ExportParameters, Exporter> tester)
 		{
 			Test(
 				DataCreator.XmlDocumentTiles(),
-				DataCreator.ImageTiles1(),
+				DataCreator.ProjectImageTiles(),
+				null,
 				tester);
 		}
 
@@ -1331,11 +745,38 @@ namespace UnitTests
 		{
 			Test(
 				DataCreator.XmlDocumentSprites(),
-				DataCreator.ImageSprites1(),
+				DataCreator.ProjectImageSprites(),
+				null,
 				tester);
 		}
 
-		private void Test(XmlDocument sourceDocument, Bitmap sourceBitmap, Action<MainModel, ExportParameters, Exporter> tester)
+		private void Test(
+			XmlDocument sourceDocument, 
+			Bitmap sourceBitmap, 
+			TilemapData sourceTilemap,
+			Action<MainModel, ExportParameters, Exporter> tester)
+		{
+			Test(
+				sourceDocument,
+				(model) =>
+				{
+					if (sourceBitmap != null)
+					{
+						model.AddSource(new SourceImage("image1", sourceBitmap));
+					}
+
+					if (sourceTilemap != null)
+					{
+						model.AddSource(new SourceTilemapMap("tilemap1", model, sourceTilemap));
+					}
+				},
+				tester);
+		}
+
+		private void Test(
+			XmlDocument sourceDocument,
+			Action<MainModel> configurator,
+			Action<MainModel, ExportParameters, Exporter> tester)
 		{
 			// We use memory streams so that we can later on examine the results without writing out files - faster and more predictable. 
 			using (
@@ -1348,6 +789,7 @@ namespace UnitTests
 				tilesInfoStream = new MemoryStream(),
 				blocksImageStream = new MemoryStream())
 			{
+				var tilemapStreams = new MemoryStream[10];
 				var blockStreams = new MemoryStream[40];
 
 				// We want streams to be "constant", created only once per test and then reused whenever anyone calls out the closures.
@@ -1360,12 +802,20 @@ namespace UnitTests
 					SourceStream = () => sourceStream,
 					PaletteStream = () => paletteStream,
 					BinaryStream = () => binaryStream,
-					MapStream = () => mapStream,
-					TilesStream = () => tilesStream,
+					TilesImageStream = () => blocksImageStream,
+					TileAttributesStream = () => mapStream,
 					TilesInfoStream = () => tilesInfoStream,
-					TilesImageStream = () => tilesImageStream,
-					BlocksImageStream = () => blocksImageStream,
-					BlockImageStream = (i) =>
+					SpritesImageStream = () => tilesImageStream,
+					SpriteAttributesStream = () => tilesStream,
+					TilemapsStream = (i) =>
+					{
+						if (tilemapStreams[i] == null)
+						{
+							tilemapStreams[i] = new MemoryStream();
+						}
+						return tilemapStreams[i];
+					},
+					SpriteImageStream = (i) =>
 					{
 						if (blockStreams[i] == null)
 						{
@@ -1377,10 +827,13 @@ namespace UnitTests
 
 				// We load default data and rely on each test to set it up as needed. This sets up model with default parameters, but we can later change them as needed in each specific test.
 				var model = DataCreator.LoadModel(sourceDocument);
-				model.AddImage(new SourceImage("image1", sourceBitmap));
 
-				// Prepare exporter.
+				// Ask configurator to setup the model as needed for given unit test.
+				configurator(model);
+
+				// Prepare exporter and make its data available to model.
 				var exporter = new Exporter(model, parameters);
+				model.ExportData = exporter.Data;
 
 				// Call out tester closure to actually perform the test.
 				tester(model, parameters, exporter);
@@ -1393,7 +846,7 @@ namespace UnitTests
 					}
 				}
 			}
-		}
+		} 
 
 		#endregion
 
@@ -1495,7 +948,7 @@ namespace UnitTests
 
 			public string OnExportTilesInfoFilename()
 			{
-				return DataCreator.TilesBlkFilename();
+				return DataCreator.TilesInfoFilename();
 			}
 
 			public byte OnExportFourBitColourConverter(byte proposed)
@@ -1510,5 +963,45 @@ namespace UnitTests
 		}
 
 		#endregion
+	}
+
+	namespace ExporterTestingExtensions
+	{
+		public static class Extensions
+		{
+			public static void MapPaletteFromFirstImage(this Exporter exporter)
+			{
+				var model = exporter.Data.Model;
+
+				void Map(Bitmap bitmap)
+				{
+					var palette = exporter.MapPalette(bitmap);
+
+					palette.CopyTo(model.Palette);
+				}
+
+				var images = model.SourceImages();
+				if (images.Count() > 0)
+				{
+					var image = model.SourceImages().First();
+					Map(image.Data);
+					return;
+				}
+
+				var tilemaps = model.SourceTilemaps();
+				if (tilemaps.Count() > 0)
+				{
+					foreach (var tilemap in tilemaps)
+					{
+						if (tilemap.IsSourceImage)
+						{
+							var image = tilemap.SourceBitmap;
+							Map(image);
+							return;
+						}
+					}
+				}
+			}
+		}
 	}
 }

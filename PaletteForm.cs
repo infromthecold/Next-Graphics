@@ -5,6 +5,9 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using NextGraphics.Models;
+using NextGraphics.Exporting;
+using NextGraphics.Utils;
+using System.Linq;
 
 namespace NextGraphics
 {
@@ -19,11 +22,33 @@ namespace NextGraphics
 		}
 		private MainModel _model;
 
+		public Exporter Exporter
+		{
+			get => _exporter;
+			set
+			{
+				_exporter = value;
+				imageSelectForm.Exporter = value;
+			}
+		}
+		private Exporter _exporter;
+
 		private Palette Palette { get => Model.Palette; } // a shortcut instead of having to write Model.Palette
+
+		private bool IsFourBitMode
+		{
+			get => Model.IsFourBitPaletteAutoBankingEnabled;
+		}
+
+		private int ValidatedTransparentIndex
+		{
+			get => IsFourBitMode ? Palette.TransparentIndex % 16 : Palette.TransparentIndex;
+		}
 
 		private ImageSelectForm imageSelectForm = new ImageSelectForm();
 
 		public Button[] colourButtons = null;
+		public Button[,] colourButtonBanks = null;
 		public Button colourClicked;
 		private Color selectedColor = Color.FromArgb(64, 64, 64);
 
@@ -51,7 +76,10 @@ namespace NextGraphics
 		{
 			isFormLoaded = false;
 
-			CreatePaletteButtons();
+			// Update title to indicate whether we have 8-bit or 4-bit palette.
+			Text = Model.IsFourBitData ? "Palette (4-bit)" : "Palette";
+
+			CreateColourButtons();
 
 			switch (Palette.Type)
 			{
@@ -70,26 +98,11 @@ namespace NextGraphics
 					break;
 			}
 
-			for (int c = 0; c < colourButtons.Length; c++)
-			{
-				colourButtons[c].BackColor = Palette[c].ToColor();
-				colourButtons[c].Text = "";
-
-				if (Palette.Type == PaletteType.Custom && c > Palette.StartIndex && c <= Palette.LastValidIndex)
-				{
-					colourButtons[c].FlatAppearance.BorderColor = Palette[c].ToColor();
-				}
-				else
-				{
-					colourButtons[c].FlatAppearance.BorderColor = SystemColors.ControlDark;
-				}
-			}
-
-			colourButtons[Palette.TransparentIndex].Text = "X";
-			tColourIndex1.Text = Palette.TransparentIndex.ToString();
-
 			colourCountTextBox.Text = Palette.UsedCount.ToString();
 			startIndexTextBox.Text = Palette.StartIndex.ToString();
+
+			UpdateColourButtons();
+			IndicateTransparentButtons();
 
 			isFormLoaded = true;
 		}
@@ -110,43 +123,73 @@ namespace NextGraphics
 
 		#region Events - Colour Buttons
 
-		private void ColourButtonClick(object sender, EventArgs e)
+		private void ColourButton_MouseUp(object sender, MouseEventArgs e)
 		{
 			colourClicked = (Button)sender;
+
 			if (isTransparentColourPickingActive)
 			{
 				var selectedColourIndex = int.Parse(colourClicked.Name);
 				if (selectedColourIndex > Palette.LastValidIndex)
 				{
-					MessageBox.Show("Transparent Colour out of range of used colours", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					MessageBox.Show("Transparent colour out of range of used colours", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					isTransparentColourPickingActive = false;
 					return;
 				}
 
-				if ((selectedColourIndex & 15) != 0)
+				bool ShowAlert()
 				{
-					if (MessageBox.Show("Move Transparent Colour to the first palette colour", "Move", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+					return MessageBox.Show("Move transparent colour to the first palette colour?", "Move", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+				}
+
+				if (IsFourBitMode)
+				{
+					var validatedIndex = selectedColourIndex % 16;
+
+					if (validatedIndex > 0 && ShowAlert())
 					{
-						int row = selectedColourIndex / 16;
-						Color temp = colourButtons[row * 16].BackColor;
-						colourButtons[row * 16].BackColor = colourButtons[(row * 16) + (selectedColourIndex & 15)].BackColor;
-						colourButtons[(row * 16) + (selectedColourIndex & 15)].BackColor = temp;
-						colourClicked = colourButtons[row * 16];
-						Palette.ReplaceColours(row * 16, (row * 16) + (selectedColourIndex & 15));
+						for (int row = 0; row < 16; row++)
+						{
+							var to = (row * 16);
+							var from = to + validatedIndex;
+
+							Palette.SwapColours(from, to);
+						}
+
+						UpdateColourButtons();
+
+						selectedColourIndex = 0;
+					}
+				}
+				else
+				{
+					if (selectedColourIndex > 0 && ShowAlert())
+					{
+						var to = 0;
+						var from = selectedColourIndex;
+
+						Palette.SwapColours(from, to);
+						UpdateColourButtons();
+
+						selectedColourIndex = 0;
 					}
 				}
 
-				SetTransparentColour(ref colourClicked);
+				Palette.TransparentIndex = selectedColourIndex;
+				IndicateTransparentButtons();
+
 				isTransparentColourPickingActive = false;
 			}
-			else
+			else if (e.Button == MouseButtons.Right && Palette.Type == PaletteType.Custom)
 			{
-				if (Palette.Type == PaletteType.Custom)
-				{
-					Point lowerLeft = new Point(0, colourClicked.Height);
-					lowerLeft = colourClicked.PointToScreen(lowerLeft);
-					copyMenu.Show(lowerLeft);
-				}
+				Point lowerLeft = new Point(0, colourClicked.Height);
+				lowerLeft = colourClicked.PointToScreen(lowerLeft);
+				copyMenu.Show(lowerLeft);
+				ShowHexValue();
+			}
+			else if (e.Button == MouseButtons.Left)
+			{
+				ShowHexValue();
 			}
 		}
 
@@ -154,25 +197,6 @@ namespace NextGraphics
 		{
 			Button thisButton = (Button)sender;
 			hexColourTextBox.Text = "#" + thisButton.BackColor.R.ToString("X2") + thisButton.BackColor.G.ToString("X2") + thisButton.BackColor.B.ToString("X2");
-		}
-
-		private void ColourToolStripMenuItemOpenMixer(object sender, EventArgs e)
-		{
-			int colourIndex = 0;
-
-			if (Palette.Type == PaletteType.Custom)
-			{
-				colorDialog1.Color = colourClicked.BackColor;
-				if (colorDialog1.ShowDialog() == DialogResult.OK)
-				{
-					colourIndex = int.Parse(colourClicked.Name);
-					colourClicked.BackColor = colorDialog1.Color;
-					Palette[colourIndex].Red = colourClicked.BackColor.R;
-					Palette[colourIndex].Green = colourClicked.BackColor.G;
-					Palette[colourIndex].Blue = colourClicked.BackColor.B;
-					SetTransparentColour(ref colourButtons[Palette.TransparentIndex]);
-				}
-			}
 		}
 
 		#endregion
@@ -185,12 +209,9 @@ namespace NextGraphics
 			{
 				Palette.Type = PaletteType.Next256;
 				messageLabel.Visible = false;
-				for (int c = 0; c < 256; c++)
-				{
-					colourButtons[c].BackColor = Palette[c].ToColor();
-					colourButtons[c].FlatAppearance.BorderColor = SystemColors.ControlDark;
-				}
-				SetTransparentColour(ref colourButtons[Palette.TransparentIndex]);
+				
+				UpdateColourButtons();
+				IndicateTransparentButtons();
 			}
 		}
 
@@ -201,13 +222,8 @@ namespace NextGraphics
 				Palette.Type = PaletteType.Next512;
 				messageLabel.Visible = true;
 
-				for (int c = 0; c < 256; c++)
-				{
-					colourButtons[c].BackColor = Palette[c].ToColor();
-					colourButtons[c].FlatAppearance.BorderColor = SystemColors.ControlDark;
-				}
-
-				SetTransparentColour(ref colourButtons[Palette.TransparentIndex]);
+				UpdateColourButtons();
+				IndicateTransparentButtons();
 			}
 		}
 
@@ -217,17 +233,9 @@ namespace NextGraphics
 			{
 				Palette.Type = PaletteType.Custom;
 				messageLabel.Visible = false;
-				for (int c = 0; c < 256; c++)
-				{
-					colourButtons[c].BackColor = SystemColors.Control;
-					colourButtons[c].FlatAppearance.BorderColor = SystemColors.ControlDark;
-				}
-				for (int c = 0; c < Palette.UsedCount; c++)
-				{
-					colourButtons[c].BackColor = Palette[c].ToColor();
-					colourButtons[c].FlatAppearance.BorderColor = selectedColor;
-				}
-				SetTransparentColour(ref colourButtons[Palette.TransparentIndex]);
+
+				UpdateColourButtons();
+				IndicateTransparentButtons();
 			}
 		}
 
@@ -237,26 +245,30 @@ namespace NextGraphics
 
 		private void selectPaletteButton_Click(object sender, EventArgs e)
 		{
-			// select	
+			imageSelectForm.IsUsingModel = true;
 			imageSelectForm.StartPosition = FormStartPosition.CenterParent;
 			imageSelectForm.FillFilenamesFromModel();
 			imageSelectForm.ShowDialog();
-			imageSelectForm.PaletteFiles = false;
 			messageLabel.Visible = false;
 
 			if (imageSelectForm.DialogResult == DialogResult.OK)
 			{
+				ResetColourButtons();
+
 				for (int c = 0; c < imageSelectForm.ColoursCount; c++)
 				{
 					var toIndex = imageSelectForm.ToIndex + c;
 					var fromIndex = imageSelectForm.FromIndex + c;
 
-					Palette[toIndex].Red = imageSelectForm.LoadedPalette[fromIndex, 0];
-					Palette[toIndex].Green = imageSelectForm.LoadedPalette[fromIndex, 1];
-					Palette[toIndex].Blue = imageSelectForm.LoadedPalette[fromIndex, 2];
+					Palette[toIndex].Red = imageSelectForm.LoadedPalette[fromIndex].R;
+					Palette[toIndex].Green = imageSelectForm.LoadedPalette[fromIndex].G;
+					Palette[toIndex].Blue = imageSelectForm.LoadedPalette[fromIndex].B;
 
 					colourButtons[toIndex].BackColor = Palette[toIndex].ToColor();
 				}
+
+				startIndexTextBox.Text = imageSelectForm.FromIndex.ToString();
+				colourCountTextBox.Text = imageSelectForm.ColoursCount.ToString();
 
 				customTypeRadioButton.Checked = true;
 			}
@@ -264,11 +276,7 @@ namespace NextGraphics
 
 		private void loadPaletteButton_Click(object sender, EventArgs e)
 		{
-			//selectForm.loadPalette(sender,e);
-
-			//byte[]	bytesBuffer				=	new	byte[2];
 			OpenFileDialog loadPaletteDialog = new OpenFileDialog();
-			//loadPaletteDialog.InitialDirectory		=	Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 			loadPaletteDialog.Multiselect = true;
 			loadPaletteDialog.RestoreDirectory = true;
 			loadPaletteDialog.Filter = "Palette Files (*.act)|*.act|Mac Palette Files (*.8bct)|*.8bct|All Files (*.*)|*.*";
@@ -276,131 +284,68 @@ namespace NextGraphics
 
 			if (loadPaletteDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				imageSelectForm.FillFilenames(loadPaletteDialog.FileNames);
-				imageSelectForm.PaletteFiles = true;
-				imageSelectForm.FillFilenamesFromModel();
+				imageSelectForm.IsUsingModel = false;
 				imageSelectForm.StartPosition = FormStartPosition.CenterParent;
+				imageSelectForm.FillFilenames(loadPaletteDialog.FileNames);
 				imageSelectForm.ShowDialog();
 
 				if (imageSelectForm.DialogResult == DialogResult.OK)
 				{
-					// open the palette import panel
+					ResetColourButtons();
+
 					for (int c = 0; c < imageSelectForm.ColoursCount; c++)
 					{
 						var toIndex = imageSelectForm.ToIndex + c;
 						var fromIndex = imageSelectForm.FromIndex + c;
-						Palette[toIndex].Red = imageSelectForm.LoadedPalette[fromIndex, 0];
-						Palette[toIndex].Green = imageSelectForm.LoadedPalette[fromIndex, 1];
-						Palette[toIndex].Blue = imageSelectForm.LoadedPalette[fromIndex, 2];
+
+						Palette[toIndex].Red = imageSelectForm.LoadedPalette[fromIndex].R;
+						Palette[toIndex].Green = imageSelectForm.LoadedPalette[fromIndex].G;
+						Palette[toIndex].Blue = imageSelectForm.LoadedPalette[fromIndex].B;
+
 						colourButtons[toIndex].BackColor = Palette[toIndex].ToColor();
 					}
+
 					customTypeRadioButton.Checked = true;
 					messageLabel.Visible = false;
 
 					Palette.Type = PaletteType.Custom;
-					for (int c = 0; c < 256; c++)
+
+					for (int c = 0; c < colourButtons.Length; c++)
 					{
 						colourButtons[c].BackColor = Palette[c].ToColor();
 						colourButtons[c].FlatAppearance.BorderColor = SystemColors.ControlDark;
 					}
+
 					for (int c = 0; c < Palette.UsedCount; c++)
 					{
 						colourButtons[c].FlatAppearance.BorderColor = selectedColor;
 					}
-					SetTransparentColour(ref colourButtons[Palette.TransparentIndex]);
+					
+					IndicateTransparentButtons();
 				}
 			}
 		}
 
 		private void savePaletteButton_Click(object sender, EventArgs e)
 		{
-			int lineNumber = 1000;
-			int lineStep = 10;
+			var filterBuilder = new DialogFilterBuilder();
+			filterBuilder.Add("Palette Files", "*.act", ExportAsPaletteFile);
+			filterBuilder.Add("Mac Palette Files", "*.8bct", ExportAsMacPaletteFile);
+			filterBuilder.Add("Spectrum Next Assembler", $"*.{Model.ExportAssemblerFileExtension}", ExportAsSpectrumNextAssemblerFile);
+			filterBuilder.Add("Spectrum Next Basic", "*.bas", ExportAsSpectrumNextBasicFile);
+			filterBuilder.Add("Spectrum Next Binary Palette", "*.pal", ExportAsSpectrumNextBinaryPaletteFile);
+
 			SaveFileDialog savePaletteDialog = new SaveFileDialog();
-			//savePaletteDialog.InitialDirectory		=	Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+			savePaletteDialog.Filter = filterBuilder.Filters;
+			savePaletteDialog.FilterIndex = Properties.Settings.Default.PaletteFormExportFilterIndex;
 			savePaletteDialog.RestoreDirectory = true;
-			savePaletteDialog.Filter = "Palette Files (*.act)|*.act|Mac Palette Files (*.8bct)|*.8bct|Spectrum Next (*.asm)|*.asm|Spectrum Next (*.bas)|*.asm|All Files (*.*)|*.*";
-			savePaletteDialog.FilterIndex = 1;
+
 			if (savePaletteDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				if (savePaletteDialog.FilterIndex == 3 || savePaletteDialog.FilterIndex == 4)
-				{
-					using (StreamWriter outputFile = new StreamWriter(savePaletteDialog.FileName))
-					{
-						if (savePaletteDialog.FilterIndex == 4)
-						{
-							outputFile.WriteLine(lineNumber.ToString() + "\tREM");
-							lineNumber += lineStep;
-							outputFile.WriteLine(lineNumber.ToString() + "\tREM\tExported Palette starts here");
-							lineNumber += lineStep;
-							outputFile.WriteLine(lineNumber.ToString() + "\tREM");
-							lineNumber += lineStep;
-							outputFile.Write(lineNumber.ToString() + "\tDATA\t");
-							lineNumber += lineStep;
-						}
-						else
-						{
-							outputFile.WriteLine("ExportedPalette:");
-						}
-						for (int j = 0; j < Palette.UsedCount; j++)
-						{
-							if (savePaletteDialog.FilterIndex == 4)
-							{
-								outputFile.Write(EightbitPalette(Palette[j + Palette.StartIndex, 0], Palette[j + Palette.StartIndex, 1], Palette[j + Palette.StartIndex, 2]).ToString());
-								if (j < Palette.UsedCount - 1)
-								{
-									outputFile.Write(",");
-								}
-								else
-								{
-									outputFile.Write("\r\n");
-								}
-							}
-							else
-							{
-								outputFile.WriteLine(
-									"\t\t\tdb\t%" + ToBinary(EightbitPalette(Palette[j + Palette.StartIndex, 0],
-									Palette[j + Palette.StartIndex, 1],
-									Palette[j + Palette.StartIndex, 2])) +
-									"\t//\t" + Palette[j + Palette.StartIndex, 0].ToString() +
-									"," + Palette[j + Palette.StartIndex, 1].ToString() +
-									"," + Palette[j + Palette.StartIndex, 2].ToString());
-							}
-						}
-					}
-				}
-				else
-				{
-					using (FileStream fsSource = new FileStream(savePaletteDialog.FileName, FileMode.Create, FileAccess.Write))
-					{
-						for (int i = 0; i < 256; i++)
-						{
-							fsSource.WriteByte(Palette[i, 0]);
-							fsSource.WriteByte(Palette[i, 1]);
-							fsSource.WriteByte(Palette[i, 2]);
-						}
-						if (isLittleEndian)
-						{
-							fsSource.WriteByte((byte)(Palette.UsedCount & 255));
-							fsSource.WriteByte((byte)(Palette.UsedCount >> 8));
-						}
-						else
-						{
-							fsSource.WriteByte((byte)(Palette.UsedCount >> 8));
-							fsSource.WriteByte((byte)(Palette.UsedCount & 255));
-						}
-						if (isLittleEndian)
-						{
-							fsSource.WriteByte((byte)(Palette.TransparentIndex & 255));
-							fsSource.WriteByte((byte)(Palette.TransparentIndex >> 8));
-						}
-						else
-						{
-							fsSource.WriteByte((byte)(Palette.TransparentIndex >> 8));
-							fsSource.WriteByte((byte)(Palette.TransparentIndex & 255));
-						}
-					}
-				}
+				Properties.Settings.Default.PaletteFormExportFilterIndex = savePaletteDialog.FilterIndex;
+				Properties.Settings.Default.Save();
+
+				filterBuilder.Handle(savePaletteDialog.FilterIndex - 1, savePaletteDialog.FileName);
 			}
 		}
 
@@ -414,18 +359,21 @@ namespace NextGraphics
 				tempPalette[c, 1] = Palette[c, 1];
 				tempPalette[c, 2] = Palette[c, 2];
 			}
+
 			for (int c = 0; c < 256 - 16; c++)
 			{
 				Palette[c][0] = Palette[c + 16, 0];
 				Palette[c][1] = Palette[c + 16, 1];
 				Palette[c][2] = Palette[c + 16, 2];
 			}
+
 			for (int c = 0; c < 16; c++)
 			{
 				Palette[c + (256 - 16)][0] = tempPalette[c, 0];
 				Palette[c + (256 - 16)][1] = tempPalette[c, 1];
 				Palette[c + (256 - 16)][2] = tempPalette[c, 2];
 			}
+
 			for (int c = 0; c < 256; c++)
 			{
 				colourButtons[c].BackColor = Palette[c].ToColor();
@@ -442,18 +390,21 @@ namespace NextGraphics
 				tempPalette[c, 1] = Palette[c + (256 - 16), 1];
 				tempPalette[c, 2] = Palette[c + (256 - 16), 2];
 			}
+
 			for (int c = 255 - 16; c >= 0; c--)
 			{
 				Palette[c + 16][0] = Palette[c, 0];
 				Palette[c + 16][1] = Palette[c, 1];
 				Palette[c + 16][2] = Palette[c, 2];
 			}
+
 			for (int c = 0; c < 16; c++)
 			{
 				Palette[c][0] = tempPalette[c, 0];
 				Palette[c][1] = tempPalette[c, 1];
 				Palette[c][2] = tempPalette[c, 2];
 			}
+
 			for (int c = 0; c < 256; c++)
 			{
 				colourButtons[c].BackColor = Palette[c].ToColor();
@@ -505,7 +456,6 @@ namespace NextGraphics
 			Palette[colourIndex].Red = colourClicked.BackColor.R;
 			Palette[colourIndex].Green = colourClicked.BackColor.G;
 			Palette[colourIndex].Blue = colourClicked.BackColor.B;
-			SetTransparentColour(ref colourButtons[Palette.TransparentIndex]);
 		}
 
 		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -520,94 +470,273 @@ namespace NextGraphics
 			Palette[colourIndex].Red = colourClicked.BackColor.R;
 			Palette[colourIndex].Green = colourClicked.BackColor.G;
 			Palette[colourIndex].Blue = colourClicked.BackColor.B;
-			SetTransparentColour(ref colourButtons[Palette.TransparentIndex]);
 		}
 
-		private void hexValueToolStripMenuItem_Click(object sender, EventArgs e)
+		private void openMixerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			hexColourTextBox.Text = "#" + colourClicked.BackColor.R.ToString("X2") + colourClicked.BackColor.G.ToString("X2") + colourClicked.BackColor.B.ToString("X2");
+			if (Palette.Type == PaletteType.Custom)
+			{
+				colorDialog.Color = colourClicked.BackColor;
+
+				if (colorDialog.ShowDialog() == DialogResult.OK)
+				{
+					int colourIndex = int.Parse(colourClicked.Name);
+					colourClicked.BackColor = colorDialog.Color;
+
+					Palette[colourIndex].Red = colourClicked.BackColor.R;
+					Palette[colourIndex].Green = colourClicked.BackColor.G;
+					Palette[colourIndex].Blue = colourClicked.BackColor.B;
+				}
+			}
+		}
+
+		#endregion
+
+		#region Exporting
+
+		private void ExportAsPaletteFile(string filename)
+		{
+			using (FileStream output = new FileStream(filename, FileMode.Create, FileAccess.Write))
+			{
+				void WriteInt(int value)
+				{
+					if (isLittleEndian)
+					{
+						output.WriteByte((byte)(value & 0xFF));
+						output.WriteByte((byte)(value >> 8));
+					}
+					else
+					{
+						output.WriteByte((byte)(value >> 8));
+						output.WriteByte((byte)(value & 0xFF));
+					}
+				}
+
+				for (int i = 0; i < colourButtons.Length; i++)
+				{
+					output.WriteByte(Palette[i].Red);
+					output.WriteByte(Palette[i].Green);
+					output.WriteByte(Palette[i].Blue);
+				}
+
+				WriteInt(Palette.UsedCount);
+				WriteInt(Palette.TransparentIndex);
+			}
+		}
+
+		private void ExportAsMacPaletteFile(string filename)
+		{
+			// We share the output, but keep separate method.
+			ExportAsPaletteFile(filename);
+		}
+
+		private void ExportAsSpectrumNextAssemblerFile(string filename)
+		{
+			using (StreamWriter outputFile = new StreamWriter(filename))
+			{
+				outputFile.WriteLine("ExportedPalette:");
+
+				for (int i = 0; i < Palette.UsedCount; i++)
+				{
+					var colour = Palette[i + Palette.StartIndex];
+					var bytes = colour.ToRawBytes(Model.PaletteFormat);
+					var binaries = bytes.Select(x => $"%{x.ToBinaryString()}");
+
+					outputFile.Write("\t\t\tdb\t");
+					outputFile.WriteLine(string.Join(",", binaries));
+				}
+			}
+		}
+
+		private void ExportAsSpectrumNextBasicFile(string filename)
+		{
+			int lineNumber = 1000;
+			int lineStep = 10;
+
+			using (StreamWriter outputFile = new StreamWriter(filename))
+			{
+				outputFile.WriteLine(lineNumber.ToString() + "\tREM");
+				lineNumber += lineStep;
+
+				outputFile.WriteLine(lineNumber.ToString() + "\tREM\tExported Palette starts here");
+				lineNumber += lineStep;
+
+				outputFile.WriteLine(lineNumber.ToString() + "\tREM");
+				lineNumber += lineStep;
+
+				outputFile.Write(lineNumber.ToString() + "\tDATA\t");
+				lineNumber += lineStep;
+
+				for (int i = 0; i < Palette.UsedCount; i++)
+				{
+					// Basic always exports as 8-bit colours.
+					var colour = Palette[i + Palette.StartIndex];
+					var colourBytes = colour.ToRawBytes(PaletteFormat.Next8Bit);
+
+					outputFile.Write(string.Join(",", colourBytes));
+
+					if (i < Palette.UsedCount - 1)
+					{
+						outputFile.Write(",");
+					}
+					else
+					{
+						outputFile.WriteLine();
+					}
+				}
+			}
+		}
+
+		private void ExportAsSpectrumNextBinaryPaletteFile(string filename)
+		{
+			using (FileStream output = new FileStream(filename, FileMode.Create, FileAccess.Write))
+			{
+				for (int i = 0; i < Palette.UsedCount; i++)
+				{
+					var colour = Palette[i];
+					var bytes = colour.ToRawBytes(Model.PaletteFormat);
+
+					foreach (var b in bytes)
+					{
+						output.WriteByte(b);
+					}
+				}
+			}
 		}
 
 		#endregion
 
 		#region Helpers
 
-		private void CreatePaletteButtons()
+		private void CreateColourButtons()
 		{
 			// If already created, exit.
 			if (colourButtons != null) return;
 
 			colourButtons = new Button[256];
+			colourButtonBanks = new Button[16, 16];
 
-			int	across	=	0;
-			int	down	=	0;
-			for(int c=0;c<256;c++)
+			int across = 0;
+			int down = 0;
+			for (int c = 0; c < 256; c++)
 			{
-				colourButtons[c]						=	new Button();
-				this.Controls.Add(colourButtons[c]);
-				colourButtons[c].Text						=	"";
-				colourButtons[c].Location					=	new Point(160+(across*20),10+(down*20));
-				colourButtons[c].Size						=	new Size(22, 22);
-				colourButtons[c].BackColor				=	Palette[c].ToColor();
-				colourButtons[c].Click					+=	ColourButtonClick;
-				//colours[c].MouseHover					+=	ColourButtonMouseOver;
-				//colours[c].Enabled					=	false;
-				colourButtons[c].Name						=	c.ToString();				
-				colourButtons[c].FlatStyle					=	FlatStyle.Flat;
-				colourButtons[c].FlatAppearance.BorderColor			=	SystemColors.ControlDark;
-				colourButtons[c].FlatAppearance.BorderSize			=	1;
-				//colours[c].ForeColor					=	Color.Black;
-				across++;
-				if(across>15)
+				var button = new Button
 				{
-					across	=	0;
+					Text = "",
+					Name = c.ToString(),
+					BackColor = Palette[c].ToColor(),
+					FlatStyle = FlatStyle.Flat,
+					Location = new Point(160 + (across * 20), 10 + (down * 20)),
+					Size = new Size(22, 22),
+				};
+
+				button.FlatAppearance.BorderColor = SystemColors.ControlDark;
+				button.FlatAppearance.BorderSize = 1;
+				button.MouseUp += ColourButton_MouseUp;
+
+				colourButtons[c] = button;
+				colourButtonBanks[down, across] = button;
+
+				Controls.Add(colourButtons[c]);
+
+				across++;
+				if (across > 15)
+				{
+					across = 0;
 					down++;
 				}
 			}
-			startIndexTextBox.Text				=	Palette.StartIndex.ToString();
-			tColourIndex1.Text			=	Palette.TransparentIndex.ToString();
-			colourButtons[Palette.TransparentIndex].Text		=	"X";
-			next256TypeRadioButton.Checked			=	true;
 
+			startIndexTextBox.Text = Palette.StartIndex.ToString();
+			next256TypeRadioButton.Checked = true;
 		}
 
-		private void SetTransparentColour(ref Button button)
+		private void UpdateColourButtons()
 		{
-			int colourIndex = int.Parse(tColourIndex1.Text);
-			colourButtons[colourIndex].Text = "";
-			tColourIndex1.Text = button.Name;
-			Palette.TransparentIndex = int.Parse(tColourIndex1.Text);
-			tColourIndex1.BackColor = button.BackColor;
-			tColourIndex1.ForeColor = (384 - tColourIndex1.BackColor.R - tColourIndex1.BackColor.G - tColourIndex1.BackColor.B) > 0 ? Color.White : Color.Black;
-			button.Text = "X";
-			button.ForeColor = tColourIndex1.ForeColor;
+			ResetColourButtons();
+
+			for (int i = 0; i < colourButtons.Length; i++)
+			{
+				if (i >= Palette.StartIndex && i <= Palette.LastValidIndex)
+				{
+					colourButtons[i].BackColor = Palette[i].ToColor();
+					colourButtons[i].ForeColor = colourButtons[i].BackColor.FittingBlackOrWhite();
+				}
+			}
+		}
+
+		private void ResetColourButtons()
+		{
+			for (int i = 0; i < colourButtons.Length; i++)
+			{
+				colourButtons[i].BackColor = SystemColors.Control;
+				colourButtons[i].FlatAppearance.BorderColor = SystemColors.ControlDark;
+			}
+		}
+
+		private void IndicateTransparentButtons()
+		{
+			var transparentIndex = ValidatedTransparentIndex;
+
+			void IndicateTransparent(Button button, bool isTransparent)
+			{
+				if (isTransparent)
+				{
+					button.Text = "X";
+					button.ForeColor = button.BackColor.FittingBlackOrWhite();
+				}
+				else
+				{
+					button.Text = "";
+				}
+			}
+
+			if (Model.IsFourBitPaletteAutoBankingEnabled)
+			{
+				// For 4-bit palette, we must indicate transparency in each bank. But only if auto-banking is set. Note we should already have transparent index trimmed within 16-colours, but let's be proactive just in case (maybe the index is invalid after loading the data for example).
+				for (int y = 0; y < 16; y++)
+				{
+					for (int x = 0; x < 16; x++)
+					{
+						int totalIndex = y * 16 + x;
+
+						IndicateTransparent(colourButtonBanks[y, x], x == transparentIndex && totalIndex < Palette.UsedColours);
+					}
+				}
+			}
+			else
+			{
+				// For 8-bit palette, only 1 colour must be shown as transparent.
+				for (int i = 0; i < colourButtons.Length; i++)
+				{
+					IndicateTransparent(colourButtons[i], i == transparentIndex);
+				}
+			}
+
+			transparentColourIndexLabel.BackColor = Palette.TransparentColour.ToColor();
+			transparentColourIndexLabel.ForeColor = transparentColourIndexLabel.BackColor.FittingBlackOrWhite();
+		}
+
+		private void ShowHexValue()
+		{
+			if (colourClicked == null) return;
+
+			hexColourTextBox.Text = "#" + colourClicked.BackColor.R.ToString("X2") + colourClicked.BackColor.G.ToString("X2") + colourClicked.BackColor.B.ToString("X2");
 		}
 
 		private void SetFromHex()
 		{
-			if (colourClicked != null)
-			{
-				if (hexColourTextBox.Text.Substring(0, 1) == "#")
-				{
-					if (hexColourTextBox.Text.Length == 7)
-					{
-						colourClicked.BackColor = Color.FromArgb(
-							Convert.ToInt32(hexColourTextBox.Text.Substring(1, 2), 16),
-							Convert.ToInt32(hexColourTextBox.Text.Substring(3, 2), 16),
-							Convert.ToInt32(hexColourTextBox.Text.Substring(5, 2), 16));
-					}
-				}
-				else
-				{
-					if (hexColourTextBox.Text.Length == 6)
-					{
-						colourClicked.BackColor = Color.FromArgb(
-							Convert.ToInt32(hexColourTextBox.Text.Substring(0, 2), 16),
-							Convert.ToInt32(hexColourTextBox.Text.Substring(2, 2), 16),
-							Convert.ToInt32(hexColourTextBox.Text.Substring(4, 2), 16));
-					}
-				}
-			}
+			if (colourClicked == null) return;
+			
+			var value = hexColourTextBox.Text;
+			if (value.Length >= 7 && value[0] == '#') value = value.Substring(1);
+			if (value.Length < 6) return;
+
+			var r = Convert.ToInt32(value.Substring(0, 2), 16);
+			var g = Convert.ToInt32(value.Substring(2, 2), 16);
+			var b = Convert.ToInt32(value.Substring(4, 2), 16);
+
+			colourClicked.BackColor = Color.FromArgb(r, g, b);
 		}
 		
 		private void UpdateColoursCount()
@@ -616,54 +745,29 @@ namespace NextGraphics
 			if(int.TryParse(colourCountTextBox.Text, out value))
 			{
 				Palette.UsedCount = value;
+
 				if (Palette.UsedCount > 256)
 				{
 					Palette.UsedCount = 256;
 					colourCountTextBox.Text = "256";
 				}
+
 				if (Palette.StartIndex > 256)
 				{
 					Palette.StartIndex = 0;
 					startIndexTextBox.Text = "0";
 				}
+
 				for (int c = 0; c < 256; c++)
 				{
 					colourButtons[c].FlatAppearance.BorderColor = SystemColors.ControlDark;
 				}
+
 				for (int c = 0; c < Palette.UsedCount; c++)
 				{
 					colourButtons[c + Palette.StartIndex].FlatAppearance.BorderColor = selectedColor;
 				}
 			}
-		}
-
-		private byte EightbitPalette(decimal red, decimal green, decimal blue)
-		{
-			byte r = (byte)Math.Round(red / (255 / 7));
-			byte g = (byte)Math.Round(green / (255 / 7));
-			byte b = (byte)Math.Round(blue / (255 / 3));
-			return (byte)((r << 5) | (g << 2) | b);
-
-			//return	(red & 0x0E0) | ((green & 0x0E0)>>3) | (((blue & 0x0E0)>>6) | ((blue & 0x020)>>5));
-		}
-
-		private string ToBinary(byte num)
-		{
-			string outString = "";
-			int bits = 0x080;
-			for (int bit = 0; bit < 8; bit++)
-			{
-				if ((num & bits) == bits)
-				{
-					outString += "1";
-				}
-				else
-				{
-					outString += "0";
-				}
-				bits = bits >> 1;
-			}
-			return outString;
 		}
 
 		#endregion

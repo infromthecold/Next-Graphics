@@ -1,6 +1,6 @@
 ﻿<XML>
 	<Project>
-		<Name Projectname="sprites" />
+		<Name Projectname="Test" />
 		<Settings sprites="true" center="4" xSize="16" ySize="16" fourBit="false" binary="false" binaryBlocks="false" Repeats="false" MirrorX="false" MirrorY="false" Rotations="false" Transparent="false" Sort="false" blocksImage="false" tilesImage="false" transBlock="false" transTile="false" across="8" accurate="100" format="0" textFlips="false" reduce="false" />
 		<Palette Mapping="Custom" Transparent="0" Used="5">
 			<Colour0 Red="255" Green="36" Blue="255" />

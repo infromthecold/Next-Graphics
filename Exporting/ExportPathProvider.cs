@@ -19,13 +19,13 @@ namespace NextGraphics.Exporting
 	public class ExportPathProvider
 	{
 		private Dictionary<string, Stream> _streams = new Dictionary<string, Stream>();
-		private ImageFormat _imageFormat;
+		private MainModel Model { get; set; }
 
 		#region Initialization & Disposal
 
-		public ExportPathProvider(string filename, ImageFormat imageFormat)
+		public ExportPathProvider(string filename, MainModel model)
 		{
-			_imageFormat = imageFormat;
+			Model = model;
 			SourceFilename = filename;
 			DestinationPath = Path.GetDirectoryName(filename);
 		}
@@ -35,26 +35,26 @@ namespace NextGraphics.Exporting
 		#region Paths
 
 		public string DestinationPath { get; private set; }
-
 		public string SourceFilename { get; private set; }
 
-		public string PaletteFilename { get => Path.ChangeExtension(SourceFilename, "pal"); }
+		public string PaletteFilename { get => Path.ChangeExtension(SourceFilename, Model.ExportBinaryPaletteFileExtension); }
+		public string BinaryFilename { get => Path.ChangeExtension(SourceFilename, Model.ExportBinaryDataFileExtension); }
 
-		public string BinaryFilename { get => Path.ChangeExtension(SourceFilename, "bin"); }
+		public string TilesImageFilename { get => FilenameWithAppendix("tiles", Model.ImageFormat.Extension()); }
+		public string TileAttributesFilename { get => Path.ChangeExtension(SourceFilename, Model.ExportBinaryTileAttributesFileExtension); }
+		public string TilesInfoFilename { get => Path.ChangeExtension(SourceFilename, Model.ExportBinaryTilesInfoFileExtension); }
 
-		public string MapFilename { get => Path.ChangeExtension(SourceFilename, "map"); }
+		public string SpritesImageFilename { get => FilenameWithAppendix("sprites", Model.ImageFormat.Extension()); }
+		public string SpriteAttributesFilename { get => Path.ChangeExtension(SourceFilename, Model.ExportSpriteAttributesFileExtension); }
 
-		public string TilesFilename { get => Path.ChangeExtension(SourceFilename, "til"); }
-
-		public string TilesInfoFilename { get => Path.ChangeExtension(SourceFilename, "blk"); }
-
-		public string TilesImageFilename { get => FilenameWithAppendix("tiles", _imageFormat.Extension()); }
-
-		public string BlocksImageFilename { get => FilenameWithAppendix("blocks", _imageFormat.Extension()); }
-
-		public string BlockImageFilename(int index)
+		public string SpriteImageFilename(int index)
 		{
-			return FilenameWithAppendix($"sprite{index}", _imageFormat.Extension());
+			return FilenameWithAppendix($"sprite{index}", Model.ImageFormat.Extension());
+		}
+
+		public string TilemapFilename(int index)
+		{
+			return FilenameWithAppendix($"tilemap{index}", Model.ExportBinaryTilemapFileExtension);
 		}
 
 		#endregion
@@ -66,12 +66,15 @@ namespace NextGraphics.Exporting
 			parameters.SourceStream = () => PrepareStream(SourceFilename);
 			parameters.PaletteStream = () => PrepareStream(PaletteFilename);
 			parameters.BinaryStream = () => PrepareStream(BinaryFilename);
-			parameters.MapStream = () => PrepareStream(MapFilename);
-			parameters.TilesStream = () => PrepareStream(TilesFilename);
+			
+			parameters.TileAttributesStream = () => PrepareStream(TileAttributesFilename);
 			parameters.TilesInfoStream = () => PrepareStream(TilesInfoFilename);
 			parameters.TilesImageStream = () => PrepareStream(TilesImageFilename);
-			parameters.BlocksImageStream = () => PrepareStream(BlocksImageFilename);
-			parameters.BlockImageStream = (index) => PrepareStream(BlockImageFilename(index));
+			parameters.TilemapsStream = (index) => PrepareStream(TilemapFilename(index));
+
+			parameters.SpriteAttributesStream = () => PrepareStream(SpriteAttributesFilename);
+			parameters.SpritesImageStream = () => PrepareStream(SpritesImageFilename);
+			parameters.SpriteImageStream = (index) => PrepareStream(SpriteImageFilename(index));
 		}
 
 		#endregion

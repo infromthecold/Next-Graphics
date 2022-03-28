@@ -1,11 +1,7 @@
 ﻿using NextGraphics.Models;
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NextGraphics.Exporting.Common
 {
@@ -16,15 +12,19 @@ namespace NextGraphics.Exporting.Common
 		public static int MAX_IMAGES = 64;
 		public static int MAX_CHARS = 256;
 
+		public MainModel Model { get; }
+
+		public ExportParameters Parameters { get; set; }
+
+		#region Initialization & Disposal
+
 		public ExportData(MainModel model, ExportParameters parameters)
 		{
 			Model = model;
 			Parameters = parameters;
 		}
 
-		public MainModel Model { get; }
-
-		public ExportParameters Parameters { get; set; }
+		#endregion
 
 		#region Data prebuilt before export
 
@@ -41,9 +41,9 @@ namespace NextGraphics.Exporting.Common
 		public Point ImageOffset { get; set; } = new Point();
 
 		/// <summary>
-		/// Number of bytes each object takes.
+		/// Convenience for quicker access to <see cref="MainModel.ObjectSize"/>. Eventually we should cleanup all usages to get the value from <see cref="MainModel"/> though.
 		/// </summary>
-		public int ObjectSize { get; set; } = 0;
+		public int ObjectSize { get => Model.ObjectSize; }
 
 		/// <summary>
 		/// Number of bytes each block takes.
@@ -75,12 +75,16 @@ namespace NextGraphics.Exporting.Common
 
 		#endregion
 
+		#region Data setup during export
+
+		public byte DefaultPaletteBank { get; set; } = 0;
+
+		#endregion
+
 		#region Helpers
 
 		public void Clear()
 		{
-			IsRemapped = false;
-
 			for (int b = 0; b < MAX_BLOCKS; b++)
 			{
 				if (Blocks[b] != null)
@@ -104,6 +108,10 @@ namespace NextGraphics.Exporting.Common
 					TempData[c] = null;
 				}
 			}
+
+			BlocksCount = 0;
+			CharactersCount = 0;
+			IsRemapped = false;
 		}
 
 		#endregion

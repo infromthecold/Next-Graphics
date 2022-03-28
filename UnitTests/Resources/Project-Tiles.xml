@@ -260,6 +260,6 @@
       <Colour254 Red="230" Green="230" Blue="230" />
       <Colour255 Red="230" Green="230" Blue="230" />
     </Palette>
-    <Dialogs OutputIndex="0" ImageIndex="0" />
+    <Dialogs OutputIndex="0" ImageIndex="0" TilemapIndex="0" />
   </Project>
 </XML>

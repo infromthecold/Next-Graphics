@@ -61,935 +61,1376 @@ namespace UnitTests.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 16 March 2022 10:20:29 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///SPRITES_COLOURS:		equ	5
+        ///TEST_COLOURS:		equ	39
         ///
-        ///spritesPalette:
-        ///			db	%11100111	//	255,36,255
+        ///TestPalette:
+        ///			db	%11000111	//	235,51,255
         ///			db	%00000000	//	0,0,0
-        ///			db	%11111100	//	255,255,0
-        ///			db	%01111000	//	109,218,0
-        ///			db	%10010111	//	145,182,255
-        ///
-        ///SPRITES_SPRITE_SIZE:		equ	256
-        ///
-        ///SPRITES_SPRITES:		equ	5
-        ///
-        ///spritesSprite0:
-        ///				.db	$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01
-        ///				.db	$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00, [rest of string was truncated]&quot;;.
+        ///			db	%11111101	//	255,238,51
+        ///			db	%01111000	//	109,235,0
+        ///			db	%10010111	//	163,192,255
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11111111	//	237,237,237
+        ///			db	%11011011	//	219,219,219
+        ///			db	%10110110	//	200,200,200
+        ///			db	%10110110	//	182,182,182
+        ///			db	%10110110	//	164,164,164
+        ///			d [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Export_Sprites_Asm {
+        public static string export_sprites_asm_fullcomments_8bit_detect {
             get {
-                return ResourceManager.GetString("Export_Sprites_Asm", resourceCulture);
+                return ResourceManager.GetString("export_sprites_asm_fullcomments_8bit_detect", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 15 March 2022 10:58:30 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///SPRITES_COLOURS:		equ	5
+        ///TEST_COLOURS:		equ	39
         ///
-        ///spritesPalette:
-        ///			db	%11100111	//	255,36,255
+        ///TestPalette:
+        ///			db	%11000111	//	235,51,255
         ///			db	%00000000	//	0,0,0
-        ///			db	%11111100	//	255,255,0
-        ///			db	%01111000	//	109,218,0
-        ///			db	%10010111	//	145,182,255
+        ///			db	%11111101	//	255,238,51
+        ///			db	%01111000	//	109,235,0
+        ///			db	%10010111	//	163,192,255
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11111010	//	255,204,204
+        ///			db	%11111111	//	237,237,237
+        ///			db	%11110010	//	255,163,163
+        ///			db	%00001011	//	15,91,255
+        ///			db	%00001010	//	0,63,199
+        ///			db	%00 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm_fullcomments_8bit_manual {
+            get {
+                return ResourceManager.GetString("export_sprites_asm_fullcomments_8bit_manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 16 March 2022 10:20:29 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
         ///
-        ///SPRITES_SPRITE_SIZE:		equ	256
+        ///TEST_COLOURS:		equ	39
         ///
-        ///SPRITES_SPRITES:		equ	5
+        ///TestPalette:
+        ///			db	%11000111,%00000001	//	235,51,255
+        ///			db	%00000000,%00000000	//	0,0,0
+        ///			db	%11111100,%00000001	//	255,238,51
+        ///			db	%01111000,%00000000	//	109,235,0
+        ///			db	%10010111,%00000001	//	163,192,255
+        ///			db	%11111111,%00000001	//	255,255,255
+        ///			db	%11111111,%00000001	//	237,237,237
+        ///			db	%11011011,%00000000	//	219,219,219
+        ///			db	%10110110,%000 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm_fullcomments_9bit_detect {
+            get {
+                return ResourceManager.GetString("export_sprites_asm_fullcomments_9bit_detect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 15 March 2022 10:58:30 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	39
+        ///
+        ///TestPalette:
+        ///			db	%11000111,%00000001	//	235,51,255
+        ///			db	%00000000,%00000000	//	0,0,0
+        ///			db	%11111100,%00000001	//	255,238,51
+        ///			db	%01111000,%00000000	//	109,235,0
+        ///			db	%10010111,%00000001	//	163,192,255
+        ///			db	%11111111,%00000001	//	255,255,255
+        ///			db	%11111011,%00000000	//	255,204,204
+        ///			db	%11111111,%00000001	//	237,237,237
+        ///			db	%11110010,%000 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm_fullcomments_9bit_manual {
+            get {
+                return ResourceManager.GetString("export_sprites_asm_fullcomments_9bit_manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 16 March 2022 10:20:29 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	39
+        ///
+        ///TestPalette:
+        ///			db	%11000111
+        ///			db	%00000000
+        ///			db	%11111101
+        ///			db	%01111000
+        ///			db	%10010111
+        ///			db	%11111111
+        ///			db	%11111111
+        ///			db	%11011011
+        ///			db	%10110110
+        ///			db	%10110110
+        ///			db	%10110110
+        ///			db	%10010010
+        ///			db	%10010010
+        ///			db	%01101101
+        ///			db	%01001001
+        ///			db	%01001001
+        ///			db	%01001001
+        ///			db	%00100100
+        ///			db	%11111010
+        ///			db	%11110010
+        ///			db	 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm_nocomments_8bit_detect {
+            get {
+                return ResourceManager.GetString("export_sprites_asm_nocomments_8bit_detect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 15 March 2022 10:58:30 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	39
+        ///
+        ///TestPalette:
+        ///			db	%11000111
+        ///			db	%00000000
+        ///			db	%11111101
+        ///			db	%01111000
+        ///			db	%10010111
+        ///			db	%11111111
+        ///			db	%11111010
+        ///			db	%11111111
+        ///			db	%11110010
+        ///			db	%00001011
+        ///			db	%00001010
+        ///			db	%00000101
+        ///			db	%11011011
+        ///			db	%11110010
+        ///			db	%10110110
+        ///			db	%11101101
+        ///			db	%00000001
+        ///			db	%10110110
+        ///			db	%11100101
+        ///			db	%10110110
+        ///			db	 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm_nocomments_8bit_manual {
+            get {
+                return ResourceManager.GetString("export_sprites_asm_nocomments_8bit_manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 16 March 2022 10:20:29 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	39
+        ///
+        ///TestPalette:
+        ///			db	%11000111,%00000001
+        ///			db	%00000000,%00000000
+        ///			db	%11111100,%00000001
+        ///			db	%01111000,%00000000
+        ///			db	%10010111,%00000001
+        ///			db	%11111111,%00000001
+        ///			db	%11111111,%00000001
+        ///			db	%11011011,%00000000
+        ///			db	%10110110,%00000001
+        ///			db	%10110110,%00000001
+        ///			db	%10110110,%00000001
+        ///			db	%10010010,%00000000
+        ///			db	%10010010,%00000 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm_nocomments_9bit_detect {
+            get {
+                return ResourceManager.GetString("export_sprites_asm_nocomments_9bit_detect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 15 March 2022 10:58:30 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	39
+        ///
+        ///TestPalette:
+        ///			db	%11000111,%00000001
+        ///			db	%00000000,%00000000
+        ///			db	%11111100,%00000001
+        ///			db	%01111000,%00000000
+        ///			db	%10010111,%00000001
+        ///			db	%11111111,%00000001
+        ///			db	%11111011,%00000000
+        ///			db	%11111111,%00000001
+        ///			db	%11110010,%00000000
+        ///			db	%00001011,%00000001
+        ///			db	%00001010,%00000001
+        ///			db	%00000101,%00000001
+        ///			db	%11011011,%00000 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm_nocomments_9bit_manual {
+            get {
+                return ResourceManager.GetString("export_sprites_asm_nocomments_9bit_manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 24 March 2022 12:18:36 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	48
+        ///
+        ///TestPalette:
+        ///			db	%11000111	//	235,51,255
+        ///			db	%00000000	//	0,0,0
+        ///			db	%11111101	//	255,238,51
+        ///			db	%01111000	//	109,235,0
+        ///			db	%10010111	//	163,192,255
+        ///			db	%00001011	//	15,91,255
+        ///			db	%00001010	//	0,63,199
+        ///			db	%00000101	//	0,39,122
+        ///			db	%00000001	//	0,16,51
+        ///			db	%00000110	//	0,50,158
+        ///			db	%00000101	//	0,27,87
+        ///			db	%11100011	//	255, [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm4bit_8bit_detect {
+            get {
+                return ResourceManager.GetString("export_sprites_asm4bit_8bit_detect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 14 March 2022 15:12:07 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	39
+        ///
+        ///TestPalette:
+        ///			db	%11000111	//	235,51,255
+        ///			db	%00000000	//	0,0,0
+        ///			db	%11111101	//	255,238,51
+        ///			db	%01111000	//	109,235,0
+        ///			db	%10010111	//	163,192,255
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11111010	//	255,204,204
+        ///			db	%11111111	//	237,237,237
+        ///			db	%11110010	//	255,163,163
+        ///			db	%00001011	//	15,91,255
+        ///			db	%00001010	//	0,63,199
+        ///			db	%00 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm4bit_8bit_manual {
+            get {
+                return ResourceManager.GetString("export_sprites_asm4bit_8bit_manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 24 March 2022 12:18:36 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	48
+        ///
+        ///TestPalette:
+        ///			db	%11000111,%00000001	//	235,51,255
+        ///			db	%00000000,%00000000	//	0,0,0
+        ///			db	%11111100,%00000001	//	255,238,51
+        ///			db	%01111000,%00000000	//	109,235,0
+        ///			db	%10010111,%00000001	//	163,192,255
+        ///			db	%00001011,%00000001	//	15,91,255
+        ///			db	%00001010,%00000001	//	0,63,199
+        ///			db	%00000101,%00000001	//	0,39,122
+        ///			db	%00000000,%00000001	// [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm4bit_9bit_detect {
+            get {
+                return ResourceManager.GetString("export_sprites_asm4bit_9bit_detect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 14 March 2022 15:12:07 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	39
+        ///
+        ///TestPalette:
+        ///			db	%11000111,%00000001	//	235,51,255
+        ///			db	%00000000,%00000000	//	0,0,0
+        ///			db	%11111100,%00000001	//	255,238,51
+        ///			db	%01111000,%00000000	//	109,235,0
+        ///			db	%10010111,%00000001	//	163,192,255
+        ///			db	%11111111,%00000001	//	255,255,255
+        ///			db	%11111011,%00000000	//	255,204,204
+        ///			db	%11111111,%00000001	//	237,237,237
+        ///			db	%11110010,%000 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_sprites_asm4bit_9bit_manual {
+            get {
+                return ResourceManager.GetString("export_sprites_asm4bit_9bit_manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 15 March 2022 10:58:30 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	39
+        ///
+        ///
+        ///TEST_SPRITE_SIZE:		equ	256
+        ///
+        ///TEST_SPRITES:		equ	7
         ///
         ///
         ///				// number of sprites
         ///
         ///					// x offset from center of sprite
         ///					// y offset from center of sprite
-        ///					// Palette offset with the X mi [rest of string was truncated]&quot;;.
+        ///					// Palette offset with the X mirror,Y mirror, Rotate bits if set
+        ///					// 4 bit colour bit and pattern offset bit
+        ///					// index of the sprite at this position that makes up the frame
+        ///
+        ///		 [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Export_Sprites_Asm_Binary {
+        public static string export_sprites_asmbinary_fullcomments {
             get {
-                return ResourceManager.GetString("Export_Sprites_Asm_Binary", resourceCulture);
+                return ResourceManager.GetString("export_sprites_asmbinary_fullcomments", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 15 March 2022 11:32:14 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///SPRITES_COLOURS:		equ	5
+        ///TEST_COLOURS:		equ	39
         ///
-        ///spritesPalette:
-        ///			db	%11100111
-        ///			db	%00000000
-        ///			db	%11111100
-        ///			db	%01111000
-        ///			db	%10010111
         ///
-        ///SPRITES_SPRITE_SIZE:		equ	256
+        ///TEST_SPRITE_SIZE:		equ	256
         ///
-        ///SPRITES_SPRITES:		equ	5
+        ///TEST_SPRITES:		equ	7
+        ///
+        ///
+        ///
         ///
         ///// Collisions Left Width Top Height
-        ///spritesCollision0:		.db	0,15,0,15
-        ///spritesCollision1:		.db	3,10,1,13
-        ///spritesCollision2:		.db	2,11,1,13
-        ///spritesCollision3:		.db	2,11,1,13
-        ///spritesCollision4:		.db	1,13,2,10 [rest of string was truncated]&quot;;.
+        ///TestCollision0:		.db	0,15,0,15
+        ///TestCollision1:		.db	3,10,1,13
+        ///TestCollision2:		.db	2,11,1,13
+        ///TestCollision3:		.db	2,11,1,13
+        ///TestCollision4:		.db	1,13,2,10
+        ///TestCollision5:		.db	2,10,1,13
+        ///TestCollision6:		.db	1,13,3,10
+        ///TestCollision7:		.db	2,10,1,13
+        ///TestC [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Export_Sprites_Asm_Binary_NoComments {
+        public static string export_sprites_asmbinary_nocomments {
             get {
-                return ResourceManager.GetString("Export_Sprites_Asm_Binary_NoComments", resourceCulture);
+                return ResourceManager.GetString("export_sprites_asmbinary_nocomments", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 15 March 2022 10:58:30 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///SPRITES_COLOURS:		equ	5
-        ///
-        ///spritesPalette:
-        ///			db	%11100111,%00000001
-        ///			db	%00000000,%00000000
-        ///			db	%11111100,%00000000
-        ///			db	%01111000,%00000000
-        ///			db	%10010111,%00000001
-        ///
-        ///SPRITES_SPRITE_SIZE:		equ	256
-        ///
-        ///SPRITES_SPRITES:		equ	5
-        ///
-        ///// Collisions Left Width Top Height
-        ///spritesCollision0:		.db	0,15,0,15
-        ///spritesCollision1:		.db	3,10,1,13
-        ///spritesCollision2:		.db	2,11,1,13
-        ///spritesCollision3: [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string Export_Sprites_Asm_Binary_NoComments_PaletteNext9Bit {
-            get {
-                return ResourceManager.GetString("Export_Sprites_Asm_Binary_NoComments_PaletteNext9Bit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on {0} by the NextGraphics tool from
-        ///// patricia curtis at luckyredfish dot com
-        ///
-        ///SPRITES_COLOURS:		equ	5
-        ///
-        ///spritesPalette:
-        ///			db	%11100111,%00000001	//	255,36,255
-        ///			db	%00000000,%00000000	//	0,0,0
-        ///			db	%11111100,%00000000	//	255,255,0
-        ///			db	%01111000,%00000000	//	109,218,0
-        ///			db	%10010111,%00000001	//	145,182,255
-        ///
-        ///SPRITES_SPRITE_SIZE:		equ	256
-        ///
-        ///SPRITES_SPRITES:		equ	5
+        ///TEST_COLOURS:		equ	39
         ///
         ///
-        ///				// number of sprites
+        ///TEST_SPRITE_SIZE:		equ	256
         ///
-        ///					// x offset from center of sprite
-        ///					// y offset from cent [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string Export_Sprites_Asm_Binary_PaletteNext9Bit {
-            get {
-                return ResourceManager.GetString("Export_Sprites_Asm_Binary_PaletteNext9Bit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on {0} by the NextGraphics tool from
-        ///// patricia curtis at luckyredfish dot com
-        ///
-        ///SPRITES_COLOURS:		equ	5
-        ///
-        ///spritesPalette:
-        ///			db	%11100111	//	255,36,255
-        ///			db	%00000000	//	0,0,0
-        ///			db	%11111100	//	255,255,0
-        ///			db	%01111000	//	109,218,0
-        ///			db	%10010111	//	145,182,255
-        ///
-        ///SPRITES_SPRITE_SIZE:		equ	256
-        ///
-        ///SPRITES_SPRITES:		equ	5
+        ///TEST_SPRITES:		equ	7
         ///
         ///
         ///				// number of sprites
         ///
         ///					// x offset from center of sprite
         ///					// y offset from center of sprite
-        ///					// Palette offset with the X mi [rest of string was truncated]&quot;;.
+        ///					// Palette offset with the X mirror,Y mirror, Rotate bits if set
+        ///					// 4 bit colour bit and pattern offset bit
+        ///					// index of the sprite at this position that makes up the frame
+        ///
+        ///		 [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Export_Sprites_Asm_BinaryBlocks {
+        public static string export_sprites_asmbinaryattrs_fullcomments {
             get {
-                return ResourceManager.GetString("Export_Sprites_Asm_BinaryBlocks", resourceCulture);
+                return ResourceManager.GetString("export_sprites_asmbinaryattrs_fullcomments", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 15 March 2022 11:32:14 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///SPRITES_COLOURS:		equ	5
+        ///TEST_COLOURS:		equ	39
         ///
-        ///spritesPalette:
-        ///			db	%11100111
+        ///
+        ///TEST_SPRITE_SIZE:		equ	256
+        ///
+        ///TEST_SPRITES:		equ	7
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///TestFrames:		.dw	TestFrame0,TestFrame1,TestFrame2,TestFrame3,TestFrame4,TestFrame5,TestFrame6,TestFrame7,TestFrame8,TestFrame9,TestFrame10,TestFrame11
+        ///
+        ///
+        ///TEST_FILE_SIZE	equ	1792
+        ///TestFile:			dw	TEST_FILE_SIZE
+        ///			db	PATH,&quot;game/level1/test.bin&quot;,0
+        ///.
+        /// </summary>
+        public static string export_sprites_asmbinaryattrs_nocomments {
+            get {
+                return ResourceManager.GetString("export_sprites_asmbinaryattrs_nocomments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_sprites_attributes {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_attributes", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_sprites_binary_detect {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_binary_detect", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_sprites_binary_manual {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_binary_manual", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap export_sprites_image {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_image", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap export_sprites_image0 {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_image0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap export_sprites_image1 {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_image1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap export_sprites_image10 {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_image10", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap export_sprites_image2 {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_image2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap export_sprites_image3 {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_image3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap export_sprites_image4 {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_image4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap export_sprites_image5 {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_image5", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap export_sprites_image6 {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_image6", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap export_sprites_image7 {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_image7", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap export_sprites_image8 {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_image8", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap export_sprites_image9 {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_image9", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_sprites_palette_8bit_detect {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_palette_8bit_detect", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_sprites_palette_8bit_manual {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_palette_8bit_manual", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_sprites_palette_9bit_detect {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_palette_9bit_detect", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_sprites_palette_9bit_manual {
+            get {
+                object obj = ResourceManager.GetObject("export_sprites_palette_9bit_manual", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 15 March 2022 13:23:23 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	6
+        ///
+        ///TestPalette:
+        ///			db	%01001001	//	72,72,72
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11011011	//	218,218,218
+        ///			db	%10110110	//	182,182,182
+        ///			db	%10010010	//	145,145,145
+        ///			db	%01101101	//	109,109,109
+        ///
+        ///TEST_TILE_SIZE:		equ	32
+        ///
+        ///TEST_TILES:		equ	0
+        ///
+        ///
+        ///				// block data
+        ///				// number of tiles (characters) tall
+        ///				// number of tiles (characters) wide
+        ///		 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tilemaps_asm_bytes {
+            get {
+                return ResourceManager.GetString("export_tilemaps_asm_bytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 15 March 2022 13:23:23 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	6
+        ///
+        ///TestPalette:
+        ///			db	%01001001	//	72,72,72
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11011011	//	218,218,218
+        ///			db	%10110110	//	182,182,182
+        ///			db	%10010010	//	145,145,145
+        ///			db	%01101101	//	109,109,109
+        ///
+        ///TEST_TILE_SIZE:		equ	32
+        ///
+        ///TEST_TILES:		equ	0
+        ///
+        ///
+        ///				// block data
+        ///				// number of tiles (characters) tall
+        ///				// number of tiles (characters) wide
+        ///		 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tilemaps_asm_index {
+            get {
+                return ResourceManager.GetString("export_tilemaps_asm_index", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 15 March 2022 13:23:23 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	6
+        ///
+        ///TestPalette:
+        ///			db	%01001001	//	72,72,72
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11011011	//	218,218,218
+        ///			db	%10110110	//	182,182,182
+        ///			db	%10010010	//	145,145,145
+        ///			db	%01101101	//	109,109,109
+        ///
+        ///TEST_TILE_SIZE:		equ	32
+        ///
+        ///TEST_TILES:		equ	0
+        ///
+        ///
+        ///				// block data
+        ///				// number of tiles (characters) tall
+        ///				// number of tiles (characters) wide
+        ///		 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tilemaps_asm_words {
+            get {
+                return ResourceManager.GetString("export_tilemaps_asm_words", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 15 March 2022 13:23:23 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	6
+        ///
+        ///
+        ///TEST_TILE_SIZE:		equ	32
+        ///
+        ///TEST_TILES:		equ	0
+        ///
+        ///
+        ///				// block data
+        ///				// number of tiles (characters) tall
+        ///				// number of tiles (characters) wide
+        ///					// Palette offset with the X mirror,Y mirror, Rotate bits if set
+        ///					// index of the character at this position that makes up the block
+        ///				//...... repeated wide x tall times
+        ///
+        ///				//Note: Blocks [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tilemaps_asmbinary_index {
+            get {
+                return ResourceManager.GetString("export_tilemaps_asmbinary_index", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 15 March 2022 13:23:23 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	6
+        ///
+        ///
+        ///TEST_TILE_SIZE:		equ	32
+        ///
+        ///TEST_TILES:		equ	0
+        ///
+        ///
+        ///				// block data
+        ///				// number of tiles (characters) tall
+        ///				// number of tiles (characters) wide
+        ///					// Palette offset with the X mirror,Y mirror, Rotate bits if set
+        ///					// index of the character at this position that makes up the block
+        ///				//...... repeated wide x tall times
+        ///
+        ///				//Note: Blocks [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tilemaps_asmbinary_word {
+            get {
+                return ResourceManager.GetString("export_tilemaps_asmbinary_word", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_tilemaps_binary_index {
+            get {
+                object obj = ResourceManager.GetObject("export_tilemaps_binary_index", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_tilemaps_binary_word {
+            get {
+                object obj = ResourceManager.GetObject("export_tilemaps_binary_word", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_tilemaps_palette {
+            get {
+                object obj = ResourceManager.GetObject("export_tilemaps_palette", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 25 March 2022 10:57:08 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	24
+        ///
+        ///TestPalette:
+        ///			db	%11100011,%00000001	//	255,0,255
+        ///			db	%10110110,%00000001	//	182,182,182
+        ///			db	%10010010,%00000000	//	145,145,145
+        ///			db	%01101101,%00000001	//	109,109,109
+        ///			db	%01001001,%00000000	//	72,72,72
+        ///			db	%11111111,%00000001	//	255,255,255
+        ///			db	%11011011,%00000000	//	218,218,218
+        ///			db	%00100100,%00000001	//	36,36,36
+        ///			db	%00000000,%0 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tilemapsimages_asm_bytes {
+            get {
+                return ResourceManager.GetString("export_tilemapsimages_asm_bytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 25 March 2022 10:57:08 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	24
+        ///
+        ///TestPalette:
+        ///			db	%11100011,%00000001	//	255,0,255
+        ///			db	%10110110,%00000001	//	182,182,182
+        ///			db	%10010010,%00000000	//	145,145,145
+        ///			db	%01101101,%00000001	//	109,109,109
+        ///			db	%01001001,%00000000	//	72,72,72
+        ///			db	%11111111,%00000001	//	255,255,255
+        ///			db	%11011011,%00000000	//	218,218,218
+        ///			db	%00100100,%00000001	//	36,36,36
+        ///			db	%00000000,%0 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tilemapsimages_asm_index {
+            get {
+                return ResourceManager.GetString("export_tilemapsimages_asm_index", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 25 March 2022 10:57:08 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	24
+        ///
+        ///TestPalette:
+        ///			db	%11100011,%00000001	//	255,0,255
+        ///			db	%10110110,%00000001	//	182,182,182
+        ///			db	%10010010,%00000000	//	145,145,145
+        ///			db	%01101101,%00000001	//	109,109,109
+        ///			db	%01001001,%00000000	//	72,72,72
+        ///			db	%11111111,%00000001	//	255,255,255
+        ///			db	%11011011,%00000000	//	218,218,218
+        ///			db	%00100100,%00000001	//	36,36,36
+        ///			db	%00000000,%0 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tilemapsimages_asm_words {
+            get {
+                return ResourceManager.GetString("export_tilemapsimages_asm_words", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 14 March 2022 14:03:42 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	24
+        ///
+        ///TestPalette:
+        ///			db	%11100011	//	255,0,255
+        ///			db	%10110110	//	182,182,182
+        ///			db	%10010010	//	145,145,145
+        ///			db	%01101101	//	109,109,109
+        ///			db	%01001001	//	72,72,72
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11011011	//	218,218,218
+        ///			db	%00100100	//	36,36,36
+        ///			db	%00000000	//	0,0,0
+        ///			db	%11111011	//	255,218,218
+        ///			db	%11110110	//	255,182,182
+        ///			db	%1 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tiles_asm_fullcomments_8bit_detect {
+            get {
+                return ResourceManager.GetString("export_tiles_asm_fullcomments_8bit_detect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 14 March 2022 14:03:42 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	23
+        ///
+        ///TestPalette:
+        ///			db	%11100011	//	255,0,255
+        ///			db	%10110110	//	182,182,182
+        ///			db	%10010010	//	145,145,145
+        ///			db	%01101101	//	109,109,109
+        ///			db	%01001001	//	72,72,72
+        ///			db	%11111111	//	255,255,255
+        ///			db	%11111011	//	255,218,218
+        ///			db	%11111110	//	255,255,182
+        ///			db	%11111101	//	255,255,72
+        ///			db	%11111100	//	255,255,36
+        ///			db	%11111100	//	255,255,0
+        ///			 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tiles_asm_fullcomments_8bit_manual {
+            get {
+                return ResourceManager.GetString("export_tiles_asm_fullcomments_8bit_manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 14 March 2022 14:03:42 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	24
+        ///
+        ///TestPalette:
+        ///			db	%11100011,%00000001	//	255,0,255
+        ///			db	%10110110,%00000001	//	182,182,182
+        ///			db	%10010010,%00000000	//	145,145,145
+        ///			db	%01101101,%00000001	//	109,109,109
+        ///			db	%01001001,%00000000	//	72,72,72
+        ///			db	%11111111,%00000001	//	255,255,255
+        ///			db	%11011011,%00000000	//	218,218,218
+        ///			db	%00100100,%00000001	//	36,36,36
+        ///			db	%00000000,%0 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tiles_asm_fullcomments_9bit_detect {
+            get {
+                return ResourceManager.GetString("export_tiles_asm_fullcomments_9bit_detect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 14 March 2022 14:55:31 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	23
+        ///
+        ///TestPalette:
+        ///			db	%11100011,%00000001	//	255,0,255
+        ///			db	%10110110,%00000001	//	182,182,182
+        ///			db	%10010010,%00000000	//	145,145,145
+        ///			db	%01101101,%00000001	//	109,109,109
+        ///			db	%01001001,%00000000	//	72,72,72
+        ///			db	%11111111,%00000001	//	255,255,255
+        ///			db	%11111011,%00000000	//	255,218,218
+        ///			db	%11111110,%00000001	//	255,255,182
+        ///			db	%11111101 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tiles_asm_fullcomments_9bit_manual {
+            get {
+                return ResourceManager.GetString("export_tiles_asm_fullcomments_9bit_manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 14 March 2022 14:03:42 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	24
+        ///
+        ///TestPalette:
+        ///			db	%11100011
+        ///			db	%10110110
+        ///			db	%10010010
+        ///			db	%01101101
+        ///			db	%01001001
+        ///			db	%11111111
+        ///			db	%11011011
+        ///			db	%00100100
         ///			db	%00000000
+        ///			db	%11111011
+        ///			db	%11110110
+        ///			db	%11110010
+        ///			db	%11101001
+        ///			db	%11100100
+        ///			db	%11000000
+        ///			db	%10000000
+        ///			db	%11100011
+        ///			db	%11111110
+        ///			db	%11111101
         ///			db	%11111100
-        ///			db	%01111000
-        ///			db	%10010111
-        ///
-        ///SPRITES_SPRITE_SIZE:		equ	256
-        ///
-        ///SPRITES_SPRITES:		equ	5
-        ///
-        ///
-        ///spritesFrames:		.dw	spritesFrame0,spritesFrame1,spritesFrame2,spritesFrame3,spritesFrame4,spritesFrame5,spritesFrame6,spritesFrame7,spritesFrame8,spritesFrame9,spritesFrame10,spritesFrame11,spritesFrame12,spr [rest of string was truncated]&quot;;.
+        ///			db	 [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Export_Sprites_Asm_BinaryBlocks_NoComments {
+        public static string export_tiles_asm_nocomments_8bit_detect {
             get {
-                return ResourceManager.GetString("Export_Sprites_Asm_BinaryBlocks_NoComments", resourceCulture);
+                return ResourceManager.GetString("export_tiles_asm_nocomments_8bit_detect", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 14 March 2022 14:03:42 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///SPRITES_COLOURS:		equ	5
+        ///TEST_COLOURS:		equ	23
         ///
-        ///spritesPalette:
-        ///			db	%11100111
+        ///TestPalette:
+        ///			db	%11100011
+        ///			db	%10110110
+        ///			db	%10010010
+        ///			db	%01101101
+        ///			db	%01001001
+        ///			db	%11111111
+        ///			db	%11111011
+        ///			db	%11111110
+        ///			db	%11111101
+        ///			db	%11111100
+        ///			db	%11111100
+        ///			db	%11111000
+        ///			db	%11011011
+        ///			db	%00100100
         ///			db	%00000000
-        ///			db	%11111100
-        ///			db	%01111000
-        ///			db	%10010111
-        ///
-        ///SPRITES_SPRITE_SIZE:		equ	256
-        ///
-        ///SPRITES_SPRITES:		equ	5
-        ///
-        ///
-        ///spritesFrames:		.dw	spritesFrame0,spritesFrame1,spritesFrame2,spritesFrame3,spritesFrame4,spritesFrame5,spritesFrame6,spritesFrame7,spritesFrame8,spritesFrame9,spritesFrame10,spritesFrame11,spritesFrame12,spr [rest of string was truncated]&quot;;.
+        ///			db	%11110110
+        ///			db	%11010100
+        ///			db	%11110010
+        ///			db	%11101001
+        ///			db	%11100100
+        ///			db	 [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Export_Sprites_Asm_BinaryBlocks_NoComments_PaletteNext9Bit {
+        public static string export_tiles_asm_nocomments_8bit_manual {
             get {
-                return ResourceManager.GetString("Export_Sprites_Asm_BinaryBlocks_NoComments_PaletteNext9Bit", resourceCulture);
+                return ResourceManager.GetString("export_tiles_asm_nocomments_8bit_manual", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 14 March 2022 14:03:42 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///SPRITES_COLOURS:		equ	5
+        ///TEST_COLOURS:		equ	24
         ///
-        ///spritesPalette:
-        ///			db	%11100111,%00000001	//	255,36,255
-        ///			db	%00000000,%00000000	//	0,0,0
-        ///			db	%11111100,%00000000	//	255,255,0
-        ///			db	%01111000,%00000000	//	109,218,0
-        ///			db	%10010111,%00000001	//	145,182,255
-        ///
-        ///SPRITES_SPRITE_SIZE:		equ	256
-        ///
-        ///SPRITES_SPRITES:		equ	5
-        ///
-        ///
-        ///				// number of sprites
-        ///
-        ///					// x offset from center of sprite
-        ///					// y offset from cent [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string Export_Sprites_Asm_BinaryBlocks_PaletteNext9Bit {
-            get {
-                return ResourceManager.GetString("Export_Sprites_Asm_BinaryBlocks_PaletteNext9Bit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on {0} by the NextGraphics tool from
-        ///// patricia curtis at luckyredfish dot com
-        ///
-        ///SPRITES_COLOURS:		equ	5
-        ///
-        ///spritesPalette:
-        ///			db	%11100111
-        ///			db	%00000000
-        ///			db	%11111100
-        ///			db	%01111000
-        ///			db	%10010111
-        ///
-        ///SPRITES_SPRITE_SIZE:		equ	256
-        ///
-        ///SPRITES_SPRITES:		equ	5
-        ///
-        ///spritesSprite0:
-        ///				.db	$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01
-        ///				.db	$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00
-        ///				.db	$00,$01,$00,$01,$00,$01,$00,$01,$00,$01 [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string Export_Sprites_Asm_NoComments {
-            get {
-                return ResourceManager.GetString("Export_Sprites_Asm_NoComments", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on {0} by the NextGraphics tool from
-        ///// patricia curtis at luckyredfish dot com
-        ///
-        ///SPRITES_COLOURS:		equ	5
-        ///
-        ///spritesPalette:
-        ///			db	%11100111,%00000001
+        ///TestPalette:
+        ///			db	%11100011,%00000001
+        ///			db	%10110110,%00000001
+        ///			db	%10010010,%00000000
+        ///			db	%01101101,%00000001
+        ///			db	%01001001,%00000000
+        ///			db	%11111111,%00000001
+        ///			db	%11011011,%00000000
+        ///			db	%00100100,%00000001
         ///			db	%00000000,%00000000
+        ///			db	%11111011,%00000000
+        ///			db	%11110110,%00000001
+        ///			db	%11110010,%00000000
+        ///			db	%11101001,%00000 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string export_tiles_asm_nocomments_9bit_detect {
+            get {
+                return ResourceManager.GetString("export_tiles_asm_nocomments_9bit_detect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to // Test.asm
+        ///// Created on 14 March 2022 14:03:42 by the NextGraphics tool from
+        ///// patricia curtis at luckyredfish dot com
+        ///
+        ///TEST_COLOURS:		equ	23
+        ///
+        ///TestPalette:
+        ///			db	%11100011,%00000001
+        ///			db	%10110110,%00000001
+        ///			db	%10010010,%00000000
+        ///			db	%01101101,%00000001
+        ///			db	%01001001,%00000000
+        ///			db	%11111111,%00000001
+        ///			db	%11111011,%00000000
+        ///			db	%11111110,%00000001
+        ///			db	%11111101,%00000000
+        ///			db	%11111100,%00000001
         ///			db	%11111100,%00000000
-        ///			db	%01111000,%00000000
-        ///			db	%10010111,%00000001
-        ///
-        ///SPRITES_SPRITE_SIZE:		equ	256
-        ///
-        ///SPRITES_SPRITES:		equ	5
-        ///
-        ///spritesSprite0:
-        ///				.db	$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01
-        ///				.db	$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$0 [rest of string was truncated]&quot;;.
+        ///			db	%11111000,%00000000
+        ///			db	%11011011,%00000 [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Export_Sprites_Asm_NoComments_PaletteNext9Bit {
+        public static string export_tiles_asm_nocomments_9bit_manual {
             get {
-                return ResourceManager.GetString("Export_Sprites_Asm_NoComments_PaletteNext9Bit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to // sprites.asm
-        ///// Created on {0} by the NextGraphics tool from
-        ///// patricia curtis at luckyredfish dot com
-        ///
-        ///SPRITES_COLOURS:		equ	5
-        ///
-        ///spritesPalette:
-        ///			db	%11100111,%00000001	//	255,36,255
-        ///			db	%00000000,%00000000	//	0,0,0
-        ///			db	%11111100,%00000000	//	255,255,0
-        ///			db	%01111000,%00000000	//	109,218,0
-        ///			db	%10010111,%00000001	//	145,182,255
-        ///
-        ///SPRITES_SPRITE_SIZE:		equ	256
-        ///
-        ///SPRITES_SPRITES:		equ	5
-        ///
-        ///spritesSprite0:
-        ///				.db	$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01,$00,$01
-        ///				.d [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string Export_Sprites_Asm_PaletteNext9Bit {
-            get {
-                return ResourceManager.GetString("Export_Sprites_Asm_PaletteNext9Bit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] Export_Sprites_Bin {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Bin", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block0 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block0", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block1 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block10 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block10", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block11 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block11", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block12 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block12", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block13 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block13", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block2 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block2", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block3 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block3", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block4 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block4", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block5 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block5", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block6 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block6", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block7 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block7", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block8 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block8", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Block9 {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Block9", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap Export_Sprites_Image_Tiles {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Image_Tiles", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] Export_Sprites_Pal {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Pal", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] Export_Sprites_Pal_PaletteNext9Bit {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Pal_PaletteNext9Bit", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] Export_Sprites_Til {
-            get {
-                object obj = ResourceManager.GetObject("Export_Sprites_Til", resourceCulture);
-                return ((byte[])(obj));
+                return ResourceManager.GetString("export_tiles_asm_nocomments_9bit_manual", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///// Created on 14 March 2022 14:03:42 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///TEST_COLOURS:		equ	6
+        ///TEST_COLOURS:		equ	24
         ///
-        ///TestPalette:
-        ///			db	%01001001	//	72,72,72
-        ///			db	%11111111	//	255,255,255
-        ///			db	%11011011	//	218,218,218
-        ///			db	%10110110	//	182,182,182
-        ///			db	%10010010	//	145,145,145
-        ///			db	%01101101	//	109,109,109
         ///
         ///TEST_TILE_SIZE:		equ	32
         ///
-        ///TEST_TILES:		equ	4
-        ///
-        ///TestTile0:
-        ///				.db	$00,$11,$11,$00
-        ///				.db	$01,$22,$22,$10
-        ///				.db	$12,$22,$22,$22
-        ///				.db	$12,$14,$22,$23
-        ///				.db	$32,$2 [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string Export_Tiles_Asm {
-            get {
-                return ResourceManager.GetString("Export_Tiles_Asm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
-        ///// patricia curtis at luckyredfish dot com
-        ///
-        ///TEST_COLOURS:		equ	6
-        ///
-        ///TestPalette:
-        ///			db	%01001001	//	72,72,72
-        ///			db	%11111111	//	255,255,255
-        ///			db	%11011011	//	218,218,218
-        ///			db	%10110110	//	182,182,182
-        ///			db	%10010010	//	145,145,145
-        ///			db	%01101101	//	109,109,109
-        ///
-        ///TEST_TILE_SIZE:		equ	32
-        ///
-        ///TEST_TILES:		equ	4
+        ///TEST_TILES:		equ	5
         ///
         ///
         ///				// block data
         ///				// number of tiles (characters) tall
         ///				// number of tiles (characters) wide
-        ///					// Palette offse [rest of string was truncated]&quot;;.
+        ///					// Palette offset with the X mirror,Y mirror, Rotate bits if set
+        ///					// index of the character at this position that makes up the block
+        ///				//...... repeated wide x tall times
+        ///
+        ///				//Note: Block [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Export_Tiles_Asm_Binary {
+        public static string export_tiles_asmbinary_fullcomments_detect {
             get {
-                return ResourceManager.GetString("Export_Tiles_Asm_Binary", resourceCulture);
+                return ResourceManager.GetString("export_tiles_asmbinary_fullcomments_detect", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///// Created on 14 March 2022 14:03:42 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///TEST_COLOURS:		equ	6
+        ///TEST_COLOURS:		equ	23
         ///
-        ///TestPalette:
-        ///			db	%01001001
-        ///			db	%11111111
-        ///			db	%11011011
-        ///			db	%10110110
-        ///			db	%10010010
-        ///			db	%01101101
         ///
         ///TEST_TILE_SIZE:		equ	32
         ///
-        ///TEST_TILES:		equ	4
-        ///
-        ///TestBlock0:		.db	0,0
-        ///TestBlock1:		.db	0,1
-        ///TestBlock2:		.db	0,2
-        ///TestBlock3:		.db	0,3
-        ///
-        ///TEST_FILE_SIZE	equ	128
-        ///TestFile:			dw	TEST_FILE_SIZE
-        ///			db	PATH,&quot;game/level1/test.bin&quot;,0
-        ///.
-        /// </summary>
-        public static string Export_Tiles_Asm_Binary_NoComments {
-            get {
-                return ResourceManager.GetString("Export_Tiles_Asm_Binary_NoComments", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
-        ///// patricia curtis at luckyredfish dot com
-        ///
-        ///TEST_COLOURS:		equ	6
-        ///
-        ///TestPalette:
-        ///			db	%01001001,%00000000
-        ///			db	%11111111,%00000001
-        ///			db	%11011011,%00000000
-        ///			db	%10110110,%00000001
-        ///			db	%10010010,%00000000
-        ///			db	%01101101,%00000001
-        ///
-        ///TEST_TILE_SIZE:		equ	32
-        ///
-        ///TEST_TILES:		equ	4
-        ///
-        ///TestBlock0:		.db	0,0
-        ///TestBlock1:		.db	0,1
-        ///TestBlock2:		.db	0,2
-        ///TestBlock3:		.db	0,3
-        ///
-        ///TEST_FILE_SIZE	equ	128
-        ///TestFile:			dw	TEST_FILE_SIZE
-        ///			db	PA [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string Export_Tiles_Asm_Binary_NoComments_PaletteNext9Bit {
-            get {
-                return ResourceManager.GetString("Export_Tiles_Asm_Binary_NoComments_PaletteNext9Bit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
-        ///// patricia curtis at luckyredfish dot com
-        ///
-        ///TEST_COLOURS:		equ	6
-        ///
-        ///TestPalette:
-        ///			db	%01001001,%00000000	//	72,72,72
-        ///			db	%11111111,%00000001	//	255,255,255
-        ///			db	%11011011,%00000000	//	218,218,218
-        ///			db	%10110110,%00000001	//	182,182,182
-        ///			db	%10010010,%00000000	//	145,145,145
-        ///			db	%01101101,%00000001	//	109,109,109
-        ///
-        ///TEST_TILE_SIZE:		equ	32
-        ///
-        ///TEST_TILES:		equ	4
-        ///
-        ///
-        ///				// block data
-        ///				// number of tiles (characters) tall
-        ///			 [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string Export_Tiles_Asm_Binary_PaletteNext9Bit {
-            get {
-                return ResourceManager.GetString("Export_Tiles_Asm_Binary_PaletteNext9Bit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
-        ///// patricia curtis at luckyredfish dot com
-        ///
-        ///TEST_COLOURS:		equ	6
-        ///
-        ///TestPalette:
-        ///			db	%01001001	//	72,72,72
-        ///			db	%11111111	//	255,255,255
-        ///			db	%11011011	//	218,218,218
-        ///			db	%10110110	//	182,182,182
-        ///			db	%10010010	//	145,145,145
-        ///			db	%01101101	//	109,109,109
-        ///
-        ///TEST_TILE_SIZE:		equ	32
-        ///
-        ///TEST_TILES:		equ	4
+        ///TEST_TILES:		equ	5
         ///
         ///
         ///				// block data
         ///				// number of tiles (characters) tall
         ///				// number of tiles (characters) wide
-        ///					// Palette offse [rest of string was truncated]&quot;;.
+        ///					// Palette offset with the X mirror,Y mirror, Rotate bits if set
+        ///					// index of the character at this position that makes up the block
+        ///				//...... repeated wide x tall times
+        ///
+        ///				//Note: Block [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Export_Tiles_Asm_BinaryBlocks {
+        public static string export_tiles_asmbinary_fullcomments_manual {
             get {
-                return ResourceManager.GetString("Export_Tiles_Asm_BinaryBlocks", resourceCulture);
+                return ResourceManager.GetString("export_tiles_asmbinary_fullcomments_manual", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///// Created on 14 March 2022 14:03:42 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///TEST_COLOURS:		equ	6
+        ///TEST_COLOURS:		equ	24
         ///
-        ///TestPalette:
-        ///			db	%01001001
-        ///			db	%11111111
-        ///			db	%11011011
-        ///			db	%10110110
-        ///			db	%10010010
-        ///			db	%01101101
         ///
         ///TEST_TILE_SIZE:		equ	32
         ///
-        ///TEST_TILES:		equ	4
+        ///TEST_TILES:		equ	5
         ///
         ///
-        ///TEST_FILE_SIZE	equ	128
+        ///
+        ///
+        ///
+        ///
+        ///TestBlock0:		.db	0,0
+        ///TestBlock1:		.db	0,1
+        ///TestBlock2:		.db	0,2
+        ///TestBlock3:		.db	0,3
+        ///TestBlock4:		.db	16,4
+        ///
+        ///
+        ///TEST_FILE_SIZE	equ	160
         ///TestFile:			dw	TEST_FILE_SIZE
         ///			db	PATH,&quot;game/level1/test.bin&quot;,0
         ///.
         /// </summary>
-        public static string Export_Tiles_Asm_BinaryBlocks_NoComments {
+        public static string export_tiles_asmbinary_nocomments_detect {
             get {
-                return ResourceManager.GetString("Export_Tiles_Asm_BinaryBlocks_NoComments", resourceCulture);
+                return ResourceManager.GetString("export_tiles_asmbinary_nocomments_detect", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///// Created on 14 March 2022 14:55:31 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///TEST_COLOURS:		equ	6
+        ///TEST_COLOURS:		equ	23
         ///
-        ///TestPalette:
-        ///			db	%01001001,%00000000
-        ///			db	%11111111,%00000001
-        ///			db	%11011011,%00000000
-        ///			db	%10110110,%00000001
-        ///			db	%10010010,%00000000
-        ///			db	%01101101,%00000001
         ///
         ///TEST_TILE_SIZE:		equ	32
         ///
-        ///TEST_TILES:		equ	4
+        ///TEST_TILES:		equ	5
         ///
         ///
-        ///TEST_FILE_SIZE	equ	128
+        ///
+        ///
+        ///
+        ///
+        ///TestBlock0:		.db	0,0
+        ///TestBlock1:		.db	0,1
+        ///TestBlock2:		.db	0,2
+        ///TestBlock3:		.db	0,3
+        ///TestBlock4:		.db	0,4
+        ///
+        ///
+        ///TEST_FILE_SIZE	equ	160
         ///TestFile:			dw	TEST_FILE_SIZE
         ///			db	PATH,&quot;game/level1/test.bin&quot;,0
         ///.
         /// </summary>
-        public static string Export_Tiles_Asm_BinaryBlocks_NoComments_PaletteNext9Bit {
+        public static string export_tiles_asmbinary_nocomments_manual {
             get {
-                return ResourceManager.GetString("Export_Tiles_Asm_BinaryBlocks_NoComments_PaletteNext9Bit", resourceCulture);
+                return ResourceManager.GetString("export_tiles_asmbinary_nocomments_manual", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///// Created on 14 March 2022 14:55:31 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///TEST_COLOURS:		equ	6
+        ///TEST_COLOURS:		equ	24
         ///
-        ///TestPalette:
-        ///			db	%01001001,%00000000	//	72,72,72
-        ///			db	%11111111,%00000001	//	255,255,255
-        ///			db	%11011011,%00000000	//	218,218,218
-        ///			db	%10110110,%00000001	//	182,182,182
-        ///			db	%10010010,%00000000	//	145,145,145
-        ///			db	%01101101,%00000001	//	109,109,109
         ///
         ///TEST_TILE_SIZE:		equ	32
         ///
-        ///TEST_TILES:		equ	4
+        ///TEST_TILES:		equ	5
         ///
         ///
         ///				// block data
         ///				// number of tiles (characters) tall
-        ///			 [rest of string was truncated]&quot;;.
+        ///				// number of tiles (characters) wide
+        ///					// Palette offset with the X mirror,Y mirror, Rotate bits if set
+        ///					// index of the character at this position that makes up the block
+        ///				//...... repeated wide x tall times
+        ///
+        ///				//Note: Block [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Export_Tiles_Asm_BinaryBlocks_PaletteNext9Bit {
+        public static string export_tiles_asmbinaryattrs_fullcomments_detect {
             get {
-                return ResourceManager.GetString("Export_Tiles_Asm_BinaryBlocks_PaletteNext9Bit", resourceCulture);
+                return ResourceManager.GetString("export_tiles_asmbinaryattrs_fullcomments_detect", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///// Created on 14 March 2022 14:55:31 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///TEST_COLOURS:		equ	6
+        ///TEST_COLOURS:		equ	23
         ///
-        ///TestPalette:
-        ///			db	%01001001
-        ///			db	%11111111
-        ///			db	%11011011
-        ///			db	%10110110
-        ///			db	%10010010
-        ///			db	%01101101
         ///
         ///TEST_TILE_SIZE:		equ	32
         ///
-        ///TEST_TILES:		equ	4
+        ///TEST_TILES:		equ	5
         ///
-        ///TestTile0:
-        ///				.db	$00,$11,$11,$00
-        ///				.db	$01,$22,$22,$10
-        ///				.db	$12,$22,$22,$22
-        ///				.db	$12,$14,$22,$23
-        ///				.db	$32,$22,$22,$40
-        ///				.db	$04,$33,$54,$45
-        ///				.db	$05,$44,$44,$55
-        ///				.db	$00,$55,$55,$50
-        ///T [rest of string was truncated]&quot;;.
+        ///
+        ///				// block data
+        ///				// number of tiles (characters) tall
+        ///				// number of tiles (characters) wide
+        ///					// Palette offset with the X mirror,Y mirror, Rotate bits if set
+        ///					// index of the character at this position that makes up the block
+        ///				//...... repeated wide x tall times
+        ///
+        ///				//Note: Block [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string Export_Tiles_Asm_NoComments {
+        public static string export_tiles_asmbinaryattrs_fullcomments_manual {
             get {
-                return ResourceManager.GetString("Export_Tiles_Asm_NoComments", resourceCulture);
+                return ResourceManager.GetString("export_tiles_asmbinaryattrs_fullcomments_manual", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///// Created on 14 March 2022 14:55:31 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///TEST_COLOURS:		equ	6
+        ///TEST_COLOURS:		equ	24
         ///
-        ///TestPalette:
-        ///			db	%01001001,%00000000
-        ///			db	%11111111,%00000001
-        ///			db	%11011011,%00000000
-        ///			db	%10110110,%00000001
-        ///			db	%10010010,%00000000
-        ///			db	%01101101,%00000001
         ///
         ///TEST_TILE_SIZE:		equ	32
         ///
-        ///TEST_TILES:		equ	4
+        ///TEST_TILES:		equ	5
         ///
-        ///TestTile0:
-        ///				.db	$00,$11,$11,$00
-        ///				.db	$01,$22,$22,$10
-        ///				.db	$12,$22,$22,$22
-        ///				.db	$12,$14,$22,$23
-        ///				.db	$32,$22,$22,$40
-        ///				.db	$04,$33, [rest of string was truncated]&quot;;.
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///TEST_FILE_SIZE	equ	160
+        ///TestFile:			dw	TEST_FILE_SIZE
+        ///			db	PATH,&quot;game/level1/test.bin&quot;,0
+        ///.
         /// </summary>
-        public static string Export_Tiles_Asm_NoComments_PaletteNext9Bit {
+        public static string export_tiles_asmbinaryattrs_nocomments_detect {
             get {
-                return ResourceManager.GetString("Export_Tiles_Asm_NoComments_PaletteNext9Bit", resourceCulture);
+                return ResourceManager.GetString("export_tiles_asmbinaryattrs_nocomments_detect", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to // Test.asm
-        ///// Created on {0} by the NextGraphics tool from
+        ///// Created on 14 March 2022 14:55:31 by the NextGraphics tool from
         ///// patricia curtis at luckyredfish dot com
         ///
-        ///TEST_COLOURS:		equ	6
+        ///TEST_COLOURS:		equ	23
         ///
-        ///TestPalette:
-        ///			db	%01001001,%00000000	//	72,72,72
-        ///			db	%11111111,%00000001	//	255,255,255
-        ///			db	%11011011,%00000000	//	218,218,218
-        ///			db	%10110110,%00000001	//	182,182,182
-        ///			db	%10010010,%00000000	//	145,145,145
-        ///			db	%01101101,%00000001	//	109,109,109
         ///
         ///TEST_TILE_SIZE:		equ	32
         ///
-        ///TEST_TILES:		equ	4
+        ///TEST_TILES:		equ	5
         ///
-        ///TestTile0:
-        ///				.db	$00,$11,$11,$00
-        ///				.db	$01,$22,$22,$10
-        ///				 [rest of string was truncated]&quot;;.
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///TEST_FILE_SIZE	equ	160
+        ///TestFile:			dw	TEST_FILE_SIZE
+        ///			db	PATH,&quot;game/level1/test.bin&quot;,0
+        ///.
         /// </summary>
-        public static string Export_Tiles_Asm_PaletteNext9Bit {
+        public static string export_tiles_asmbinaryattrs_nocomments_manual {
             get {
-                return ResourceManager.GetString("Export_Tiles_Asm_PaletteNext9Bit", resourceCulture);
+                return ResourceManager.GetString("export_tiles_asmbinaryattrs_nocomments_manual", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] Export_Tiles_Bin {
+        public static byte[] export_tiles_attributes_detect {
             get {
-                object obj = ResourceManager.GetObject("Export_Tiles_Bin", resourceCulture);
+                object obj = ResourceManager.GetObject("export_tiles_attributes_detect", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -997,9 +1438,29 @@ namespace UnitTests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] Export_Tiles_Blk {
+        public static byte[] export_tiles_attributes_manual {
             get {
-                object obj = ResourceManager.GetObject("Export_Tiles_Blk", resourceCulture);
+                object obj = ResourceManager.GetObject("export_tiles_attributes_manual", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_tiles_binary_detect {
+            get {
+                object obj = ResourceManager.GetObject("export_tiles_binary_detect", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_tiles_binary_manual {
+            get {
+                object obj = ResourceManager.GetObject("export_tiles_binary_manual", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -1007,9 +1468,9 @@ namespace UnitTests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap Export_Tiles_Image_Blocks {
+        public static System.Drawing.Bitmap export_tiles_image_detect {
             get {
-                object obj = ResourceManager.GetObject("Export_Tiles_Image_Blocks", resourceCulture);
+                object obj = ResourceManager.GetObject("export_tiles_image_detect", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1017,9 +1478,9 @@ namespace UnitTests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap Export_Tiles_Image_Tiles {
+        public static System.Drawing.Bitmap export_tiles_image_manual {
             get {
-                object obj = ResourceManager.GetObject("Export_Tiles_Image_Tiles", resourceCulture);
+                object obj = ResourceManager.GetObject("export_tiles_image_manual", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1027,9 +1488,9 @@ namespace UnitTests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] Export_Tiles_Map {
+        public static byte[] export_tiles_info_detect {
             get {
-                object obj = ResourceManager.GetObject("Export_Tiles_Map", resourceCulture);
+                object obj = ResourceManager.GetObject("export_tiles_info_detect", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -1037,9 +1498,9 @@ namespace UnitTests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] Export_Tiles_Pal {
+        public static byte[] export_tiles_info_manual {
             get {
-                object obj = ResourceManager.GetObject("Export_Tiles_Pal", resourceCulture);
+                object obj = ResourceManager.GetObject("export_tiles_info_manual", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -1047,9 +1508,9 @@ namespace UnitTests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] Export_Tiles_Pal_PaletteNext9Bit {
+        public static byte[] export_tiles_palette_8bit_detect {
             get {
-                object obj = ResourceManager.GetObject("Export_Tiles_Pal_PaletteNext9Bit", resourceCulture);
+                object obj = ResourceManager.GetObject("export_tiles_palette_8bit_detect", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -1057,9 +1518,29 @@ namespace UnitTests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] Export_Tiles_Til {
+        public static byte[] export_tiles_palette_8bit_manual {
             get {
-                object obj = ResourceManager.GetObject("Export_Tiles_Til", resourceCulture);
+                object obj = ResourceManager.GetObject("export_tiles_palette_8bit_manual", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_tiles_palette_9bit_detect {
+            get {
+                object obj = ResourceManager.GetObject("export_tiles_palette_9bit_detect", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] export_tiles_palette_9bit_manual {
+            get {
+                object obj = ResourceManager.GetObject("export_tiles_palette_9bit_manual", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -1067,10 +1548,10 @@ namespace UnitTests.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;XML&gt;
         ///	&lt;Project&gt;
-        ///		&lt;Name Projectname=&quot;sprites&quot; /&gt;
+        ///		&lt;Name Projectname=&quot;Test&quot; /&gt;
         ///		&lt;Settings sprites=&quot;true&quot; center=&quot;4&quot; xSize=&quot;16&quot; ySize=&quot;16&quot; fourBit=&quot;false&quot; binary=&quot;false&quot; binaryBlocks=&quot;false&quot; Repeats=&quot;false&quot; MirrorX=&quot;false&quot; MirrorY=&quot;false&quot; Rotations=&quot;false&quot; Transparent=&quot;false&quot; Sort=&quot;false&quot; blocksImage=&quot;false&quot; tilesImage=&quot;false&quot; transBlock=&quot;false&quot; transTile=&quot;false&quot; across=&quot;8&quot; accurate=&quot;100&quot; format=&quot;0&quot; textFlips=&quot;false&quot; reduce=&quot;false&quot; /&gt;
         ///		&lt;Palette Mapping=&quot;Custom&quot; Transparent=&quot;0&quot; Used=&quot;5&quot;&gt;
-        ///			&lt;Colour0 Red=&quot;255&quot; Green=&quot;36&quot; Blue=&quot;255&quot; [rest of string was truncated]&quot;;.
+        ///			&lt;Colour0 Red=&quot;255&quot; Green=&quot;36&quot; Blue=&quot;255&quot; /&gt; [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Project_Sprites {
             get {
@@ -1081,9 +1562,29 @@ namespace UnitTests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap Project_Sprites_Image1 {
+        public static System.Drawing.Bitmap Project_Sprites_Image {
             get {
-                object obj = ResourceManager.GetObject("Project_Sprites_Image1", resourceCulture);
+                object obj = ResourceManager.GetObject("Project_Sprites_Image", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] Project_Tilemap_2x2 {
+            get {
+                object obj = ResourceManager.GetObject("Project_Tilemap_2x2", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Project_Tilemap_Image {
+            get {
+                object obj = ResourceManager.GetObject("Project_Tilemap_Image", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1105,9 +1606,9 @@ namespace UnitTests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap Project_Tiles_Image1 {
+        public static System.Drawing.Bitmap Project_Tiles_Image {
             get {
-                object obj = ResourceManager.GetObject("Project_Tiles_Image1", resourceCulture);
+                object obj = ResourceManager.GetObject("Project_Tiles_Image", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1119,7 +1620,7 @@ namespace UnitTests.Properties {
         ///	&lt;File Path=&quot;C:\tiles.bmp&quot; /&gt;
         ///	&lt;File Path=&quot;/a/file/with/slashes&quot; /&gt;
         ///	&lt;File Path=&quot;\the\file\with\backslashes&quot; /&gt;
-        ///	&lt;Settings {0}=&quot;true&quot; comments=&quot;0&quot; center=&quot;4&quot; xSize=&quot;9&quot; ySize=&quot;10&quot; fourBit=&quot;true&quot; binary=&quot;false&quot; binaryBlocks=&quot;true&quot; Repeats=&quot;false&quot; MirrorX=&quot;false&quot; MirrorY=&quot;true&quot; Rotations=&quot;false&quot; Transparent=&quot;false&quot; Sort=&quot;true&quot; blocksImage=&quot;false&quot; tilesImage=&quot;true&quot; transBlock=&quot;true&quot; transTile=&quot;false&quot; across=&quot;5&quot; accurate=&quot;983&quot; format=&quot;{1}&quot; PaletteFormat=&quot;{3} [rest of string was truncated]&quot;;.
+        ///	&lt;Settings {0}=&quot;true&quot; comments=&quot;0&quot; center=&quot;4&quot; xSize=&quot;6&quot; ySize=&quot;10&quot; fourBit=&quot;true&quot; binary=&quot;false&quot; binaryBlocks=&quot;true&quot; Repeats=&quot;false&quot; MirrorX=&quot;false&quot; MirrorY=&quot;true&quot; Rotations=&quot;false&quot; Transparent=&quot;false&quot; Sort=&quot;true&quot; blocksImage=&quot;false&quot; tilesImage=&quot;true&quot; transBlock=&quot;true&quot; transTile=&quot;false&quot; across=&quot;5&quot; accurate=&quot;983&quot; format=&quot;{1}&quot; PaletteFormat=&quot;{3} [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Project_Tiles_Templated {
             get {

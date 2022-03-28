@@ -17,8 +17,8 @@ namespace NextGraphics.Exporting.Common
 		void OnRemapUpdated();
 		void OnRemapCompleted(bool success);
 
-		void OnRemapDisplayChar(Rectangle frame, IndexedBitmap bitmap);
-		void OnRemapDisplayBlock(Rectangle frame, IndexedBitmap bitmap);
+		void OnRemapDisplayChar(Point position, IndexedBitmap bitmap);
+		void OnRemapDisplayBlock(Point position, IndexedBitmap bitmap);
 		void OnRemapDisplayCharactersCount(int count, int transparentCount);
 		void OnRemapDisplayBlocksCount(int count);
 

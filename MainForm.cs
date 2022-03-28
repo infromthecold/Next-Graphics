@@ -8,64 +8,58 @@ using System.Windows.Forms;
 using System.IO;
 using System.Xml;
 using System.Drawing.Imaging;
-using System.Globalization;
 using NextGraphics.Models;
 using NextGraphics.Exporting;
 using NextGraphics.Exporting.Common;
+using NextGraphics.Main;
+using NextGraphics.Utils;
 using System.Threading.Tasks;
 
 namespace NextGraphics
 {
 	public partial class MainForm : Form, RemapCallbacks, ExportCallbacks
 	{
-		//-------------------------------------------------------------------------------------------------------------------
-		//
-		// variables
-		//
-		//-------------------------------------------------------------------------------------------------------------------
-
 		private MainModel Model { get; set; }
 		private Exporter Exporter { get; set; }
 		private ExportPathProvider ExportPaths { get; set; }
 
-		private RadioButton selectedRadio;
 		private List<ImageForm> imageForms = new List<ImageForm>();
-#if PROPRIETARY
-		public	parallaxTool		parallaxWindow		=	new	parallaxTool();
-#endif
+		private List<ImageForm> tilemapForms = new List<ImageForm>();
 		private InfoForm infoForm = new InfoForm();
 
-		private ImageForm blocksForm = null;
-		private ImageForm charsForm = null;
 		private ImageForm rebuildTilesForm = null;
 
 		private readonly PaletteForm paletteForm = new PaletteForm();
-		private readonly SettingsForm settingsForm = new SettingsForm();
 		private readonly PaletteOffsetForm offsetPanel = new PaletteOffsetForm();
 
 		private readonly SaveFileDialog projectSaveDialog = new SaveFileDialog();
-		private readonly OpenFileDialog openProjectDialog = new OpenFileDialog();
+		private readonly OpenFileDialog projectOpenDialog = new OpenFileDialog();
 		private readonly OpenFileDialog batchProjectDialog = new OpenFileDialog();
 		private readonly SaveFileDialog outputFilesDialog = new SaveFileDialog();
 		private readonly OpenFileDialog addImagesDialog = new OpenFileDialog();
+		private readonly OpenFileDialog addTilemapsDialog = new OpenFileDialog();
 
 		private string parentDirectory = "f:/";
-		private string projectPath = "";
+		private string projectPath = string.Empty;
 		private bool isPaletteSet = false;
 
-		private readonly NumberFormatInfo numberFormatInfo = new NumberFormatInfo();
-
 #if DEBUG_WINDOW
-		public	DEBUGFORM		DEBUG_WINDOW;
+		public DebugForm debugForm;
+#endif
+
+#if PROPRIETARY
+		public	parallaxTool		parallaxWindow		=	new	parallaxTool();
 #endif
 
 		#region Initialization & Disposal
 
 		public MainForm()
 		{
-			var exportParameters = new ExportParameters();
-			exportParameters.RemapCallbacks = this;
-			exportParameters.ExportCallbacks = this;
+			var exportParameters = new ExportParameters
+			{
+				RemapCallbacks = this,
+				ExportCallbacks = this
+			};
 
 			Model = new MainModel
 			{
@@ -74,35 +68,69 @@ namespace NextGraphics
 
 			Exporter = new Exporter(Model, exportParameters);
 
+			Model.ExportData = Exporter.Data;
+			Model.BlocksAcrossWidthProvider = () => blocksPictureBox.Width;
+
+			Model.OutputTypeChanged += Model_OutputTypeChanged;
+			Model.GridWidthChanged += Model_GridWidthChanged;
+			Model.GridHeightChanged += Model_GridHeightChanged;
+			Model.RemapRequired += Model_RemapRequired;
+
 			InitializeComponent();
 
-#if DEBUG_WINDOW
-			DEBUG_WINDOW = new DEBUGFORM();
-			DEBUG_WINDOW.Show();
-#endif
-			toolStripProgressBar1.Minimum = 0;
-			toolStripProgressBar1.Maximum = 0;
-
-			ClearData();	// Clearing data will also take care of linking UI to fresh model data.
-			Model.UpdateBlocksAcross(blocksPictureBox.Width);
-
+			UpdateStatusProgress(false);
+			ClearData();
 			SetForm();
 
+			Properties.Settings.Default.PropertyChanged += (o, e) =>
+			{
+				Invalidate(true);
+				Refresh();
+			}; 
+
+			// Prepare image dialog filters.
+			var imageFiltersBuilder = new DialogFilterBuilder();
 			ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-			string sep = string.Empty;
 			foreach (var c in codecs)
 			{
-				string codecName = c.CodecName.Substring(8).Replace("Codec", "Files").Trim();
-				addImagesDialog.Filter = string.Format("{0}{1}{2} ({3})|{3}", addImagesDialog.Filter, sep, codecName, c.FilenameExtension);
-				sep = "|";
+				var codecName = c.CodecName.Substring(8).Replace("Codec", "Files").Trim();
+				imageFiltersBuilder.Add(codecName, c.FilenameExtension);
 			}
-			addImagesDialog.Filter = string.Format("{0}{1}{2} ({3})|{3}", addImagesDialog.Filter, sep, "All Files", "*.*");
+			imageFiltersBuilder.Add("All Files", "*.*");
+			addImagesDialog.Filter = imageFiltersBuilder.Filters;
+
+			// Prepare tilemap dialog filters.
+			var tilemapFiltersBuilder = new DialogFilterBuilder();
+			tilemapFiltersBuilder.Add("GBA Tile Map", "*.map");
+			tilemapFiltersBuilder.Add("STM Tile Map", "*.stm");
+			tilemapFiltersBuilder.Add("Text Tile Map", "*.txm;*.txt");
+			tilemapFiltersBuilder.Add("Tilemap Image", "*.bmp;*.png");
+			tilemapFiltersBuilder.Add("All Files", "*.*");
+			addTilemapsDialog.Filter = tilemapFiltersBuilder.Filters;
+
+			// Prepare project dialogs filters.
+			var projectFiltersBuilder = new DialogFilterBuilder();
+			projectFiltersBuilder.Add("Project Files", "*.xml");
+			projectFiltersBuilder.Add("All Files", "*.*");
+			projectOpenDialog.Filter = projectFiltersBuilder.Filters;
+			projectSaveDialog.Filter = projectFiltersBuilder.Filters;
+
+#if DEBUG_WINDOW
+			debugForm = new DebugForm();
+			debugForm.Show();
+#endif
 
 #if PROPRIETARY
 			parallaxWindow.thePalette = thePalette;
 			parallaxWindow.main = this;
 			numberFormatInfo.NegativeSign = "-";
 #endif
+
+			var recentProject = Properties.Settings.Default.RecentProject;
+			if (recentProject != null && File.Exists(recentProject))
+			{
+				LoadProjectFromFile(recentProject);
+			}
 		}
 
 		#endregion
@@ -113,10 +141,8 @@ namespace NextGraphics
 
 		public void OnRemapStarted()
 		{
-			ClearBitmap(Model.BlocksBitmap);
-			ClearBitmap(Model.CharsBitmap);
 #if DEBUG_WINDOW
-			ClearBitmap(DEBUG_WINDOW.DEBUG_IMAGE);
+			debugForm.ClearImage();
 #endif
 
 			Invoke(new Action(() =>
@@ -127,8 +153,7 @@ namespace NextGraphics
 				charsPictureBox.Invalidate(true);
 				charsPictureBox.Update();
 
-				toolStripProgressBar1.Minimum = 0;
-				toolStripProgressBar1.Maximum = 10000;
+				UpdateStatusProgress(true);
 			}));
 		}
 
@@ -138,6 +163,9 @@ namespace NextGraphics
 			{
 				blocksPictureBox.Invalidate(true);
 				blocksPictureBox.Update();
+
+				charsPictureBox.Invalidate(true);
+				charsPictureBox.Update();
 			}));
 		}
 
@@ -145,38 +173,46 @@ namespace NextGraphics
 		{
 			Invoke(new Action(() =>
 			{
+				foreach (Form child in MdiChildren)
+				{
+					if (child is ImageForm)
+					{
+						child.Invalidate(true);
+						child.Update();
+					}
+				}
+
 				charsPictureBox.Invalidate(true);
 				charsPictureBox.Update();
 
 				blocksPictureBox.Invalidate(true);
 				blocksPictureBox.Update();
 
-				toolStripProgressBar1.Minimum = 0;
-				toolStripProgressBar1.Maximum = 0;
+				UpdateStatusProgress(false);
 
 #if DEBUG_WINDOW
-				DEBUG_WINDOW.Invalidate(true);
-				DEBUG_WINDOW.Update();
+				debugForm.Invalidate(true);
+				debugForm.Update();
 #endif
 			}));
 		}
 
-		public void OnRemapDisplayChar(Rectangle frame, IndexedBitmap bitmap)
+		public void OnRemapDisplayChar(Point position, IndexedBitmap bitmap)
 		{
 			Invoke(new Action(() =>
 			{
-				bitmap.CopyTo(Model.Palette, frame, Model.CharsBitmap);
+				bitmap.CopyTo(Model.CharsBitmap, Model.Palette, position);
 #if DEBUG_WINDOW
-				bitmap.CopyTo(Model.Palette, frame, DEBUG_WINDOW.DEBUG_IMAGE);
+				debugForm.CopyImage(Model.Palette, position, bitmap);
 #endif
 			}));
 		}
 
-		public void OnRemapDisplayBlock(Rectangle frame, IndexedBitmap bitmap)
+		public void OnRemapDisplayBlock(Point position, IndexedBitmap bitmap)
 		{
 			Invoke(new Action(() =>
 			{
-				bitmap.CopyTo(Model.Palette, frame, Model.BlocksBitmap);
+				bitmap.CopyTo(Model.BlocksBitmap, Model.Palette, position);
 			}));
 		}
 
@@ -186,11 +222,11 @@ namespace NextGraphics
 			{
 				if (Model.OutputType == OutputType.Tiles)
 				{
-					SpritesLable.Text = $"Characters ({count}), Transparent ({transparentCount})";
+					statusSpritesLabel.Text = $"Characters ({count}), Transparent ({transparentCount})";
 				}
 				else
 				{
-					SpritesLable.Text = $"Sprites ({count})";
+					statusSpritesLabel.Text = $"Sprites ({count})";
 				}
 			}));
 		}
@@ -201,11 +237,11 @@ namespace NextGraphics
 			{
 				if (Model.OutputType == OutputType.Tiles)
 				{
-					BlocksLable.Text = $"Blocks ({count})";
+					statusBlocksLabel.Text = $"Blocks ({count})";
 				}
 				else
 				{
-					BlocksLable.Text = $"Objects ({count})";
+					statusBlocksLabel.Text = $"Objects ({count})";
 				}
 			}));
 		}
@@ -220,7 +256,10 @@ namespace NextGraphics
 
 		public void OnRemapDebug(string message)
 		{
-			//Console.Write(message);
+			Invoke(new Action(() =>
+			{
+				infoForm.Append(Color.Gray, message);
+			}));
 		}
 
 		#endregion
@@ -277,6 +316,11 @@ namespace NextGraphics
 		private void addImagesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			AddImagesToProject(true);
+		}
+
+		private void addTilemapsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			AddTilemapsToProject(true);
 		}
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -371,7 +415,7 @@ namespace NextGraphics
 
 						Exporter.Remap();
 
-						ExportData($"{parentDirectory}\\Output\\{Model.Name.ToLower()}.asm");
+						ExportData($"{parentDirectory}\\Output\\{Model.Name.ToLower()}.{Model.ExportAssemblerFileExtension}");
 					}
 				});
 			}
@@ -483,6 +527,11 @@ namespace NextGraphics
 			AddImagesToProject(true);
 		}
 
+		private void addTilemapsToolStripButton_Click(object sender, EventArgs e)
+		{
+			AddTilemapsToProject(true);
+		}
+
 		private void paletteToolStripButton_Click(object sender, EventArgs e)
 		{
 			SelectPalette();
@@ -492,14 +541,10 @@ namespace NextGraphics
 		{
 			if (!isPaletteSet)
 			{
-				var result = MessageBox.Show("Do you want to set the palette mapping first?", "Palette mapping", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-				if (result == DialogResult.Yes)
-				{
-					SelectPalette(() => {
-						RemapData();
-					});
-					return;
-				}
+				SelectPalette(() => {
+					RemapData();
+				});
+				return;
 			}
 
 			RemapData();
@@ -558,9 +603,12 @@ namespace NextGraphics
 
 		private void settingsButton_Click(object sender, EventArgs e)
 		{
-			settingsForm.StartPosition = FormStartPosition.CenterParent;
-			settingsForm.Model = Model;
-			settingsForm.ShowDialog();
+			// Note: settings form is non-modal so it will automatically get disposed upon closing.
+			FormHelpers.ShowOrCreateNewModelessInstance<SettingsForm>(form =>
+			{
+				form.StartPosition = FormStartPosition.CenterParent;
+				form.Model = Model;
+			});
 		}
 
 		private void exportAsBlocksRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -568,12 +616,8 @@ namespace NextGraphics
 			RadioButton rb = sender as RadioButton;
 			if (rb.Checked)
 			{
-				// Keep track of the selected RadioButton by saving a reference to it.
-				selectedRadio = rb;
+				Model.OutputType = OutputType.Tiles;
 			}
-			Model.OutputType = OutputType.Tiles;
-			charsPictureBox.Invalidate();
-			charsPictureBox.Refresh();
 		}
 
 		private void exportAsSpritesRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -581,12 +625,8 @@ namespace NextGraphics
 			RadioButton rb = sender as RadioButton;
 			if (rb.Checked)
 			{
-				// Keep track of the selected RadioButton by saving a reference to it.
-				selectedRadio = rb;
+				Model.OutputType = OutputType.Sprites;
 			}
-			Model.OutputType = OutputType.Sprites;
-			charsPictureBox.Invalidate();
-			charsPictureBox.Refresh();
 		}
 
 		private void blockWidthTextBox_Leave(object sender, EventArgs e)
@@ -605,85 +645,55 @@ namespace NextGraphics
 
 		private void charsPictureBox_Paint(object sender, PaintEventArgs e)
 		{
-			// Paints the grid on the sprites/characters display.
-			Graphics g = e.Graphics;
-			Pen pen = new Pen(Color.Black);
-			float[] dashValues = { 1, 1 };
+			var gridWidth = Model.DefaultItemWidth();
+			var gridHeight = Model.DefaultItemHeight();
 
-			int divLines = 8;
-			if (Model.OutputType == OutputType.Sprites)
-			{
-				divLines = 16;
-			}
-
-			pen.DashPattern = dashValues;
-
-			// horizontal lines
-			for (int y = 0; y < (blocksPictureBox.Image.Height / divLines) + 1; ++y)
-			{
-				g.DrawLine(pen, 0, y * divLines, blocksPictureBox.Image.Width, y * divLines);
-			}
-
-			// verticle lines
-			for (int x = 0; x < (blocksPictureBox.Image.Width / divLines) + 1; ++x)
-			{
-				g.DrawLine(pen, x * divLines, 0, x * divLines, blocksPictureBox.Image.Height);
-			}
+			e.Graphics.DrawGrid(charsPictureBox.Image, gridWidth, gridHeight);
 		}
 
 		private void charsPictureBox_Click(object sender, EventArgs e)
 		{
-			if (charsForm == null || !charsForm.Visible)
-			{
-				charsForm = new ImageForm
+			var title = "Characters";
+
+			this.ShowOrCreateNewMdiChildInstance<ImageForm>(
+				form => form.Text == title,	// we have multiple child `ImageForm`s, so title identifies the exact instance
+				form =>
 				{
-					Text = "Characters",
-					MdiParent = this
-				};
-			}
+					form.Text = title;
 
-			// Note: atm sprite/tile size is hard code and suits ZX Spectrum Next, it would be better to move this elsewhere - `MainModel` for example...
-			charsForm.CopyImage(Model.CharsBitmap, Model.ItemWidth(), Model.ItemHeight(), 1f);
+					form.CopyImage(Model.CharsBitmap, new ImageForm.Parameters
+					{
+						GridWidth = () => Model.DefaultItemWidth(),
+						GridHeight = () => Model.DefaultItemHeight()
+					});
 
-			MoveResizeAsMdiChild(charsForm, show: true);
+					MoveResizeAsMdiChild(form);
+				});
 		}
 
 		private void blocksPictureBox_Paint(object sender, PaintEventArgs e)
 		{
-			// Paints the grid on the object/blocks display.
-			Graphics g = e.Graphics;
-			Pen pen = new Pen(Color.Black);
-			float[] dashValues = { 4, 2 };
-
-			pen.DashPattern = dashValues;
-
-			// horizontal lines
-			for (int y = 0; y < (blocksPictureBox.Image.Height / Model.GridHeight) + 1; ++y)
-			{
-				g.DrawLine(pen, 0, y * Model.GridHeight, blocksPictureBox.Image.Width, y * Model.GridHeight);
-			}
-
-			// verticle lines
-			for (int x = 0; x < (blocksPictureBox.Image.Width / Model.GridWidth) + 1; ++x)
-			{
-				g.DrawLine(pen, x * Model.GridWidth, 0, x * Model.GridWidth, blocksPictureBox.Image.Height);
-			}
+			e.Graphics.DrawGrid(blocksPictureBox.Image, Model.GridWidth, Model.GridHeight);
 		}
 
 		private void blocksPictureBox_Click(object sender, EventArgs e)
 		{
-			if (blocksForm == null || !blocksForm.Visible)
-			{
-				blocksForm = new ImageForm
+			var title = "Blocks";
+
+			this.ShowOrCreateNewMdiChildInstance<ImageForm>(
+				form => form.Text == title, // we have multiple child `ImageForm`s, so title identifies the exact instance
+				form =>
 				{
-					Text = "Blocks",
-					MdiParent = this
-				};
-			}
+					form.Text = title;
 
-			blocksForm.CopyImage(Model.BlocksBitmap, Model.GridWidth, Model.GridHeight, 0.15f);
+					form.CopyImage(Model.BlocksBitmap, new ImageForm.Parameters
+					{
+						GridWidth = () => Model.GridWidth,
+						GridHeight = () => Model.GridHeight
+					});
 
-			MoveResizeAsMdiChild(blocksForm, show: true);
+					MoveResizeAsMdiChild(form);
+				});
 		}
 
 		#endregion
@@ -692,32 +702,30 @@ namespace NextGraphics
 
 		private void moveDownImageToolStripButton_Click(object sender, EventArgs e)
 		{
-			// move down
 			int thisIndex = projectListBox.SelectedIndex;
-			if (thisIndex <= Model.Images.Count - 1 && thisIndex > 0)
+			if (thisIndex <= Model.Sources.Count - 1 && thisIndex > 0)
 			{
-
-				var temp = Model.Images[thisIndex];
-				Model.Images[thisIndex] = Model.Images[thisIndex - 1];
-				Model.Images[thisIndex - 1] = temp;
+				var temp = Model.Sources[thisIndex];
+				Model.Sources[thisIndex] = Model.Sources[thisIndex - 1];
+				Model.Sources[thisIndex - 1] = temp;
 				projectListBox.SelectedIndex = thisIndex + 1;
 				UpdateProjectListBox();
+				SaveProject();
 			}
 		}
 
 		private void moveUpImageToolStripButton_Click(object sender, EventArgs e)
 		{
-			//Move up
-
 			int thisIndex = projectListBox.SelectedIndex;
 			if (thisIndex > 1 && thisIndex > 0)
 			{
 				thisIndex--;
-				var temp = Model.Images[thisIndex - 1];
-				Model.Images[thisIndex - 1] = Model.Images[thisIndex];
-				Model.Images[thisIndex] = temp;
+				var temp = Model.Sources[thisIndex - 1];
+				Model.Sources[thisIndex - 1] = Model.Sources[thisIndex];
+				Model.Sources[thisIndex] = temp;
 				projectListBox.SelectedIndex = thisIndex;
 				UpdateProjectListBox();
+				SaveProject();
 			}
 		}
 		
@@ -733,20 +741,27 @@ namespace NextGraphics
 			var result = MessageBox.Show("Remove this image?", "Are you Sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 			if (result == DialogResult.Yes)
 			{
-				Model.Images.RemoveAt(projectListBox.SelectedIndex - 1);
+				Model.Sources.RemoveAt(projectListBox.SelectedIndex - 1);
 				UpdateProjectListBox();
+				SaveProject();
 			}
 		}
 
 		private void reloadImagesToolStripButton_Click(object sender, EventArgs e)
 		{
-			DisposeImageWindows();
+			DisposeSourceImageForms();
 
-			foreach (var image in Model.Images)
+			Model.ForEachSourceImage((image, idx) =>
 			{
-				image.ReloadImage();
+				image.Reload();
 				imageForms.Add(new ImageForm { MdiParent = this });
-			}
+			});
+
+			Model.ForEachSourceTilemap((tilemap, idx) =>
+			{
+				tilemap.Reload();
+				tilemapForms.Add(new ImageForm { MdiParent = this });
+			});
 		}
 
 		private void projectListBox_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -754,30 +769,97 @@ namespace NextGraphics
 			int index = projectListBox.IndexFromPoint(e.Location);
 			if (index == ListBox.NoMatches) return;
 
+			var sourceIndex = index - 1;
+			var imageFormIndex = sourceIndex;
+			var tilemapFormIndex = sourceIndex - Model.SourceImagesCount;	// this is used to access 0-bound `tilemapForma` list
+
 			if (index == 0)
 			{
+				// Project name.
 				if (ShowProjectNameDialog())
 				{
 					projectListBox.Items[0] = Model.Name.ToProjectItemTitle();
 				}
 			}
-			else
+			else if (Model.Sources[sourceIndex] is SourceImage image)
 			{
-				var image = Model.Images[index - 1];
-
-				if (imageForms[index - 1] == null || !imageForms[index - 1].Visible)
+				// Source images.
+				if (imageForms[imageFormIndex] == null || !imageForms[imageFormIndex].Visible)
 				{
-					imageForms[index - 1] = new ImageForm
+					imageForms[imageFormIndex] = CreateImageFormForSource(image);
+				}
+
+				imageForms[imageFormIndex].LoadImage(image.Filename, Model.GridWidth, Model.GridHeight);
+				imageForms[imageFormIndex].BringToFront();
+
+				MoveResizeAsMdiChild(imageForms[imageFormIndex], show: true);
+			}
+			else if (Model.Sources[sourceIndex] is SourceTilemap tilemap)
+			{
+				// Source tilemaps. Note how source index is different from tilemap form index. Also since tilemap images need to be reloaded after mapping, we add parameters.
+				if (tilemapForms[tilemapFormIndex] == null || !tilemapForms[tilemapFormIndex].Visible)
+				{
+					tilemapForms[tilemapFormIndex] = CreateImageFormForSource(tilemap);
+				}
+
+				RenderingOptions CreateOptions()
+				{
+					return new RenderingOptions
 					{
-						Text = Path.GetFileName(image.Filename),
-						MdiParent = this
+						RenderTileIndex = Properties.Settings.Default.TilemapRenderTileIndex,
+						RenderTileAttributes = Properties.Settings.Default.TilemapRenderTileAttributes,
 					};
 				}
 
-				imageForms[index - 1].LoadImage(image.Filename, Model.GridWidth, Model.GridHeight);
+				Bitmap TilemapImage(double scale)
+				{
+					return tilemap.CreateBitmap(Exporter, CreateOptions());
+				};
 
-				MoveResizeAsMdiChild(imageForms[index - 1], show: true);
+				void TilemapOverlay(Graphics g, Size size, double scale)
+				{
+					tilemap.RenderOverlay(g, size, scale, Exporter, CreateOptions());
+				}
+
+				// Note: with initial image we establish desired image form size.
+				tilemapForms[tilemapFormIndex].SetImage(TilemapImage(1.0), new ImageForm.Parameters
+				{
+					GridWidth = () => Model.GridWidth,
+					GridHeight = () => Model.GridHeight,
+					ImageProvider = TilemapImage,
+					OverlayProvider = TilemapOverlay,
+				});
+
+				tilemapForms[tilemapFormIndex].BringToFront();
+
+				MoveResizeAsMdiChild(tilemapForms[tilemapFormIndex], show: true);
 			}
+		}
+
+		#endregion
+
+		#region Model events
+
+		private void Model_OutputTypeChanged(object sender, MainModel.OutputTypeChangedEventArgs e)
+		{
+			UpdateOutputTypeControls(e.OutputType);
+			charsPictureBox.Invalidate();
+			charsPictureBox.Refresh();
+		}
+
+		private void Model_GridWidthChanged(object sender, MainModel.SizeChangedEventArgs e)
+		{
+			blockWidthTextBox.Text = e.Size.ToString();
+		}
+
+		private void Model_GridHeightChanged(object sender, MainModel.SizeChangedEventArgs e)
+		{
+			blockHeightTextBox.Text = e.Size.ToString();
+		}
+
+		private void Model_RemapRequired(object sender, EventArgs e)
+		{
+			Exporter.Data.Clear();
 		}
 
 		#endregion
@@ -791,8 +873,13 @@ namespace NextGraphics
 		/// </summary>
 		private void SetParentFolder(string path)
 		{
+			// Store parent folder for later use.
 			DirectoryInfo parentDir = Directory.GetParent(path);
 			parentDirectory = parentDir.Parent.FullName;
+
+			// Save the path to the settings so we can reopen automatically on next launch.
+			Properties.Settings.Default.RecentProject = path;
+			Properties.Settings.Default.Save();
 		}
 
 		/// <summary>
@@ -831,7 +918,7 @@ namespace NextGraphics
 
 			ClearData();
 			SetForm();
-			DisposeImageWindows();
+			DisposeSourceImageForms();
 		}
 
 		/// <summary>
@@ -844,7 +931,6 @@ namespace NextGraphics
 				if (projectPath.Length == 0 || forceDialog)
 				{
 					projectSaveDialog.FileName = Model.Name + ".xml";
-					projectSaveDialog.Filter = "Project Files (*.xml)|*.xml|All Files (*.*)|*.*";
 					projectSaveDialog.FilterIndex = 1;
 					projectSaveDialog.RestoreDirectory = false;
 					projectSaveDialog.InitialDirectory = parentDirectory + "\\Projects\\";
@@ -868,22 +954,8 @@ namespace NextGraphics
 			int transIndex = Model.Palette.TransparentIndex;
 			int loadedColourCount = Model.Palette.UsedCount;
 			int loadedColourStart = Model.Palette.StartIndex;
-			using (XmlTextWriter writer = new XmlTextWriter(projectPath, Encoding.UTF8))
-			{
-				writer.Formatting = Formatting.Indented;
-				XmlDocument document = Model.Save(projectNode =>
-				{
-#if PROPRIETARY
-					projectNode.AppendChild(parallaxWindow.writeParallax(doc));
-#endif
-				});
 
-				document.WriteContentTo(writer);
-				writer.Flush();
-				writer.Close();
-				// mStream.Flush();
-				//myStream.Write(doc.InnerXml);
-			}
+			SaveProject();
 		}
 
 		/// <summary>
@@ -891,16 +963,13 @@ namespace NextGraphics
 		/// </summary>
 		private void LoadProjectWithDialog()
 		{
-			openProjectDialog.Multiselect = false;
-			openProjectDialog.RestoreDirectory = false;
-			openProjectDialog.InitialDirectory = parentDirectory + "\\Projects\\";
-			openProjectDialog.Filter = "Project Files (*.xml)|*.xml|All Files (*.*)|*.*";
+			projectOpenDialog.Multiselect = false;
+			projectOpenDialog.RestoreDirectory = false;
+			projectOpenDialog.InitialDirectory = parentDirectory + "\\Projects\\";
 
-			if (openProjectDialog.ShowDialog(this) == DialogResult.OK)
+			if (projectOpenDialog.ShowDialog(this) == DialogResult.OK)
 			{
-				projectPath = openProjectDialog.FileName;
-				SetParentFolder(Path.GetFullPath(openProjectDialog.FileName));
-				LoadProjectFromFile(projectPath);
+				LoadProjectFromFile(projectOpenDialog.FileName);
 			}
 		}
 
@@ -909,10 +978,13 @@ namespace NextGraphics
 		/// </summary>
 		private void LoadProjectFromFile(string filename)
 		{
+			// We need to clear data first, before assigning anything else to avoid new values being reset unintentionally.
 			ClearData();
 
+			projectPath = filename;
+			SetParentFolder(Path.GetFullPath(filename));
+
 			Model.Load(filename);
-			Model.UpdateBlocksAcross(blocksPictureBox.Width);
 
 			SetForm();
 			UpdateProjectListBox();
@@ -927,6 +999,51 @@ namespace NextGraphics
 #endif
 		}
 
+		private void SaveProject()
+		{
+			if (projectPath.Length == 0)
+			{
+				return;
+			}
+
+			using (XmlTextWriter writer = new XmlTextWriter(projectPath, Encoding.UTF8))
+			{
+				writer.Formatting = Formatting.Indented;
+				XmlDocument document = Model.Save(projectNode =>
+				{
+#if PROPRIETARY
+					projectNode.AppendChild(parallaxWindow.writeParallax(doc));
+#endif
+				});
+
+				document.WriteContentTo(writer);
+				writer.Flush();
+				writer.Close();
+			}
+		}
+
+		private void ClearData()
+		{
+			isPaletteSet = false;
+			projectPath = string.Empty;
+
+			Model.Clear();
+			Exporter.Data.Clear();
+
+			// We must establish the link to new bitmaps since we recreate them in Model when calling Clear.
+			Model.BlocksBitmap.Clear();
+			blocksPictureBox.Image = Model.BlocksBitmap;
+			blocksPictureBox.Height = Model.BlocksBitmap.Height;
+			blocksPictureBox.Width = Model.BlocksBitmap.Width;
+			blocksPictureBox.Invalidate(true);
+			blocksPictureBox.Refresh();
+
+			Model.CharsBitmap.Clear();
+			charsPictureBox.Image = Model.CharsBitmap;
+			charsPictureBox.Invalidate(true);
+			charsPictureBox.Refresh();
+		}
+
 		/// <summary>
 		/// Adds image(s) to project. Optionally it can also show open image dialog.
 		/// </summary>
@@ -936,7 +1053,7 @@ namespace NextGraphics
 			{
 				addImagesDialog.Multiselect = true;
 				addImagesDialog.RestoreDirectory = false;
-				addImagesDialog.InitialDirectory = parentDirectory + "\\Renders\\";
+				addImagesDialog.InitialDirectory = parentDirectory;
 				addImagesDialog.FilterIndex = Model.AddImagesFilterIndex;
 				if (addImagesDialog.ShowDialog(this) == DialogResult.OK)
 				{
@@ -947,16 +1064,50 @@ namespace NextGraphics
 			}
 
 			// Note: as we keep dialog alive, we simply take the data from it. Not ideal way of doing things, but reduces the need to add additional state to the class or use separate function for handling.
-			Model.AddImagesFilterIndex = addImagesDialog.FilterIndex;
 
+			Model.AddImagesFilterIndex = addImagesDialog.FilterIndex;
+			SaveProject();
+			AddNewSources(addImagesDialog.FileNames, file => new SourceImage(file));
+		}
+
+		/// <summary>
+		/// Adds tilemap(s) to project. Optionally it can also show open tilemap dialog.
+		/// </summary>
+		private void AddTilemapsToProject(bool showDialog = false)
+		{
+			if (showDialog)
+			{
+				addTilemapsDialog.Multiselect = true;
+				addTilemapsDialog.RestoreDirectory = false;
+				addTilemapsDialog.InitialDirectory = parentDirectory;
+				addTilemapsDialog.FilterIndex = Model.AddTilemapsFilterIndex;
+				if (addTilemapsDialog.ShowDialog(this) == DialogResult.OK)
+				{
+					AddTilemapsToProject();
+				}
+
+				return;
+			}
+
+			// Note: as we keep dialog alive, we simply take the data from it. Not ideal way of doing things, but reduces the need to add additional state to the class or use separate function for handling.
+
+			Model.AddTilemapsFilterIndex = addTilemapsDialog.FilterIndex;
+			SaveProject();
+
+			AddNewSources(addTilemapsDialog.FileNames, file => SourceTilemap.Create(file, Model));
+		}
+
+		private void AddNewSources(string[] filenames, Func<string, ISourceFile> handler)
+		{
+			var failedFiles = new List<string>();
 			bool rejected = false;
 
-			foreach (string file in addImagesDialog.FileNames)
+			foreach (string file in filenames)
 			{
 				bool found = false;
-				for (int i = 0; i < Model.Images.Count; i++)
+				for (int i = 0; i < Model.Sources.Count; i++)
 				{
-					if (file == Model.Images[i].Filename)
+					if (file == Model.Sources[i].Filename)
 					{
 						found = true;
 						rejected = true;
@@ -966,39 +1117,30 @@ namespace NextGraphics
 
 				if (found) continue;
 
-				var image = new SourceImage(file);
-				if (!image.IsImageValid) continue;
+				var source = handler(file);
+				if (source == null || !source.IsDataValid)
+				{
+					failedFiles.Add(Path.GetFileName(file));
+					continue;
+				}
 
-				Model.Images.Add(image);
-				imageForms.Add(new ImageForm { MdiParent = this });
-				projectListBox.Items.Add(Path.GetFileName(file).ToProjectItemTitle());
+				Model.Sources.Add(source);
 			}
 
-			if (rejected == true)
+			UpdateProjectListBox();
+
+			if (failedFiles.Count > 0)
 			{
-				MessageBox.Show("Duplicate files are not allowed", "Duplicates Found", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				var newline = Environment.NewLine;
+				var names = string.Join(newline, failedFiles);
+				MessageBox.Show($"Errors were detected in:{newline}{names}", "Errors Detected", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				return;
 			}
-		}
 
-		private void ClearData()
-		{
-			isPaletteSet = false;
-
-			Model.Clear();
-			Exporter.Data.Clear();
-
-			// We must establish the link to new bitmaps since we recreate them in Model when calling Clear.
-			ClearBitmap(Model.BlocksBitmap);
-			blocksPictureBox.Image = Model.BlocksBitmap;
-			blocksPictureBox.Height = Model.BlocksBitmap.Height;
-			blocksPictureBox.Width = Model.BlocksBitmap.Width;
-			blocksPictureBox.Invalidate(true);
-			blocksPictureBox.Refresh();
-
-			ClearBitmap(Model.CharsBitmap);
-			charsPictureBox.Image = Model.CharsBitmap;
-			charsPictureBox.Invalidate(true);
-			charsPictureBox.Refresh();
+			if (rejected)
+			{
+				MessageBox.Show("Duplicate files were detected and were ignored", "Duplicates Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
 		}
 
 		#endregion
@@ -1010,6 +1152,8 @@ namespace NextGraphics
 		/// </summary>
 		private void SelectPalette(Action completed = null) 
 		{
+			Model.ReloadSources();
+
 			if (completed != null && isPaletteSet)
 			{
 				completed();
@@ -1018,6 +1162,7 @@ namespace NextGraphics
 
 			paletteForm.StartPosition = FormStartPosition.CenterParent;
 			paletteForm.Model = Model;
+			paletteForm.Exporter = Exporter;
 			paletteForm.ShowDialog();
 
 			if (paletteForm.DialogResult == DialogResult.OK)
@@ -1040,18 +1185,14 @@ namespace NextGraphics
 			UpdateBlockHeight();
 
 			RunLongOperation(() => {
-				try
-				{
-					Exporter.Remap();
+				Exporter.Remap();
 
-					if (completed != null)
-					{
-						Invoke(completed);
-					}
-				}
-				catch (Exception e)
+				// After we remap data, we also assume palette is set (this covers the use case where we asked user if they want to set palette and they declined; we don't want to continue asking for palette on each successive remap).
+				isPaletteSet = true;
+
+				if (completed != null)
 				{
-					MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					Invoke(completed);
 				}
 			});
 		}
@@ -1061,10 +1202,12 @@ namespace NextGraphics
 		/// </summary>
 		private void ExportData(string sourceFilename = null)
 		{
+			// Note: we don't have to reload sources before exporting. If they were changed, we'd have to remap anyway since sources affect the outcome. Additionally, most often than not, remapping is performed as batch operation just before exporting.
+
 			if (sourceFilename == null)
 			{
 				outputFilesDialog.FileName = Model.Name.ToLower();
-				outputFilesDialog.Filter = "Machine Code (*.asm)|*.asm|All Files (*.*)|*.*";
+				outputFilesDialog.Filter = $"Machine Code (*.{Model.ExportAssemblerFileExtension})|*.{Model.ExportAssemblerFileExtension}|All Files (*.*)|*.*";
 				outputFilesDialog.FilterIndex = Model.OutputFilesFilterIndex;
 				outputFilesDialog.RestoreDirectory = false;
 				outputFilesDialog.InitialDirectory = $"{parentDirectory}\\Output\\";
@@ -1084,18 +1227,11 @@ namespace NextGraphics
 
 			RunLongOperation(() =>
 			{
-				try
-				{
-					ExportPaths = new ExportPathProvider(sourceFilename, Model.ImageFormat);
+				ExportPaths = new ExportPathProvider(sourceFilename, Model);
 
-					ExportPaths.AssignExportStreams(Exporter.Data.Parameters);
+				ExportPaths.AssignExportStreams(Exporter.Data.Parameters);
 
-					Exporter.Export();
-				}
-				catch (Exception e)
-				{
-					MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				}
+				Exporter.Export();
 			});
 		}
 
@@ -1110,26 +1246,30 @@ namespace NextGraphics
 		{
 			projectListBox.Items.Clear();
 			projectListBox.Items.Add(Model.Name.ToProjectItemTitle());
-			Model.Images.ForEach(image => projectListBox.Items.Add(image.Filename.ToProjectItemTitle()));
+			Model.Sources.ForEach(source => projectListBox.Items.Add(source.ToProjectItemTitle()));
 
 			blockHeightTextBox.Text = Model.GridHeight.ToString();
 			blockWidthTextBox.Text = Model.GridWidth.ToString();
 
-			switch (Model.OutputType)
+			UpdateOutputTypeControls(Model.OutputType);
+
+			Refresh();
+		}
+
+		/// <summary>
+		/// Updates project/output type controls to reflect the given <see cref="OutputType"/>.
+		/// </summary>
+		private void UpdateOutputTypeControls(OutputType type)
+		{
+			switch (type)
 			{
 				case OutputType.Sprites:
 					exportAsSpritesRadioButton.Checked = true;
-					exportAsBlocksRadioButton.Checked = false;
-					selectedRadio = exportAsSpritesRadioButton;
 					break;
 				default:
 					exportAsBlocksRadioButton.Checked = true;
-					exportAsSpritesRadioButton.Checked = false;
-					selectedRadio = exportAsBlocksRadioButton;
 					break;
 			}
-
-			Refresh();
 		}
 
 		/// <summary>
@@ -1141,30 +1281,33 @@ namespace NextGraphics
 			projectListBox.Items.Clear();
 			projectListBox.Items.Add(Model.Name.ToProjectItemTitle());
 
-			DisposeImageWindows();
+			DisposeSourceImageForms();
 
 			var removeNames = new List<string>();
 
-			foreach (var image in Model.Images)
+			foreach (var source in Model.Sources)
 			{
-				if (!image.IsImageValid)
+				if (!source.IsDataValid)
 				{
-					removeNames.Add(image.Filename);
+					removeNames.Add(source.Filename);
 					continue;
 				}
 
-				var name = Path.GetFileName(image.Filename);
-				projectListBox.Items.Add(name.ToProjectItemTitle());
+				projectListBox.Items.Add(source.ToProjectItemTitle());
 
-				imageForms.Add(new ImageForm { 
-					Text = name,
-					MdiParent = this
-				});
+				if (source is SourceImage)
+				{
+					imageForms.Add(CreateImageFormForSource(source));
+				}
+				else if (source is SourceTilemap)
+				{
+					tilemapForms.Add(CreateImageFormForSource(source));
+				}
 			}
 
 			foreach (string name in removeNames)
 			{
-				Model.RemoveImage(name);
+				Model.RemoveSource(name);
 			}
 
 			if (removeNames.Count > 0)
@@ -1174,68 +1317,23 @@ namespace NextGraphics
 		}
 
 		/// <summary>
-		/// Clears the given bitmap.
-		/// </summary>
-		private void ClearBitmap(Bitmap thisBitmap)
-		{
-			using (Graphics gfx = Graphics.FromImage(thisBitmap))
-			using (SolidBrush brush = new SolidBrush(Color.FromArgb(255, 255, 0, 255)))
-			{
-				gfx.FillRectangle(brush, 0, 0, thisBitmap.Width, thisBitmap.Height);
-			}
-		}
-
-		/// <summary>
 		/// Updates block width from UI to <see cref="Model"/>.
 		/// </summary>
 		private void UpdateBlockWidth()
 		{
-			int size;
-			if (int.TryParse(blockWidthTextBox.Text, out size))
+			if (int.TryParse(blockWidthTextBox.Text, out int size))
 			{
+				// Make sure arbitrary value is constrained within allowed range.
 				Model.GridWidth = size;
 
-				var itemWidth = Model.ItemWidth();
-
-				if (Model.OutputType == OutputType.Sprites)
-				{
-					if (Model.GridWidth < itemWidth)
-					{
-						Model.GridWidth = itemWidth;
-					}
-					else if (Model.GridWidth > 320)
-					{
-						Model.GridWidth = 320;
-					}
-					else
-					{
-						Model.GridWidth = (Model.GridWidth + 15) & ~0xF;
-					}
-				}
-				else
-				{
-					if (Model.GridWidth < itemWidth)
-					{
-						Model.GridWidth = itemWidth;
-					}
-					else if (Model.GridWidth > 128)
-					{
-						Model.GridWidth = 128;
-					}
-					else
-					{
-						Model.GridWidth = (Model.GridHeight + 7) & ~0x7;
-					}
-				}
+				// Make sure UI reflects the actual value, in case it was constrained.
 				blockWidthTextBox.Text = Model.GridWidth.ToString();
 			}
 			else
 			{
-				Model.GridWidth = 32;
+				// When unable to parse, leave original value.
 				blockWidthTextBox.Text = Model.GridWidth.ToString();
 			}
-
-			Model.UpdateBlocksAcross(blocksPictureBox.Width);
 
 			blocksPictureBox.Invalidate();
 			blocksPictureBox.Refresh();
@@ -1246,66 +1344,22 @@ namespace NextGraphics
 		/// </summary>
 		private void UpdateBlockHeight()
 		{
-			int size;
-
-			if (int.TryParse(blockHeightTextBox.Text, out size))
+			if (int.TryParse(blockHeightTextBox.Text, out int size))
 			{
+				// Make sure arbitrary value is constrained within allowed range.
 				Model.GridHeight = size;
 
-				var itemWidth = Model.ItemWidth();
-
-				if (Model.OutputType == OutputType.Sprites)
-				{
-					if (Model.GridHeight < itemWidth)
-					{
-						Model.GridHeight = itemWidth;
-					}
-					else if (Model.GridHeight > 320)
-					{
-						Model.GridHeight = 320;
-					}
-					else
-					{
-						Model.GridHeight = (Model.GridHeight + 15) & ~0xF;
-					}
-				}
-				else
-				{
-					if (Model.GridHeight < itemWidth)
-					{
-						Model.GridHeight = itemWidth;
-					}
-					else if (Model.GridHeight > 128)
-					{
-						Model.GridHeight = 128;
-					}
-					else
-					{
-						Model.GridHeight = (Model.GridHeight + 7) & ~0x7;
-					}
-				}
+				// Make sure UI reflects the actual value.
 				blockHeightTextBox.Text = Model.GridHeight.ToString();
 			}
 			else
 			{
-				Model.GridHeight = 32;
+				// When unable to parse, leave original value.
 				blockHeightTextBox.Text = Model.GridHeight.ToString();
 			}
+
 			blocksPictureBox.Invalidate();
 			blocksPictureBox.Refresh();
-		}
-
-		/// <summary>
-		/// Disposes all image windows.
-		/// </summary>
-		private void DisposeImageWindows()
-		{
-			foreach (ImageForm form in imageForms)
-			{
-				form.Dispose();
-			}
-
-			imageForms.Clear();
 		}
 
 		/// <summary>
@@ -1328,8 +1382,46 @@ namespace NextGraphics
 		}
 
 		/// <summary>
+		/// Hides or shows progress status controls.
+		/// </summary>
+		private void UpdateStatusProgress(bool active)
+		{
+			statusToolStripProgressBar.Minimum = 0;
+			statusToolStripProgressBar.Maximum = active ? 10000 : 0;
+		}
+
+		ImageForm CreateImageFormForSource(ISourceFile source)
+		{
+			return new ImageForm
+			{
+				Text = Path.GetFileName(source.Filename),
+				MdiParent = this,
+			};
+		}
+
+		private void DisposeSourceImageForms()
+		{
+			foreach (ImageForm form in imageForms)
+			{
+				form.Dispose();
+			}
+
+			imageForms.Clear();
+
+			foreach (ImageForm form in tilemapForms)
+			{
+				form.Dispose();
+			}
+
+			tilemapForms.Clear();
+		}
+
+		/// <summary>
 		/// Disables all actions, runs the operation implemented as given action on background thread and enables all actions when complete.
 		/// </summary>
+		/// <remarks>
+		/// Note that action is free to throw an exception. It will be caught and displayed to user.
+		/// </remarks>
 		private async void RunLongOperation(Action action)
 		{
 			void EnableActions(bool enable)
@@ -1338,6 +1430,7 @@ namespace NextGraphics
 				openProjectButton.Enabled = enable;
 				saveToolStripButton.Enabled = enable;
 				addImagesToolStripButton.Enabled = enable;
+				addTilemapsToolStripButton.Enabled = enable;
 				paletteToolStripButton.Enabled = enable;
 				makeBlocksToolStripButton.Enabled = enable;
 				exportToolStripButton.Enabled = enable;
@@ -1354,7 +1447,31 @@ namespace NextGraphics
 
 			EnableActions(false);
 
-			await Task.Run(action);
+			Exception exception = null;
+
+			await Task.Run(() =>
+			{
+				try
+				{
+					action();
+				}
+				catch (Exception e)
+				{
+					exception = e;
+				}
+			});
+
+			if (exception != null)
+			{
+				var messageBuilder = new StringBuilder();
+				messageBuilder.AppendLine(exception.Message);
+				messageBuilder.AppendLine();
+				messageBuilder.AppendLine("Exception details have been copied to clipboard as convenience!");
+
+				Clipboard.SetText(exception.StackTrace);
+
+				MessageBox.Show(messageBuilder.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			}
 
 			EnableActions(true);
 		}
@@ -1362,11 +1479,35 @@ namespace NextGraphics
 		#endregion
 	}
 
-	internal static class Extensions
+	// namespace so we can use simply `Extensions` for class name without clashing with other extensions in other files...
+	namespace Main
 	{
-		public static string ToProjectItemTitle(this string name)
+		internal static class Extensions
 		{
-			return $" {name}";
+			public static string ToProjectItemTitle(this string name, string prefix = " ")
+			{
+				return $"{prefix} {name}";
+			}
+
+			public static string ToProjectItemTitle(this ISourceFile file)
+			{
+				string prefix;
+
+				if (file is SourceImage)
+				{
+					prefix = "🏔️";
+				}
+				else if (file is SourceTilemap)
+				{
+					prefix = "🧱";
+				}
+				else
+				{
+					prefix = " ";
+				}
+
+				return Path.GetFileName(file.Filename).ToProjectItemTitle(prefix);
+			}
 		}
 	}
 }

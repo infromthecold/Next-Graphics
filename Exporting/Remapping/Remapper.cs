@@ -1,19 +1,19 @@
 ﻿using NextGraphics.Exporting.Common;
 using NextGraphics.Models;
+using NextGraphics.Utils;
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NextGraphics.Exporting.Remapping
 {
 	/// <summary>
 	/// Remaps blocks to make the data ready for export.
 	/// </summary>
+	/// <remarks>
+	/// Note: this class is designed so that a new instance is created for each run. Calling <see cref="Remap"/> on previous instances will result in wrong results or even crashes. Such implementation is simpler and more DRY since we don't have to reset properties and fields to defaults - instead, default value is assigned at the place of definition which is again simpler and quicker than adding a property in one place and then searching for "reset" method where the default value is set.
+	/// </remarks>
 	public class Remapper
 	{
 		private ExportData Data { get; }
@@ -49,219 +49,274 @@ namespace NextGraphics.Exporting.Remapping
 
 		public void Remap()
 		{
-			Data.IsRemapped = false;
-
-			Callbacks?.OnRemapStarted();
-			Callbacks?.OnRemapDebug($"Starting remap{Environment.NewLine}");
-
-			Data.Clear();
-			Data.ObjectSize = Data.Model.ItemWidth();	// Note: this only works as long as item width is the same as height...
-			Data.BlockSize = CalculateBlockSize();
-			Data.ImageOffset = CalculateImageOffset();
-
-			objectSize = Data.ObjectSize;
-			maxObjectsCount = Data.Model.OutputType == OutputType.Sprites ? 128 : ExportData.MAX_OBJECTS - 1;
-			objectsPerGridX = (Data.Model.GridWidth / objectSize);
-			objectsPerGridY = (Data.Model.GridHeight / objectSize);
-
-			if (Data.Model.OutputType == OutputType.Tiles)
+			try
 			{
-				Callbacks?.OnRemapDebug("Preparing data for tiles export");
+				Callbacks?.OnRemapStarted();
+				Callbacks?.OnRemapDebug($"Starting remap{Environment.NewLine}");
 
-				if (Data.Model.TransparentBlocks)
-				{
-					MakeFirstBlockTransparent();
-				}
+				Data.Clear();
+				Data.BlockSize = CalculateBlockSize();
+				Data.ImageOffset = CalculateImageOffset();
 
-				if (Data.Model.TransparentTiles)
-				{
-					MakeFirstTileTransparent();
-				}
-			}
+				// Ensure all sources are fresh in case user made some changes after we loaded them.
+				Data.Model.ReloadSources();
 
-			Callbacks?.OnRemapDebug($"Reading images{Environment.NewLine}");
-
-			for (int idx = 0; idx < Data.Model.Images.Count; idx++)
-			{
-				Callbacks?.OnRemapDebug($"Handling image {idx}{Environment.NewLine}");
-
-				var image = Data.Model.Images[idx];
-				var sourceRect = new Rectangle();
+				objectSize = Data.ObjectSize;
+				maxObjectsCount = Data.Model.OutputType == OutputType.Sprites ? 128 : ExportData.MAX_OBJECTS - 1;
+				objectsPerGridX = (Data.Model.GridWidth / objectSize);
+				objectsPerGridY = (Data.Model.GridHeight / objectSize);
 
 				if (Data.Model.OutputType == OutputType.Tiles)
 				{
-					CheckImageDimensions(image);
-				}
+					Callbacks?.OnRemapDebug($"Preparing data for tiles export{Environment.NewLine}");
 
-				if (!image.IsImageValid)
-				{
-					Callbacks?.OnRemapDebug($"Image is invalid, ignoring{Environment.NewLine}");
-					continue;
-				}
-
-				for (int yBlocks = 0; yBlocks < ((image.Image.Height + (Data.Model.GridHeight - 1)) / Data.Model.GridHeight); yBlocks++)
-				{
-					for (int xBlocks = 0; xBlocks < (image.Image.Width / Data.Model.GridWidth); xBlocks++)
+					if (Data.Model.TransparentFirst)
 					{
-						sourceRect.X = xBlocks * Data.Model.GridWidth;
-						sourceRect.Y = yBlocks * Data.Model.GridHeight;
-						sourceRect.Width = Data.Model.GridWidth;
-						sourceRect.Height = Data.Model.GridHeight;
+						MakeFirstBlockTransparent();
+						MakeFirstTileTransparent();
+					}
+				}
 
-						if (outBlock > ExportData.MAX_BLOCKS)
+				Callbacks?.OnRemapDebug($"blocks={outBlock}, chars={outChar}{Environment.NewLine}");
+				Callbacks?.OnRemapDebug($"Reading images{Environment.NewLine}");
+
+				void LogSource(string type, int index, ISourceFile source)
+				{
+					Callbacks?.OnRemapDebug($"{Environment.NewLine}---------------------------{Environment.NewLine}Handling {type} {index} ({Path.GetFileName(source.Filename)}){Environment.NewLine}");
+				}
+
+				// Remapping is only needed for images and...
+				Data.Model.ForEachSourceImage((image, idx) =>
+				{
+					LogSource("image", idx, image);
+
+					if (!image.IsDataValid)
+					{
+						Callbacks?.OnRemapDebug($"Image is invalid, ignoring{Environment.NewLine}");
+						return;
+					}
+
+					ParseImage(image.Filename, image.Data);
+				});
+
+				// ...tilemaps that are based off images.
+				Data.Model.ForEachSourceTilemap((tilemap, idx) =>
+				{
+					if (!tilemap.IsSourceImage) return;
+
+					LogSource("tilemap", idx, tilemap);
+
+					if (!tilemap.IsDataValid)
+					{
+						Callbacks?.OnRemapDebug($"Tilemap is invalid, ignoring{Environment.NewLine}");
+						return;
+					}
+
+					ParseImage(tilemap.Filename, tilemap.SourceBitmap);
+				});
+
+				int transparentCharactersCount = 0;
+
+				if (Data.Model.TransparentFirst && Model.OutputType == OutputType.Tiles)
+				{
+					int sortedIndex = 0;
+
+					// On first pass we only handle transparent blocks (only 1)
+					PrepareCharacters(
+						(index, transparent) => transparent && sortedIndex == 0 ? sortedIndex : -1, () => 
 						{
-							Callbacks?.OnRemapWarning($"Too many blocks/sprites{Environment.NewLine}");
-							Callbacks?.OnRemapUpdated();
-							Callbacks?.OnRemapCompleted(false);
-							return;
+							transparentCharactersCount++;
+							sortedIndex++;
+						});
+
+					// On second pass we only handle non-transparent blocks.
+					PrepareCharacters(
+						(index, transparent) => transparent ? -1 : sortedIndex, () => 
+						{
+							sortedIndex++;
+						});
+				}
+				else
+				{
+					// In this case we have straightforward loop.
+					PrepareCharacters(
+						(index, transparent) => index,
+						() => { });
+				}
+
+				outXBlock = 0;
+				outYBlock = 0;
+				var frame = new Rectangle();
+
+				for (int b = 0; b < outBlock; b++)
+				{
+					frame.X = outXBlock * Model.GridWidth;
+					frame.Y = outYBlock * Model.GridHeight;
+					frame.Width = Model.GridWidth;
+					frame.Height = Model.GridHeight;
+
+					CopyCharactersToBlocksBitmap(frame, b);
+
+					Callbacks?.OnRemapDisplayBlocksCount(b);
+					if (Model.OutputType == OutputType.Sprites)
+					{
+						SetSpriteCollisions(b);
+					}
+
+					outXBlock++;
+					if (outXBlock >= Model.BlocksAcross)
+					{
+						outXBlock = 0;
+						outYBlock++;
+					}
+				}
+
+				Data.CharactersCount = outChar;
+				Data.BlocksCount = outBlock;
+
+				Callbacks?.OnRemapDebug("Remap completed");
+
+				if (outChar > maxObjectsCount)
+				{
+					Callbacks?.OnRemapWarning("Too many characters in your tiles");
+				}
+
+				Data.IsRemapped = true;
+
+				Callbacks?.OnRemapDisplayCharactersCount(outChar, transparentCharactersCount);
+			}
+			finally
+			{
+				// Before completed, we should reload all tilemaps so that they will use remapped blocks.
+				Model.ForEachSourceTilemap((tilemap, idx) => tilemap.Reload());
+
+				Callbacks?.OnRemapCompleted(allImagesProcessed);
+			}
+		}
+
+		private void ParseImage(string filename, Bitmap image)
+		{
+			var sourceRect = new Rectangle();
+			var yCount = image.Height / Data.Model.GridHeight;
+			var xCount = image.Width / Data.Model.GridWidth;
+
+			if (Data.Model.OutputType == OutputType.Tiles)
+			{
+				CheckImageDimensions(filename, image);
+			}
+
+			for (int by = 0; by < yCount; by++)
+			{
+				for (int bx = 0; bx < xCount; bx++)
+				{
+					Callbacks?.OnRemapDebug($"({bx},{by}) ");
+
+					sourceRect.X = bx * Data.Model.GridWidth;
+					sourceRect.Y = by * Data.Model.GridHeight;
+					sourceRect.Width = Data.Model.GridWidth;
+					sourceRect.Height = Data.Model.GridHeight;
+
+					if (outBlock > ExportData.MAX_BLOCKS)
+					{
+						Callbacks?.OnRemapWarning($"Too many blocks/sprites{Environment.NewLine}");
+						Callbacks?.OnRemapUpdated();
+						Callbacks?.OnRemapCompleted(false);
+						return;
+					}
+
+					if (Data.Blocks[outBlock] == null)
+					{
+						Data.Blocks[outBlock] = new IndexedBitmap(sourceRect.Width, sourceRect.Height);
+					}
+
+					if (Data.Sprites[outBlock] == null)
+					{
+						Data.Sprites[outBlock] = new SpriteInfo(objectsPerGridX, objectsPerGridY);
+					}
+
+					image.CopyRegionIntoBlock(
+						Data.Model,
+						sourceRect,
+						Data.Blocks[outBlock],
+						Data.Sprites[outBlock]);
+
+					if (Data.Model.IsFourBitData)
+					{
+						Data.Blocks[outBlock].RemapTo4Bit(
+							Data.Model.Palette,
+							Data.Model.PaletteParsingMethod,
+							Data.Model.GridWidth,
+							Data.Model.GridHeight,
+							objectSize);
+					}
+
+					if (Data.Blocks[outBlock].IsTransparent(Data.Model.Palette.TransparentIndex))
+					{
+						Callbacks?.OnRemapDebug($"T{Environment.NewLine}");
+
+						// We only allow first block to be transparent. And we manually make it transparent at the start of remap if needed.
+						if (outBlock > 0)
+						{
+							continue;
 						}
+					}
 
-						if (Data.Blocks[outBlock] == null)
+					for (int cy = 0; cy < objectsPerGridY; cy++)
+					{
+						for (int cx = 0; cx < objectsPerGridX; cx++)
 						{
-							Data.Blocks[outBlock] = new IndexedBitmap(Data.Model.GridWidth, Data.Model.GridHeight);
-						}
-
-						if (Data.Sprites[outBlock] == null)
-						{
-							Data.Sprites[outBlock] = new SpriteInfo(objectsPerGridX, objectsPerGridY);
-						}
-
-						image.CopyRegionIntoBlock(
-							Data.Model.Palette, 
-							sourceRect, 
-							Data.Model.Reduced && Data.Model.OutputType == OutputType.Sprites, 
-							ref Data.Blocks[outBlock], 
-							ref Data.Sprites[outBlock]);
-
-						if (Data.Model.FourBit || Data.Model.OutputType == OutputType.Tiles)
-						{
-							Data.Blocks[outBlock].RemapTo4Bit(Data.Model.Palette, Data.Model.GridWidth, Data.Model.GridHeight, objectSize);
-						}
-
-						if (Data.Blocks[outBlock].IsTransparent(Data.Model.Palette.TransparentIndex))
-						{
-							// We only draw first transparent block.
-							Callbacks?.OnRemapDebug($"Block is transparent{Environment.NewLine}");
-							if (outBlock > 0)
+							if (Data.Model.IsFourBitData)
 							{
-								continue;
-							}
-						}
-
-						for (int yChar = 0; yChar < objectsPerGridY; yChar++)
-						{
-							for (int xChar = 0; xChar < objectsPerGridX; xChar++)
-							{
-								if (Data.Model.FourBit || Data.Model.OutputType == OutputType.Tiles)
+								switch (Data.Model.PaletteParsingMethod)
 								{
-									paletteOffset = Data.Blocks[outBlock].GetPixel(xChar * objectSize, yChar * objectSize) & 0x0f0;
+									case PaletteParsingMethod.ByPixels:
+										paletteOffset = Data.Blocks[outBlock].GetPixel(cx * objectSize, cy * objectSize) & 0x0f0;
+										break;
+
+									case PaletteParsingMethod.ByObjects:
+										paletteOffset = Data.Blocks[outBlock].PaletteBank;
+										break;
 								}
-
-								PrepareSpriteData(xChar, yChar);
 							}
+
+							PrepareSpriteData(cx, cy);
 						}
+					}
 
-						Callbacks?.OnRemapDisplayBlocksCount(outBlock);
+					Callbacks?.OnRemapDisplayBlocksCount(outBlock);
+					Callbacks?.OnRemapDebug($"/ blocks={outBlock}, chars={outChar}");
 
-						if (Model.OutputType == OutputType.Tiles)
-						{
+					switch (Model.OutputType)
+					{
+						case OutputType.Tiles:
 							if (!IsSpriteDuplicated(outBlock, objectsPerGridX, objectsPerGridY))
 							{
 								outBlock++;
 							}
-						}
-						else
-						{
-							outBlock++;
-						}
+							break;
 
-						Callbacks?.OnRemapDebug($"- {Environment.NewLine}");
+						default:
+							outBlock++;
+							break;
 					}
 
 					Callbacks?.OnRemapDebug(Environment.NewLine);
-					Callbacks?.OnRemapUpdated();
 				}
+
+				Callbacks?.OnRemapDebug(Environment.NewLine);
+				Callbacks?.OnRemapUpdated();
 			}
 
-			int transparentCharactersCount = 0;
-
-			if (Data.Model.TransparentFirst && Model.OutputType == OutputType.Tiles)
+			// After we establish all blocks, we should update tiles in previously parsed tilemaps so that palette banks will match. This is only needed when auto-banking is enabled.
+			if (Data.Model.IsFourBitPaletteAutoBankingEnabled)
 			{
-				int sortedIndex = 0;
-
-				// On first pass we only handle transparent blocks.
-				PrepareCharacters(
-					(index, transparent) => transparent ? sortedIndex : -1,
-					() =>
-					{
-						transparentCharactersCount++;
-						sortedIndex++;
-					});
-
-				// On second pass we only handle non-transparent blocks.
-				PrepareCharacters(
-					(index, transparent) => transparent ? -1 : sortedIndex,
-					() =>
-					{
-						sortedIndex++;
-					});
-			}
-			else
-			{
-				// In this case we have straightforward loop.
-				PrepareCharacters(
-					(index, transparent) => index,
-					() => { });
-			}
-
-			outXBlock = 0;
-			outYBlock = 0;
-			var frame = new Rectangle();
-
-			for (int b = 0; b < outBlock; b++)
-			{
-				frame.X = outXBlock * Model.GridWidth;
-				frame.Y = outYBlock * Model.GridHeight;
-				frame.Width = Model.GridWidth;
-				frame.Height = Model.GridHeight;
-
-				CopyCharactersToBlocksBitmap(frame, b);
-
-				Callbacks?.OnRemapDisplayBlocksCount(b);
-				if (Model.OutputType == OutputType.Sprites)
+				Model.ForEachSourceTilemap((tilemap, index) =>
 				{
-					SetSpriteCollisions(b);
-				}
-
-				outXBlock++;
-				if (outXBlock >= Model.BlocsAcross)
-				{
-					outXBlock = 0;
-					outYBlock++;
-				}
+					tilemap.UpdateTiles(Data);
+				});
 			}
-
-			Data.CharactersCount = outChar;
-			Data.BlocksCount = outBlock;
-
-			Callbacks?.OnRemapDebug("Remap completed");
-
-			if (outChar > maxObjectsCount)
-			{
-				Callbacks?.OnRemapWarning("Too many characters in your tiles");
-			}
-
-			Data.IsRemapped = true;
-
-			Callbacks?.OnRemapDisplayCharactersCount(outChar, transparentCharactersCount);
-			Callbacks?.OnRemapCompleted(allImagesProcessed);
 		}
 
-		/// <summary>
-		/// Prepares characters list by looping through all characters with callbacks called at specific points while handling each character.
-		/// </summary>
-		/// <param name="indexProvider">Called at the start of each iteration. Caller must return the index into which the character data should be created. Parameters are: loop index, true if temp data at loop index is transparent, false otherwise.</param>
-		/// <param name="afterCharHandler">Called at the end of each iteration, caller can update its variables as neeeded.</param>
 		private void PrepareCharacters(Func<int, bool, int> indexProvider, Action afterCharHandler)
 		{
 			for (int i = 0; i < outChar; i++)
@@ -278,17 +333,13 @@ namespace NextGraphics.Exporting.Remapping
 					Data.Chars[indexForLoop] = null;
 				}
 
-				var charBitmap = new IndexedBitmap(objectSize, objectSize);
-				charBitmap.Transparent = tempData.Transparent;
-				Data.Chars[indexForLoop] = charBitmap;
-
-				for (int y = 0; y < tempData.Height; y++)
+				var charBitmap = new IndexedBitmap(objectSize, objectSize)
 				{
-					for (int x = 0; x < tempData.Width; x++)
-					{
-						Data.Chars[indexForLoop].SetPixel(x, y, tempData.GetPixel(x, y));
-					}
-				}
+					Transparent = tempData.Transparent
+				};
+
+				Data.Chars[indexForLoop] = charBitmap;
+				Data.Chars[indexForLoop].CopyFrom(tempData, 0, 0);
 
 				Data.SortIndexes[i] = indexForLoop;
 				RequestCharacterDisplay(indexForLoop);
@@ -299,7 +350,6 @@ namespace NextGraphics.Exporting.Remapping
 
 		private void PrepareSpriteData(int x, int y)
 		{
-			// Returns true if sprite was created, false otherwise
 			for (short c = 0; c < outChar; c++)
 			{
 				var repeatResult = RepeatedCharType(c, x * objectSize, y * objectSize);
@@ -308,56 +358,47 @@ namespace NextGraphics.Exporting.Remapping
 				switch (repeatResult)
 				{
 					case BlockType.Repeated:
-						// rep  flpX flpY  rot   trans
-						Callbacks?.OnRemapDebug($"R   {c},");
+						Callbacks?.OnRemapDebug($"={c} ");
 						Data.Sprites[outBlock].SetData(x, y, true, false, false, false, false, c, (short)paletteOffset, isTransparent);
 						return;
 
 					case BlockType.FlippedX:
-						// rep  flpX flpY  rot   trans
-						Callbacks?.OnRemapDebug($"RX  {c},");
+						Callbacks?.OnRemapDebug($"={c}X ");
 						Data.Sprites[outBlock].SetData(x, y, true, true, false, false, false, c, (short)paletteOffset, isTransparent);
 						return;
 
 					case BlockType.FlippedY:
-						// rep  flpX flpY  rot   trans
-						Callbacks?.OnRemapDebug($"RY  {c},");
+						Callbacks?.OnRemapDebug($"={c}Y ");
 						Data.Sprites[outBlock].SetData(x, y, true, false, true, false, false, c, (short)paletteOffset, isTransparent);
 						return;
 
 					case BlockType.FlippedXY:
-						// rep  flpX flpY  rot   trans
-						Callbacks?.OnRemapDebug($"RXY {c},");
+						Callbacks?.OnRemapDebug($"={c}XY ");
 						Data.Sprites[outBlock].SetData(x, y, true, true, true, false, false, c, (short)paletteOffset, isTransparent);
 						return;
 
 					case BlockType.Rotated:
-						// rep  flpX flpY  rot   trans
-						Callbacks?.OnRemapDebug($"RR  {c},");
+						Callbacks?.OnRemapDebug($"={c}R ");
 						Data.Sprites[outBlock].SetData(x, y, true, false, false, true, false, c, (short)paletteOffset, isTransparent);
 						return;
 
 					case BlockType.FlippedXRotated:
-						// rep  flpX flpY  rot   trans		
-						Callbacks?.OnRemapDebug($"RXR {c},");
+						Callbacks?.OnRemapDebug($"={c}RX ");
 						Data.Sprites[outBlock].SetData(x, y, true, true, false, true, false, c, (short)paletteOffset, isTransparent);
 						return;
 
 					case BlockType.FlippedYRotated:
-						// rep  flpX flpY  rot   trans		
-						Callbacks?.OnRemapDebug($"RYR {c},");
+						Callbacks?.OnRemapDebug($"={c}RY ");
 						Data.Sprites[outBlock].SetData(x, y, true, false, true, true, false, c, (short)paletteOffset, isTransparent);
 						return;
 
 					case BlockType.FlippedXYRotated:
-						// rep  flpX flpY  rot   trans
-						Callbacks?.OnRemapDebug($"RXYR{c},");
+						Callbacks?.OnRemapDebug($"={c}RXY ");
 						Data.Sprites[outBlock].SetData(x, y, true, true, true, true, false, c, (short)paletteOffset, isTransparent);
 						return;
 
 					case BlockType.Transparent:
-						// rep  flpX  flpY  rot  trans
-						Callbacks?.OnRemapDebug($"T   {c},");
+						Callbacks?.OnRemapDebug($"T ");
 						Data.Sprites[outBlock].SetData(x, y, false, false, false, false, true, c, (short)paletteOffset, isTransparent);
 						return;
 				}
@@ -373,14 +414,16 @@ namespace NextGraphics.Exporting.Remapping
 			Data.TempData[outChar].CopyFrom(Data.Blocks[outBlock], x * objectSize, y * objectSize);
 			Data.TempData[outChar].Transparent = isBlockTransparent;
 
+			bool isSpriteTransparent = Data.TempData[outChar].IsTransparent(Data.Model.Palette.TransparentIndex);
+
+			Callbacks?.OnRemapDebug($"{outBlock}*  ");
 			Data.Sprites[outBlock].SetData(
 				x, y,
 				false, false, false, false,
 				isBlockTransparent,
-				(short)outChar, (short)paletteOffset,
-				Data.TempData[outChar].IsTransparent(Data.Model.Palette.TransparentIndex));
-
-			Callbacks?.OnRemapDebug($"O   {outChar} ");
+				(short)outChar,
+				(short)paletteOffset,
+				isSpriteTransparent);
 
 			if (outChar <= maxObjectsCount)
 			{
@@ -388,24 +431,24 @@ namespace NextGraphics.Exporting.Remapping
 			}
 		}
 
-		private void CheckImageDimensions(SourceImage image)
+		private void CheckImageDimensions(string filename, Bitmap image)
 		{
-			var isWidthDivisible = (image.Image.Width % Data.Model.GridWidth) == 0;
-			var isHeightDivisible = (image.Image.Height % Data.Model.GridHeight) == 0;
+			var isWidthDivisible = (image.Width % Data.Model.GridWidth) == 0;
+			var isHeightDivisible = (image.Height % Data.Model.GridHeight) == 0;
 
 			if (!isWidthDivisible && !isHeightDivisible)
 			{
-				Callbacks?.OnRemapWarning($"The image {Path.GetFileName(image.Filename)} ({image.Image.Width}x{image.Image.Height}) is not divisible by the width and height of your tiles ({Data.Model.GridWidth}x{Data.Model.GridHeight}), which will corrupt the output");
+				Callbacks?.OnRemapWarning($"The image {Path.GetFileName(filename)} ({image.Width}x{image.Height}) is not divisible by the width and height of your tiles ({Data.Model.GridWidth}x{Data.Model.GridHeight}), which will corrupt the output");
 				allImagesProcessed = false;
 			}
 			else if (!isWidthDivisible)
 			{
-				Callbacks?.OnRemapWarning($"The image {Path.GetFileName(image.Filename)} ({image.Image.Width}x{image.Image.Height}) is not divisible by the width of your tiles ({Data.Model.GridWidth}), which will corrupt the output");
+				Callbacks?.OnRemapWarning($"The image {Path.GetFileName(filename)} ({image.Width}x{image.Height}) is not divisible by the width of your tiles ({Data.Model.GridWidth}), which will corrupt the output");
 				allImagesProcessed = false;
 			}
 			else if (!isHeightDivisible)
 			{
-				Callbacks?.OnRemapWarning($"The image {Path.GetFileName(image.Filename)} ({image.Image.Width}x{image.Image.Height}) is not divisible by the height of your tiles ({Data.Model.GridHeight}), which will corrupt the output");
+				Callbacks?.OnRemapWarning($"The image {Path.GetFileName(filename)} ({image.Width}x{image.Height}) is not divisible by the height of your tiles ({Data.Model.GridHeight}), which will corrupt the output");
 				allImagesProcessed = false;
 			}
 		}
@@ -414,7 +457,7 @@ namespace NextGraphics.Exporting.Remapping
 		{
 			if (Data.Blocks[0] == null)
 			{
-				Callbacks?.OnRemapDebug("Making first block transparent");
+				Callbacks?.OnRemapDebug($"Making first block transparent{Environment.NewLine}");
 
 				Data.Blocks[0] = new IndexedBitmap(Data.Model.GridWidth, Data.Model.GridHeight);
 
@@ -426,14 +469,14 @@ namespace NextGraphics.Exporting.Remapping
 					}
 				}
 
-				Callbacks?.OnRemapDisplayBlock(new Rectangle(0, 0, Data.Model.GridWidth, Data.Model.GridHeight), Data.Blocks[0]);
+				Callbacks?.OnRemapDisplayBlock(new Point(0, 0), Data.Blocks[0]);
 			}
 
 			outXBlock = 1;
 			outBlock = 1;
 			if (Data.Sprites[0] == null)
 			{
-				Callbacks?.OnRemapDebug("Making first sprite transparent");
+				Callbacks?.OnRemapDebug($"Making first sprite transparent{Environment.NewLine}");
 
 				Data.Sprites[0] = new SpriteInfo(objectsPerGridX, objectsPerGridY);
 			}
@@ -443,7 +486,7 @@ namespace NextGraphics.Exporting.Remapping
 		{
 			if (Data.TempData[0] == null)
 			{
-				Callbacks?.OnRemapDebug("Making first tile transparent");
+				Callbacks?.OnRemapDebug($"Making first tile transparent{Environment.NewLine}");
 
 				Data.TempData[0] = new IndexedBitmap(objectSize, objectSize);
 
@@ -456,7 +499,6 @@ namespace NextGraphics.Exporting.Remapping
 				}
 			}
 
-			objectGridX = 1;
 			outChar = 1;
 		}
 
@@ -471,15 +513,15 @@ namespace NextGraphics.Exporting.Remapping
 
 			for (int chr = 0; chr < (Model.GridWidth / objectSize) * (Model.GridHeight / objectSize); chr++)
 			{
-				bool flipX = Data.Sprites[currentBlock].infos[chr].FlippedX;
-				bool flipY = Data.Sprites[currentBlock].infos[chr].FlippedY;
-				bool rotate = Data.Sprites[currentBlock].infos[chr].Rotated;
-				int id = Data.Sprites[currentBlock].infos[chr].OriginalID;
+				bool flipX = Data.Sprites[currentBlock].Infos[chr].FlippedX;
+				bool flipY = Data.Sprites[currentBlock].Infos[chr].FlippedY;
+				bool rotate = Data.Sprites[currentBlock].Infos[chr].Rotated;
+				int id = Data.Sprites[currentBlock].Infos[chr].OriginalID;
 				int sortedId = Data.SortIndexes[id];
 				Bitmap tempBitmap = new Bitmap(objectSize, objectSize);
 				RotateFlipType flips = RotateFlipType.RotateNoneFlipNone;
 
-				String debugString = "";
+				string debugString = "";
 
 				for (int y = 0; y < objectSize; y++)
 				{
@@ -529,16 +571,17 @@ namespace NextGraphics.Exporting.Remapping
 
 				tempBitmap.RotateFlip(flips);
 
-				if (Data.Sprites[currentBlock].infos[chr].Transparent == false)
+				if (Data.Sprites[currentBlock].Infos[chr].Transparent == false)
 				{
 					for (int y = 0; y < objectSize; y++)
 					{
 						for (int x = 0; x < objectSize; x++)
 						{
 							var pixelColor = tempBitmap.GetPixel(x, y);
+
 							destBitmap.SetPixel(
-								destRegion.X + (Data.Sprites[currentBlock].infos[chr].Position.X * objectSize) + x, 
-								destRegion.Y + (Data.Sprites[currentBlock].infos[chr].Position.Y * objectSize) + y, 
+								destRegion.X + (Data.Sprites[currentBlock].Infos[chr].Position.X * objectSize) + x, 
+								destRegion.Y + (Data.Sprites[currentBlock].Infos[chr].Position.Y * objectSize) + y, 
 								pixelColor);
 						}
 					}
@@ -550,8 +593,8 @@ namespace NextGraphics.Exporting.Remapping
 							new Font("Areial", 7.0f, FontStyle.Bold),
 							new SolidBrush(Color.White),
 							new Point(
-								destRegion.X + (Data.Sprites[currentBlock].infos[chr].Position.X * objectSize) - 2,
-								destRegion.Y + (Data.Sprites[currentBlock].infos[chr].Position.Y * objectSize) - 2));
+								destRegion.X + (Data.Sprites[currentBlock].Infos[chr].Position.X * objectSize) - 2,
+								destRegion.Y + (Data.Sprites[currentBlock].Infos[chr].Position.Y * objectSize) - 2));
 					}
 				}
 			}
@@ -615,13 +658,13 @@ namespace NextGraphics.Exporting.Remapping
 
 		private void RequestCharacterDisplay(int index)
 		{
-			var frame = new Rectangle();
-			frame.X = objectGridX * objectSize;
-			frame.Y = objectGridY * objectSize;
-			frame.Width = objectSize;
-			frame.Height = objectSize;
+			var position = new Point
+			{
+				X = objectGridX * objectSize,
+				Y = objectGridY * objectSize,
+			};
 
-			Callbacks?.OnRemapDisplayChar(frame, Data.Chars[index]);
+			Callbacks?.OnRemapDisplayChar(position, Data.Chars[index]);
 
 			int width = Model.CharsBitmap.Width;
 
@@ -652,29 +695,11 @@ namespace NextGraphics.Exporting.Remapping
 			return false;
 		}
 
-		private int CountSamePixels(int xOffset, int yOffset, ref IndexedBitmap source, ref IndexedBitmap other, Func<IndexedBitmap, int, int, short> otherPixelProvider)
-		{
-			int result = objectSize * objectSize;
-			var unreferencedOther = other;  // can't use ref inside closure
-
-			source.PixelIterator(xOffset, yOffset, objectSize, (x, y, colour) =>
-			{
-				if (colour != otherPixelProvider(unreferencedOther, x, y))
-				{
-					result--;
-				}
-
-				return true;
-			});
-
-			return result;
-		}
-
 		private int CalculateBlockSize()
 		{
 			if (Data.Model.OutputType == OutputType.Sprites)
 			{
-				if (!Data.Model.FourBit)
+				if (!Data.Model.SpritesFourBit)
 				{
 					// 8-bit sprites use 1 byte per pixel and are 16x16 pixels.
 					return 256;
@@ -746,141 +771,9 @@ namespace NextGraphics.Exporting.Remapping
 
 		private BlockType RepeatedCharType(int character, int xOffset, int yOffset)
 		{
-			int samePixels = objectSize * objectSize;
-			float accuracy = (float)Data.Model.Accuracy / 100f;
-			float pixelClose = samePixels * accuracy;
-			bool hasTransparentPixels = false;
-
-			IndexedBitmap currentBlock = Data.Blocks[outBlock];
-			IndexedBitmap rotateData = new IndexedBitmap(objectSize, objectSize);
-
-			Func<IndexedBitmap, int, int, short> identicalPixelProvider = (bitmap, x, y) => bitmap.GetPixel(x, y);
-			Func<IndexedBitmap, int, int, short> flippedXPixelProvider = (bitmap, x, y) => bitmap.GetPixel((objectSize - 1) - x, y);
-			Func<IndexedBitmap, int, int, short> flippedYPixelProvider = (bitmap, x, y) => bitmap.GetPixel(x, (objectSize - 1) - y);
-			Func<IndexedBitmap, int, int, short> flippedXYPixelProvider = (bitmap, x, y) => bitmap.GetPixel((objectSize - 1) - x, (objectSize - 1) - y);
-
-			// does it have any transparent pixels?
-			if (Data.Model.TransparentFirst || Data.Model.OutputType == OutputType.Sprites)
-			{
-				hasTransparentPixels = Data.Blocks[outBlock].HasTransparentPixels(Data.Model.Palette.TransparentIndex, xOffset, yOffset, objectSize);
-			}
-
-			// do we ignore all repeats?
-			if (Data.Model.IgnoreCopies)
-			{
-				return BlockType.Original;
-			}
-
-			// check to see if fully transparent
-			if (!Data.Model.IgnoreTransparentPixels && hasTransparentPixels)
-			{
-				if (Data.Blocks[outBlock].IsTransparent(Data.Model.Palette.TransparentIndex, xOffset, yOffset, objectSize))
-				{
-					return BlockType.Transparent;
-				}
-			}
-
-			// see how close to the original block it is
-			if (Data.Blocks[outBlock].IsColourBlock(xOffset, yOffset, objectSize))
-			{
-				pixelClose = objectSize * objectSize;
-			}
-
-			samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref Data.TempData[character], identicalPixelProvider);
-			if (Data.Model.IgnoreTransparentPixels && hasTransparentPixels)
-			{
-				if (samePixels == objectSize * objectSize)
-				{
-					return BlockType.Repeated;
-				}
-				return BlockType.Original;
-			}
-
-			// if its close to original % and not containing transparent!
-			if (samePixels >= pixelClose && (hasTransparentPixels == false || Data.Model.OutputType == OutputType.Sprites))
-			{
-				return BlockType.Repeated;
-			}
-
-			samePixels = objectSize * objectSize;
-
-			if (!Data.Model.IgnoreMirroredX)
-			{
-				samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref Data.TempData[character], flippedXPixelProvider);
-				if (samePixels >= pixelClose)
-				{
-					return BlockType.FlippedX;
-				}
-			}
-
-			samePixels = objectSize * objectSize;
-			if (!Data.Model.IgnoreMirroredY)
-			{
-				samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref Data.TempData[character], flippedYPixelProvider);
-				if (samePixels >= pixelClose)
-				{
-					return BlockType.FlippedY;
-				}
-			}
-
-			samePixels = objectSize * objectSize;
-			if (!Data.Model.IgnoreMirroredX && !Data.Model.IgnoreMirroredY)
-			{
-				samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref Data.TempData[character], flippedXYPixelProvider);
-				if (samePixels >= pixelClose)
-				{
-					return BlockType.FlippedXY;
-				}
-			}
-
-			for (int y = 0; y < objectSize; y++)
-			{
-				for (int x = 0; x < objectSize; x++)
-				{
-					rotateData.SetPixel((objectSize - 1) - y, x, Data.TempData[character].GetPixel(x, y));
-				}
-			}
-
-			samePixels = objectSize * objectSize;
-			if (!Data.Model.IgnoreRotated)
-			{
-				samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref rotateData, identicalPixelProvider);
-				if (samePixels >= pixelClose)
-				{
-					return BlockType.Rotated;
-				}
-
-				samePixels = objectSize * objectSize;
-				if (Data.Model.IgnoreMirroredX)
-				{
-					samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref rotateData, flippedXPixelProvider);
-					if (samePixels >= pixelClose)
-					{
-						return BlockType.FlippedXRotated;
-					}
-				}
-
-				samePixels = objectSize * objectSize;
-				if (!Data.Model.IgnoreMirroredY)
-				{
-					samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref rotateData, flippedYPixelProvider);
-					if (samePixels >= pixelClose)
-					{
-						return BlockType.FlippedYRotated;
-					}
-				}
-
-				samePixels = objectSize * objectSize;
-				if (!Data.Model.IgnoreMirroredX && !Data.Model.IgnoreMirroredY)
-				{
-					samePixels = CountSamePixels(xOffset, yOffset, ref Data.Blocks[outBlock], ref rotateData, flippedXYPixelProvider);
-					if (samePixels >= pixelClose)
-					{
-						return BlockType.FlippedXYRotated;
-					}
-				}
-			}
-			return BlockType.Original;
+			var compareBlock = Data.Blocks[outBlock];
+			var comparedCharacter = Data.TempData[character];
+			return compareBlock.RepeatedBlockType(Data.Model, comparedCharacter, xOffset, yOffset);
 		}
 
 		#endregion
