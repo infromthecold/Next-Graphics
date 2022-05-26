@@ -55,7 +55,8 @@ namespace NextGraphics.Exporting.Exporters.ZXNext
 							}
 							else
 							{
-								binFile.Write(ExportData.Chars[s].GetPixel(x, y));
+								var colourByte = (byte)ExportData.Chars[s].GetPixel(x, y);
+								binFile.Write(colourByte);
 								binSize++;
 							}
 						}
